@@ -1,0 +1,141 @@
+collect it all here
+
+Intro? <<
+I have 9 years experience building internet applications, 
+the last 7 were focused on adobe flex.  (entrispes)
+I have consluted with a wide variety of organizations, from the, large enterpise , Federal Goverment, design agencies, and stratsups
+My primary specialty is enterprise application, autometed testing and data driven design 
+
+Done some work Java, and whatever is relevant. and webserices
+
+intro follow up: 
+ what is data driven design? <<
+inveetmetn usable in 10 years , look back at 10 years 
+play wiell in an ecosystem of technologies 
+in a startup, when you are given a requirement
+ocah res are availbe, you o not have a legacy constraint
+woring in the enterpise requiresd a differetn subset of skills
+requires the communication and technical expertise to integreate new functionality with 
+the lats 10 years of developmnet, and have it contiiue to drive value for 10 years
+in flex centric envirnoment ...
+esting ... ensure componets an cnertact goether 
+at my crrent contract i took lead initiate ove 
+
+qqq: what about team experince? 
+What did you do with automation / Testing Effort? << 
+I lead up a project to fully automate all of our flex code. There were many chalenges
+extend core compnents, added new components, like remote dropdown, all needed custom automation elegates
+code base was fractuered across 3 edevelopment branches, automation nneeded common structure 
+extnerla automation testing team, QTP required fully qtp support 
+
+
+inenral flex team wanted flexmonkey support 
+introduction follow up: what is data driven design? <<
+there is ahowle set of design patterns and ideologyes, sepration of conerns, n-tier, and more modern concepts, like full integreation testing that are designed to deal with sch issues. 
+It means defining a process, framework, and set of patterns to design, develop, build, and maintain all of the software that an agency or company needs to operate 
+SRF
+scaiabilty , relatibliyt, flexibility
+
+
+It' snot the ui that drives value .... 
+
+Bites? <<
+Drive Value 
+Guard against the scenario
+
+Testing Effort
+
+Lead Development effort 
+
+Weakness 
+Jobs
+
+
+How do you automate? 
+Starts
+
+
+What is flex? source <<
+Flex is a framework built in actionscript, that enables developers to produce complex internet applications for the Flash player and Air runtimes. It has a delcaritve flash content langaue, mxml, and includes an expansive set of UI, validation and remoting components. 
+
+Why sparks? <<
+In halo, flex 3 , compoents were ridig, hard ot extend, and require da lo of omkney patching to msa small changes to a component view. Such as adding an additional icon or content group to a panel titlebar
+spark attempts to address this by seperating dat logic and behavior from visial states and animaion. 
+create component logic with no assumptiosn abotu appearnce. 
+create ocmponet-view iwthout digging into the lgoic 
+
+skinparts, skinstates, skins are uicomponets, no more addChild, addElement
+
+What is the Flex component lifecycle? <<
+The way teh framework interact with evyr flex componet 
+set of methods the frameowr calls to instantiate, control, and desotry copmonets 
+
+Flex component link older?
+updateDisplayLIst , creationchildren*, measure, commitProperties(), layoutChrom()
+
+
+Personals
+What do your certifications mean? <<
+THye don't make one and expereit in everything, althought tests are very throrough. They say, this inidivdual has learned the basic ins and out of a technology. As a contractor, we are always looking for ways to keep our skills fresh. it is  worthwhile, if you cliam you are comfortabl ewith any techonology to go ahead and get certified, so you can say you know at least as much as the vender expect you t o know. 
+we've bought 100' mil of software from a vendoer and it can only help you if you have passed that vendor's training. 
+
+Artchecitrues 
+n-tier  - presentaiton tier, aplict tier business logic, data tier . not mvc, client tier does nto communicate wtih dat tier
+client server
+
+What do you do on a typical day? <<
+Typically it invovles, interactivng with differnet team members, members on different projects to check status of cuirrent work and fulfil external dependieices. 
+3 or 4 times a week i will met with my manger to discuss future deadlines and current bottlenecks 
+I spend 50-60% of my time developing and coding, and 10% mentoring or assiting  junior resoruces. 
+We unfortnally nevr got testeers on the team, often, more towards the en do f aspring, so before we could call a story complete, we had ot get buy-in from the testing group, and turn over final requirements. 
+analyist we did  have. 
+
+is a set of principles and methodologies for designing and developing software in the form of interoperable services.
+
+Risk - How do you manage risk? 
+it's about managing risk 
+many different styles fo archieteectures are available to you if you contrl the underlying risks that can cause a probject to fail. 
+when I start on a project I strive to quickly get a handle of testing, 2 enefits, learning tool , they see only the ocmponent sin interactino, 
+simple applcaiation
+
+Just enough 
+there is this philosphy called just enough softwar archetcegure. It's eays to get cuaght in non development task. itps important that efforts focus on the dififcult problesm the system needs to solve
+
+
+Current Assingment << 
+XXX
+our app is a dashboard panel 
+we support the UX and application  framework
+I lead a team of 3 devs, 1 very junior, 2 senior resources, s but not expireiend in flex 
+%0% new development, working iwwth analyst, getting buy in from product teams 
+15% mentoriship 
+20% maintence of existing applications 
+
+
+how can flex and java communicate? <<
+gs: java flex communicate
+ You can use RemoteObject, WebService, or HTTPService to call a backend server from within a Flex application. 
+
+Oracle in persistence tier, number of legacy services that provide client authentication access control 
+to simplify java development, services are consolidated in a remote tier build in java, 
+flex applications use httpservice to interact with java calls 
+
+most of effort is spent developing flex fronts ends, 
+
+What design patterns do you use on a daily basis? 
+http://martinfowler.com/eaaDev/Notification.html
+
+Presenter
+What is the Mediator ?
+ The default architecture for Ruby on Rails, Model View Controller, can begin to break down as Controllers become bloated and logic begins to creep into view templates. The Presenter pattern addresses this problem by adding another layer of abstraction: a class representation of the state of the view. 
+What is Dependency Injection ? <<Dependency injection is a software design pattern that allows removing hard-coded dependencies and making it possible to change them, whether at run-time or compile-time.[1]
+the idea, if a class is outsourcing certian functional to another object, specify a contract that object must fulfil, and leave the iplementation up to someon else, allow the injector to specify the conrete class implmenetaiton 
+important for flex development , because this accerlate testing efforts. 
+you only test a sub-copnet or subsystem, helps isolate problems in debuggin 
+
+i
+What's wrong with pattern designers? << 
+otimal for 3rd generation languages 
+cover missing language features
+tend to build well wriwtten easy to underatnd code, that ignores all language or framework specific optimizations, and ignore baisc assumptions about the language itself 
+

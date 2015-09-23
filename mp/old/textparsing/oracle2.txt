@@ -1,0 +1,132 @@
+1z0-051 - 2  The select statement
+
+overview: 
+most imp command
+HR Scheme 
+Understanding Select STatement - purpose and synax
+Using Select
+
+Schemes 
+logical vs physical 
+nic mac and ip . mac burned in, ip is logical, can be bound to any address
+
+What is the difference between logical vs Physical Schemas? <<
+if objects are visible os/disk level, like log level are physical 
+logical are bases, schemas and tables 
+
+container, can be attached to many objects --wtf? --schemas are files so oracle can have many objects with the same name
+
+without schemas couldn't make tables with same name (name collision)
+fully qualified name includes the schema 
+
+emp
+hr.emp
+tim.emp
+
+DDL account called a schmea account 
+oracle user in a schema 
+What else do people call schema's? User, understand not all 'users' and ddl
+
+oracle user and schema ... username and schema name are teh same 
+most users shouldnt' be given ddl, just ddl , 
+What do we call users who can create databases? schema 
+What is a sample schema 
+What is HR? general perupose set of table 
+
+When you run DBCA you can install sample schemas 
+
+What is an ERD? Entity Relationtionsp Diagram 
+What do ERDs do? Provide outlay of tables and the their relationships to other tables. 
+
+What are crows feet connector? Take matching field, mostly same name, but def same type. avoid needless redundance 
+What is normalization? going through each table, field by field are we going to come across too much redundancy. Remove redundant information, having the job_title in the employee many times
+
+q: what is hr xml? wtf
+How is a contraint made? Primary Key and Foriegn Key  linked across tables
+What does crow's foot indicate? One to many relationship (foot is many)
+
+Functions of Select
+What is a database? Organized collection of data handled as a unit
+What is the purpose of the select statment? want to pull or retrieve data from database
+What are 3 major buzz words of the select statment? projection, selection, and joins 
+What is projection? Projections - using select statement to retriete columns from database
+What is selection? selection - ability to pull back rows 
+What does select do ? can get subset of rows or subset of columns 
+What is the purpose of joins? Joins - > 1 related tables - use join synatc to pull columns and rows from different tables
+--these definitions are cool.
+--.feelingbetter: learn something useful for a change
+Are SQL statements case-sensitive? no, by default. generally capitaulize the keywaords and lowercase tables and column names. eaiser to read. convention from literature 
+
+the Select statement and structure
+What are the two parts of a SELECT statement? Select _______ FROM ____________
+What Select *, (select splat, it's bug) can provide fieidl length, [,] command seperate. 
+Where does SPLAT come from ? looked like bug on screen
+What are valid options for the first portion of the select statement? splat, column list, distinct or expression
+Order of columns in select statement is important 
+What does Distinct do? get back only unique occurance of a field 
+What are expressions? allw you to do arthimatics, multilpe a column by 12, and get virtual colum 
+
+What is the 2nd half of the select statement? FROM ________ single table, and ';' to end it off
+What is a virtual column? result of arithmetic operation. Order of operation precedes Please Excuse my dear aunt sally
+
+The Describe Command
+What do we use to learn about a table structure? Describe (learning a schema you did not create)
+What is the purpose of DESCRIBE? reveals data types , types of data in column, data integrity 
+How can you abbreviate Describe? desc
+What are basic data types? << 
+Number(p,s), (precision total , scale digits to right)
+VARCHAR(S), (max length)
+CHAR(S), will always pad spaces will pad-out
+DATE
+
+Why use varchar over char? efficient space, oracle pad outs char
+--What use numeric space? disk space footprint for number gets high , overhead for Number data type
+
+Demonstration of SELECT statement
+Data dictionary, grabbing 1 table, user_tables, give currently logged on users all of their schema objects. 
+
+How do you see all tables in a schema? SELECT table_name from user_tables;
+
+how do know what columns are in a database?  DESCRIBE tablename
+How do we format code? right lick and format ... sql dev will capitalize our keywords
+
+we need to sqlplus as well 
+
+What is null in a Query Result? it is unknown there is nothing there
+
+sqlplus hr
+
+How do you quit VI? use : and q
+
+How do you remove pagination?  set pagesize 0
+How do you re-run the last query? /
+hwo to format a column? column salary format $99,999,99; 
+
+How to see what's in our buffer? l
+
+How to save query into a file? spool
+How do you use the SPOOL command? spool file.txt ... later spool off
+
+SELECT table_name
+FROM user_names 
+describe user_tables
+
+How do you add alieases? AS new name
+
+SELECT employee_id,
+first_name, last_name, salary AS basicalary,
+salary * 12 AS asjsal
+FROM employees;
+
+ --expression: is this kind o fmicky mouse
+
+SELECT DISTINCT location_id
+FROM departments
+ORDER BY location_id;
+
+Connectiosn tree and tables
+
+spawn a new table
+big fan of sql developer
+
+can remove column by selecting and saying now 

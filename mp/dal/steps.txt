@@ -1,0 +1,7 @@
+
+
+
+
+a sync b , a sends version
+v does version check, if ok, said sync is is over, if nto ok, tells a to get b's records
+a send

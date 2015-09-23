@@ -1,0 +1,8 @@
+{
+  "type": "dir",
+  "dir": "test2_dir",
+  "watch": "true",
+  "script": "test2_script",
+  "spawn": "eachfilein",
+  "spawn_str": "adsf_asd <%= file %>"
+}

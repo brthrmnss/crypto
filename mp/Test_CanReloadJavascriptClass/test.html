@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../../node_modules/shelpers/lib/public_html/jquery.js.ignore_scan"></script>
+
+
+    <script src="a.js" ></script>
+    <script type="application/javascript">
+        $(document).ready(function setup() {
+
+            var a = new A();
+            a.init();
+
+
+            $('#btn').click(function onClick() {
+                //load it
+                $.ajax({
+                    url: "diff/a.js",
+                    // data: data,
+                    success: function f(d){
+                        var a2 = new A();
+                        a2.init();
+                        a.init()
+                    },
+                    //dataType: "text"
+                }).done(function( html ) {
+                    //console.log('d', html)
+                });;
+            })
+
+
+
+
+        })
+
+    </script>
+</head>
+<body>
+<div id="divStart">
+    <button prettybtn id="btn" >Reload</button>
+</div>
+
+<div id="divResult">
+
+</div>
+</body>
+</html>
