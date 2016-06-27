@@ -1,0 +1,46 @@
+<div class="progress-bar-holder">
+  <div aboslute-container  class="wh100" >
+
+    <div   absolute ng-show="vm.progressType=='left'"
+           class="wh100 progress-bar-container"
+
+           _xadd-class-to-children="pad10" >
+
+      <!--  yyyyyyyy-->
+      <div id="progressBarthing"
+           ng-style="{'width':vm.progressBarProgress+'%'}"
+           class="progressbarY height100" ></div>
+    </div>
+
+
+    <div absolute ng-show="vm.progressType=='center'"
+         absolute horizontal-layout
+         class="wh100 progress-bar-container"
+            >
+      <div stretch
+           class="progressbarY height100" >
+        <div ng-style="{'left':vm.p1Start+'%', 'right':vm.p1End+'%'}" >
+        </div>
+      </div>
+      <spacer></spacer>
+      <div stretch
+           class="progressbarY height100" >
+        <div  ng-style="{'left':vm.p2Start+'%', 'right':vm.p2End+'%'}" >
+        </div>
+      </div>
+    </div>
+
+
+    <div  absolute horizontal-layout
+          class="wh100"
+          _xadd-class-to-children="pad10" >
+      <div class="progress-list-left" >{{vm.leftText}}</div>
+      <div stretch upcase class="progress-list-center" >{{vm.name}} {{vm}}</div>
+      <div class="progress-list-right" >{{vm.rightText}}</div>
+    </div>
+
+    <!--   {{vm}}-->
+
+  </div>
+
+</div>
