@@ -1,7 +1,11 @@
 fsmonitor = require('fsmonitor');
 
-
-var socket = require('socket.io-client')('https://local.helloworld3000.com:8043/');
+var useSecureServer = false;
+if ( useSecureServer ) {
+//var socket = require('socket.io-client')('https://local.helloworld3000.com:8043/');
+} else {
+    var socket = require('socket.io-client')('https://127.0.0.1:8043/');
+}
 socket.on('connect', function(){});
 socket.on('event', function(data){});
 socket.on('disconnect', function(){});
@@ -21,6 +25,7 @@ var dirMonitored2 = __dirname+'/'+'../'+'../'+'../'+'learn angular/port3/';
 var path = require('path')
 
 dirMonitored2 = "/Users/user2/Dropbox/projects/learn angular/port3/"
+var dirMonitored2b = "/Users/user2/Dropbox/projects/delegation/Reader/TTS-Reader/www/js";
 
 console.log('what is dirname that is monitored?', __dirname, process.argv[2]);
 var dirMonitored = __dirname;
@@ -66,29 +71,32 @@ sh.isFileType = function isFileType(file, type) {
     return false;
 }
 
-var terminal = require('child_process').spawn('fswatch', [dirMonitored2]);
+function monitorDir(dirMonitored2) {
+    var terminal = require('child_process').spawn('fswatch', [dirMonitored2]);
 
-terminal.stdout.on('data', function (data) {
-    data = data.toString().split("\n");
-    console.log('stdout: ' + data);
-    sh.each ( data, function (i, file) {
-        if ( sh.isFileType(file, 'js') ) {
-            helper.trigger(file)
-        }
-        if ( sh.isFileType(file, 'html') ) {
-            helper.trigger(file)
-        }
-        //var split = file.split("");
-    })
+    terminal.stdout.on('data', function (data) {
+        data = data.toString().split("\n");
+        console.log('stdout: ' + data);
+        sh.each(data, function (i, file) {
+            if (sh.isFileType(file, 'js')) {
+                helper.trigger(file)
+            }
+            if (sh.isFileType(file, 'html')) {
+                helper.trigger(file)
+            }
+            //var split = file.split("");
+        })
 
-});
+    });
 
-terminal.on('exit', function (code) {
-    console.log('child process exited with code ' + code);
-});
+    terminal.on('exit', function (code) {
+        console.log('child process exited with code ' + code);
+    });
 
+}
 
-
+monitorDir(dirMonitored2);
+monitorDir(dirMonitored2b);
 
 
 function other() {

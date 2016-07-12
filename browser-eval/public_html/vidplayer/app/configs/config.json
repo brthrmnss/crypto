@@ -1,0 +1,27 @@
+{
+  "channel_name":"cnn",
+  "push_all_channels":true,
+  "comment":"push all folders in dir folder ... still have to check indiv",
+  "check_for_uploads":10000,
+  "dir_base":"temp/",
+  "split_every_x_kilobytes":2000,
+  "xurl_upload":"127.0.0.1:9995/upload",
+
+  "channel_server":{
+    "port":9550,
+    "ip":"127.0.0.1",
+    "max_files_per_channel":15
+  },
+  "upload_monitor":{
+    "check_dir_uploads_every_x_secs":10,
+    "dir_uploads":"channel_uploads/",
+    "max_concurrent_upload_failures":100
+  },
+  "ripper":{
+    "timeout":false
+  },
+  "obs":{
+    "timeout":false
+  }
+
+}

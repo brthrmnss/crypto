@@ -1,0 +1,28 @@
+{
+  "channel_name":"cnn",
+  "push_all_channels":true,
+  "comment":"base config for vms",
+  "split_every_x_kilobytes":2000,
+  "xurl_upload":"127.0.0.1:9995/upload",
+
+  "channel_server":{
+    "port":9550,
+    "ip":"192.168.255.1",
+    "comment":"ip address of host machine",
+    "max_files_per_channel":40
+  },
+  "upload_monitor":{
+    "check_dir_uploads_every_x_secs":10,
+    "dir_uploads":"channel_uploads/",
+    "max_concurrent_upload_failures":100,
+    "upload_to":["5.79.75.96:9550"],
+    "convert":true
+  },
+  "ripper":{
+    "timeout":false
+  },
+  "obs":{
+    "enabled":true
+  }
+
+}

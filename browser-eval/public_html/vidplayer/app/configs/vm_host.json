@@ -1,0 +1,16 @@
+{
+  "comment":"Run on VM Host, receives all vm's channels",
+  "channel_server":{
+    "port":9550,
+    "ip":"127.0.0.1",
+    "max_files_per_channel":20,
+    "logging":true
+  },
+  "upload_monitor":{
+    "enabled":false
+  },
+  "_ripper":{
+    "comment":"because ripper ismissing, should fail",
+    "enabled":false
+  }
+}

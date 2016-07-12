@@ -1,0 +1,50 @@
+{
+    "channel_name":"cnn",
+    "push_all_channels":true,
+    "comment":"push all folders in dir folder ... still have to check indiv",
+    "check_for_uploads":10000,
+    "split_every_x_kilobytes":2000,
+    "xurl_upload":"127.0.0.1:9995/upload",
+    "desc":"before moving on 10/22/2015 to file splitter, this was old config",
+
+    "channel_server":{
+        "port":9550,
+        "ip":"127.0.0.1",
+        "max_files_per_channel":20
+    },
+    "upload_monitor":{
+        "check_dir_uploads_every_x_secs":10,
+        "dir_uploads":"channel_uploads/",
+        "max_concurrent_upload_failures":100,
+        "convert":true,
+        "upload_to":["5.79.75.96:9550"]
+    },
+    "ripper":{
+        "timeout":false,
+        "comment":"this wil disable rtmp server",
+        "useNodeJSServer":true,
+        "enabled":true
+    },
+    "obs":{
+        "enabled":true,
+        "desc":"channel_name will be profile name",
+        "start":true
+    },
+    "fake_video_source":{
+        "add_video_every_x_secs":1,
+        "enabled":false
+    },
+    "manycam":{
+        "desc":"dont remember",
+        "enabled":false,
+        "add_video_every_x_secs":5,
+        "file_input":"/Users/user2/Movies/ManyCam/My Recording.mp4"
+    },
+    "filesplitter":{
+        "desc":"tool splits output from obs",
+        "enabled":false,
+        "fileDefault":"C:/Users/user1/Videos/testvid.fv",
+        "clearDir":true
+
+    }
+}

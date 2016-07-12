@@ -32,19 +32,40 @@ var pdfParser = new PDFParser();
 //pdfParser.on("pdfParser_dataError", _.bind(_onPFBinDataError, self));
 
 var pdfFilePath = 'apress-pro-angularjs-2014.pdf';
-
-
+pdfFilePath = 'The Magna Carta Manifesto_ Libe - Peter Linebaugh.pdf'
+    pdfFilePath = 'jan-2014b.pdf'
+//try to save it again
 
 var parser = new PDFParser()
 
 parser.on('pdfParser_dataReady', function(pdf) {
     console.log('just first page', pdf.data.Pages[0] );
 
-    pdf.data.Pages[0].Texts.forEach(function(text) {
-        console.log(unescape(text.R[0].T))
+    var texts = [];
+    pdf.data.Pages[132].Texts.forEach(function(text) {
+        var u = {};
+        text.R[0].T = decodeURIComponent(text.R[0].T);
+        texts.push(text);
+        //console.log(unescape(text.R[0].T))
     })
 
-    sh.writeJSONFile('page0.json', pdf.data.Pages[0])
+    texts.sort(function(a,b) {
+        if( a.x == b.x) return a.y-b.y;
+        return a.x-b.x;
+    });
+    texts.sort(function(a,b) {
+        if( a.y == b.y) return a.x-b.x;
+        return a.y-b.y;
+    });
+
+    texts.forEach(function(text){
+        console.log(text.R[0].T, text.x, text.y, text.R[0].TS )
+    });
+
+    //remove everything that has a number under it ... starts at 12 ... skip rest of page
+
+
+    sh.writeJSONFile('page1.json', pdf.data.Pages[0])
 })
 
 parser.on('pdfParser_dataError', console.log)

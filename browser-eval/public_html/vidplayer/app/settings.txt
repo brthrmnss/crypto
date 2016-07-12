@@ -1,0 +1,1164 @@
+rtmp://127.0.0.1:1935/live
+
+2015-10-25 14:18:40.447 [rtmp:6oNXlc1M] started streaming Sun Oct 25 2015 14:18:40 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'espn'
+started streaming.... removing cnn espn
+stream doesnt match channel espn
+started streaming.... removing espn espn
+2015-10-25 14:18:40.481 [rtmp:yIypamDc] socket error: Error: read ECONNRESET
+2015-10-25 14:18:40.481 [rtmp:yIypamDc] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ pnclRTEU: addr=127.0.0.1 port=64412
+ NTYnvswM: addr=127.0.0.1 port=64421
+ 6oNXlc1M: addr=127.0.0.1 port=64422
+look at channel_uploads/espn/10-25-2015_14_18_27video66.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv.mp4',
+  maxBuffer: Infinity ]
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+Str 68 ready Sun Oct 25 2015 14:18:40 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -4157
+... in middle of cmd
+>>>*>  onTimeOutConversion [as _onTimeout]  timedout on c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_24video65.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:158:30)
+2015-10-25 14:18:41.726 [rtmp:NTYnvswM] started streaming Sun Oct 25 2015 14:18:41 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'cnn'
+Str 60 ready Sun Oct 25 2015 14:18:41 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -5792
+2015-10-25 14:18:41.993 [rtmp:pnclRTEU] socket error: Error: read ECONNRESET
+2015-10-25 14:18:41.993 [rtmp:pnclRTEU] disconnected
+[rtmp: 5 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ NTYnvswM: addr=127.0.0.1 port=64421
+ 6oNXlc1M: addr=127.0.0.1 port=64422
+data: ffmpeg version N-74869-ga87ada5 Copyright (c) 2000-2015 the FFmpeg developersdata:
+  built with gcc 4.9.3 (GCC)
+  configuration: --enable-gpl --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-frei0r --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libdcadec --enable-libfreetype --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs --enable-libxvid --enable-lzma --enable-decklink --enable-zlib
+  libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+  libavdevice    56.  4.100 / 56.  4.100
+  libavfilter     5. 40.101 /  5. 40.101
+  libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+  libpostproc    53.  3.100 / 53.  3.100
+data: [flv @ 0459ed00] Estimating duration from bitrate, this may be inaccurate
+data: Input #0, flv, from 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv':
+data:   Metadata:
+    canSeekToEnd    : false
+    hasMetadata     : truedata:
+    hasCuePoints    : false
+    hasVideo        : truedata:
+    avclevel        : 31data:
+    avcprofile      : 100
+    hasAudio        : truedata:
+    audiodelay      : 0
+    audiochannels   : data: 2
+    aacaot          : 2
+data:   Duration: 00:00:02.56, start: 0.017000data: , bitrate: data: 2048 kb/s
+data:     Stream #0:0: Video: h264 (High), yuv420p(tv, smpte170m/bt709/iec61966-2-1), 920x516, 2048 kb/sdata: , 30.30 fps, 30 tbr, 1k tbn, 60 tbc
+data:     Stream #0:1: Audio: aac (LC), 48000 Hz, stereo, fltp, 40 kb/sdata:
+data: [libx264 @ 04970060] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX XOP FMA4 FMA3 LZCNT BMI1
+data: [libx264 @ 04970060] profile High, level 3.1
+data: [libx264 @ 04970060] 264 - core 148 r2597 e86f3a1 - H.264/MPEG-4 AVC codec - Copyleft 2003-2015 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+data: Output #0, mp4, to 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv.mp4':
+  Metadata:
+    canSeekToEnd    : data: false
+    hasMetadata     : true
+    hasCuePoints    : false
+    hasVideo        : true
+    avclevel        : 31
+    avcprofile      : 100
+    hasAudio        : true
+    audiodelay      : 0
+data:     audiochannels   : 2data:
+    aacaot          : 2
+data:     encoder         : Lavf56.40.101
+data:     Stream #0:0data: : Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 920x516, q=-1--1, 30 fps, 15360 tbn, data: 30 tbc
+    Metadata:
+      encoder         : data: Lavc56.60.100 libx264
+data:     Stream #0:1: Audio: aac (libvo_aacenc) ([64][0][0][0] / 0x0040), 48000 Hz, stereo, s16, 128 kb/data: s
+    Metadata:
+      encoder         : Lavc56.60.100 libvo_aacenc
+data: Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+  Stream #0:1 -> #0:1 (aac (native) -> aac (libvo_aacenc))
+Press [q] to stop, [?] for help
+data: [NULL @ 045984c0] AVC: nal size 13084
+data: [NULL @ 045984c0] missing picture in access unit with size 12072
+data: [h264 @ 0771cec0] AVC: nal size 13084
+data:     Last message repeated 1data:  times
+[h264 @ 0771cec0] data: no frame!
+data: frame=  148 fps= 75 q=-1.0 Lsize=     867kB time=00:00:04.87 bitrate=1456.8kbits/s dup=2 drop=0
+video:783kB audio:77kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.759947%data:
+data: [libx264 @ 04970060] frame I:2     Avg QP:22.09  size: 55983
+data: [libx264 @ 04970060] frame P:71    Avg QP:24.13  size:  9621
+[libx264 @ 04970060] frame B:75    Avg QP:30.76  size:    87
+[libx264 @ 04970060] consecutive B-frames: 24.3% 13.5% 32.4% 29.7%
+data: [libx264 @ 04970060] mb I  I16..4: 12.5% 20.6% 66.9%
+data: [libx264 @ 04970060] mb P  I16..4:  2.8%  6.7%  3.7%  P16..4: 15.4%  7.3%  5.6%  0.0%  0.0%    skip:58.6%data:
+[libx264 @ 04970060] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  2.7%  0.0%  0.0%  direct: 0.0%  skip:97.2%  L0:19.8% L1:79.7% BI: 0.6%
+data: [libx264 @ 04970060] 8x8 transform intra:45.3% inter:44.9%
+data: [libx264 @ 04970060] coded y,uvDC,uvAC intra: 71.4% 78.1% 46.5% inter: 6.5% 6.4% 0.6%
+[libx264 @ 04970060] i16 v,h,dc,p: 19% 74%  4%  3%
+data: [libx264 @ 04970060] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 21% 37% 11%  3%  5%  6%  5%  6%  6%
+[libx264 @ 04970060] data: i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 25% 32%  7%  4%  6%  8%  6%  6%  6%
+[libx264 @ 04970060] i8c dc,h,v,p: 38% 34% 19%  8%
+[libx264 @ 04970060] data: Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 04970060] ref P L0: 82.3% 13.3%  3.5%  0.9%
+data: [libx264 @ 04970060] ref B L0: 86.6% 12.3%  1.1%
+data: [libx264 @ 04970060] ref B L1: 96.4%  3.6%
+[libx264 @ 04970060] kb/s:1299.77
+child process exited with code 0
+
+>>>*>  fxDone  failed to upload ...  c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:117:30)
+done upload files
+look at channel_uploads/espn/10-25-2015_14_18_27video66.flv
+look at channel_uploads/espn/10-25-2015_14_18_32video67.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv.mp4',
+  maxBuffer: Infinity ]
+upload file c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn.uploading//10-25-2015_14_18_27video66.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv.mp4)
+starting...
+starting/ { showBody: false,
+  name: 'Smoke Test MonitorUploadDir',
+  silentToken: true,
+  baseUrl: 'http://127.0.0.1:9550' }
+look at http://127.0.0.1:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+look at http://5.79.75.96:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+    $ http://127.0.0.1:9550/upload
+file {}
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/
+>>>*>  Form fileClose files 10-25-2015_14_16_05video44.flv.mp4,10-25-2015_14_16_12video45.flv.mp4,10-25-2015_14_16_16video46.flv.mp4,10-25-2015_14_16_22video47.flv.mp4,10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4,10-25-2015_14_16_31video50.flv.mp4,10-25-2015_14_16_34video51.flv.mp4,10-25-2015_14_17_07video52.flv.mp4,10-25-2015_14_17_13video54.flv.mp4,10-25-2015_14_17_31video55.flv.mp4,10-25-2015_14_17_34video56.flv.mp4,10-25-2015_14_17_37video57.flv.mp4,10-25-2015_14_17_50video58.flv.mp4,10-25-2015_14_17_54video59.flv.mp4,10-25-2015_14_18_02video60.flv.mp4,10-25-2015_14_18_06video61.flv.mp4,10-25-2015_14_18_11video62.flv.mp4,10-25-2015_14_18_17video63.flv.mp4,10-25-2015_14_18_20video64.flv.mp4,10-25-2015_14_18_24video65.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:159:22)
+>>>*>  Form fileClose files.max 20 21 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:160:22)
+>>>*>  Form fileClose deleting files before index 2 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:169:26)
+>>>*>  Form fileClose deleting list: 2 10-25-2015_14_16_05video44.flv.mp4,10-25-2015_14_16_12video45.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:170:26)
+deleting 10-25-2015_14_16_05video44.flv.mp4
+deleting 10-25-2015_14_16_12video45.flv.mp4
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn
+store upload for espn c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/10-25-2015_14_18_27video66.flv.mp4
+>>>*>  Request _callback test (http://127.0.0.1:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://127.0.0.1:9550/upload [object Object]  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://127.0.0.1:9550/upload) {
+  "status": "ok"
+} (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://127.0.0.1:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+    $ http://5.79.75.96:9550/upload
+switch 68 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/espn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 69 10-25-2015_14_18_43video69.flv temp/10-25-2015_14_18_43video69.flv
+start time Sun Oct 25 2015 14:18:43 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:18:43.365 [rtmp:OTu39THO] connected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ NTYnvswM: addr=127.0.0.1 port=64421
+ 6oNXlc1M: addr=127.0.0.1 port=64422
+ OTu39THO: addr=127.0.0.1 port=64424
+2015-10-25 14:18:43.367 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:18:43.370 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:18:43.370 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:18:43.370 [rtmp:OTu39THO] requested stream espn
+2015-10-25 14:18:43.371 [rtmp:OTu39THO] waiting for keyframe
+connected !!!!!!!!!!!!!
+... in middle of cmd
+switch 60 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/cnn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 61 10-25-2015_14_18_44video61.flv temp/10-25-2015_14_18_44video61.flv
+start time Sun Oct 25 2015 14:18:44 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:18:44.156 [rtmp:M78wMnq0] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ NTYnvswM: addr=127.0.0.1 port=64421
+ 6oNXlc1M: addr=127.0.0.1 port=64422
+ OTu39THO: addr=127.0.0.1 port=64424
+ M78wMnq0: addr=127.0.0.1 port=64425
+2015-10-25 14:18:44.158 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:18:44.160 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:18:44.161 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:18:44.161 [rtmp:M78wMnq0] requested stream cnn
+2015-10-25 14:18:44.161 [rtmp:M78wMnq0] waiting for keyframe
+connected !!!!!!!!!!!!!
+2015-10-25 14:18:45.083 [rtmp:OTu39THO] started streaming Sun Oct 25 2015 14:18:45 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'espn'
+started streaming.... removing espn espn
+started streaming.... removing cnn espn
+stream doesnt match channel espn
+2015-10-25 14:18:45.106 [rtmp:6oNXlc1M] socket error: Error: read ECONNRESET
+2015-10-25 14:18:45.106 [rtmp:6oNXlc1M] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ NTYnvswM: addr=127.0.0.1 port=64421
+ OTu39THO: addr=127.0.0.1 port=64424
+ M78wMnq0: addr=127.0.0.1 port=64425
+Str 69 ready Sun Oct 25 2015 14:18:45 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -1950
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+data: ffmpeg version N-74869-ga87ada5 Copyright (c) 2000-2015 the FFmpeg developers
+  built with gcc 4.9.3 (GCC)
+data:   configuration: --enable-gpl --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-frei0r --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libdcadec --enable-libfreetype --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs --enable-libxvid --enable-lzma --enable-decklink --enable-zlib
+  libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+data:   libavdevice    56.  4.100 / 56.  4.100
+  libavfilter     5. 40.101 /  5. 40.101
+  libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+data:   libpostproc    53.  3.100 / 53.  3.100
+data: [flv @ 0464ed00] Estimating duration from bitrate, this may be inaccurate
+data: Input #0, flv, from 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv':
+  Metadata:
+data:     canSeekToEnd    : false
+    hasMetadata     : true
+data:     hasCuePoints    : false
+    hasVideo        : truedata:
+    avclevel        : 31
+    avcprofile      : data: 100
+    hasAudio        : true
+data:     audiodelay      : 0
+    audiochannels   : data: 2
+data:     aacaot          : 2
+data:   Duration: 00:00:03.37, start: data: 0.020000, bitrate: 2060 kb/s
+data:     Stream #0:0: Video: h264 (High), yuv420p(tv, smpte170m/bt709/iec61966-2-1), 920x516, 2048 kb/s, data: 30.30 fps, 30 tbr, 1k tbn, 60 tbc
+data:     Stream #0:1: Audio: aac (LC), 48000 Hz, stereo, fltp, 40 kb/s
+data: [libx264 @ 04a20760] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX XOP FMA4 FMA3 LZCNT BMI1
+data: [libx264 @ 04a20760] data: profile High, level 3.1
+data: [libx264 @ 04a20760] 264 - core 148 r2597 e86f3a1 - H.264/MPEG-4 AVC codec - Copyleft 2003-2015 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+data: Output #0, mp4, to 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv.mp4':
+  Metadata:
+    canSeekToEnd    : data: false
+    hasMetadata     : true
+    hasCuePoints    : false
+    hasVideo        : true
+    avclevel        : data: 31
+    avcprofile      : 100data:
+    hasAudio        : true
+data:     audiodelay      : 0
+    audiochannels   : data: 2
+    aacaot          : data: 2
+    encoder         : Lavf56.40.101data:
+data:     Stream #0:0: Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 920x516, q=-1--data: 1, 30 fps, 15360 tbn, data: 30 tbc
+    Metadata:
+      encoder         : data: Lavc56.60.100 libx264
+data:     Stream #0:1data: : Audio: aac (libvo_aacenc) ([64][0][0][0] / 0x0040), 48000 Hz, stereo, s16, 128 kb/s
+    Metadata:
+data:       encoder         : Lavc56.60.100 libvo_aacenc
+Stream mapping:
+  Stream #0:0 -> #0:data: 0 (h264 (native) -> h264 (libx264))
+  Stream #0:1 -> #0:1data:  (aac (native) -> aac (libvo_aacenc))
+Press [q] to stop, [?] for help
+data: [NULL @ 046484c0] AVC: nal size 23166
+data: [NULL @ 046484c0] missing picture in access unit with size 20632
+data: [h264 @ 0dc82560] data: AVC: nal size 23166
+    Ldata: ast message data: repeated 1 timdata: es
+[h264 @ 0dc82560] no frame!
+data: frame=  194 fps= 65 q=-1.0 Lsize=    1278kB time=00:00:06.43 bitrate=1627.6kbits/s dup=1 drop=0
+video:1169kB audio:101kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.637593%data:
+data: [libx264 @ 04a20760] frame I:1     Avg QP:24.00  size: 46139
+[libx264 @ 04a20760] data: frame P:106   Avg QP:24.97  size: 10796
+[libx264 @ 04a20760] frame B:87    Avg QP:30.43  size:    62
+[libx264 @ 04a20760] consecutive B-frames: 32.0% 17.5% 21.6% 28.9%
+[libx264 @ 04a20760] mb I  I16..4: 10.7% 25.2% 64.2%
+data: [libx264 @ 04a20760] mb P  I16..4:  2.2% 14.4%  4.7%  P16..4: 11.4%  6.8%  3.2%  0.0%  0.0%    skip:57.4%
+data: [libx264 @ 04a20760] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  1.8%  0.0%  0.0%  direct: 0.0%  skip:98.2%  L0: 9.1% L1:90.8% BI: 0.0%data:
+[libx264 @ 04a20760] data: 8x8 transform intra:66.0% inter:54.9%
+[libx264 @ 04a20760] coded y,uvDC,uvAC intra: 77.4% 82.7% 37.8% inter: 5.8% 6.3% 0.3%
+data: [libx264 @ 04a20760] i16 v,h,dc,p: 24% 56%  4% 16%
+data: [libx264 @ 04a20760] data: i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19% 30% 11%  5%  5%  6%  7%  7%  9%
+[libx264 @ 04a20760] data: i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 25% 28%  9%  5%  6%  7%  7%  6%  6%
+[libx264 @ 04a20760] i8c dc,h,v,p: 38% 28% 22% 12%
+data: [libx264 @ 04a20760] Weighted P-Frames: Y:0.9% UV:0.9%
+[libx264 @ 04a20760] ref P L0: 75.7% 15.2%  7.4%  1.7%  0.0%
+data: [libx264 @ 04a20760] ref B L0: 75.0% 23.5%  1.5%
+data: [libx264 @ 04a20760] ref B L1: 97.5%  2.5%
+[libx264 @ 04a20760] data: kb/s:1479.50
+child process exited with code 0
+
+>>>*>  fxDone  failed to upload ...  c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:117:30)
+done upload files
+upload file c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn.uploading//10-25-2015_14_18_32video67.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv.mp4)
+starting...
+starting/ { showBody: false,
+  name: 'Smoke Test MonitorUploadDir',
+  silentToken: true,
+  baseUrl: 'http://127.0.0.1:9550' }
+look at http://127.0.0.1:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+look at http://5.79.75.96:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+    $ http://127.0.0.1:9550/upload
+file {}
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/
+>>>*>  Form fileClose files 10-25-2015_14_16_16video46.flv.mp4,10-25-2015_14_16_22video47.flv.mp4,10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4,10-25-2015_14_16_31video50.flv.mp4,10-25-2015_14_16_34video51.flv.mp4,10-25-2015_14_17_07video52.flv.mp4,10-25-2015_14_17_13video54.flv.mp4,10-25-2015_14_17_31video55.flv.mp4,10-25-2015_14_17_34video56.flv.mp4,10-25-2015_14_17_37video57.flv.mp4,10-25-2015_14_17_50video58.flv.mp4,10-25-2015_14_17_54video59.flv.mp4,10-25-2015_14_18_02video60.flv.mp4,10-25-2015_14_18_06video61.flv.mp4,10-25-2015_14_18_11video62.flv.mp4,10-25-2015_14_18_17video63.flv.mp4,10-25-2015_14_18_20video64.flv.mp4,10-25-2015_14_18_24video65.flv.mp4,10-25-2015_14_18_27video66.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:159:22)
+>>>*>  Form fileClose files.max 20 20 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:160:22)
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn
+store upload for espn c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/10-25-2015_14_18_32video67.flv.mp4
+>>>*>  Request _callback test (http://127.0.0.1:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://127.0.0.1:9550/upload [object Object]  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://127.0.0.1:9550/upload) {
+  "status": "ok"
+} (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://127.0.0.1:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+    $ http://5.79.75.96:9550/upload
+switch 69 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/espn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 70 10-25-2015_14_18_47video70.flv temp/10-25-2015_14_18_47video70.flv
+start time Sun Oct 25 2015 14:18:47 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:18:47.907 [rtmp:oLBvHXTI] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ NTYnvswM: addr=127.0.0.1 port=64421
+ OTu39THO: addr=127.0.0.1 port=64424
+ M78wMnq0: addr=127.0.0.1 port=64425
+ oLBvHXTI: addr=127.0.0.1 port=64427
+2015-10-25 14:18:47.909 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:18:47.911 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:18:47.912 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:18:47.912 [rtmp:oLBvHXTI] requested stream espn
+2015-10-25 14:18:47.912 [rtmp:oLBvHXTI] waiting for keyframe
+connected !!!!!!!!!!!!!
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+>>>*>  onTimeOutConversion [as _onTimeout]  timedout on c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_27video66.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:158:30)
+2015-10-25 14:18:50.089 [rtmp:M78wMnq0] started streaming Sun Oct 25 2015 14:18:50 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'cnn'
+started streaming.... removing espn cnn
+stream doesnt match channel cnn
+Str 61 ready Sun Oct 25 2015 14:18:50 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -6219
+2015-10-25 14:18:50.359 [rtmp:NTYnvswM] socket error: Error: read ECONNRESET
+2015-10-25 14:18:50.359 [rtmp:NTYnvswM] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ OTu39THO: addr=127.0.0.1 port=64424
+ M78wMnq0: addr=127.0.0.1 port=64425
+ oLBvHXTI: addr=127.0.0.1 port=64427
+look at channel_uploads/espn/10-25-2015_14_18_36video68.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv.mp4',
+  maxBuffer: Infinity ]
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+... in middle of cmd
+>>>*>  onTimeOutConversion [as _onTimeout]  timedout on c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_32video67.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:158:30)
+data: ffmpeg version N-74869-ga87adadata: 5 Copyright (c) 2000-2015 the FFmpeg developers
+  built with gcc 4.9.3 (GCC)
+  configuration: --enable-gpl --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-frei0r --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libdcadec --enable-libfreetype --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs --enable-libxvid --enable-lzma --enable-decklink --enable-zlib
+data:   libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+  libavdevice    56.  4.100 / 56.  4.100
+data:   libavfilter     5. 40.101 /  5. 40.101
+data:   libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+  libpostproc    53.  3.100 / 53.  3.100data:
+data: [flv @ 046eed00] data: Estimating duration from bitrate, this may be inaccurate
+data: Input #0, flv, from 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv':
+  Metadata:
+data:     canSeekToEnd    : false
+    hasMetadata     : data: true
+    hasCuePoints    : falsedata:
+    hasVideo        : true
+data:     avclevel        : 31
+    avcprofile      : 100data:
+    hasAudio        : true
+    audiodelay      : data: 0
+    audiochannels   : 2
+data:     aacaot          : 2
+  Duration: 00:00:02.32data: , start: data: 0.008000, bitrate: 2036 kb/s
+data:     Stream #0:0: Video: h264 (High), yuv420p(tv, smpte170m/bt709/iec61966-2-1), 920x516, 2048 kb/data: s, 30.30 fps, data: 30 tbr, 1k tbn, 60 tbc
+data:     Stream #0:1data: : Audio: aac (LC), 48000 Hz, stereo, fltp, 40 kb/s
+data: [libx264 @ 04c0cdc0] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX XOP FMA4 FMA3 LZCNT BMI1
+data: [libx264 @ 04c0cdc0] profile High, level 3.1
+data: [libx264 @ 04c0cdc0] data: 264 - core 148 r2597 e86f3a1 - H.264/MPEG-4 AVC codec - Copyleft 2003-2015 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+data: Output #0, mp4, to 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv.mp4':
+  Metadata:
+data:     canSeekToEnd    : false
+    hasMetadata     : true
+data:     hasCuePoints    : false
+    hasVideo        : data: true
+    avclevel        : 31data:
+    avcprofile      : 100
+data:     hasAudio        : true
+    audiodelay      : data: 0
+    audiochannels   : 2
+data:     aacaot          : 2data:
+    encoder         : Lavf56.40.101data:
+data:     Stream #0:0data: : Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 920x516, q=-1--1, 30 fps, 15360 tbn, data: 30 tbc
+    Metadata:
+      encoder         : data: Lavc56.60.100 libx264
+data:     Stream #0:1: Audio: aac (libvo_aacenc) ([64][0][0][0] / 0x0040), 48000 Hz, stereo, s16, 128 kb/s
+data:     Metadata:
+      encoder         : Lavc56.60.100 libvo_aacenc
+Stream mapping:
+  Stream #0:0 -> #0:0data:  (h264 (native) -> h264 (libx264))data:
+  Stream #0:1 -> #0:1data:  (aac (native) -> aac (libvo_aacenc))
+data: Press [q] to stop, [?] for help
+data: [NULL @ 046e84c0] AVC: nal size 30425
+data: [NULL @ 046e84c0] missing picture in access unit with size 30163
+data: [h264 @ 0dcc4940] AVC: nal size 30425
+data:     Ldata: ast message data: repeated 1 timedata: s
+[h264 @ 0dcc4940] no frame!
+data: frame=  142 fps= 75 q=-1.0 Lsize=     701kB time=00:00:04.68 bitrate=1227.4kbits/s dup=2 drop=0
+video:621kB audio:74kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: data: 0.905434%
+data: [libx264 @ 04c0cdc0] frame I:2     Avg QP:23.74  size: 31123
+[libx264 @ 04c0cdc0] data: frame P:77    Avg QP:23.56  size:  7387
+[libx264 @ 04c0cdc0] frame B:63    Avg QP:30.43  size:    74
+[libx264 @ 04c0cdc0] consecutive B-frames: 31.7% 18.3% 27.5% 22.5%
+[libx264 @ 04c0cdc0] mb I  I16..4:  9.6% 54.3% 36.1%
+[libx264 @ 04c0cdc0] data: mb P  I16..4:  3.2% 13.2%  2.5%  P16..4: 12.5%  7.2%  2.7%  0.0%  0.0%    skip:58.6%
+[libx264 @ 04c0cdc0] mb B  I16..4:  0.1%  0.0%  0.0%  B16..8:  2.3%  0.0%  0.0%  direct: 0.0%  skip:97.7%  L0:16.9% L1:83.0% BI: 0.0%
+data: [libx264 @ 04c0cdc0] 8x8 transform intra:67.8% inter:62.9%
+data: [libx264 @ 04c0cdc0] coded y,uvDC,uvAC intra: 67.7% 69.9% 17.8% inter: 5.2% 5.3% 0.1%
+data: [libx264 @ 04c0cdc0] i16 v,h,dc,p: 23% 53%  6% 18%
+data: [libx264 @ 04c0cdc0] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19% 30% 12%  5%  6%  7%  8%  6%  8%
+[libx264 @ 04c0cdc0] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 24% 29%  9%  5%  7%  7%  8%  6%  6%
+[libx264 @ 04c0cdc0] i8c dc,h,v,p: 46% 25% 20%  9%
+[libx264 @ 04c0cdc0] Weighted P-Frames: Y:1.3% UV:1.3%
+[libx264 @ 04c0cdc0]data:  ref P L0: 75.8% 13.5%  8.6%  2.0%
+[libx264 @ 04c0cdc0] ref B L0: 69.1% 23.2%  7.7%
+[libx264 @ 04c0cdc0] data: ref B L1: 95.6%  4.4%
+data: [libx264 @ 04c0cdc0] kb/s:1074.40
+child process exited with code 0
+
+>>>*>  fxDone  failed to upload ...  c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:117:30)
+done upload files
+look at channel_uploads/espn/10-25-2015_14_18_36video68.flv
+done upload files
+upload file c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn.uploading//10-25-2015_14_18_36video68.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv.mp4)
+starting...
+starting/ { showBody: false,
+  name: 'Smoke Test MonitorUploadDir',
+  silentToken: true,
+  baseUrl: 'http://127.0.0.1:9550' }
+look at http://127.0.0.1:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+look at http://5.79.75.96:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+    $ http://127.0.0.1:9550/upload
+file {}
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/
+>>>*>  Form fileClose files 10-25-2015_14_16_16video46.flv.mp4,10-25-2015_14_16_22video47.flv.mp4,10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4,10-25-2015_14_16_31video50.flv.mp4,10-25-2015_14_16_34video51.flv.mp4,10-25-2015_14_17_07video52.flv.mp4,10-25-2015_14_17_13video54.flv.mp4,10-25-2015_14_17_31video55.flv.mp4,10-25-2015_14_17_34video56.flv.mp4,10-25-2015_14_17_37video57.flv.mp4,10-25-2015_14_17_50video58.flv.mp4,10-25-2015_14_17_54video59.flv.mp4,10-25-2015_14_18_02video60.flv.mp4,10-25-2015_14_18_06video61.flv.mp4,10-25-2015_14_18_11video62.flv.mp4,10-25-2015_14_18_17video63.flv.mp4,10-25-2015_14_18_20video64.flv.mp4,10-25-2015_14_18_24video65.flv.mp4,10-25-2015_14_18_27video66.flv.mp4,10-25-2015_14_18_32video67.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:159:22)
+>>>*>  Form fileClose files.max 20 21 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:160:22)
+>>>*>  Form fileClose deleting files before index 2 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:169:26)
+>>>*>  Form fileClose deleting list: 2 10-25-2015_14_16_16video46.flv.mp4,10-25-2015_14_16_22video47.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:170:26)
+deleting 10-25-2015_14_16_16video46.flv.mp4
+deleting 10-25-2015_14_16_22video47.flv.mp4
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn
+store upload for espn c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/10-25-2015_14_18_36video68.flv.mp4
+>>>*>  Request _callback test (http://127.0.0.1:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://127.0.0.1:9550/upload [object Object]  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://127.0.0.1:9550/upload) {
+  "status": "ok"
+} (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://127.0.0.1:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+    $ http://5.79.75.96:9550/upload
+switch 61 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/cnn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 62 10-25-2015_14_18_52video62.flv temp/10-25-2015_14_18_52video62.flv
+start time Sun Oct 25 2015 14:18:52 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:18:52.906 [rtmp:3b0o6OF2] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ OTu39THO: addr=127.0.0.1 port=64424
+ M78wMnq0: addr=127.0.0.1 port=64425
+ oLBvHXTI: addr=127.0.0.1 port=64427
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+2015-10-25 14:18:52.907 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:18:52.910 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:18:52.910 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:18:52.910 [rtmp:3b0o6OF2] requested stream cnn
+2015-10-25 14:18:52.910 [rtmp:3b0o6OF2] waiting for keyframe
+connected !!!!!!!!!!!!!
+2015-10-25 14:18:54.381 [rtmp:oLBvHXTI] started streaming Sun Oct 25 2015 14:18:54 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'espn'
+started streaming.... removing cnn espn
+stream doesnt match channel espn
+Str 70 ready Sun Oct 25 2015 14:18:54 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -6758
+2015-10-25 14:18:54.650 [rtmp:OTu39THO] socket error: Error: read ECONNRESET
+2015-10-25 14:18:54.650 [rtmp:OTu39THO] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ M78wMnq0: addr=127.0.0.1 port=64425
+ oLBvHXTI: addr=127.0.0.1 port=64427
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+>>>*>  Request _callback test (http://5.79.75.96:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://5.79.75.96:9550/upload  Error: connect ETIMEDOUT (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+{ [Error: connect ETIMEDOUT] code: 'ETIMEDOUT', errno: 'ETIMEDOUT', syscall: 'connect' }
+response is null
+Error:  hasBody failed .... did not have this
+status
+
+[object Object]
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:466:34)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+    at Request._callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:237:42)
+    at Request.init.self.callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\request\request.js:123:22)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+Error: this is empty: (not empty) statusundefined
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:477:42)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:473:32)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+failed toupload file http://127.0.0.1:9550/upload
+>>>*>  Request _callback 	 test (http://5.79.75.96:9550/upload)  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://5.79.75.96:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+null { error: 'error .... response failed ...' }
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+>>>*>  Request _callback test (http://5.79.75.96:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://5.79.75.96:9550/upload  Error: connect ETIMEDOUT (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+{ [Error: connect ETIMEDOUT] code: 'ETIMEDOUT', errno: 'ETIMEDOUT', syscall: 'connect' }
+>>>*>  Request _callback 	 test (http://5.79.75.96:9550/upload)  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+response is null
+Error:  hasBody failed .... did not have this
+>>>*>  Object storeContents [as fx2] http://5.79.75.96:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+status
+null { error: 'error .... response failed ...' }
+
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+[object Object]
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:466:34)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete Smoke Test MonitorUploadDir (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:53:30)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+>>>*>  Request _callback test (http://5.79.75.96:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://5.79.75.96:9550/upload  Error: connect ETIMEDOUT (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+>>>*>  Request _callback 	 test (http://5.79.75.96:9550/upload)  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+    at Request._callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:237:42)
+>>>*>  Object storeContents [as fx2] http://5.79.75.96:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+    at Request.init.self.callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\request\request.js:123:22)
+null { error: 'error .... response failed ...' }
+
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+from
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+>>>*>  Request _callback test (http://5.79.75.96:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://5.79.75.96:9550/upload  Error: connect ETIMEDOUT (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+>>>*>  Request _callback 	 test (http://5.79.75.96:9550/upload)  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+>>>*>  Object storeContents [as fx2] http://5.79.75.96:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+null { error: 'error .... response failed ...' }
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+Error: this is empty: (not empty) statusundefined
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:477:42)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:473:32)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+failed toupload file http://127.0.0.1:9550/upload
+{ [Error: connect ETIMEDOUT] code: 'ETIMEDOUT', errno: 'ETIMEDOUT', syscall: 'connect' }
+response is null
+Error:  hasBody failed .... did not have this
+status
+
+[object Object]
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:466:34)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+    at Request._callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:237:42)
+    at Request.init.self.callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\request\request.js:123:22)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+Error: this is empty: (not empty) statusundefined
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:477:42)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:473:32)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+failed toupload file http://127.0.0.1:9550/upload
+{ [Error: connect ETIMEDOUT] code: 'ETIMEDOUT', errno: 'ETIMEDOUT', syscall: 'connect' }
+response is null
+Error:  hasBody failed .... did not have this
+status
+
+[object Object]
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:466:34)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+    at Request._callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:237:42)
+    at Request.init.self.callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\request\request.js:123:22)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+Error: this is empty: (not empty) statusundefined
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:477:42)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:473:32)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+failed toupload file http://127.0.0.1:9550/upload
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete Smoke Test MonitorUploadDir (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:53:30)
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete Smoke Test MonitorUploadDir (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:53:30)
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete Smoke Test MonitorUploadDir (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:53:30)
+>>>*>  Request _callback test (http://5.79.75.96:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://5.79.75.96:9550/upload  Error: connect ETIMEDOUT (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+{ [Error: connect ETIMEDOUT] code: 'ETIMEDOUT', errno: 'ETIMEDOUT', syscall: 'connect' }
+response is null
+Error:  hasBody failed .... did not have this
+status
+
+[object Object]
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:466:34)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+    at Request._callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:237:42)
+    at Request.init.self.callback (c:\Users\user1\Dropbox\projects\crypto\node_modules\request\request.js:123:22)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+Error: this is empty: (not empty) statusundefined
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:477:42)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at Object.procC (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:473:32)
+    at Object.each (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:1854:41)
+    at onResult (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:459:24)
+    at Object.storeContents [as fx2] (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:91:21)
+
+from
+    at uploadFile_Iteration (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:236:20)
+    at processEachTest (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:3038:9)
+    at replenish (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:179:21)
+    at _eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:196:15)
+    at Object.async.eachLimit (c:\Users\user1\Dropbox\projects\crypto\node_modules\async\lib\async.js:156:12)
+
+via
+    at Object.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:206:39)
+    at EasyRemoteTester.assert (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:330:25)
+failed toupload file http://127.0.0.1:9550/upload
+>>>*>  Request _callback 	 test (http://5.79.75.96:9550/upload)  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://5.79.75.96:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+null { error: 'error .... response failed ...' }
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+>>>*>  Object assert last failure was <<<<<<<optional>>>> so thread not terminating (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:216:30)
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete Smoke Test MonitorUploadDir (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:53:30)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+switch 70 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/espn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 71 10-25-2015_14_18_57video71.flv temp/10-25-2015_14_18_57video71.flv
+start time Sun Oct 25 2015 14:18:57 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:18:57.137 [rtmp:sfN6gT0s] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ M78wMnq0: addr=127.0.0.1 port=64425
+ oLBvHXTI: addr=127.0.0.1 port=64427
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ sfN6gT0s: addr=127.0.0.1 port=64435
+2015-10-25 14:18:57.138 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:18:57.141 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:18:57.141 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:18:57.141 [rtmp:sfN6gT0s] requested stream espn
+2015-10-25 14:18:57.141 [rtmp:sfN6gT0s] waiting for keyframe
+connected !!!!!!!!!!!!!
+2015-10-25 14:18:58.390 [rtmp:3b0o6OF2] started streaming Sun Oct 25 2015 14:18:58 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'cnn'
+started streaming.... removing espn cnn
+stream doesnt match channel cnn
+Str 62 ready Sun Oct 25 2015 14:18:58 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -5760
+2015-10-25 14:18:58.657 [rtmp:M78wMnq0] socket error: Error: read ECONNRESET
+2015-10-25 14:18:58.657 [rtmp:M78wMnq0] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ oLBvHXTI: addr=127.0.0.1 port=64427
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ sfN6gT0s: addr=127.0.0.1 port=64435
+2015-10-25 14:18:59.482 [rtmp:sfN6gT0s] started streaming Sun Oct 25 2015 14:18:59 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'espn'
+>>>*>  onTimeOutConversion [as _onTimeout]  timedout on c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_36video68.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:158:30)
+Str 71 ready Sun Oct 25 2015 14:18:59 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -2564
+2015-10-25 14:18:59.694 [rtmp:oLBvHXTI] socket error: Error: read ECONNRESET
+2015-10-25 14:18:59.694 [rtmp:oLBvHXTI] disconnected
+[rtmp: 5 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ sfN6gT0s: addr=127.0.0.1 port=64435
+look at channel_uploads/espn/10-25-2015_14_18_43video69.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv.mp4',
+  maxBuffer: Infinity ]
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+>>>*>  checkForNewFiles  still procesing... wait until later (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:91:18)
+switch 62 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/cnn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 63 10-25-2015_14_19_01video63.flv temp/10-25-2015_14_19_01video63.flv
+start time Sun Oct 25 2015 14:19:01 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:19:01.179 [rtmp:z6QnBmgu] connected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ sfN6gT0s: addr=127.0.0.1 port=64435
+ z6QnBmgu: addr=127.0.0.1 port=64438
+2015-10-25 14:19:01.181 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:19:01.184 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:19:01.184 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:19:01.184 [rtmp:z6QnBmgu] requested stream cnn
+2015-10-25 14:19:01.185 [rtmp:z6QnBmgu] waiting for keyframe
+connected !!!!!!!!!!!!!
+... in middle of cmd
+switch 71 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/espn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 72 10-25-2015_14_19_02video72.flv temp/10-25-2015_14_19_02video72.flv
+start time Sun Oct 25 2015 14:19:02 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:19:02.207 [rtmp:9jjnG0eh] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ sfN6gT0s: addr=127.0.0.1 port=64435
+ z6QnBmgu: addr=127.0.0.1 port=64438
+ 9jjnG0eh: addr=127.0.0.1 port=64439
+2015-10-25 14:19:02.208 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:19:02.211 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:19:02.211 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:19:02.211 [rtmp:9jjnG0eh] requested stream espn
+2015-10-25 14:19:02.211 [rtmp:9jjnG0eh] waiting for keyframe
+connected !!!!!!!!!!!!!
+2015-10-25 14:19:02.849 [rtmp:9jjnG0eh] started streaming Sun Oct 25 2015 14:19:02 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'espn'
+started streaming.... removing cnn espn
+stream doesnt match channel espn
+started streaming.... removing espn espn
+2015-10-25 14:19:02.871 [rtmp:sfN6gT0s] socket error: Error: read ECONNRESET
+2015-10-25 14:19:02.871 [rtmp:sfN6gT0s] disconnected
+[rtmp: 6 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ z6QnBmgu: addr=127.0.0.1 port=64438
+ 9jjnG0eh: addr=127.0.0.1 port=64439
+Str 72 ready Sun Oct 25 2015 14:19:03 GMT-0400 (Eastern Daylight Time)
+>>>>>>end time -925
+data: ffmpeg version N-74869-ga87ada5 Copyright (c) 2000-2015 the FFmpeg developers
+data:   built with gcc 4.9.3 (GCC)
+  configuration: --enable-gpl --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-frei0r --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libdcadec --enable-libfreetype --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs --enable-libxvid --enable-lzma --enable-decklink --enable-zlib
+  libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+  libavdevice    56.  4.100 / 56.  4.100
+  libavfilter     5. 40.101 /  5. 40.101
+  libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+  libpostproc    53.  3.100 / 53.  3.100
+data: [flv @ 0461ed00] Estimating duration from bitrate, this may be inaccurate
+data: Input #0, flv, from 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv':
+  Metadata:
+data:     canSeekToEnd    : false
+    hasMetadata     : data: true
+    hasCuePoints    : false
+data:     hasVideo        : true
+    avclevel        : 31data:
+    avcprofile      : 100
+    hasAudio        : data: true
+    audiodelay      : 0data:
+    audiochannels   : 2data:
+    aacaot          : data: 2
+  Duration: 00:00:04.82, start: 0.013000, bitrate: 2065 kb/s
+data:     Stream #0:0data: : Video: h264 (High), yuv420p(tv, smpte170m/bt709/iec61966-2-1), 920x516, 2048 kb/s, data: 30.30 fps, data: 30 tbr, 1k tbn, 60 tbc
+data:     Stream #0:1data: : Audio: aac (LC), 48000 Hz, stereo, fltp, 40 kb/s
+data: [libx264 @ 04ac1020] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX XOP FMA4 FMA3 LZCNT BMI1
+data: [libx264 @ 04ac1020] profile High, level 3.1
+data: [libx264 @ 04ac1020] 264 - core 148 r2597 e86f3a1 - H.264/MPEG-4 AVC codec - Copyleft 2003-2015 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+data: Output #0, mp4, to 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv.mp4':
+  Metadata:
+    canSeekToEnd    : data: false
+    hasMetadata     : true
+    hasCuePoints    : false
+    hasVideo        : true
+    avclevel        : data: 31
+    avcprofile      : 100data:
+    hasAudio        : true
+data:     audiodelay      : 0
+    audiochannels   : 2
+data:     aacaot          : 2
+    encoder         : data: Lavf56.40.101
+data:     Stream #0:0data: : Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 920x516, q=-1--1, 30 fps, 15360 tbn,data:  30 tbc
+    Metadata:
+data:       encoder         : Lavc56.60.100 libx264
+data:     Stream #0:1: Audio: aac (libvo_aacenc) ([64][0][0][0] / 0x0040), 48000 Hz, stereo, s16, 128 kb/data: s
+    Metadata:
+      encoder         : Lavc56.60.100 libvo_aacenc
+data: Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+data:   Stream #0:1 -> #0:1 (aac (native) -> aac (libvo_aacenc))
+Press [q] to stop, [?] for help
+data: [NULL @ 046184c0] AVC: nal size 12738
+[NULL @ 046184c0] missing picture in access unit with size 11053
+[h264 @ 0776cdc0] AVC: nal size 12738
+    Last message repeated 1 times
+[h264 @ 0776cdc0] no frame!
+data: frame=  288 fps= 82 q=-1.0 Lsize=    1146kB time=00:00:09.54 bitrate= 983.7kbits/s dup=2 drop=0
+video:985kB audio:150kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 1.005240%data:
+data: [libx264 @ 04ac1020] frame I:3     Avg QP:21.15  size: 24903
+data: [libx264 @ 04ac1020] frame P:149   Avg QP:22.15  size:  6181
+[libx264 @ 04ac1020] frame B:136   Avg QP:29.55  size:    91
+[libx264 @ 04ac1020] consecutive B-frames: 29.9% 15.3% 18.8% 36.1%
+[libx264 @ 04ac1020] mb I  I16..4: 20.0% 49.6% 30.4%
+data: [libx264 @ 04ac1020] mb P  I16..4:  2.9% 10.5%  2.4%  P16..4: 14.6%  7.1%  2.6%  0.0%  0.0%    skip:59.9%
+data: [libx264 @ 04ac1020] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  1.7%  0.1%  0.0%  direct: 0.0%  skip:98.2%  L0:18.5% L1:80.4% BI: 1.1%
+data: [libx264 @ 04ac1020] 8x8 transform intra:64.4% inter:67.7%
+data: [libx264 @ 04ac1020] coded y,uvDC,uvAC intra: 64.9% 72.4% 19.2% inter: 4.5% 5.2% 0.1%
+data: [libx264 @ 04ac1020] i16 v,h,dc,p: 24% 51%  7% 17%
+[libx264 @ 04ac1020] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19% 27% 13%  5%  6%  7%  8%  7%  8%data:
+[libx264 @ 04ac1020] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 25% 31%  8%  5%  7%  7%  7%  5%  5%
+data: [libx264 @ 04ac1020] i8c dc,h,v,p: 45% 24% 20% 11%
+[libx264 @ 04ac1020]data:  Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 04ac1020] ref P L0: 79.7%  9.5%  8.0%  2.8%
+data: [libx264 @ 04ac1020] ref B L0: 67.9% 30.9%  1.2%
+data: [libx264 @ 04ac1020] ref B L1: 95.5%  4.5%
+[libx264 @ 04ac1020] kb/s:840.05
+child process exited with code 0
+
+>>>*>  fxDone  failed to upload ...  c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:117:30)
+look at channel_uploads/espn/10-25-2015_14_18_47video70.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv.mp4',
+  maxBuffer: Infinity ]
+upload file c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn.uploading//10-25-2015_14_18_43video69.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_43video69.flv.mp4)
+starting...
+starting/ { showBody: false,
+  name: 'Smoke Test MonitorUploadDir',
+  silentToken: true,
+  baseUrl: 'http://127.0.0.1:9550' }
+look at http://127.0.0.1:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+look at http://5.79.75.96:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+    $ http://127.0.0.1:9550/upload
+file {}
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/
+>>>*>  Form fileClose files 10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4,10-25-2015_14_16_31video50.flv.mp4,10-25-2015_14_16_34video51.flv.mp4,10-25-2015_14_17_07video52.flv.mp4,10-25-2015_14_17_13video54.flv.mp4,10-25-2015_14_17_31video55.flv.mp4,10-25-2015_14_17_34video56.flv.mp4,10-25-2015_14_17_37video57.flv.mp4,10-25-2015_14_17_50video58.flv.mp4,10-25-2015_14_17_54video59.flv.mp4,10-25-2015_14_18_02video60.flv.mp4,10-25-2015_14_18_06video61.flv.mp4,10-25-2015_14_18_11video62.flv.mp4,10-25-2015_14_18_17video63.flv.mp4,10-25-2015_14_18_20video64.flv.mp4,10-25-2015_14_18_24video65.flv.mp4,10-25-2015_14_18_27video66.flv.mp4,10-25-2015_14_18_32video67.flv.mp4,10-25-2015_14_18_36video68.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:159:22)
+>>>*>  Form fileClose files.max 20 20 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:160:22)
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn
+store upload for espn c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/10-25-2015_14_18_43video69.flv.mp4
+>>>*>  Request _callback test (http://127.0.0.1:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://127.0.0.1:9550/upload [object Object]  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://127.0.0.1:9550/upload) {
+  "status": "ok"
+} (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://127.0.0.1:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+    $ http://5.79.75.96:9550/upload
+... in middle of cmd
+switch 72 0
+args [ '--rtmp',
+  'rtmp://127.0.0.1:1935/live/espn',
+  '--timeout',
+  8640000,
+  '-v' ]
+creating a new stream 73 10-25-2015_14_19_05video73.flv temp/10-25-2015_14_19_05video73.flv
+start time Sun Oct 25 2015 14:19:05 GMT-0400 (Eastern Daylight Time)
+2015-10-25 14:19:05.643 [rtmp:98iU5saR] connected
+[rtmp: 7 sessions]
+ rbm5cFlu: addr=127.0.0.1 port=64013
+ jIrRA0bY: addr=127.0.0.1 port=64024
+ nqoE8R5D: addr=127.0.0.1 port=64025
+ 3b0o6OF2: addr=127.0.0.1 port=64429
+ z6QnBmgu: addr=127.0.0.1 port=64438
+ 9jjnG0eh: addr=127.0.0.1 port=64439
+ 98iU5saR: addr=127.0.0.1 port=64442
+2015-10-25 14:19:05.644 [rtmp:handshake] warning: unknown message format, assuming format 1
+2015-10-25 14:19:05.648 [rtmp:receive] unknown (not implemented) AMF command: FCSubscribe
+2015-10-25 14:19:05.648 [rtmp:receive] unknown (not implemented) AMF command: _checkbw
+2015-10-25 14:19:05.648 [rtmp:98iU5saR] requested stream espn
+2015-10-25 14:19:05.649 [rtmp:98iU5saR] waiting for keyframe
+connected !!!!!!!!!!!!!
+data: ffmpeg version N-74869-ga87ada5 Copyright (c) 2000-2015 the FFmpeg developers
+  built with gcc 4.9.3 (GCC)
+  configuration: --enable-gpl --enable-version3 --disable-w32threads --enable-avisynth --enable-bzlib --enable-fontconfig --enable-frei0r --enable-gnutls --enable-iconv --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libdcadec --enable-libfreetype --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libopus --enable-librtmp --enable-libschroedinger --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvo-aacenc --enable-libvo-amrwbenc --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxavs --enable-libxvid --enable-lzma --enable-decklink --enable-zlib
+  libavutil      54. 31.100 / 54. 31.100
+  libavcodec     56. 60.100 / 56. 60.100
+  libavformat    56. 40.101 / 56. 40.101
+  libavdevice    56.  4.100 / 56.  4.100
+  libavfilter     5. 40.101 /  5. 40.101
+  libswscale      3.  1.101 /  3.  1.101
+  libswresample   1.  2.101 /  1.  2.101
+  libpostproc    53.  3.100 / 53.  3.100
+data: [flv @ 045eed00] Estimating duration from bitrate, this may be inaccurate
+data: Input #0, flv, from 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv':
+data:   Metadata:
+    canSeekToEnd    : false
+    hasMetadata     : truedata:
+    hasCuePoints    : false
+    hasVideo        : data: true
+data:     avclevel        : 31
+    avcprofile      : data: 100
+    hasAudio        : true
+data:     audiodelay      : 0
+    audiochannels   : data: 2
+    aacaot          : data: 2
+  Duration: 00:00:02.69data: , start: 0.015000, bitrate: 2048 kb/s
+data:     Stream #0:0: Video: h264 (High), yuv420p(tv, smpte170m/bt709/iec61966-2-1), 920x516, 2048 kb/s, data: 30.30 fps, 30 tbr, 1k tbn, 60 tbc
+    Stream #0:1: Audio: aac (LC), 48000 Hz, stereo, fltp, 40 kb/s
+data: [libx264 @ 049c0060] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX XOP FMA4 FMA3 LZCNT BMI1
+data: [libx264 @ 049c0060] profile High, level 3.1
+data: [libx264 @ 049c0060] data: 264 - core 148 r2597 e86f3a1 - H.264/MPEG-4 AVC codec - Copyleft 2003-2015 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=23.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+data: Output #0, mp4, to 'c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv.mp4':
+  Metadata:
+    canSeekToEnd    : data: false
+    hasMetadata     : true
+    hasCuePoints    : false
+    hasVideo        : true
+    avclevel        : 31data:
+    avcprofile      : 100
+data:     hasAudio        : truedata:
+    audiodelay      : data: 0
+    audiochannels   : 2data:
+    aacaot          : data: 2
+data:     encoder         : Lavf56.40.101
+data:     Stream #0:0: Video: h264 (libx264) ([33][0][0][0] / 0x0021), yuv420p, 920x516, q=-1--data: 1, 30 fps, 15360 tbn, 30 tbc
+    Metadata:
+      encoder         : Lavc56.60.100 libx264
+data:     Stream #0:1: Audio: aac (libvo_aacenc) ([64][0][0][0] / 0x0040), 48000 Hz, stereo, s16, 128 kb/s
+    Metadata:
+data:       encoder         : Lavc56.60.100 libvo_aacenc
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> h264 (libx264))
+  Stream #0:1 -> #0:1data:  (aac (native) -> aac (libvo_aacenc))
+Press [q] to stop, [?] for help
+data: [NULL @ 045e84c0] data: AVC: nal size 3960
+data: [NULL @ 045e84c0] data: missing picture in access unit with size 3632
+data: [h264 @ 0db845c0] AVC: nal size 3960
+data:     Last message repeated 1 times
+[h264 @ 0db845c0] no frame!
+data: frame=  156 fps= 82 q=-1.0 Lsize=     691kB time=00:00:05.13 bitrate=1103.0kbits/s dup=2 drop=0
+video:604kB audio:81kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.981209%
+data: [libx264 @ 049c0060] frame I:2     Avg QP:20.28  size: 28316
+data: [libx264 @ 049c0060] frame P:80    Avg QP:22.89  size:  6953
+[libx264 @ 049c0060] frame B:74    Avg QP:30.60  size:    63
+[libx264 @ 049c0060] consecutive B-frames: 31.4% 11.5% 13.5% 43.6%
+[libx264 @ 049c0060] mb I  I16..4: 18.8% 49.6% 31.5%
+[libx264 @ 049c0060] mb P  I16..4:  3.3%  9.3%  2.6%  P16..4: 15.7%  8.4%  4.0%  0.0%  0.0%    skip:56.7%
+data: [libx264 @ 049c0060] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  1.8%  0.0%  0.0%  direct: 0.0%  skip:98.2%  L0:28.1% L1:71.5% BI: 0.5%
+data: [libx264 @ 049c0060] 8x8 transform intra:59.6% inter:61.1%
+[libx264 @ 049c0060] coded y,uvDC,uvAC intra: 59.0% 76.5% 32.6% inter: 5.3% 6.5% 0.5%
+[libx264 @ 049c0060] i16 v,h,dc,p: 30% 47%  8% 15%
+[libx264 @ 049c0060] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 19% 25% 16%  5%  6%  6%  8%  6%  9%
+data: [libx264 @ 049c0060] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 26%  9%  5%  7%  7%  9%  6%  5%data:
+data: [libx264 @ 049c0060] i8c dc,h,v,p: 42% 27% 20% 11%
+data: [libx264 @ 049c0060] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 049c0060] data: ref P L0: 82.8%  9.4%  6.0%  1.8%
+[libx264 @ 049c0060] ref B L0: 77.9% 20.0%  2.1%
+data: [libx264 @ 049c0060] ref B L1: 96.0%  4.0%
+data: [libx264 @ 049c0060] kb/s:950.12
+child process exited with code 0
+
+>>>*>  fxDone  failed to upload ...  c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:117:30)
+done upload files
+look at channel_uploads/espn/10-25-2015_14_18_47video70.flv
+look at channel_uploads/espn/10-25-2015_14_18_57video71.flv
+... c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_57video71.flv c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_57video71.flv.mp4
+>>>*>  uploadFileA  file still here... true (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:162:26)
+run [ '-i',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_57video71.flv',
+  'c:\\Users\\user1\\Dropbox\\projects\\crypto\\browser-eval\\public_html\\vidplayer\\app/channel_uploads/espn/10-25-2015_14_18_57video71.flv.mp4',
+  maxBuffer: Infinity ]
+upload file c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn.uploading//10-25-2015_14_18_47video70.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channel_uploads/espn/10-25-2015_14_18_47video70.flv.mp4)
+starting...
+starting/ { showBody: false,
+  name: 'Smoke Test MonitorUploadDir',
+  silentToken: true,
+  baseUrl: 'http://127.0.0.1:9550' }
+look at http://127.0.0.1:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+look at http://5.79.75.96:9550/upload
+>>>*>  uploadFile_Iteration  upload to .... http://5.79.75.96:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:220:22)
+    $ http://127.0.0.1:9550/upload
+file {}
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/
+>>>*>  Form fileClose files 10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4,10-25-2015_14_16_31video50.flv.mp4,10-25-2015_14_16_34video51.flv.mp4,10-25-2015_14_17_07video52.flv.mp4,10-25-2015_14_17_13video54.flv.mp4,10-25-2015_14_17_31video55.flv.mp4,10-25-2015_14_17_34video56.flv.mp4,10-25-2015_14_17_37video57.flv.mp4,10-25-2015_14_17_50video58.flv.mp4,10-25-2015_14_17_54video59.flv.mp4,10-25-2015_14_18_02video60.flv.mp4,10-25-2015_14_18_06video61.flv.mp4,10-25-2015_14_18_11video62.flv.mp4,10-25-2015_14_18_17video63.flv.mp4,10-25-2015_14_18_20video64.flv.mp4,10-25-2015_14_18_24video65.flv.mp4,10-25-2015_14_18_27video66.flv.mp4,10-25-2015_14_18_32video67.flv.mp4,10-25-2015_14_18_36video68.flv.mp4,10-25-2015_14_18_43video69.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:159:22)
+>>>*>  Form fileClose files.max 20 21 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:160:22)
+>>>*>  Form fileClose deleting files before index 2 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:169:26)
+>>>*>  Form fileClose deleting list: 2 10-25-2015_14_16_26video48.flv.mp4,10-25-2015_14_16_29video49.flv.mp4 (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\ChannelServer.js:170:26)
+deleting 10-25-2015_14_16_26video48.flv.mp4
+deleting 10-25-2015_14_16_29video49.flv.mp4
+dir c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn
+store upload for espn c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app/channels/espn/10-25-2015_14_18_47video70.flv.mp4
+>>>*>  Request _callback test (http://127.0.0.1:9550/upload) (nextFunctionToAdd (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:443:22)) http://127.0.0.1:9550/upload [object Object]  (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://127.0.0.1:9550/upload) {
+  "status": "ok"
+} (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\TestHelper.js:213:21)
+>>>*>  Object storeContents [as fx2] http://127.0.0.1:9550/upload results (c:\Users\user1\Dropbox\projects\crypto\node_modules\shelpers\lib\EasyRemoteTester.js:80:22)
+>>>*>  fxDoneUpload  failed to upload to url: ...  http://127.0.0.1:9550/upload (c:\Users\user1\Dropbox\projects\crypto\browser-eval\public_html\vidplayer\app\MonitorDir_UploadTo.js:226:30)
+    $ http://5.79.75.96:9550/upload
+2015-10-25 14:19:06.789 [rtmp:z6QnBmgu] started streaming Sun Oct 25 2015 14:19:06 GMT-0400 (Eastern Daylight Time)
+streaming....
+2 'streaming....2' 'cnn'
+started streaming.... removing espn cnn
+stream doesnt match channel cnn

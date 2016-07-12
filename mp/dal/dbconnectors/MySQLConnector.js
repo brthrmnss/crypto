@@ -259,8 +259,6 @@ function MySQLDataRepo() {
             return;
         }
 
-
-
         sh.each(records, function putInDict(i,record){
             if ( record.id_timestamp == null || record.source_node == null ) {
                 newRecords.push(record);
@@ -280,8 +278,6 @@ function MySQLDataRepo() {
 
             dict[record.id_timestamp.getTime()+record.source_node] = record;
             /*statements.push(SequelizeHelper.Sequlize.AND(
-
-
              ))*/
 
             statements.push({

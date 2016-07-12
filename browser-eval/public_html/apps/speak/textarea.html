@@ -1,0 +1,175 @@
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Demo</title>
+</head>
+<body>
+
+<script type="application/javascript"
+        src="../../../../node_modules/shelpers/lib/public_html/jquery.js"></script>
+<script src="../../../../node_modules/shelpers/lib/shelpers.js"></script>
+<script src="speak.js"></script>
+<script type="application/javascript">
+
+    $(document).ready(function () {
+
+
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+
+        $('#myTextarea').on('change', function () {
+            var currentVal = $(this).val()
+            console.log(currentVal);
+            //$("#yourBtnID").hide();
+
+            //if(this.value.length){
+            //   $("#yourBtnID").show();
+            //}
+        });
+
+
+        function breakStringIntoLinesSafe(str) {
+            var split = [];
+            str = str.replace(/(\r\n|\n|\r)/gm, "\n");
+            split = str.split("\n")
+            return split;
+        }
+
+        var oldVal = "";
+        $("#textarea").on("change keyup paste", function (event) {
+
+
+            var currentVal = $(this).val();
+
+            //fix issues with text
+            currentVal = currentVal.replace(//gm, "");
+            currentVal = currentVal.replace(/’/gm, "'");
+
+            if (currentVal == oldVal) {
+                return; //check to prevent multiple simultaneous triggers
+            }
+
+            oldVal = currentVal;
+            console.log('changed', oldVal.length);
+            var lines = breakStringIntoLinesSafe(currentVal);
+
+            var lines2 = [];
+            var lastLine = null;
+            $.each(lines, function (i,v) {
+                if ( lastLine ) {
+                    var firstChar = v.slice(0,1)
+                    if ( firstChar == firstChar.toLowerCase() ) {
+                        var lastCharOfLastLine = lastLine.slice(-1)
+                        var vlidEnds = ['.', '?', '!', "\n"]
+                        if ( vlidEnds.indexOf(lastCharOfLastLine) == -1 ) {
+                            lines2[lines2.length-1] += ' ' + v
+                            lastLine = v;
+                            if ( v != 'reply')
+                                return;
+                           // if ( v == 'reply' == 'END Comment')
+                        }
+                    }
+                }
+                lastLine = v;
+                var y = v.trim();
+                lines2.push(y)
+            })
+
+            currentVal = lines2.join("\n")
+
+            currentVal = currentVal.replace('Hacker News new | comments | show | ask | jobs | submit	login', '')
+            currentVal = currentVal.replace('| past | web |', '')
+            currentVal = currentVal.replace(/.[0-9]+.+ago/gi, '')
+
+
+            currentVal = currentVal.replace(/^(\[url=)?(https?:\/\/)?(www\.|\S+?\.)(\S+?\.)?\S+$\s*/mg, '');
+
+            currentVal = currentVal.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+
+            currentVal = currentVal.replace(/add comment/gi, '')
+            currentVal = currentVal.replace('add comment', '')
+
+            $('#textarea2').val(currentVal)
+            // return
+
+            window.t.splitStringIntoSentences(currentVal)
+            window.t.lookFor = window.t.sentences;
+            window.t.el = $('#myTextArea2');
+            window.t.goEach();
+
+
+            var myEfficientFn = debounce(function() {
+                //debugger;
+                window.t.splitStringIntoSentences(currentVal)
+                window.t.lookFor = window.t.sentences;
+                window.t.el = $('#myTextArea2');
+                window.t.goEach();
+
+            }, 500);
+
+            // myEfficientFn()
+        });
+
+
+
+
+        $(document).delegate('#textarea', 'keydown', function(e) {
+            var keyCode = e.keyCode || e.which;
+
+            if (keyCode == 9) {
+                e.preventDefault();
+                var start = $(this).get(0).selectionStart;
+                var end = $(this).get(0).selectionEnd;
+
+                // set textarea value to: text before caret + tab + text after caret
+                $(this).val($(this).val().substring(0, start)
+                        + "\t"
+                        + $(this).val().substring(end));
+
+                // put caret at right position again
+                $(this).get(0).selectionStart =
+                        $(this).get(0).selectionEnd = start + 1;
+            }
+        });
+    });
+</script>
+
+
+Takes input , spits out valid jscript string <br/>
+<textarea id="textarea" rows="4" cols="50" style="height: 50%; width: 40%"></textarea>
+<br/>
+<textarea id="textarea2" rows="4" cols="50" style="height: 50%; width: 100%"></textarea>
+
+
+<br/>
+
+Remove line indents
+<input type="checkbox" id="chLineIndents" checked="true"> <br/>
+Make array
+<input type="checkbox" id="chkArray" checked="true"> <br/>
+
+<div id="myTextArea2" ></div>
+<!--
+<textarea id="myTextArea" rows="4" cols="50">
+    At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies.
+</textarea>
+-->
+
+</body>
+
+
+</html>

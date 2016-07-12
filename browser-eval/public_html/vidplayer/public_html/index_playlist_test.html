@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>xChan</title>
+
+
+    <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport" />
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="author" content="Onarbor, Inc.-Tim Peterson">
+    <!--link rel="publisher" href="https://plus.google.com/106286109329365264890"-->
+    <link rel="publisher" href="https://plus.google.com/+Onarbor">
+
+
+    <link rel="image_src" href="http://onarbor.com/assets/img/onarborLogoTextBlue.png">
+    <link rel="canonical" href="https://onarbor.com/">
+    <!--http://d2eeipcrcdle6.cloudfront.net/seo-cheat-sheet/SEOCheatSheet_2-2013.pdf-->
+
+    <meta property="og:title" content="VideoJS-tim-peterson-playlist"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:description" content="VideoJS-tim-peterson-playlist"/>
+    <meta property="og:image" content="http://onarbor.com/assets/img/onarborFB.jpg"/>
+    <meta property="og:image:secure_url" content="https://onarbor.com/assets/img/onarborFB.jpg" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:url" content="http://onarbor.com"/>
+    <meta property="og:site_name" content="Onarbor"/>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://s3.amazonaws.com/timrpeterson/videojs-playlist/video-js.css" rel="stylesheet">
+    <link href="stylesheets/videojs.playlist.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="jquery-1.11.1.js.jx" ></script>
+
+    <style>
+        .vjs-fullscreen-control {
+            display: none;
+        }
+
+        .vjs-default-skin .vjs-volume-control {
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class='container'>
+    <div class='row'>
+        <div class='col-md-6'>
+            <div id="video-log"></div>
+        </div><!--col-md-3-->
+        <div class='col-md-6'>
+            <h3>Video</h3> <div id="trackName" ></div>
+
+            <video id="video-playlist" controls preload="metadata"
+                   posterx="https://d1gajuxrsak92a.cloudfront.net/uploads/works/0fe589a84faf71cc83088638937e0456c007f39c/icon/1280Screen%20Shot%202014-09-27%20at%2011.46.35%20PM.jpg" class=" video-js vjs-default-skin" >
+                <!--source src="http://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8" type="application/vnd.apple.mpegurl" /-->
+                <source src='test_vids/vids.converted/video1.flv.mp4' type="video/mp4">
+            </video>
+            <video id="video-playlist2" controls preload="metadata"
+                   stylex="position: absolute; top:60pxd;"
+                   style='width:100%'
+                   posterx="https://d1gajuxrsak92a.cloudfront.net/uploads/works/0fe589a84faf71cc83088638937e0456c007f39c/icon/1280Screen%20Shot%202014-09-27%20at%2011.46.35%20PM.jpg" class=" video-js vjs-default-skin" >
+                <!--source src="http://devimages.apple.com/iphone/samples/bipbop/gear1/prog_index.m3u8" type="application/vnd.apple.mpegurl" /-->
+                <source src='test_vids/vids.converted/video1.flv.mp4' type="video/mp4">
+            </video>
+            <video id="video_preload" />
+            <div id="video-playlist-vjs-playlist" class='vjs-playlist' style='width:100%'>
+                <ul>
+                    <!--
+                   <li >
+                    <a class='vjs-track' href='#episode-0' data-index='0'
+                       data-src='test_vids/vids.converted/video2.flv'>
+                    Writing a review (Onarbor) </a>
+                  </li>
+                   <li >
+                    <a class='vjs-track' href='#episode-1' data-index='1'
+                       data-src='test_vids/vids.converted/video3.flv'>
+                    Onarbor Demo Video</a>
+                  </li>
+                  -->
+                </ul>
+            </div>
+        </div><!--col-md-6-->
+        <div class='col-md-3' id='audio-playlistSpan4'>
+
+        </div><!--col-md-3-->
+    </div><!--row-->
+    <div class="row">
+        <div class='col-md-9 col-md-offset-3'>
+            <footer>
+            </footer>
+        </div><!--col-md-9 col-md-offset-3-->
+    </div><!--row-->
+</div><!--container-->
+
+<script src="video.dev.js.jx"></script>
+
+<script src='javascripts/videojs.playlist.js'></script>
+<script src='javascripts/demo_test.js'></script>
+
+
+</body>
+</html>
+
+
+
+
+
+

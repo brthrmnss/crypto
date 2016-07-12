@@ -1,0 +1,4 @@
+click, btnTestClick
+set, textId, asdfasdf
+eq, textid, value, asdfasdf
+click, send

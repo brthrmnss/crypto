@@ -425,13 +425,17 @@ function GrammarHelperServer() {
 
 
     p.launchSupportingTools = function launchSupportingTools() {
-        return;
+    //    return;
         var cwd = process.cwd();
-        var srvReload = '/Users/user2/Dropbox/projects/crypto/browser-eval/BasicReloadServer2.js'
-        process.chdir(srvReload.split('/').slice(0,-1).join('/'))
+        var dirCrypto = __dirname+'/../../'; //'/Users/user2/Dropbox/projects/crypto
+        var srvReload = dirCrypto + '/browser-eval/BasicReloadServer2.js'
+        var srvReloadDir = sh.fs.resolve(srvReload)
+        var srvReloadDir2 = srvReload.split('/').slice(0,-1).join('/')
+        process.chdir(srvReloadDir2)
         var BES = require(srvReload).init();
         process.chdir(cwd)
-        var srvWatcher = '/Users/user2/Dropbox/projects/crypto/mp/Test_CanReloadJavascriptClass/runFileWatcherMonitor_BasicReloadServer2_mac.js'
+        ////G:\Dropbox\projects\crypto\mp\Test_CanReloadJavascriptClass\runFileWatcherMonitor_BasicReloadServer2_mac.js
+        var srvWatcher = dirCrypto+'/mp/Test_CanReloadJavascriptClass/runFileWatcherMonitor_BasicReloadServer2_mac.js'
         require(srvWatcher)
     }
     p.proc = function debugLogger() {
@@ -450,6 +454,7 @@ if (module.parent == null) {
 
     var i = new GrammarHelperServer();
     i.initGHS()
+    //i.launchSupportingTools();
 }
 
 

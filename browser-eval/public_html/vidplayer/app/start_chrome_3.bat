@@ -1,0 +1,6 @@
+start "" "C:\Program Files (x86)\Google\Chrome\Application\chrome2.exe" --user-data-dir=c:/trash/channels/cnn --no-default-browser-check   --restore-last-session      --no-first-run     --disable-web-security      --allow-file-access-from-files --disk-cache-size=100 --enable-easy-off-store-extension-install  -allow-running-insecure-content
+start "" "C:\Program Files (x86)\Google\Chrome\Application\chrome3.exe" --user-data-dir=c:/trash/channels/espn --no-default-browser-check   --restore-last-session      --no-first-run     --disable-web-security      --allow-file-access-from-files --disk-cache-size=100 --enable-easy-off-store-extension-install  -allow-running-insecure-content
+start "" "C:\Program Files (x86)\Google\Chrome\Application\chrome4.exe" --user-data-dir=c:/trash/channels/fx --no-default-browser-check --restore-last-session --no-first-run --disable-web-security --allow-file-access-from-files --disk-cache-size=100 --enable-easy-off-store-extension-install -allow-running-insecure-content
+
+
+ REM chrome-extension://ofmanndkbkkcjolgenmgioploikhkcaa/options/index.html

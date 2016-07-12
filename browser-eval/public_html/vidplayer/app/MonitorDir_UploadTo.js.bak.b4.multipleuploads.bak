@@ -1,0 +1,243 @@
+/**
+ * Created by user2 on 8/26/15.
+ */
+/*
+ Every x secs ....
+ check if folder is around ...
+ and upload the file
+
+ */
+
+
+
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+var EasyRemoteTester = shelpers.EasyRemoteTester;
+var RLE_LoadConfigHelper = require('./utils/RLE_LoadConfigHelper').RLE_LoadConfigHelper;
+var ConvertFLV = require('./ConvertFLV').ConvertFLV;
+function MonitorDir() {
+    var p = MonitorDir.prototype;
+    p = this;
+    var self = this;
+    p.init = function init(config) {
+        config = sh.dv(config, {});
+        self.json = config;
+        self.settings = config.upload_monitor;
+
+        if ( self.settings == null || self.settings.enabled == false ) {
+            console.log('exiting', 'MonitorDir');
+            return;
+        }
+
+        //self.settings.dir_uploads += '/'
+        self.settings.check_dir_uploads_every_x_secs = sh.dv(self.settings.check_dir_uploads_every_x_secs, 10);
+        self.settings.check_dir_uploads_every_x_secs *= 1000;
+        self.int = setInterval(self.checkForNewFiles,
+            self.settings.check_dir_uploads_every_x_secs);
+        self.seenFiles = [];
+        self.baseUrl = 'http://'+self.json.channel_server.ip+':'+self.json.channel_server.port;
+
+
+        self.settings.dir = self.settings.dir_uploads+self.json.channel_name+'/';
+        sh.mkdirp(self.settings.dir);
+
+        self.concurrentFailures = 0;
+
+        var t = EasyRemoteTester.create('Smoke Test MonitorUploadDir',{showBody:false});
+        t.settings.baseUrl = self.baseUrl
+        var urls = {};
+        urls.notes = {};
+        urls.upload = t.utils.createTestingUrl('upload')
+        self.urls = urls;
+        self.t = t;
+
+
+        self.urlsToUploadTo = [];
+        self.urlsToUploadTo.push(self.urls.upload);
+        if ( self.settings.upload_to != null ) {
+            /* Sanitizes url and appends text */
+            sh.createUrl = function createTestingUrl(baseUrl, end, port){
+                //var url = 'http://localhost:' + self.settings.port ;//+ '/' + end;
+                var url = baseUrl;
+                //add protocol to front
+                if (  sh.includes(url, '//') == false ) {
+                    url = 'http://' + url
+                }
+                //console.log(url, '...')
+                //if ( url)
+                //add /
+                if ( ! sh.endsWith(url, '/') && ! sh.startsWith(end , '/')){
+                    url += '/';
+                }
+
+                url += end;
+                return url;
+            }
+
+            sh.each(self.settings.upload_to, function addUrlTo_UrlsToUploadTo(i, baseUrl) {
+                var newUrl = sh.createUrl(baseUrl, 'upload');
+                self.urlsToUploadTo.push(newUrl);
+            })
+        }
+
+
+    }
+
+    p.checkForNewFiles = function checkForNewFiles() {
+        if ( self.processingQueue ) {
+            self.checkForNewOnNext = true;
+            self.proc('still procesing... wait until later')
+            return;
+        }
+        self.checkForNewOnNext = false;
+        self.processingQueue = true;
+        //console.log('checking...')
+        var files = sh.getFilesInDirectory(self.settings.dir, false, true, false, null, null, true);
+        var convert = self.settings.convert;
+        /* sh.each(files, function (i,x) {
+         if ( self.seenFiles.indexOf(x) == -1 ) {
+         self.uploadFile(x);
+         };
+         });*/
+
+        //console.log(files, 'files')
+        //console.log('self.settings.dir', self.settings.dir, files, 'files')
+        // return;
+        sh.async(files,
+            function uploadFileA(fileToUpload, fxDone) {
+               // fileToUpload = __dirname + '/'+ fileToUpload;
+                /*
+                self.proc()
+                self.proc('XXX',filePath.split('.').slice(-1)[0],
+
+                    fileToUpload, sh.fileExt(fileToUpload,'.mp4'))
+                self.proc()
+                */
+                //skip files being converted
+                if ( sh.fileExt(fileToUpload,'mp4')) {
+                    console.log('fileNameHas.mp4 in it')
+                    fxDone()
+                    return;
+                }
+                if ( convert != true ) {
+                    self.uploadFile(fileToUpload, fxDone)
+                } else {
+                    var fileConvertTo = fileToUpload + '.mp4';
+
+                    //self.uploadFile(file, fxDone);
+                    console.log('...', fileToUpload, fileConvertTo)
+                    ConvertFLV.convert(fileToUpload, fileConvertTo, function doneConverting() {
+                        //if conversion worked ... upload converted file
+                        var conversionOK = sh.fileExists(fileConvertTo);
+                       // console.log('file there', conversionOK)
+                        if (  conversionOK ){
+                            //console.log('file there');
+                            self.uploadFile(fileConvertTo, fxDone);
+                            sh.deleteFile(fileToUpload);
+                        } else {
+                            self.uploadFile(fileToUpload, fxDone);
+                        }
+                    });
+                }
+
+            },
+            function doneUploadingFiles() {
+                console.log('done upload files ')
+                self.processingQueue = false;
+                if ( self.checkForNewOnNext ) {
+                    self.checkForNewFiles();
+                }
+            }
+        )
+    }
+
+    p.uploadFile = function uploadFile(fileToUpload, fxDone) {
+        var fileToUpload_ = fileToUpload;
+        //fileToUpload = self.settings.dir + fileToUpload
+        console.log('upload file', fileToUpload);
+
+        var t2 = self.t.clone('test upload route');
+
+        sh.each(self.urlsToUploadTo, function uploadFile(i, urlToUploadTo) {
+            t2.getR(urlToUploadTo).with({channel: self.json.channel_name, test: 'true'})
+                .upload(fileToUpload)
+                .bodyHas('status').notEmpty()
+                .makeOptional()
+                .timeout(3)
+                .fxDone(function deleteFile() {
+                    //TODO: Wait 5 secs b4 deleting to ensure all others have access?
+                    //Or is access sync?
+                    if ( self.settings.deleteUploadedFiles != false ) {
+                        sh.deleteFile(fileToUpload,true);
+                    };
+                    self.seenFiles.push(fileToUpload_);
+                    if ( i == 0 )  {
+                        fxDone()
+                    }
+
+                    //the rest don't matter.
+                })
+                .fxFail(function incrementFailures() {
+                    if ( i == 0 ) {
+                        return;
+                    }
+                        self.concurrentFailures++;
+                    console.error('failed toupload file', self.urls.upload)
+                    if (  null != self.settings.max_concurrent_upload_failures &&
+                        self.concurrentFailures > self.settings.max_concurrent_upload_failures) {
+                        console.error('failed too many times... unload')
+                        setTimeout(function () {
+                            process.exit();
+                        }, 50);
+
+                    }
+                    // fxDone();
+                });
+        })
+
+    }
+
+    p.method = function method(config) {
+    }
+
+    p.test = function test() {
+        var t2 = self.t.clone('test upload route');
+        //t2.getR(self.urls.upload).with({channel:'cnn',test:true}).upload('config.json').bodyHas('status').notEmpty()
+
+        self.int = setInterval(function addFile() {
+            sh.writeFile(self.settings.dir+Math.random()+'.txt', 'some random file');
+        }, self.settings.check_dir_uploads_every_x_secs/2);
+    }
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return;
+        }
+        sh.sLog(arguments);
+    };
+}
+
+exports.MonitorDir = MonitorDir;
+
+MonitorDir.createMonitorDir = function createMonitor(file){
+    var m = new MonitorDir();
+    var config = {};
+    config = RLE_LoadConfigHelper.readJSONFile(file);
+    m.init(config)
+    return m;
+
+}
+
+if (module.parent == null) {
+    var m = new MonitorDir();
+    var config = {};
+    config = RLE_LoadConfigHelper.readJSONFile('config.json');
+    m.init(config)
+    m.test();
+}
+
+
+
+
+
+

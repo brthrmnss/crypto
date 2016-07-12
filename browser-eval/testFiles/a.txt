@@ -1,0 +1,29 @@
+$('btnTestClick').click();
+
+//put a script here? .... what is purpose of steps? .... so we know how it failed ....
+//but for smoke tests ... we would not care ....
+//make floating widgets across webpages ...
+//hire dev to fix chrome plugin ...
+
+
+/*
+evernote ... share the x ....
+yeah make this script evalable ... so i can call 'unseen' methods ... like
+login('lucy', 'ang')
+
+other cool ideas ... let's control chrome from teh command line? .... how to reload when jump t next page ???
+interactive shared sessions
+
+
+mp: interent: share internet connection over wifi ...
+this has to exists
+
+turn internt into hotspot
+
+evernote - make it so i can type name from autocomplete list
+then i will see it ins a vertical lister format ....
+so type the name then append to note
+
+
+
+*/

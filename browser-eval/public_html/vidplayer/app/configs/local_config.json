@@ -1,0 +1,50 @@
+{
+    "channel_name":"cnn",
+    "push_all_channels":true,
+    "comment":"push all folders in dir folder ... still have to check indiv",
+    "check_for_uploads":10000,
+    "split_every_x_kilobytes":2000,
+    "xurl_upload":"127.0.0.1:9995/upload",
+    "channel_names":[
+        "cnn",
+        "fx",
+        "espn"
+    ],
+    "channel_server":{
+        "port":9550,
+        "ip":"127.0.0.1",
+        "max_files_per_channel":20
+    },
+    "upload_monitor":{
+        "check_dir_uploads_every_x_secs":10,
+        "dir_uploads":"channel_uploads/",
+        "max_concurrent_upload_failures":100,
+        "max_concurrent_upload_failures":null,
+        "timeout_conversion_secs":16,
+        "convert":true,
+        "upload_to":["5.79.75.96:9550"]
+    },
+    "ripper":{
+        "timeout":false,
+        "comment":"this wil disable rtmp server",
+        "useNodeJSServer":true,
+        "enabled":true
+    },
+    "obs":{
+        "enabled":false
+    },
+    "fake_video_source":{
+        "add_video_every_x_secs":1,
+        "enabled":false
+    },
+    "manycam":{
+        "desc":"dont remember",
+        "enabled":false,
+        "add_video_every_x_secs":5,
+        "file_input":"/Users/user2/Movies/ManyCam/My Recording.mp4"
+    },
+    "filesplitter":{
+        "desc":"tool splits output from obs",
+        "enabled":false
+    }
+}

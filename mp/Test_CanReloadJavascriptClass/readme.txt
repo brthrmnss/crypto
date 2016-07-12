@@ -36,3 +36,12 @@ remove directive?
 reload directive and you're in ....
 
 
+Quickstart 1/2/2016
+run runFileWatchMonitor using fsWatch
+browserEval.js
+serve.js
+
+
+How to reload apps ....
+BasicReloadServer2.js ... does not support https
+runFileWatcherMontior_BasicReloadServer2_mac.js
