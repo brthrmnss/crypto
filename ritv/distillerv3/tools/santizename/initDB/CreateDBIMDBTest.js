@@ -1,0 +1,75 @@
+/**
+ * Created by user on 7/4/15.
+ */
+/**
+ * why: NameSantizer needs this ... not sure why ...
+ * if it doesnt' delete this file
+ */
+//var rh = require('rhelpers')
+var shelpers = require('shelpers');
+var sh = shelpers.shelpers;
+var RestHelperSQLTest = require('shelpers').RestHelperSQLTest;
+var Sequelize = RestHelperSQLTest.Sequelize;
+var PromiseHelperV3 = shelpers.PromiseHelperV3;
+
+
+function CreateDBIMDBTest() {
+    var p = CreateDBIMDBTest.prototype;
+    p = this;
+    var self = this;
+
+    p.init = function init(url, appCode) {
+        var dbname = 'imdbtest';
+        var DBHelper = require('./../IMDB_DB_Helper').DBHelper
+        var i = new DBHelper();
+        //var cfg = i.utils.make()
+        var cfg = {
+            databasename	: dbname,
+            password:"password",
+            password:"password"
+        }
+
+
+        if ( sh.isWin() == false ) {
+            cfg.user = 'root'
+            cfg.password = 'your_password667'
+            cfg.port = 3306
+            cfg.ip = '127.0.0.1'
+            //cfg.ip = '192.168.11.129'
+        }
+
+        i.init(cfg);
+
+
+        var chain = new PromiseHelperV3();
+        var token = {};
+        token.silentToken = true
+        chain.wait = token.simulate == false;
+        chain.startChain(token)
+        chain.add(i.x.connectToDb)
+        chain.add(i.x.step1_backupDb)
+        chain.add(i.x.step2_createDatabase)
+        //chain.add(i.x.step3_loadDatabase)
+        chain.add(function (k,v) {
+            i.x.importFile('../sql/rcdatabase.sql')
+        })
+
+    }
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return
+        }
+        sh.sLog(arguments)
+    }
+
+
+}
+
+
+if ( module.parent == null ) {
+
+    var i = new CreateDBIMDBTest();
+    i.init();
+
+}
