@@ -94,15 +94,6 @@ window.fxInvoke = function (classToUpdate) {
         })
     }
 
-    if ( reloader.reloadWhensFxs ) {
-        $.each(reloader.reloadWhensFxs, function onReloadWhenFxs(i, reloadWhenFxObj) {
-            var match =  classToUpdate.toLowerCase().includes(reloadWhenFxObj.file.toLowerCase())
-            if ( match ) {
-                reloadWhenFxObj.fx()
-            }
-        })
-    }
-
 
     if ( reloader.filter && classToUpdate.includes(reloader.filter) == false ) {
         return;
@@ -119,6 +110,16 @@ window.fxInvoke = function (classToUpdate) {
     }
 
     window.reloadFile(reloadFile)
+
+    if ( reloader.reloadWhensFxs ) {
+        $.each(reloader.reloadWhensFxs, function onReloadWhenFxs(i, reloadWhenFxObj) {
+            var match =  classToUpdate.toLowerCase().includes(reloadWhenFxObj.file.toLowerCase())
+            if ( match ) {
+                reloadWhenFxObj.fx()
+            }
+        })
+    }
+
 }
 
 
@@ -152,7 +153,7 @@ reloader.reloadWhenFx = function reloadWhenFx(asdf,fx){
 
 
 
-reloader.dictRemappingReloadFileUrls = [];
+reloader.dictRemappingReloadFileUrls = {};
 reloader.addReloadMapping = function addReloadMapping(path,replaceWith){
     reloader.dictRemappingReloadFileUrls[path] = replaceWith
 }

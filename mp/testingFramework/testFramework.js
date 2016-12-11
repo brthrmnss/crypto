@@ -1046,7 +1046,7 @@ if ( typeof $ === 'undefined' ) {
     var $ = JqueryImpersonatorFx
 }
 function whenReady(){
-    //http://rr413c1n7.ms.com:10050/test2/test2.html?runTest=true
+    //http://localhost:10050/test2/test2.html?runTest=true
     if ( tH.params.runTest=='true' || window.runTest == true ) {
         var testName = tH.params.testName;
         var testDelay = parseInt(tH.params.testDelay);
@@ -1107,7 +1107,7 @@ function runTest() {
     tH.log('after waitfor')
 }
 
-//http://rr413c1n7.ms.com:10050/test2/test2.html?runTest=true&testName=testA
+//http://localhost:10050/test2/test2.html?runTest=true&testName=testA
 function testStackingDemo2B(runIt) {
 // return
     window.tests.testA = function defineTestA(tH) {
@@ -1130,7 +1130,7 @@ function testStackingDemo2B(runIt) {
 }
 testStackingDemo2B();
 
-//http://rr413c1n7.ms.com:10050/test2/test2.html?runTest=true&testName=testFeatures2
+//http://localhost:10050/test2/test2.html?runTest=true&testName=testFeatures2
 function testStackingDemo3() {
     var iteration = 0;
     window.tests.testFeatures2 = function defineTestA(tH) {
