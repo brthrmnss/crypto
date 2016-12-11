@@ -3,6 +3,6 @@
   "enabled":"true",
   "files":[
     "speak.css",
-    "speak.js",
-    "speak.html"
+    "speakHTMLText.js",
+    "speak2.html"
   ]}

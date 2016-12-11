@@ -84,7 +84,7 @@ function EvernoteHelperware() {
     }
 
     self.setupSession = function setupSession() {
-        var t = EasyRemoteTester.create('Test evenote basics',{});
+        var t = EasyRemoteTester.create('Test evernote basics',{});
         var data = {};
 
         t.settings.baseUrl = baseUrl;

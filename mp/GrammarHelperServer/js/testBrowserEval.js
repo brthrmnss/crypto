@@ -103,7 +103,7 @@ console.log(' inside ... .... test ....');
             function loadEvalApp(){
                 // alert('load eval')
                 loadJS2(baseBaseUrl+
-                    'socket.io-1.2.0.js.', function loadedSocket(a){
+                    'socket.io-1.2.0.js.ignore', function loadedSocket(a){
 
                     //return;
                     var socket = io(baseBaseUrl);

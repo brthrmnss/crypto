@@ -1,0 +1,219 @@
+/**
+ Test SearchPB ....
+ */
+
+var request = require('request');
+var cheerio = require('cheerio');
+var sh = require('shelpers').shelpers
+var PromiseHelper = require('shelpers').PromiseHelper;
+var OptionsHelper = require('shelpers').OptionsHelper
+var fs = require("fs")
+var async = require('async');
+var request = require('request');
+var request = request.defaults({jar: true})
+
+/*
+ wiht new promise helpers
+ spromos
+
+ search for content, query==>url
+ */
+function SearchPB_Test() {
+
+    var p = SearchPB_Test.prototype;
+    p = this
+    var self = this;
+
+    function createBasics() {
+        self.go = function go(options) {
+            self.results = []
+            self.settings = options
+            self.settings.concurrency = sh.dv( self.settings.concurrency, 5);
+            self.settings.concurrency = 1
+            //
+            self.settings.successes = 0
+            self.items = options.list;
+            async.forEachLimit(self.items, self.settings.concurrency,
+                function goThroughItems(searchQuery, fxAsyncDone_Delayed) {
+                    var SearchPB = require('./SearchPB').SearchPB
+                    var token = {};
+                    var options = {}
+                    sh.mergeObjects(token, options.token) //?
+                    options.pbCategory = token.pbCategory;
+                    options.pbCategory2 = token.pbCategory2;
+                    //support json objects
+                    var searchObj = null;
+                    if (sh.isObject(searchQuery)) {
+                        searchObj = searchQuery;
+                        searchQuery = searchObj.name;
+                        options.pbCategory = searchObj.pbCategory;
+                    }
+
+                    options.query = searchQuery
+
+
+                    //if ( searchInCategory != null ) {
+                    //    options.pbCategory = searchInCategory;
+                    //}
+                    options.pbMinSeederCount = token.pbMinSeederCount;
+
+                    options.callback = function onDone(url, token) {
+                        token.urlTorrent = url;
+                        self.proc('token.urlTorrent', url);
+                        token.nameTorrent;
+                        if (token.testPbQuery) {
+                            token.fxCallback();
+                            return;
+                        }
+
+                        searchObj.expects = sh.dv(searchObj.expect,  null )
+
+                        if ( searchObj != null && searchObj.expects != null ) {
+                            if (token.nameTorrent.toLowerCase().indexOf(searchObj.expects.toLowerCase()) != 0) {
+                                throw new Error(['did not find match for', searchObj.name, searchObj.expects,
+                                    '------->', token.nameTorrent].join(' '))
+                                process.exit();
+                            }
+                        }
+
+                        /*if ( token.torrentName.indexOf(searchQuery.expects) == -1 ) {
+                            throw new Error(['bad match', token.torrentName,  searchQuery.expects]
+                                .toString())
+                        }
+*/
+                        self.results.push({
+                            query: searchQuery, result: url,
+                            result_name: token.torrentName, result_name2: token.nameTorrent
+                        })
+                        fxAsyncDone_Delayed();
+                    }
+                    options.fxBail = function bailX(msg) {
+
+                        var bailOnQuery = false;
+                        //and verify each attempt
+                        //feature: bookmark.searchAgain without category restrictions
+                        if (token.pbCategory != null) {
+                            if (token.pbCategory2 == null) {
+                                bailOnQuery = true
+                            } else {
+                                var haveSearchedCategory2 = token.pbCategory2 == searchInCategory;
+                                if (haveSearchedCategory2 == true) {
+                                    bailOnQuery = true
+                                } else {
+                                    //retry
+                                    self.searchByName(token, cb, token.pbCategory2)
+                                }
+                            }
+                        } else {
+                            bailOnQuery = true
+                        }
+
+                        if (bailOnQuery) {
+                            console.error('bailing bc---',searchQuery,  msg);
+                            self.results.push({query:searchQuery, result:null,
+                                result_name:msg, result_name2:null});
+                            if ( searchObj != null && searchObj.expects != null ) {
+                                process.exit();
+                            }
+                            //token.fxBail()
+                            fxAsyncDone_Delayed();
+                        }}
+
+                    var go = new SearchPB()
+                    go.go(options);
+                },
+                function doneAll() {
+                    console.log(sh.n, sh.n, 'results:')
+                    sh.each(self.results, function display(i, x) {
+                        console.log(i + 1 + '.', x.query, "\t", "\t", x.result_name)
+                        // console.log("\t",x.result)
+                        // console.log("\t",x.result_name)
+                    })
+                }
+            )
+        }
+    }
+
+    createBasics();
+
+    function createAPI() {
+        p.putio = {}
+    }
+
+    createAPI()
+
+    function defineUtils() {
+        p.utils = {}
+    }
+
+    defineUtils();
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        sh.sLog(arguments)
+    }
+}
+
+if (module.parent == null) {
+    var options = {}
+
+    //TODO: True blood seaosns 7
+    //remove x264 h.264, dd5.1
+    //work with '.' in filename
+    //remove 5.11
+
+    //if you seee .Season. or .1080p. you know it is wrong
+
+    options.list = ['Sopranos "Season 2" 720p', 'Sopranos "Season 3"',
+        'mindy season 2', 'mindy season 3', 'Witches of East End Season 2']
+
+
+    options.list = [
+        'gomez mp3 single',
+        {name: 'true blood season 6', pbCategory: 208, expect: 'True.Blood.S06'},
+        {name: 'fifth element', pbCategory: 207, expect: 'The fifth element remastered'},
+        {name: 'the lucky one', pbCategory: 207, expect: 'The lucky one (2012) 1080p'}
+    ];
+
+    options.list = ['Younger S02E01']
+
+    options.list = [
+        //     'Star Wars: The Clone Wars Season 6',
+        'CSI: Crime Scene Investigation Season 1',
+        'Bob\'s Burgers Season 1',
+        'Law & Order: Special Victims Unit Season 5',
+        // 'NCIS: Los Angeles Season 2', 'American Dad! Season 8', 'One Tree Hill Season 4'
+    ]
+
+    options.list = [
+        'The Big Bang Theory S09E20'
+    ]
+
+    options.list = [
+       // {name: 'The Big Bang Theory S09E20', pbCategory: 205, expects: 'The.Big.Bang.Theory'},
+        // 'gomez mp3 single',
+        {name: 'true blood season 6', pbCategory: 208, expect: null},
+        {name: 'true blood season 6', pbCategory: 205, expect: 'True.Blood.Season.6'},
+       // {name: 'fifth element', pbCategory: 207, expect: 'The fifth element remastered'},
+     //   {name: 'the lucky one', pbCategory: 207, expect: 'The lucky one (2012) 1080p'}
+    ];
+
+    console.log(sh.toJSONString(options.list));
+    //return;
+    var go = new SearchPB_Test()
+    options.token = {};
+    options.token.asdf = 'sd'
+    options.token.fxBail = function (x) {
+        console.log('bail')
+        throw new Error(x)
+    }
+    options.token.callback = function onDone(url) {
+        console.log('SearchPB complete:', url)
+    }
+    go.go(options);
+    return;
+}
+
+
+exports.SearchPB_Test = SearchPB_Test;

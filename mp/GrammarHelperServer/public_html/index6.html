@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title Test</title>
+
+    <script src="../jquery-1.11.1.js.ignore"></script>
+    <script src="http://localhost:10110/reloader.js" ></script>
+    <script src="oneTest.js" ></script>
+    <script>
+        reloader.reloadWhen('index6.html')
+
+        reloader.reloadWhenFx('oneTest.js', function onTestOneJs(){
+            window.oneTestJS.go();
+        })
+        //reloader
+    </script>
+</head>
+<body>
+sdfsdf
+</body>
+</html>

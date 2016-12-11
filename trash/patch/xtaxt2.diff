@@ -1,0 +1,179 @@
+Index: mp/SpeakerJava/SpeakServer/MaryTTSSpeaker.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/SpeakerJava/SpeakServer/MaryTTSSpeaker.js   (date 1475167892000)
++++ mp/SpeakerJava/SpeakServer/MaryTTSSpeaker.js   (revision )
+@@ -8,7 +8,10 @@
+     var p = MaryTTSSpeaker.prototype;
+     p = this;
+     var self = this;
++    self.settings = {}
++    self.data = {};
+     p.init = function init(url, appCode) {
++
+     }
+
+     p.test = function test() {
+@@ -105,6 +108,9 @@
+
+     }
+
++    p.kill  = function kill() {
++        self.data.killed = true;
++    }
+
+     p.speak = function speak(cfg) {
+         var port = 59125
+@@ -118,18 +124,23 @@
+         urls.process = t.utils.createTestingUrl('process')
+
+
++        cfg.text = self.utils.escapeXML(cfg.text)
++
++        //cfg.rate = sh.dv(cfg.rate, '+20%')
+         cfg.rate = sh.dv(cfg.rate, '100%')
+
+         var maryXML=[ '<?xml version="1.0" encoding="UTF-8"?>',
+             '<maryxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://mary.dfki.de/2002/MaryXML" version="0.4" xml:lang="en-US">',
+-            '<p>',
+-            '<prosody rate="'+cfg.rate+'">'+cfg.text+'</prosody>',
+-            '</p>',
++           // '<p>',
++            '<prosody rate="'+cfg.rate+'" range="-10%" >'+cfg.text+'</prosody>',
++         //   '</p>',
+             '</maryxml>'];
+
+         maryXML = maryXML.join(' \n')
+
++        self.settings.showMaryXML = true
++        if ( self.settings.showMaryXML )
+-        console.log('mary', maryXML)
++            console.log('mary', maryXML)
+
+         //request raw xml
+         var req = {}
+@@ -152,6 +163,7 @@
+                 var file = 'sample.wav';
+                 file = sh.fs.resolve(file);
+                 sh.writeFile('sample.wav', asdf, false, true)
++                if ( self.data.killed != true )
+                 sh.callIfDefined(cfg.fx, file)
+                 return;
+             })
+@@ -165,6 +177,17 @@
+             return
+         }
+         sh.sLog(arguments)
++    }
++
++    p.utils = {}
++    p.utils.escapeXML = function escapeXML(str) {
++        return str.replace(/&/g, '&amp;')
++            .replace(/</g, '&lt;')
++            .replace(/>/g, '&gt;')
++            .replace(/"/g, '&quot;')
++            .replace(/'/g, '&apos;');
++
++
+     }
+
+
+Index: mp/SpeakerJava/SpeakServer/RemoteConsoleServer.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/SpeakerJava/SpeakServer/RemoteConsoleServer.js  (date 1475167892000)
++++ mp/SpeakerJava/SpeakServer/RemoteConsoleServer.js  (revision )
+@@ -86,7 +86,7 @@
+         self.settings.port2 = 3000
+
+         self.settings.port = 4444
+-        self.settings.port2 = 3001
++        self.settings.port2 = 3002
+         baseUrl += ':' + self.settings.port;
+
+         // app.post('/append_named',   self.appendNoteNamed);
+@@ -565,6 +565,7 @@
+
+     function defineRoutes(){
+         self.say = function sayRoute(req, res){
++            console.log('... say route ... ')
+             var speakOpts = {};
+             if ( req.body ) {
+                 speakOpts       = req.body;
+@@ -583,10 +584,13 @@
+
+             if ( speakOpts.rate ) {
+                 if ( sh.isNumber(speakOpts.rate)) {
+-                    speakOpts.rate = speakOpts.rate * 100 / 6;
++                    speakOpts.rate = speakOpts.rate * 100 / 5;
+                     speakOpts.rate += '%'
+                 }
+             }
++
++            self.proc('speak', speakOpts.rate, speakOpts.text)
++
+             speakOpts.fx = function () {
+                 if ( res.send )
+                     res.send('');
+@@ -631,6 +635,12 @@
+             var MaryTTSSpeaker = require('./MaryTTSSpeaker').MaryTTSSpeaker;
+             var m = new MaryTTSSpeaker();
+
++            if ( self.data.oldMary ) {
++                //ensure old requests are responded to express allows 6 concurrent connections
++                self.data.oldMary.kill();
++                sh.callIfDefined(self.data.fxEndAudio)
++            }
++            self.data.oldMary = m;
+             var fxEnd = speakOpts.fx;
+             /* setTimeout(function () {
+              sh.callIfDefined(fxEnd)
+@@ -733,6 +743,7 @@
+
+     app.post('/say', self.say);
+     app.get('/testSay', self.testSay);
++    app.get('/say', self.say);
+     app.get('/list', self.listVoices);
+     app.get('/getSound', self.getSound);
+
+Index: mp/SpeakerJava/SpeakServer/public_html/eval_client.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/SpeakerJava/SpeakServer/public_html/eval_client.js  (date 1475167892000)
++++ mp/SpeakerJava/SpeakServer/public_html/eval_client.js  (revision )
+@@ -86,9 +86,10 @@
+     $('#messages').append($('<li>').text(msg));
+     h.scrollToBottom();
+
++    var myAudio= $('#audioThing')[0];
+     $('#audioThing')[0].pause();
+     $('#audioThing').attr('src', msg.url)
+-
++    myAudio.playbackRate = 1.6;
+     $('#audioThing')[0].play();
+ });
+
+\ No newline at end of file
+Index: mp/SpeakerJava/SpeakServer/public_html/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/SpeakerJava/SpeakServer/public_html/index.html  (date 1475167892000)
++++ mp/SpeakerJava/SpeakServer/public_html/index.html  (revision )
+@@ -95,7 +95,8 @@
+ <body>
+
+
+-<audio  id="audioThing" autoplay="" controls=""></audio>
++<audio  id="audioThing"
++        autoplay="" controls=""></audio>
+
+ <div class="flex-container" >
+ </div>

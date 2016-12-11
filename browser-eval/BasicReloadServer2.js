@@ -18,18 +18,33 @@ var config = global.config;
 
 var express = require("express");
 var app = express();
+var cors = require('cors');
+app.use(cors());
 
 var bodyParser = require('body-parser');
 
+app.use(sh.allowWildcardRequests)
 app.use(bodyParser());
 
 var open = require('open')
 
+var allowedOrigins = "http://localhost:* http://127.0.0.1:*";
+allowedOrigins = "http://localhost:14002 http://127.0.0.1:14002";
+var path ='/stomp'; // you need this if you want to connect to something other than the default socket.io path
+/*
 
+var sio_server = io(server, {
+    origins: allowedOrigins,
+*/
 
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http, {origins: allowedOrigins}
+);
 
+//io.use(sh.allowWildcardRequests)
+
+//var server = require('http').Server(app);
+//var io = require('socket.io')(server);
 
 
 /**
@@ -71,30 +86,43 @@ function BrowserEvalServer() {
      */
     p.start = function start(url, appCode) {
         //Add middleware for cross domains
-        app.use(function(req, res, next) {
+       /* app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
-        });
+        });*/
 
+
+
+      //  asfd.g
         // app.post('/append_named',   self.appendNoteNamed);
         self.setupSession();
 
-        http.listen(14002, function () {
+
+        http.listen(14002, function onStarted() {
             console.log('started')
         })
+
+
+
+        console.log('hhh', http.use, io, server)
+       // sh.exit()
 
         // open('http://localhost:5557')
         // http://localhost:5557/index.html
         var server = app.listen(port);
         // var io = require('socket.io').listen(server, { log: true });
 
-        console.log(__dirname)
-        app.use(express.static(__dirname + '/public_html'))
+        self.proc('starting here', __dirname);
+
+        var f = sh.fileExists(__dirname + '/public_html')
+        //console.error('sasdf', f)
+        //return;
+        app.use(express.static(__dirname + '/public_html'));
         app.use(express.static(__dirname + '/testFiles'));
-        var path = __dirname + '/../node_modules/shelpers/lib'
-        app.use(express.static(path))
-        //app.use(express.static(__dirname ) );// + '/public_html'))
+        var path = __dirname + '/../node_modules/shelpers/lib';
+        app.use(express.static(path));
+        //app.use(express.static(_fo_dirname ) );// + '/public_html'))
         self.appSocket = io
         io.sockets.on('connection', function (socket) {
             console.log('new connnnn')
@@ -122,10 +150,26 @@ function BrowserEvalServer() {
     }
 
     self.newRoutes = function newroutes() {
+        //asdf.g.d.d
+
+        app.get('/socket.io.js', function (req, res) {
+            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
+            res.sendfile( fileSocket );
+        });
+
+
+        //http://127.0.0.1:14002/socket.io-1.2.0.js.ignore
+        app.get('/socket.io-1.2.0.js', function (req, res) {
+            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
+            res.sendfile( fileSocket );
+        });
+        
+
         self.server.get('/getFile', function (req, res) {
             var fileName = req.query.file;
             console.log(req.query.file, 'file....')
 
+         //   process.exit()
             function LoadFile () {
                 var self = this;
                 var p = this;
@@ -261,6 +305,7 @@ function BrowserEvalServer() {
         );
 
         t.add(function getFiles() {
+               // return; // is this necessary? 11/23/2016?
                 t.quickRequest( urls.getFile,
                     'get', onResult, {file:'a.txt'} )
                 function onResult(body) {

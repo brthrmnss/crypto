@@ -1,0 +1,2162 @@
+[
+	{
+		"name": "Sherlock",
+		"query": "Sherlock Season 1",
+		"rating": 9.3,
+		"imdb_id": "tt1475582",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Sherlock_2010/tt1475582/Sherlock_Season_1/",
+		"index": 1,
+		"skip": true,
+		"match": "/media/sda/finished/Root/media/tv_seasons/tt1475582/Sherlock_Season_1/Sherlock.S01.720p.BluRay.x264.ShAaNiG/Sherlock.S01.720p.BluRay.x264.ShAaNiG/Sherlock.S01E01.720p.BluRay.700MB.ShAaNiG.com.mkv",
+		"boo1": true,
+		"size": "2.05",
+		"seeders": "298",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Sherlock s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:1B10270947F3A31ED826E6230B2008EF73C7C3E6&dn=sherlock+season+1+720p+bluray+x264+shaanig&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Sherlock - Season 1 - 720p BluRay - x264 - ShAaNiG"
+	},
+	{
+		"name": "Sherlock",
+		"query": "Sherlock Season 3",
+		"rating": 9.3,
+		"imdb_id": "tt1475582",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Sherlock_2010/tt1475582/Sherlock_Season_3/",
+		"index": 2,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/Sherlock_2010/tt1475582/Sherlock_Season_3/Sherlock.S03.720p.BluRay.x264.ShAaNiG/Sherlock.S03E01.720p.BluRay.700MB.ShAaNiG.com.mkv",
+		"boo1": true,
+		"size": "2.05",
+		"seeders": "278",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Sherlock s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:6098DEE568A9E36FBEAA926AE6FE1FCA45129A0F&dn=sherlock+season+3+720p+bluray+x264+shaanig&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Sherlock - Season 3 - 720p BluRay - x264 - ShAaNiG"
+	},
+	{
+		"name": "South Park",
+		"query": "South Park Season 1",
+		"rating": 8.8,
+		"imdb_id": "tt0121955",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/South_Park_1997/tt0121955/South_Park_Season_1/",
+		"index": 3,
+		"boo1": true,
+		"size": "24.39",
+		"seeders": "22",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"South Park s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:85BD722EC4A29F34C9D042899818085700163A1C&dn=south+park+season+s01+18+complete+uncensored+movie+480p+1080p+x265+hevc+p11+utr&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "South Park Season S01-18 Complete UnCensored & Movie 480p-1080p x265 HEVC -P11 [UTR]"
+	},
+	{
+		"name": "The Office",
+		"query": "The Office Season 1",
+		"rating": 8.8,
+		"imdb_id": "tt0386676",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Office_2005/tt0386676/The_Office_Season_1/",
+		"index": 4,
+		"boo1": true,
+		"size": "87.59",
+		"seeders": "30",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Office s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:6550A516282DF060433BD9AA784329A4D0FC3340&dn=the+office+us+s01+s09+season+1+9+complete+720p+hdtv+x264+mrsk+cttv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Office US S01-S09 Season 1-9 Complete 720p HDTV x264-MRSK[cttv]"
+	},
+	{
+		"name": "Avatar: The Last Airbender",
+		"query": "Avatar: The Last Airbender Season 3",
+		"rating": 9.2,
+		"imdb_id": "tt0417299",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Avatar__The_Last_Airbender_2005/tt0417299/Avatar__The_Last_Airbender_Season_3/",
+		"index": 5,
+		"boo1": true,
+		"size": "3.94",
+		"seeders": "6",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Avatar: The Last Airbender s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:AECBB09093F241EF9886EDA7FF429088E1FF1CBD&dn=avatar+the+last+airbender+season+3+complete+dvdrip+xvid&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Avatar The Last Airbender Season 3 Complete DVDRip XViD"
+	},
+	{
+		"name": "South Park",
+		"query": "South Park Season 15",
+		"rating": 8.8,
+		"imdb_id": "tt0121955",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/South_Park_1997/tt0121955/South_Park_Season_15/",
+		"index": 6,
+		"boo1": true,
+		"size": "2.76",
+		"seeders": "71",
+		"seasonNumber": "15",
+		"queriesAlternates": [
+			"South Park s15"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:fc1ea9081e7b5d7d54e5c59f03699049d717f69a&dn=south+park+season+15+complete+uncensored+hdtv+xvid+mp3&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "South Park - Season 15 Complete UNCENSORED HDTV (Xvid/MP3)"
+	},
+	{
+		"name": "The Office",
+		"query": "The Office Season 5",
+		"rating": 8.8,
+		"imdb_id": "tt0386676",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Office_2005/tt0386676/The_Office_Season_5/",
+		"index": 7,
+		"boo1": true,
+		"size": "4.79",
+		"seeders": "55",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"The Office s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:335b3b53d5fb8e0b496b500d0fbf4ece22f33793&dn=the+office+season+5+dvdrip+mctav&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Office Season 5 DvDrip-McTav"
+	},
+	{
+		"f": "One Piece",
+		"name": "One Piece",
+		"query": "One Piece Season 8",
+		"rating": 8.8,
+		"imdb_id": "tt0388629",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/One_Piece_1999/tt0388629/One_Piece_Season_8/",
+		"index": 8,
+		"boo1": true,
+		"size": "19.28",
+		"seeders": "6",
+		"seasonNumber": "8",
+		"queriesAlternates": [
+			"One Piece s08"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:07FA67E737CDC032F19092D2273B98293680444F&dn=one+piece+english+dubbed+season+1+8+ep+1+263&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "One Piece English Dubbed Season(1-8)Ep(1-263)"
+	},
+	{
+		"name": "The Office",
+		"query": "The Office Season 9",
+		"rating": 8.8,
+		"imdb_id": "tt0386676",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Office_2005/tt0386676/The_Office_Season_9/",
+		"index": 9,
+		"boo1": true,
+		"size": 0,
+		"seeders": "30",
+		"seasonNumber": "9",
+		"queriesAlternates": [
+			"The Office s09"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "The Office US S01-S09 Season 1-9 Complete 720p HDTV x264-MRSK[cttv]"
+	},
+	{
+		"name": "Black Mirror",
+		"query": "Black Mirror Season 3",
+		"rating": 8.8,
+		"imdb_id": "tt2085059",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Black_Mirror_2011/tt2085059/Black_Mirror_Season_3/",
+		"index": 10,
+		"boo1": true,
+		"size": "2.43",
+		"seeders": "27",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Black Mirror s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:EA2F539D50C94EC0F95A9A4F932334A1B3DBB9F4&dn=black+mirror+complete+season+1+2+3+720p+hdtv+x265+decabalus&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Black Mirror Complete (Season 1.2.3) 720p.HDTV.x265-Decabalus"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 2",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_2/",
+		"index": 11,
+		"boo1": true,
+		"size": "4.81",
+		"seeders": "14",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Doctor Who s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:711FE8975593CDF816661EC38B244160BAAB07C1&dn=doctor+who+2005+s02+season+2+720p+bluray+x264+cpul&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who 2005 S02 Season 2 720p Bluray x264 CPUL"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 3",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_3/",
+		"index": 12,
+		"boo1": true,
+		"size": "4.86",
+		"seeders": "19",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Doctor Who s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:B55E5B33EF9A9450B8DB664F6140DE1A65638F42&dn=doctor+who+2005+s03+season+3+720p+bluray+x264+cpul&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who 2005 S03 Season 3 720p BluRay x264 CPUL"
+	},
+	{
+		"f": "One Piece",
+		"name": "One Piece",
+		"query": "One Piece Season 17",
+		"rating": 8.8,
+		"imdb_id": "tt0388629",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/One_Piece_1999/tt0388629/One_Piece_Season_17/",
+		"index": 13,
+		"boo1": true,
+		"size": "9.78",
+		"seeders": "11",
+		"seasonNumber": "17",
+		"queriesAlternates": [
+			"One Piece s17"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:04C186285E4A14A51F6B23FF68418CDF754CF682&dn=one+piece+season+17+629+715+incomplete+eng+sub+720p+hevc&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "One Piece Season 17 (629-715, Incomplete) [ENG SUB] [720p] [HEVC]"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 4",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_4/",
+		"index": 14,
+		"boo1": true,
+		"size": "28.84",
+		"seeders": "14",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Doctor Who s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:FD7A228FAE0D288401060AADD38EA112C231B94D&dn=doctor+who+2005+s04+season+4+720p+bluray+x264+shortbrehd+public&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who 2005 S04 Season 4 720p BluRay x264-SHORTBREHD [Public"
+	},
+	{
+		"f": "One Piece",
+		"name": "One Piece",
+		"query": "One Piece Season 1",
+		"rating": 8.8,
+		"imdb_id": "tt0388629",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/One_Piece_1999/tt0388629/One_Piece_Season_1/",
+		"index": 15,
+		"boo1": true,
+		"size": "24.96",
+		"seeders": "7",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"One Piece s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:76910A11646641F9C2402D88A062E9331E395E1B&dn=one+piece+season+1+16+complete+480p+english+subs&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "One Piece Season 1-16 COMPLETE 480p English Subs"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 7",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_7/",
+		"index": 16,
+		"boo1": true,
+		"size": "46.06",
+		"seeders": "24",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"Doctor Who s07"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:54A47A2E18773CDB1F79FABB6D6B8147B96DA994&dn=doctor+who+season+2005+1+7+dvdrip&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who Season (2005) 1-7 DVDRip"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 6",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_6/",
+		"index": 17,
+		"boo1": true,
+		"size": "4.64",
+		"seeders": "13",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Doctor Who s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:C612C0A7DE918D5E9C2945B88A11B20313045412&dn=doctor+who+2005+s06+season+6+720p+bluray+x264+cpul&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who 2005 S06 Season 6 720p BluRay x264 CPUL"
+	},
+	{
+		"name": "Doctor Who",
+		"query": "Doctor Who Season 9",
+		"rating": 8.8,
+		"imdb_id": "tt0436992",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Doctor_Who_2005/tt0436992/Doctor_Who_Season_9/",
+		"index": 18,
+		"boo1": true,
+		"size": "24.96",
+		"seeders": "79",
+		"seasonNumber": "9",
+		"queriesAlternates": [
+			"Doctor Who s09"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:7CAEFD81FE22ABE330225BD5CF39A9ED16EB593C&dn=doctor+who+season+1+9+complete&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Doctor Who Season 1 - 9 Complete"
+	},
+	{
+		"name": "Archer",
+		"query": "Archer Season 1",
+		"rating": 8.8,
+		"imdb_id": "tt1486217",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Archer_2009/tt1486217/Archer_Season_1/",
+		"index": 19,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Archer_2009/tt1486217/Archer_Season_4/Archer.Complete/01.01 - Mole Hunt.mp4",
+		"boo1": true,
+		"size": 0.983,
+		"seeders": "99",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Archer s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:7990E7C66A7B598C0ED1EA2C13D3E99B50E53814&dn=archer+season+1+s01+complete+1080p+x265+hevc+aac+5+1+joy+utr&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Archer Season 1 S01 Complete (1080p x265 HEVC AAC 5.1 Joy)[UTR]"
+	},
+	{
+		"f": "One Piece",
+		"name": "One Piece",
+		"query": "One Piece Season 14",
+		"rating": 8.8,
+		"imdb_id": "tt0388629",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/One_Piece_1999/tt0388629/One_Piece_Season_14/",
+		"index": 20,
+		"boo1": true,
+		"size": "2.68",
+		"seeders": "5",
+		"seasonNumber": "14",
+		"queriesAlternates": [
+			"One Piece s14"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:0BFB07B6EB93AB5728ED0A60B4083D52B95D2DB4&dn=one+piece+season+14+459+522+480p+pirateboy+silver+rg&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "One Piece Season 14 (459-522) 480p PirateBoy Silver RG"
+	},
+	{
+		"name": "Adventure Time",
+		"query": "Adventure Time Season 6",
+		"rating": 8.7,
+		"imdb_id": "tt1305826",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Adventure_Time_2010/tt1305826/Adventure_Time_Season_6/",
+		"index": 21,
+		"boo1": true,
+		"size": "13.09",
+		"seeders": "77",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Adventure Time s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:58D93CF484880AFB143F112BE54C3676C75FE898&dn=adventure+time+season+1+6+x264+720p+mp4&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Adventure Time Season 1-6 x264 720p mp4"
+	},
+	{
+		"f": "One Piece",
+		"name": "One Piece",
+		"query": "One Piece Season 16",
+		"rating": 8.8,
+		"imdb_id": "tt0388629",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/One_Piece_1999/tt0388629/One_Piece_Season_16/",
+		"index": 22,
+		"boo1": true,
+		"size": "3.21",
+		"seeders": "22",
+		"seasonNumber": "16",
+		"queriesAlternates": [
+			"One Piece s16"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:18958465C6C2323C56CE13467BFE2BD2D182C66E&dn=one+piece+season+16+eng+sub+480p+ep+579+628+l+mbert&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "One Piece Season 16 [EnG SuB] 480p [Ep 579-628] L@mBerT"
+	},
+	{
+		"name": "Attack on Titan",
+		"query": "Attack on Titan Season 1",
+		"rating": 8.8,
+		"imdb_id": "tt2560140",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Attack_on_Titan_2013/tt2560140/Attack_on_Titan_Season_1/",
+		"index": 23,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/Attack_on_Titan_2013/tt2560140/Attack_on_Titan_Season_1/Attack on Titan Season 1 [DUAL-AUDIO] [1080p] [HEVC]/[pseudo] Attack on Titan S01E01 To You, Two Thousand Years Later [1080p] [h.265].mkv",
+		"boo1": true,
+		"size": "8.95",
+		"seeders": "65",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Attack on Titan s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:648FB9175FD4CD885B383237FD61717C1713D7A3&dn=shingeki+no+kyojin+1+25+attack+on+titan+season+1+720p&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Shingeki no Kyojin 1-25 (Attack on Titan Season 1)[720p]"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 11",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_11/",
+		"index": 24,
+		"boo1": true,
+		"size": "19.97",
+		"seeders": "9",
+		"seasonNumber": "11",
+		"queriesAlternates": [
+			"Naruto s11"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:85672AE113C68C6BFD3B64FBDBF3F092856CE0FB&dn=naruto+shippuden+english+dubbed+sub+season+1+to+11+ep+1+242+480p+jd+uploads&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Naruto Shippuden English Dubbed & sub. Season 1 to 11 Ep(1-242) 480P [JD Uploads]"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 15",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_15/",
+		"index": 25,
+		"boo1": true,
+		"size": "2.78",
+		"seeders": "30",
+		"seasonNumber": "15",
+		"queriesAlternates": [
+			"Naruto s15"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:D60E5258BB7BD2C52977D54814490AD2E8877949&dn=naruto+shippuden+season+15+336+348+eng+dub&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Naruto Shippuden Season 15 [336-348] ENG DUB"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 16",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_16/",
+		"index": 26,
+		"boo1": true,
+		"size": 0.957,
+		"seeders": "6",
+		"seasonNumber": "16",
+		"queriesAlternates": [
+			"Naruto s16"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:31D00456E07CE0DD2AF8F0413A26AEFE56D9F162&dn=naruto+shippuden+season+16+complete+480p+720p+jd+uploads&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Naruto Shippuden Season 16 [Complete] [480p] & [720p] [JD Uploads]"
+	},
+	{
+		"name": "The Legend of Korra",
+		"query": "The Legend of Korra Season 1",
+		"rating": 8.7,
+		"imdb_id": "tt1695360",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Legend_of_Korra_2012/tt1695360/The_Legend_of_Korra_Season_1/",
+		"index": 27,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Legend of Korra s01"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "The Legend of Korra - The Complete Series: Season 1-4 [720p - WEB-DL]"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 17",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_17/",
+		"index": 28,
+		"boo1": true,
+		"size": "1.2",
+		"seeders": "7",
+		"seasonNumber": "17",
+		"queriesAlternates": [
+			"Naruto s17"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:35BE89430F94A4E74EEEFA92A81DCAAB406BA149&dn=eng+sub+naruto+shippuden+season+17+480p+ep+364+383+by+daug&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "[Eng sub ] Naruto shippuden season 17 [480p] [ep 364 - 383] by DauG"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 20",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_20/",
+		"index": 29,
+		"boo1": true,
+		"size": "1.44",
+		"seeders": "6",
+		"seasonNumber": "20",
+		"queriesAlternates": [
+			"Naruto s20"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:0075DD9C5CF233F7B196ED9A825CBB165719BDE8&dn=naruto+shippuden+english+dubbed+720p+season+1+ep+1+20&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Naruto Shippuden English Dubbed 720p Season 1 Ep (1-20)"
+	},
+	{
+		"name": "Boardwalk Empire",
+		"query": "Boardwalk Empire Season 3",
+		"rating": 8.6,
+		"imdb_id": "tt0979432",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Boardwalk_Empire_2010/tt0979432/Boardwalk_Empire_Season_3/",
+		"index": 30,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/Boardwalk_Empire_2010/tt0979432/Boardwalk_Empire_Season_3/Boardwalk.Empire.S03.Season.3.720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed/Boardwalk.Empire.S03E01.720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed.mkv",
+		"boo1": true,
+		"size": "5.34",
+		"seeders": "22",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Boardwalk Empire s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:0EBAD098ED80878F20493A02FCD74619E8CBCD77&dn=boardwalk+empire+s03+season+3+720p+5+1ch+bluray+reenc+deejayahmed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Boardwalk Empire S03 Season 3 720p 5.1Ch BluRay ReEnc-DeeJayAhmed"
+	},
+	{
+		"name": "Boardwalk Empire",
+		"query": "Boardwalk Empire Season 2",
+		"rating": 8.6,
+		"imdb_id": "tt0979432",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Boardwalk_Empire_2010/tt0979432/Boardwalk_Empire_Season_2/",
+		"index": 31,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Boardwalk_Empire_2010/tt0979432/Boardwalk_Empire_Season_2/Boardwalk.Empire.S02.Season.2.720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed/Boardwalk.Empire.S02E01.720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed.mkv",
+		"boo1": true,
+		"size": "5.31",
+		"seeders": "38",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Boardwalk Empire s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:3F9B817DE499BF456A7D9F110D775D85D60210B1&dn=boardwalk+empire+s02+season+2+720p+5+1ch+bluray+reenc+deejayahmed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Boardwalk Empire S02 Season 2 720p 5.1Ch BluRay ReEnc-DeeJayAhmed"
+	},
+	{
+		"name": "The Walking Dead",
+		"query": "The Walking Dead Season 2",
+		"rating": 8.6,
+		"imdb_id": "tt1520211",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Walking_Dead_2010/tt1520211/The_Walking_Dead_Season_2/",
+		"index": 32,
+		"skip": true,
+		"match": "/media/sda/finished/Root/media/tv_seasons/tt1520211/The_Walking_Dead_Season_3/The Walking Dead/The Walking Dead/Season 2 (2011-2012)/The Walking Dead S02E01 - What Lies Ahead.mkv",
+		"boo1": true,
+		"size": "2.35",
+		"seeders": "7",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"The Walking Dead s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:102A2D180D1DB0B169057D538F3BAC68A33CB7B6&dn=the+walking+dead+season+2+ps3+duplex&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Walking Dead Season 2 PS3-DUPLEX"
+	},
+	{
+		"name": "Parks and Recreation",
+		"query": "Parks and Recreation Season 6",
+		"rating": 8.6,
+		"imdb_id": "tt1266020",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Parks_and_Recreation_2009/tt1266020/Parks_and_Recreation_Season_6/",
+		"index": 33,
+		"boo1": true,
+		"size": "12.22",
+		"seeders": "15",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Parks and Recreation s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:6160FCBD0B75A453D01A0890F86A1F8EF28D1FF7&dn=parks+and+recreation+season+6+720p+hdtv+complete&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Parks And Recreation Season 6 720P HDTV Complete"
+	},
+	{
+		"name": "Louie",
+		"query": "Louie Season 1",
+		"rating": 8.7,
+		"imdb_id": "tt1492966",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Louie_2010/tt1492966/Louie_Season_1/",
+		"index": 34,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/Louie_2010/tt1492966/Louie_Season_1/Louie (2010) Season 1 COMPLETE 720p BRrip x264 AAC Junaid-Zia/Louie - S01E01 - Pilot 720p BRrip x264 AAC Junaid-Zia.mkv",
+		"boo1": true,
+		"size": "1.63",
+		"seeders": "18",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Louie s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:533d3b62c04e89c04d9db4e516a1a284c4614774&dn=louie+season+1+720p+mkv+compression+mkvgod&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Louie Season 1 | 720p mkv compression [mkvGOD]"
+	},
+	{
+		"name": "Parks and Recreation",
+		"query": "Parks and Recreation Season 7",
+		"rating": 8.6,
+		"imdb_id": "tt1266020",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Parks_and_Recreation_2009/tt1266020/Parks_and_Recreation_Season_7/",
+		"index": 35,
+		"boo1": true,
+		"size": "7.01",
+		"seeders": "18",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"Parks and Recreation s07"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:9E403622C935B05CE3709A5F5F60EF7E2EF94120&dn=parks+and+recreation+s07+season+7+complete+hdtv+720p+x264+xerxes&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Parks And Recreation S07 Season 7 Complete HDTV 720p x264 [Xerxes]"
+	},
+	{
+		"name": "Supernatural",
+		"query": "Supernatural Season 10",
+		"rating": 8.6,
+		"imdb_id": "tt0460681",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Supernatural_2005/tt0460681/Supernatural_Season_10/",
+		"index": 36,
+		"boo1": true,
+		"size": "3.27",
+		"seeders": "177",
+		"seasonNumber": "10",
+		"queriesAlternates": [
+			"Supernatural s10"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:28E7CC4DB040DAF983A5BEE64628D2AE5C81F819&dn=supernatural+s10+season+10+complete+480p+hdtv+x264+aac+e+subs+gwc&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Supernatural S10 Season 10 Complete 480p HDTV x264 AAC E-Subs [GWC]"
+	},
+	{
+		"name": "Supernatural",
+		"query": "Supernatural Season 9",
+		"rating": 8.6,
+		"imdb_id": "tt0460681",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Supernatural_2005/tt0460681/Supernatural_Season_9/",
+		"index": 37,
+		"boo1": true,
+		"size": "92.89",
+		"seeders": "63",
+		"seasonNumber": "9",
+		"queriesAlternates": [
+			"Supernatural s09"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:134E0346F2EF0B8AFFF9441084C6D10CFCDBA6C3&dn=supernatural+season+1+10+1+2+3+4+5+6+7+8+9+10+complete+hd+kurd&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Supernatural Season 1-10 1 2 3 4 5 6 7 8 9 10 Complete HD {KURD}"
+	},
+	{
+		"name": "Supernatural",
+		"query": "Supernatural Season 6",
+		"rating": 8.6,
+		"imdb_id": "tt0460681",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Supernatural_2005/tt0460681/Supernatural_Season_6/",
+		"index": 38,
+		"boo1": true,
+		"size": 0,
+		"seeders": "63",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Supernatural s06"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Supernatural Season 1-10 1 2 3 4 5 6 7 8 9 10 Complete HD {KURD}"
+	},
+	{
+		"name": "Futurama",
+		"query": "Futurama Season 5",
+		"rating": 8.6,
+		"imdb_id": "tt0149460",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Futurama_1999/tt0149460/Futurama_Season_5/",
+		"index": 39,
+		"boo1": true,
+		"size": "2.98",
+		"seeders": "5",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Futurama s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:555D8F98F2FAC4ADCD6D60FA0CB6704AD4FD1735&dn=futurama+season+5+complete&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Futurama - Season 5 - complete"
+	},
+	{
+		"name": "Supernatural",
+		"query": "Supernatural Season 4",
+		"rating": 8.6,
+		"imdb_id": "tt0460681",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Supernatural_2005/tt0460681/Supernatural_Season_4/",
+		"index": 40,
+		"boo1": true,
+		"size": 0,
+		"seeders": "63",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Supernatural s04"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Supernatural Season 1-10 1 2 3 4 5 6 7 8 9 10 Complete HD {KURD}"
+	},
+	{
+		"name": "The Legend of Korra",
+		"query": "The Legend of Korra Season 2",
+		"rating": 8.7,
+		"imdb_id": "tt1695360",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Legend_of_Korra_2012/tt1695360/The_Legend_of_Korra_Season_2/",
+		"index": 41,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/The_Legend_of_Korra_2012/tt1695360/The_Legend_of_Korra_Season_2/The Legend of Korra - The Complete Season 2 [HDTV - 720p]/The.Legend.of.Korra.S02E01-E02.Rebel.Spirit_Southern.Lights.720p.HDTV.x264-W4F.mkv",
+		"boo1": true,
+		"size": "5.54",
+		"seeders": "46",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"The Legend of Korra s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:0E22B8ED2CAD9A84B3E4C76EF6D22BF17387190D&dn=the+legend+of+korra+the+complete+season+2+hdtv+720p&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Legend of Korra - The Complete Season 2 [HDTV - 720p]"
+	},
+	{
+		"name": "Prison Break",
+		"query": "Prison Break Season 4",
+		"rating": 8.5,
+		"imdb_id": "tt0455275",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Prison_Break_2005/tt0455275/Prison_Break_Season_4/",
+		"index": 42,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Prison_Break_2005/tt0455275/Prison_Break_Season_4/Prison Break (Season 4) 720p (www.alt-torrent.com)/Prison Break S04E01-E02.mkv",
+		"boo1": true,
+		"size": "7.47",
+		"seeders": "90",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Prison Break s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:DEEAFA1756D3D0D1A6D36AC19A21652975A79405&dn=prison+break+s04+season+4+720p+bluray+reenc+deejayahmed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Prison Break S04 Season 4 720p BluRay ReEnc DeeJayAhmed"
+	},
+	{
+		"name": "Lost",
+		"query": "Lost Season 5",
+		"rating": 8.4,
+		"imdb_id": "tt0411008",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Lost_2004/tt0411008/Lost_Season_5/",
+		"index": 43,
+		"boo1": true,
+		"size": "25.24",
+		"seeders": "147",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Lost s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:BB98DB6945099C9D6250EDC9A2630E2B16101AEF&dn=lost+the+complete+series+season+1+2+3+4+5+6+english+subs&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Lost The Complete Series Season 1,2,3,4,5,6 + English Subs"
+	},
+	{
+		"name": "The Big Bang Theory",
+		"query": "The Big Bang Theory Season 1",
+		"rating": 8.4,
+		"imdb_id": "tt0898266",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Big_Bang_Theory_2007/tt0898266/The_Big_Bang_Theory_Season_1/",
+		"index": 44,
+		"skip": true,
+		"match": "/media/sda/finished/Root/media/tv_seasons/tt0898266/The_Big_Bang_Theory_Season_6/The Big Bang Theory/The Big Bang Theory/Season 1 (2007-2008)/The Big Bang Theory S1E01 - Pilot.mkv",
+		"boo1": true,
+		"size": "4.73",
+		"seeders": "121",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Big Bang Theory s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:1FD404161045D5A359FCFF1826FDE80C187AD68A&dn=the+big+bang+theory+season+7+complete+720p+hdtv+x264+mkv+ac3+5+1+ehhhh&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Big Bang Theory Season 7 - COMPLETE 720p HDTV x264 [MKV,AC3,5 1] Ehhhh"
+	},
+	{
+		"name": "Lost",
+		"query": "Lost Season 6",
+		"rating": 8.4,
+		"imdb_id": "tt0411008",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Lost_2004/tt0411008/Lost_Season_6/",
+		"index": 45,
+		"boo1": true,
+		"size": 0,
+		"seeders": "147",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Lost s06"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Lost The Complete Series Season 1,2,3,4,5,6 + English Subs"
+	},
+	{
+		"name": "Californication",
+		"query": "Californication Season 1",
+		"rating": 8.4,
+		"imdb_id": "tt0904208",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Californication_2007/tt0904208/Californication_Season_1/",
+		"index": 46,
+		"boo1": true,
+		"size": "13.07",
+		"seeders": "7",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Californication s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:57436FD3E9119C861AE47B95850B7E5CB194690E&dn=californication+s01+season+1+720p+bluray+x264+reward+publichd&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Californication S01 Season 1 720p BluRay X264-REWARD [PublicHD]"
+	},
+	{
+		"name": "24",
+		"query": "24 Season 3",
+		"rating": 8.4,
+		"imdb_id": "tt0285331",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/24_2001/tt0285331/24_Season_3/",
+		"index": 47,
+		"boo1": true,
+		"size": "31.91",
+		"seeders": "37",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"24 s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:13621A830762E9683E67C4953D4FE981D75CC9A8&dn=teen+wolf+the+complete+season+3+ep+1+24+high+quality+mp4&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Teen Wolf - The Complete Season 3 (Ep.1-24) [High Quality MP4]"
+	},
+	{
+		"name": "24",
+		"query": "24 Season 4",
+		"rating": 8.4,
+		"imdb_id": "tt0285331",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/24_2001/tt0285331/24_Season_4/",
+		"index": 48,
+		"boo1": true,
+		"size": "8.75",
+		"seeders": "21",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"24 s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:59FC2E594DB22859864A9A411689A27154D04FF4&dn=24+s04+complete+season+4+720p+webrip+x264+mkv+ac3+2+0+ehhhh&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "24 S04 COMPLETE Season 4 720p WEBRip x264 [MKV, AC3, 2.0] Ehhhh"
+	},
+	{
+		"name": "24",
+		"query": "24 Season 5",
+		"rating": 8.4,
+		"imdb_id": "tt0285331",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/24_2001/tt0285331/24_Season_5/",
+		"index": 49,
+		"boo1": true,
+		"size": "8.1",
+		"seeders": "21",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"24 s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:C198D96302F0F39A8F77FAB899CFFBCE4D47454A&dn=24+s05+complete+season+5+720p+webrip+x264+mkv+ac3+2+0+ehhhh&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "24 S05 COMPLETE Season 5 720p WEBRip x264 [MKV, AC3, 2.0] Ehhhh"
+	},
+	{
+		"name": "24",
+		"query": "24 Season 6",
+		"rating": 8.4,
+		"imdb_id": "tt0285331",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/24_2001/tt0285331/24_Season_6/",
+		"index": 50,
+		"boo1": true,
+		"size": "8.82",
+		"seeders": "20",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"24 s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:311619F5E5799AEE0948B018706663CE3F752ED8&dn=24+s06+complete+season+6+720p+webrip+x264+mkv+ac3+2+0+ehhhh&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "24 S06 COMPLETE Season 6 720p WEBRip x264 [MKV, AC3, 2.0] Ehhhh"
+	},
+	{
+		"name": "The Originals",
+		"query": "The Originals Season 1",
+		"rating": 8.4,
+		"imdb_id": "tt2632424",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Originals_2013/tt2632424/The_Originals_Season_1/",
+		"index": 51,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/The_Originals_2013/tt2632424/The_Originals_Season_1/the original s 1/The Originals S01E01 Pilot Directors Cut WEB-DL XviD-FUM[ettv]/The.Originals.S01E01.Pilot.Directors.Cut.WEB-DL.XviD-FUM.avi",
+		"boo1": true,
+		"size": "3.99",
+		"seeders": "58",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Originals s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:AD29D46D27B553C51ACB63E8A6A798D495229042&dn=the+originals+s01+complete+season+1+web+dl+720p+x265+hevc+nate+666&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Originals S01 Complete Season 1 WEB-DL 720p x265 HEVC [nate_666]"
+	},
+	{
+		"name": "Vikings",
+		"query": "Vikings Season 2",
+		"rating": 8.6,
+		"imdb_id": "tt2306299",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Vikings_2013/tt2306299/Vikings_Season_2/",
+		"index": 52,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/Vikings_2013/tt2306299/Vikings_Season_2/Vikings S02 Complete Season 2 720p BRRip DD5.1 x264-PSYPHER/Vikings S02E01 720p BRRip DD5.1 x264-PSYPHER.mkv",
+		"boo1": true,
+		"size": "3.38",
+		"seeders": "69",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Vikings s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:824E67FE57F0BD170B1F477EEE208C60B587455A&dn=vikings+full+season+2+itunes+ready&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Vikings Full Season 2 [iTunes Ready]"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 2",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_2/",
+		"index": 53,
+		"boo1": true,
+		"size": "29.27",
+		"seeders": "58",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Family Guy s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:32AF9C6069915DA5DE09C517AF1799D3930CB337&dn=family+guy+season+1+2+3+4+5+6+7+8+9+complete+dvdrip+xvid+movie&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 3",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_3/",
+		"index": 54,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Family Guy s03"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 4",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_4/",
+		"index": 55,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Family Guy s04"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 5",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_5/",
+		"index": 56,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Family Guy s05"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 6",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_6/",
+		"index": 57,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Family Guy s06"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 7",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_7/",
+		"index": 58,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"Family Guy s07"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 14",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_14/",
+		"index": 59,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_S14E01/Family.Guy.S14E01.HDTV.x264-BATV.[VTV].mp4",
+		"boo1": true,
+		"size": "2.73",
+		"seeders": "256",
+		"seasonNumber": "14",
+		"queriesAlternates": [
+			"Family Guy s14"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:57091436AD3483C1B8F4005E9AB634C229D790F3&dn=family+guy+season+14+complete+720p+web+dl+x264+aac&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Family Guy Season 14 Complete 720p WEB-DL x264 AAC"
+	},
+	{
+		"f": "Naruto",
+		"name": "Naruto",
+		"query": "Naruto Season 14",
+		"rating": 8.6,
+		"imdb_id": "tt0988824",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Naruto_2007/tt0988824/Naruto_Season_14/",
+		"index": 60,
+		"boo1": true,
+		"size": "2.43",
+		"seeders": "17",
+		"seasonNumber": "14",
+		"queriesAlternates": [
+			"Naruto s14"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:C83DE862AC433BAD35B4E19206F029403ECB7049&dn=rprip+arrg+naruto+shippuden+season+14+296+to+320+720p+dual+audio+x264&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "[RPRip-ARRG] Naruto Shippuden - Season 14 (296 to 320) - [720p;Dual-Audio;x264]"
+	},
+	{
+		"name": "Family Guy",
+		"query": "Family Guy Season 1",
+		"rating": 8.3,
+		"imdb_id": "tt0182576",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Family_Guy_1999/tt0182576/Family_Guy_Season_1/",
+		"index": 61,
+		"boo1": true,
+		"size": 0,
+		"seeders": "58",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Family Guy s01"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Family Guy Season 1,2,3,4,5,6,7,8,9 COMPLETE DVDRip XviD + Movie"
+	},
+	{
+		"name": "American Horror Story",
+		"query": "American Horror Story Season 3",
+		"rating": 8.3,
+		"imdb_id": "tt1844624",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/American_Horror_Story_2011/tt1844624/American_Horror_Story_Season_3/",
+		"index": 62,
+		"skip": true,
+		"match": "/media/sdb/finished/Root/tv/American_Horror_Story_2011/tt1844624/American_Horror_Story_Season_3/American Horror Story Season 3 COMPLETE 720p.Web.Dl.Sujaidr/american.horror.story.s03e01.bitchcraft.720p.web-dl.sujaidr.mkv",
+		"boo1": true,
+		"size": "11.67",
+		"seeders": "44",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"American Horror Story s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:A94E5C2D0E0CD017CD4E24E9281191AB72A2281E&dn=american+horror+story+season+1+3&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "American Horror Story Season 1 - 3"
+	},
+	{
+		"name": "Misfits",
+		"query": "Misfits Season 5",
+		"rating": 8.3,
+		"imdb_id": "tt1548850",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Misfits_2009/tt1548850/Misfits_Season_5/",
+		"index": 63,
+		"boo1": true,
+		"size": "1.26",
+		"seeders": "40",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Misfits s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:CBF3DEC2EC2B5F1003D733B2034D731E8458EC5D&dn=misfits+s05+season+5+720p+bluray+x265+hevc+ysteam&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Misfits S05 Season 5 720p BluRay x265 HEVC-YSTeam"
+	},
+	{
+		"name": "Misfits",
+		"query": "Misfits Season 3",
+		"rating": 8.3,
+		"imdb_id": "tt1548850",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Misfits_2009/tt1548850/Misfits_Season_3/",
+		"index": 64,
+		"boo1": true,
+		"size": "9.68",
+		"seeders": "38",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Misfits s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:b5f6ed9123e454969b6a9010ef5021b9c7f6ddea&dn=misfits+season+1+2+3+extras+dvdrip+hdtv+tsv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Misfits Season 1, 2, 3 + Extras DVDRip HDTV TSV"
+	},
+	{
+		"name": "MythBusters",
+		"query": "MythBusters Season 14",
+		"rating": 8.3,
+		"imdb_id": "tt0383126",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_14/",
+		"index": 65,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_14/Mythbusters.S14.1080p.WEB-DL.AAC2.0.H.264.COMPLETE-NTb [WayGood]/Mythbusters.S14E01.1080p.WEB-DL.AAC2.0.H.264-NTb.mkv",
+		"boo1": true,
+		"size": "2.84",
+		"seeders": "15",
+		"seasonNumber": "14",
+		"queriesAlternates": [
+			"MythBusters s14"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:2C94B3B2243077206970B4471018A075C58CE880&dn=mythbusters+season+14&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Mythbusters Season 14"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 4",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_4/",
+		"index": 66,
+		"boo1": true,
+		"size": "28.98",
+		"seeders": "5",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Bleach s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:4a00592e58cfcdb6459681721583407953a7ee93&dn=bleach+season+1+2+3+4+5+6+7+8+9+10+english+dubbed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 5",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_5/",
+		"index": 67,
+		"boo1": true,
+		"size": 0,
+		"seeders": "5",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Bleach s05"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 6",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_6/",
+		"index": 68,
+		"boo1": true,
+		"size": 0,
+		"seeders": "5",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"Bleach s06"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 7",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_7/",
+		"index": 69,
+		"boo1": true,
+		"size": 0,
+		"seeders": "5",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"Bleach s07"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 8",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_8/",
+		"index": 70,
+		"boo1": true,
+		"size": 0,
+		"seeders": "5",
+		"seasonNumber": "8",
+		"queriesAlternates": [
+			"Bleach s08"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 9",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_9/",
+		"index": 71,
+		"boo1": true,
+		"size": 0,
+		"seeders": "5",
+		"seasonNumber": "9",
+		"queriesAlternates": [
+			"Bleach s09"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Bleach Season 1 2 3 4 5 6 7 8 9 10 English Dubbed"
+	},
+	{
+		"name": "Bleach",
+		"query": "Bleach Season 16",
+		"rating": 8.3,
+		"imdb_id": "tt0434665",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bleach_2004/tt0434665/Bleach_Season_16/",
+		"index": 72,
+		"boo1": true,
+		"size": "1.36",
+		"seeders": "7",
+		"seasonNumber": "16",
+		"queriesAlternates": [
+			"Bleach s16"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:94736873CC0AF08D5727A696B2F078F339A211B7&dn=bleach+season+16+english+dubbed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "bleach Season 16 english dubbed"
+	},
+	{
+		"name": "MythBusters",
+		"query": "MythBusters Season 12",
+		"rating": 8.3,
+		"imdb_id": "tt0383126",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_12/",
+		"index": 73,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_12/Season 12/MythBusters - S12E01 - JATO Rocket Car-Mission Accomplished [Box Set].mkv",
+		"boo1": true,
+		"size": "6.83",
+		"seeders": "7",
+		"seasonNumber": "12",
+		"queriesAlternates": [
+			"MythBusters s12"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:279CCA58A5DD490D063D81252833497CF6B9572A&dn=mythbusters+season+12&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Mythbusters Season 12"
+	},
+	{
+		"name": "Misfits",
+		"query": "Misfits Season 2",
+		"rating": 8.3,
+		"imdb_id": "tt1548850",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Misfits_2009/tt1548850/Misfits_Season_2/",
+		"index": 74,
+		"boo1": true,
+		"size": 0,
+		"seeders": "38",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Misfits s02"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Misfits Season 1, 2, 3 + Extras DVDRip HDTV TSV"
+	},
+	{
+		"name": "Misfits",
+		"query": "Misfits Season 1",
+		"rating": 8.3,
+		"imdb_id": "tt1548850",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Misfits_2009/tt1548850/Misfits_Season_1/",
+		"index": 75,
+		"boo1": true,
+		"size": "1.18",
+		"seeders": "48",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Misfits s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:892AF7AE9E28417F832460B76FCF36418D102360&dn=misfits+s01+season+1+720p+bluray+x265+hevc+ysteam&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Misfits S01 Season 1 720p BluRay x265 HEVC-YSTeam"
+	},
+	{
+		"name": "Blue Mountain State",
+		"query": "Blue Mountain State Season 3",
+		"rating": 8.4,
+		"imdb_id": "tt1344204",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Blue_Mountain_State_2010/tt1344204/Blue_Mountain_State_Season_3/",
+		"index": 76,
+		"skip": true,
+		"match": "/media/sdd/finished/Root/tv/Blue_Mountain_State_2010/tt1344204/Blue_Mountain_State_Season_3/Blue Mountain State Season 3 Complete 720p/Blue.Mountain.State.S03E01.720p.HDTV.x264.mkv",
+		"boo1": true,
+		"size": "2.22",
+		"seeders": "10",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Blue Mountain State s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:63125A2D349AA2DA842599FA83F1B8710357EF2F&dn=blue+mountain+state+season+3&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Blue Mountain State Season 3"
+	},
+	{
+		"name": "Futurama",
+		"query": "Futurama Season 2",
+		"rating": 8.6,
+		"imdb_id": "tt0149460",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Futurama_1999/tt0149460/Futurama_Season_2/",
+		"index": 77,
+		"boo1": true,
+		"size": "3.25",
+		"seeders": "9",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Futurama s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:587F8FD7883F3DED6C98784AB745BE6DDC0A9304&dn=futurama+season+2+complete&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Futurama - Season 2 - Complete"
+	},
+	{
+		"name": "The Good Wife",
+		"query": "The Good Wife Season 7",
+		"rating": 8.3,
+		"imdb_id": "tt1442462",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Good_Wife_2009/tt1442462/The_Good_Wife_Season_7/",
+		"index": 78,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/The_Good_Wife_2009/tt1442462/The_Good_Wife_S07E01/The.Good.Wife.S07E01.720p.HDTV.X264-DIMENSION[EtHD]/The.Good.Wife.S07E01.720p.HDTV.X264-DIMENSION[EtHD].mkv",
+		"boo1": true,
+		"size": "1.48",
+		"seeders": "43",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"The Good Wife s07"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:23EF848C5597E96B1783E03C0A5A541D0D4B563B&dn=the+good+wife+s07+complete+720p+web+dl+hevc+x265+rmteam+720p+hevc&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Good Wife S07 Complete 720p WEB-DL HEVC x265-RmTeam [720P][HEVC]"
+	},
+	{
+		"name": "Psych",
+		"query": "Psych Season 1",
+		"rating": 8.4,
+		"imdb_id": "tt0491738",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Psych_2006/tt0491738/Psych_Season_1/",
+		"index": 79,
+		"boo1": true,
+		"size": "5.11",
+		"seeders": "8",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Psych s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:6cdf0a419a4efea3f975ac6c02c01e8d572b56a6&dn=psych+season+1&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Psych - Season 1"
+	},
+	{
+		"name": "The Originals",
+		"query": "The Originals Season 3",
+		"rating": 8.4,
+		"imdb_id": "tt2632424",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Originals_2013/tt2632424/The_Originals_Season_3/",
+		"index": 80,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/The_Originals_2013/tt2632424/The_Originals_S03E01/The.Originals.S03E01.720p.HDTV.X264-DIMENSION[rarbg]/The.Originals.S03E01.720p.HDTV.X264-DIMENSION.mkv",
+		"boo1": true,
+		"size": "6.21",
+		"seeders": "157",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"The Originals s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:E0C39DEC635993222534160A7E3E117C25C6982B&dn=the+originals+season+3+complete+s03+hevc+dd51+bluury&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Originals Season 3 Complete s03 HEVC DD51 Bluury"
+	},
+	{
+		"name": "Castle",
+		"query": "Castle Season 2",
+		"rating": 8.2,
+		"imdb_id": "tt1219024",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Castle_2009/tt1219024/Castle_Season_2/",
+		"index": 81,
+		"boo1": true,
+		"size": "3.49",
+		"seeders": "17",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Castle s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:1F3E4CD114E53C610B67814CF82742E507ADCC0F&dn=castle+s02+season+2+mkv+480p+vk007&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Castle S02 Season 2 mkv 480p vk007"
+	},
+	{
+		"name": "Castle",
+		"query": "Castle Season 3",
+		"rating": 8.2,
+		"imdb_id": "tt1219024",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Castle_2009/tt1219024/Castle_Season_3/",
+		"index": 82,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/Castle_2009/tt1219024/Castle_Season_3/Castle S03 720p/Castle.S03E01.WEB-DL.720p-MaRS.mkv",
+		"boo1": true,
+		"size": "3.54",
+		"seeders": "7",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Castle s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:A9F5359740E14F16460CF672264CE6E87C1EEACE&dn=castle+2009+season+3+hdtv+480p+h264&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Castle 2009 Season 3 HDTV 480p H264"
+	},
+	{
+		"name": "Castle",
+		"query": "Castle Season 8",
+		"rating": 8.2,
+		"imdb_id": "tt1219024",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Castle_2009/tt1219024/Castle_Season_8/",
+		"index": 83,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/Castle_2009/tt1219024/Castle_S08E01/Castle.2009.S08E01.720p.HDTV.X264-DIMENSION[EtHD]/Castle.2009.S08E01.720p.HDTV.X264-DIMENSION[EtHD].mkv",
+		"boo1": true,
+		"size": "5.88",
+		"seeders": "93",
+		"seasonNumber": "8",
+		"queriesAlternates": [
+			"Castle s08"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:D16E8926A9629035E1ADBE6BC89B079F0EB3528B&dn=castle+season+8&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Castle Season 8"
+	},
+	{
+		"name": "Criminal Minds",
+		"query": "Criminal Minds Season 5",
+		"rating": 8.2,
+		"imdb_id": "tt0452046",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Criminal_Minds_2005/tt0452046/Criminal_Minds_Season_5/",
+		"index": 84,
+		"boo1": true,
+		"size": "7.87",
+		"seeders": "27",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Criminal Minds s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:de14fce60c40e23ba36f0c3ffea909c54ee26136&dn=criminal+minds+season+5&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Criminal Minds Season 5"
+	},
+	{
+		"name": "Psych",
+		"query": "Psych Season 8",
+		"rating": 8.4,
+		"imdb_id": "tt0491738",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Psych_2006/tt0491738/Psych_Season_8/",
+		"index": 85,
+		"boo1": true,
+		"size": "3.49",
+		"seeders": "7",
+		"seasonNumber": "8",
+		"queriesAlternates": [
+			"Psych s08"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:5A2B4E30BAE79B8D838237C500B4C44E8935B916&dn=psych+season+8+hdtv+x264+coot&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Psych - Season 8 HDTV X264 - cOOt"
+	},
+	{
+		"name": "Boston Legal",
+		"query": "Boston Legal Season 5",
+		"rating": 8.4,
+		"imdb_id": "tt0402711",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Boston_Legal_2004/tt0402711/Boston_Legal_Season_5/",
+		"index": 86,
+		"boo1": true,
+		"size": "14.21",
+		"seeders": "8",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"Boston Legal s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:69ec90dca4268940ba0c310c0ef8c8e3d77e41bd&dn=boston+legal+season+5+complete+720p&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Boston Legal Season 5 Complete 720p"
+	},
+	{
+		"name": "30 Rock",
+		"query": "30 Rock Season 1",
+		"rating": 8.2,
+		"imdb_id": "tt0496424",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/30_Rock_2006/tt0496424/30_Rock_Season_1/",
+		"index": 87,
+		"boo1": true,
+		"size": 0,
+		"seeders": "33",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"30 Rock s01"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "30 Rock Complete Collection Season 1-7 720p WEB-DL 140MB x264"
+	},
+	{
+		"name": "The Killing",
+		"query": "The Killing Season 4",
+		"rating": 8.2,
+		"imdb_id": "tt1637727",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Killing_2011/tt1637727/The_Killing_Season_4/",
+		"index": 88,
+		"boo1": true,
+		"size": "2.03",
+		"seeders": "20",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"The Killing s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:CC016591228D0B0E7EFA2C9F2471F7002C738CE4&dn=the+killing+s04+season+4+720p+webrip+10bit+x265+hevc+inc+utr&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Killing S04 Season 4 720p WEBRip 10bit x265 HEVC-INC[UTR]"
+	},
+	{
+		"name": "The Killing",
+		"query": "The Killing Season 2",
+		"rating": 8.2,
+		"imdb_id": "tt1637727",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Killing_2011/tt1637727/The_Killing_Season_2/",
+		"index": 89,
+		"boo1": true,
+		"size": "3.23",
+		"seeders": "26",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"The Killing s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:B60DE62B35E5F79664715D46C854F9D6274AB25C&dn=the+killing+complete+season+2+hdtv+x264+agent&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Killing Complete Season 2 HDTV x264 [AGENT]"
+	},
+	{
+		"name": "The Killing",
+		"query": "The Killing Season 1",
+		"rating": 8.2,
+		"imdb_id": "tt1637727",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Killing_2011/tt1637727/The_Killing_Season_1/",
+		"index": 90,
+		"boo1": true,
+		"size": "4.66",
+		"seeders": "49",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Killing s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:32493b66b85545667bf0c789ae336abbe5f4b1f0&dn=the+killing+season+1+complete+hdtv+xvid+mp3&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Killing - Season 1 Complete HDTV (XviD/MP3)"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 2",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_2/",
+		"index": 91,
+		"boo1": true,
+		"size": "2.95",
+		"seeders": "46",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"The Mentalist s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:b4c840572e4e75496267929260f3d894690c81d7&dn=the+mentalist+season+2+complete+hdtvrip+x264+mkv+by+riddlera&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Mentalist Season 2 Complete HDTVRip x264 MKV by RiddlerA"
+	},
+	{
+		"name": "SpongeBob SquarePants",
+		"query": "SpongeBob SquarePants Season 1",
+		"rating": 8.1,
+		"imdb_id": "tt0206512",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_1/",
+		"index": 92,
+		"boo1": true,
+		"size": "24",
+		"seeders": "5",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"SpongeBob SquarePants s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:EFE7250C18B035B09FFB35D46D04033433906D15&dn=spongebob+squarepants+boxset+season+1+8+dvdrip&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Spongebob Squarepants Boxset Season 1-8 DVDRip"
+	},
+	{
+		"name": "SpongeBob SquarePants",
+		"query": "SpongeBob SquarePants Season 2",
+		"rating": 8.1,
+		"imdb_id": "tt0206512",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_2/",
+		"index": 93,
+		"boo1": true,
+		"size": "4.14",
+		"seeders": "23",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"SpongeBob SquarePants s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:95e1e914dff800920ba52f6ca73d595eefab881f&dn=spongebob+squarepants+season+2&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "SpongeBob SquarePants Season 2"
+	},
+	{
+		"f": "Law & Order: SVU",
+		"name": "Law & Order: SVU",
+		"query": "Law & Order: SVU Season 16",
+		"rating": 8.1,
+		"imdb_id": "tt0203259",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Law___Order__SVU_1999/tt0203259/Law___Order__SVU_Season_16/",
+		"index": 94,
+		"boo1": true,
+		"size": "6.34",
+		"seeders": "21",
+		"seasonNumber": "16",
+		"queriesAlternates": [
+			"Law & Order: SVU s16"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:70F08AFEDC8A02F8CC35947F96A4FFC00A8EF7BB&dn=law+and+order+svu+season+16+hdtv+x264+lol+sexytv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Law and Order SVU Season 16 HDTV x264-LOL[SexyTv]"
+	},
+	{
+		"f": "Law & Order: SVU",
+		"name": "Law & Order: SVU",
+		"query": "Law & Order: SVU Season 15",
+		"rating": 8.1,
+		"imdb_id": "tt0203259",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Law___Order__SVU_1999/tt0203259/Law___Order__SVU_Season_15/",
+		"index": 95,
+		"boo1": true,
+		"size": "112.82",
+		"seeders": "6",
+		"seasonNumber": "15",
+		"queriesAlternates": [
+			"Law & Order: SVU s15"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:E7A8FBF56E752070324F4D6849B25D3D2539AC67&dn=law+and+order+svu+season+1+15+complete+hdtv+dvdrip+mixed&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Law and Order - SVU Season 1-15 COMPLETE HDTV DVDRip-Mixed"
+	},
+	{
+		"name": "Psych",
+		"query": "Psych Season 7",
+		"rating": 8.4,
+		"imdb_id": "tt0491738",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Psych_2006/tt0491738/Psych_Season_7/",
+		"index": 96,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Psych_2006/tt0491738/Psych_Season_7/Psych Season 7/Psych.S07E01.HDTV.x264-2HD.mp4",
+		"boo1": true,
+		"size": "4.63",
+		"seeders": "5",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"Psych s07"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:CB8EE9E6CF13546B7099D37EF005B9809E73F270&dn=psych+season+7&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Psych Season 7"
+	},
+	{
+		"f": "Law & Order: SVU",
+		"name": "Law & Order: SVU",
+		"query": "Law & Order: SVU Season 1",
+		"rating": 8.1,
+		"imdb_id": "tt0203259",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Law___Order__SVU_1999/tt0203259/Law___Order__SVU_Season_1/",
+		"index": 97,
+		"boo1": true,
+		"size": 0,
+		"seeders": "6",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Law & Order: SVU s01"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "Law and Order - SVU Season 1-15 COMPLETE HDTV DVDRip-Mixed"
+	},
+	{
+		"name": "The Killing",
+		"query": "The Killing Season 3",
+		"rating": 8.2,
+		"imdb_id": "tt1637727",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Killing_2011/tt1637727/The_Killing_Season_3/",
+		"index": 98,
+		"boo1": true,
+		"size": "9.74",
+		"seeders": "12",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"The Killing s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:EDDB721D167CA3B52A45F03DB34F53D3749BB540&dn=the+killing+s03+season+3+complete+720p+hdtv+x264+publichd&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Killing S03 Season 3 COMPLETE 720p HDTV x264-PublicHD"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 1",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_1/",
+		"index": 99,
+		"boo1": true,
+		"size": "50.6",
+		"seeders": "31",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"The Mentalist s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:1709CB4D5F06E1EC7790E2A28819F657EAA09E52&dn=the+mentalist+season+1+7+s01+07+complete+720p+x264+pahe&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Mentalist Season 1-7 S01-07 COMPLETE 720p x264 PAHE"
+	},
+	{
+		"name": "SpongeBob SquarePants",
+		"query": "SpongeBob SquarePants Season 8",
+		"rating": 8.1,
+		"imdb_id": "tt0206512",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_8/",
+		"index": 100,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_8/Spongebob/Hello Bikini Bottom! 1 part.mp4",
+		"boo1": true,
+		"size": "2.1",
+		"seeders": "11",
+		"seasonNumber": "8",
+		"queriesAlternates": [
+			"SpongeBob SquarePants s08"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:3426A9B67B1E8DD39C5ABAC90D9CDFB4AA352FA2&dn=spongebob+squarepants+season+8+and+season+9&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "SpongeBob SquarePants Season 8 and Season 9"
+	},
+	{
+		"name": "MythBusters",
+		"query": "MythBusters Season 13",
+		"rating": 8.3,
+		"imdb_id": "tt0383126",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_13/",
+		"index": 101,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/MythBusters_2003/tt0383126/MythBusters_Season_13/Mythbusters Season 13 Complete HD 720p/Mythbusters_S13E01_Star.Wars.Special.mkv",
+		"boo1": true,
+		"size": "4.56",
+		"seeders": "7",
+		"seasonNumber": "13",
+		"queriesAlternates": [
+			"MythBusters s13"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:BCB8D796DB5B0CD0B1EE3B171827D02F8E901792&dn=mythbusters+season+13&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Mythbusters Season 13"
+	},
+	{
+		"name": "SpongeBob SquarePants",
+		"query": "SpongeBob SquarePants Season 9",
+		"rating": 8.1,
+		"imdb_id": "tt0206512",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_9/",
+		"index": 102,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/SpongeBob_SquarePants_1999/tt0206512/SpongeBob_SquarePants_Season_9/Spongebob/Hello Bikini Bottom! 1 part.mp4",
+		"boo1": true,
+		"size": 0,
+		"seeders": "11",
+		"seasonNumber": "9",
+		"queriesAlternates": [
+			"SpongeBob SquarePants s09"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "SpongeBob SquarePants Season 8 and Season 9"
+	},
+	{
+		"name": "Bates Motel",
+		"query": "Bates Motel Season 1",
+		"rating": 8.1,
+		"imdb_id": "tt2188671",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Bates_Motel_2013/tt2188671/Bates_Motel_Season_1/",
+		"index": 103,
+		"boo1": true,
+		"size": "9.4",
+		"seeders": "54",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Bates Motel s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:C14FE9F5840A6F4A418CEB7002668D4689F41DBA&dn=bates+motel+season+1+2+3+hdtv+xvid+afg+pawulon&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Bates Motel Season 1 2 3 HDTV.XviD-AFG[Pawulon]"
+	},
+	{
+		"name": "Brooklyn Nine-Nine",
+		"query": "Brooklyn Nine-Nine Season 3",
+		"rating": 8.3,
+		"imdb_id": "tt2467372",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Brooklyn_Nine_Nine_2013/tt2467372/Brooklyn_Nine_Nine_Season_3/",
+		"index": 104,
+		"skip": true,
+		"match": "/media/sdc/incoming/finished/Root/tv/Brooklyn_Nine_Nine_2013/tt2467372/Brooklyn_Nine_Nine_S03E01/Brooklyn.Nine-Nine.S03E01.720p.HDTV.x264-BATV[EtHD]/Brooklyn.Nine-Nine.S03E01.720p.HDTV.x264-BATV[EtHD].mkv",
+		"boo1": true,
+		"size": "2.16",
+		"seeders": "178",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Brooklyn Nine-Nine s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:E650F5DF81C269ED1BEE9EE949E98EF6541C2829&dn=brooklyn+nine+nine+season+3+complete+720p+hdtv+x265&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Brooklyn Nine Nine Season 3 Complete [720p HDTV x265]"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 7",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_7/",
+		"index": 105,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_7/The.Mentalist.S07.Season.7.Complete.720p.HDTV.X264/The.Mentalist.S07E01.720p.HDTV.X264-DIMENSION[rarbg]/The.Mentalist.S07E01.720p.HDTV.X264-DIMENSION.mkv",
+		"boo1": true,
+		"size": 0,
+		"seeders": "31",
+		"seasonNumber": "7",
+		"queriesAlternates": [
+			"The Mentalist s07"
+		],
+		"urlTorrent": "skip_duplicate",
+		"title": "The Mentalist Season 1-7 S01-07 COMPLETE 720p x264 PAHE"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 6",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_6/",
+		"index": 106,
+		"boo1": true,
+		"size": "2.05",
+		"seeders": "12",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"The Mentalist s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:F12EF3FA1506004BC7284A9B7C35144E51B01C5A&dn=the+mentalist+season+6+complete+480p+hdtv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Mentalist season 6 Complete ~ 480p ~ HDTV ~"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 5",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_5/",
+		"index": 107,
+		"boo1": true,
+		"size": "2.8",
+		"seeders": "14",
+		"seasonNumber": "5",
+		"queriesAlternates": [
+			"The Mentalist s05"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:87ABCF9D6D3213B7C48ACC53E2923D989AEE37E3&dn=the+mentalist+season+5+hdtvrip+x264+vector&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Mentalist - Season 5 HDTVRip x264 [VectoR]"
+	},
+	{
+		"name": "The Mentalist",
+		"query": "The Mentalist Season 4",
+		"rating": 8.1,
+		"imdb_id": "tt1196946",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/The_Mentalist_2008/tt1196946/The_Mentalist_Season_4/",
+		"index": 108,
+		"boo1": true,
+		"size": "7.28",
+		"seeders": "40",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"The Mentalist s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:28A15DDBFD61F9A49F285CD4E0F2B6D4898464A2&dn=the+mentalist+season+4+complete+hdtv+xvid+mp3+x264&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "The Mentalist - Season 4 Complete HDTV (XviD/MP3+x264)"
+	},
+	{
+		"name": "30 Rock",
+		"query": "30 Rock Season 6",
+		"rating": 8.2,
+		"imdb_id": "tt0496424",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/30_Rock_2006/tt0496424/30_Rock_Season_6/",
+		"index": 109,
+		"boo1": true,
+		"size": "3.58",
+		"seeders": "11",
+		"seasonNumber": "6",
+		"queriesAlternates": [
+			"30 Rock s06"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:25F0ACD1430C32CB576B51BD946CF2A236675408&dn=30+rock+the+complete+season+6+hdtv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "30 Rock - The Complete Season 6 [HDTV]"
+	},
+	{
+		"name": "Gotham",
+		"query": "Gotham Season 1",
+		"rating": 8,
+		"imdb_id": "tt3749900",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Gotham_2014/tt3749900/Gotham_Season_1/",
+		"index": 110,
+		"skip": true,
+		"match": "/media/sdb/incoming/finished/Root/tv/Gotham_2014/tt3749900/Gotham_Season_1/Gotham.S01E01-22.720p.WEB-DL.x264.AAC/Gotham.S01E01.Pilot.EXTENDED.720p.WEB-DL.x264.AAC.mp4",
+		"boo1": true,
+		"size": "3.11",
+		"seeders": "178",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Gotham s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:548756478060A1FDB3137C68AD4D65CC44102B6A&dn=gotham+s01+season+1+complete+480p+hdtv+x264+aac+e+subs+gwc&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Gotham S01 Season 1 Complete 480p HDTV x264 AAC E-Subs [GWC]"
+	},
+	{
+		"name": "Once Upon a Time",
+		"query": "Once Upon a Time Season 4",
+		"rating": 8,
+		"imdb_id": "tt1843230",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Once_Upon_a_Time_2011/tt1843230/Once_Upon_a_Time_Season_4/",
+		"index": 111,
+		"boo1": true,
+		"size": "6.52",
+		"seeders": "139",
+		"seasonNumber": "4",
+		"queriesAlternates": [
+			"Once Upon a Time s04"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:E9008FB2C79961E14E39B214B118F8380970BFEB&dn=once+upon+a+time+season+4+complete+x264&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Once Upon a Time Season 4 Complete x264"
+	},
+	{
+		"name": "Chuck",
+		"query": "Chuck Season 3",
+		"rating": 8.2,
+		"imdb_id": "tt0934814",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Chuck_2007/tt0934814/Chuck_Season_3/",
+		"index": 112,
+		"boo1": true,
+		"size": "6.26",
+		"seeders": "19",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Chuck s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:3EB7CCF2BDE1AC7692EA2ABC07E7398C4E2707D1&dn=chuck+season+3+s03+1080p+bluray+x265+hevc+aac+5+1+joy+utr&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Chuck Season 3 S03 (1080p Bluray x265 HEVC AAC 5.1 Joy)[UTR]"
+	},
+	{
+		"name": "Once Upon a Time",
+		"query": "Once Upon a Time Season 3",
+		"rating": 8,
+		"imdb_id": "tt1843230",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Once_Upon_a_Time_2011/tt1843230/Once_Upon_a_Time_Season_3/",
+		"index": 113,
+		"boo1": true,
+		"size": "6.29",
+		"seeders": "78",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Once Upon a Time s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:0DDCAB6FF98FA48D608B58691625F268FAE51CA0&dn=once+upon+a+time+season+3+complete&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Once Upon a Time Season 3 Complete"
+	},
+	{
+		"name": "Once Upon a Time",
+		"query": "Once Upon a Time Season 2",
+		"rating": 8,
+		"imdb_id": "tt1843230",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Once_Upon_a_Time_2011/tt1843230/Once_Upon_a_Time_Season_2/",
+		"index": 114,
+		"boo1": true,
+		"size": "3.54",
+		"seeders": "36",
+		"seasonNumber": "2",
+		"queriesAlternates": [
+			"Once Upon a Time s02"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:B4885FDD493F6528218FFF7961E4670906CB19FA&dn=once+upon+a+time+s02+season+2+480p+mkv+vk007&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Once Upon A Time S02 Season 2 480p mkv vk007"
+	},
+	{
+		"name": "Once Upon a Time",
+		"query": "Once Upon a Time Season 1",
+		"rating": 8,
+		"imdb_id": "tt1843230",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Once_Upon_a_Time_2011/tt1843230/Once_Upon_a_Time_Season_1/",
+		"index": 115,
+		"boo1": true,
+		"size": "7.2",
+		"seeders": "87",
+		"seasonNumber": "1",
+		"queriesAlternates": [
+			"Once Upon a Time s01"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:7B2FB817370B84E833E42E4AE1A2162921353E94&dn=once+upon+a+time+season+1+complete+hdtv+xvid+mp3+x264&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Once Upon a Time - Season 1 Complete HDTV (XviD/MP3+x264)"
+	},
+	{
+		"name": "Burn Notice",
+		"query": "Burn Notice Season 3",
+		"rating": 8,
+		"imdb_id": "tt0810788",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/Burn_Notice_2007/tt0810788/Burn_Notice_Season_3/",
+		"index": 116,
+		"boo1": true,
+		"size": "31.11",
+		"seeders": "23",
+		"seasonNumber": "3",
+		"queriesAlternates": [
+			"Burn Notice s03"
+		],
+		"urlTorrent": "magnet:?xt=urn:btih:743977227eff5f058dbde25286eea3b650299d46&dn=burn+notice+season+1+2+3+4+5+extras+dvdrip+hdtv+tsv&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce",
+		"title": "Burn Notice Season 1, 2, 3, 4, 5 + Extras DVDRip HDTV TSV"
+	}
+]

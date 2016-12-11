@@ -16,7 +16,7 @@ var certsPath = path.join(__dirname, 'certs', 'server');
 var caCertsPath = path.join(__dirname, 'certs', 'ca');
 
 //
-// SSL Certificates
+// SSL CertificaRtes
 //
 options = {
   key: fs.readFileSync(path.join(certsPath, 'my-server.key.pem'))

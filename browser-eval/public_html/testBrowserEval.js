@@ -6,6 +6,7 @@ console.log(' inside ... .... test ....');
 // Anonymous "self-invoking" function
 (function() {
 
+    
     if ( window.initializedAddOnApps == true) {
         return;
     }

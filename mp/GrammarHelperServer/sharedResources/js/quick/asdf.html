@@ -1,0 +1,389 @@
+<!--<div>
+  formConfig:
+  {{quickFormConfig}}
+</div>
+  <div>
+    ListConfig:
+  {{quickListConfig}}
+</div>-->
+<!--
+1 {{dataObject}} <br />
+2 {{vm.dataObject}} <br />
+3 {{datainput}} <br />
+4 {{vm.datainput}} <br />
+5 {{vm}} <br />
+6 {{vm.$scope}} <br />
+-->
+<!-- <label>Quick Crud</label>-->
+<!--
+<md-button id="btnRefresh" ng-click="onRefresh()">refresh</md-button>
+-->
+<div layout="row" layout-align="center center">
+    <!-- todo, remove and put as child of container, if title on newLine -->
+    <div id="qCTitle" style="display: block;">List shit bost</div>
+
+    <button class="md-fab md-mini md-primary md-button md-default-theme md-button" ng-transclude="" id="btnHelp" ng-click="onRefresh()" tabindex="0">
+        <span class="glyphicon glyphicon-question-sign ng-scope" aria-hidden="true"></span>
+    </button>
+
+    <button class="md-fab md-mini md-primary md-button md-default-theme md-button" ng-transclude="" id="btnSettings" ng-hide="" ng-click="onSettings()" style="display: none;" tabindex="0" aria-hidden="false">
+        <span class="glyphicon glyphicon-cog ng-scope" aria-hidden="true"></span>
+    </button>
+
+    <span flex=""></span>
+    <button class="md-fab md-mini md-primary md-button md-default-theme md-button" ng-transclude="" id="btnRefresh" ng-click="onRefresh()" tabindex="0">
+        <span class="glyphicon glyphicon-refresh ng-scope" aria-hidden="true"></span>
+    </button>
+    <button class="md-fab md-mini md-primary md-button md-default-theme md-button" ng-transclude="" id="btnNew" ng-click="onNew()" tabindex="0">
+        <span class="glyphicon glyphicon-plus ng-scope" aria-hidden="true"></span>
+    </button>
+
+</div>
+
+<!-- <md-button id="btnNew" ng-click="onNew()">new</md-button>-->
+<!--<span ng-if="isNew(dataObject, dataObject.id)" >
+  *
+</span>-->
+
+<div id="filterSelect" layout="row" class="" layout-align="center center" style="display: block;">
+    <div flex="">
+
+        <!--<label>Filter</label>
+        <input ng-model="user.title">-->
+
+        <md-autocomplete md-selected-item="selectedItem" md-search-text-change="searchTextChange(searchText)" md-search-text="searchText" md-selected-item-change="selectedItemChange(item)" md-items="item in querySearch(searchText)" md-item-text="item.name" md-min-length="0" placeholder="Filter" class="ng-isolate-scope md-default-theme">        <md-autocomplete-wrap layout="row" ng-class="{ 'md-whiteframe-z1': !floatingLabel }" role="listbox" class="md-whiteframe-z1">                      <!-- ngIf: !floatingLabel --><input flex="" type="search" id="input-106" name="" ng-if="!floatingLabel" autocomplete="off" ng-required="isRequired" ng-disabled="isDisabled" ng-model="$mdAutocompleteCtrl.scope.searchText" ng-keydown="$mdAutocompleteCtrl.keydown($event)" ng-blur="$mdAutocompleteCtrl.blur()" ng-focus="$mdAutocompleteCtrl.focus()" placeholder="Filter" aria-owns="ul-106" aria-label="Filter" aria-autocomplete="list" aria-haspopup="true" aria-activedescendant="" aria-expanded="false" class="ng-pristine ng-untouched ng-scope ng-valid ng-valid-required" tabindex="0" aria-disabled="false" aria-required="false" aria-invalid="false"><!-- end ngIf: !floatingLabel -->            <!-- ngIf: $mdAutocompleteCtrl.scope.searchText && !isDisabled --><button type="button" tabindex="-1" ng-if="$mdAutocompleteCtrl.scope.searchText &amp;&amp; !isDisabled" ng-click="$mdAutocompleteCtrl.clear()" class="ng-scope">              <md-icon md-svg-icon="md-close" class="ng-isolate-scope md-default-theme" aria-hidden="true"></md-icon>              <span class="md-visually-hidden">Clear</span>            </button><!-- end ngIf: $mdAutocompleteCtrl.scope.searchText && !isDisabled -->                          <!-- ngIf: $mdAutocompleteCtrl.loading -->                  </md-autocomplete-wrap>        <aria-status class="md-visually-hidden" role="status" aria-live="assertive">          <!-- ngRepeat: message in $mdAutocompleteCtrl.messages -->        </aria-status></md-autocomplete>
+
+    </div>
+
+
+    <!--    <span
+              class="glyphicon glyphicon-search"
+              aria-hidden="true"></span>-->
+</div>
+
+<div id="containerCols" class="quick-crud-container">
+    <div id="quick-crud-leftcol" class="quick-crud-leftcol">
+
+        <quicklist2 padding-left="5px" style="height: 300px; overflow:hidden; overflow-y:scroll;" ng-style="vm.colLeftStyle" items="listData" selected-index="selectedIndex" _selected-index2="selectedIndex" fx-item-selected="onSelectListItem" panel="false" config="quickListConfig" class="ng-isolate-scope">
+
+            <div id="quickListTemplate" class="ng-scope">
+                <!-- Panel Comp -->
+                <div id="headerContent" class="panel-heading" style="display: none;"></div>
+                <md-toolbar id="subHeaderContent" class="md-theme-light md-default-theme" style="display: none;">
+                    <!--<h2 class="md-toolbar-tools">
+                      <span>Full Bleed</span>
+                    </h2>-->
+                </md-toolbar>
+
+  <span class="debugInfo hide ng-binding">
+     SelIndex: 0
+  </span>
+
+                <!--
+                {{vmC.title}} {{vmC.selectedItem}}
+                -->
+
+
+                <!--<button ng-click="test()" id="btnC"  >Test Select Click</button>-->
+                <!--
+                  {{$id}} {{items.length}} {{vmC}}
+                  -->
+                <div id="bodyContent" class="panel-bodyx">
+                    <md-grid-list id="grid" class="gridListdemoDynamicTiles" ng-non-bindable="" md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter="8px" md-gutter-gt-sm="4px">
+                        <md-grid-tile ng-repeat="tile in vmC.items" md-rowspan="{{tile.span.row}}" md-colspan="{{tile.span.col}}" md-colspan-sm="1" ng-class="tile.background">
+                            <md-icon md-svg-icon="{{tile.icon}}"></md-icon>
+                            <md-grid-tile-footer><h3>{{tile.title}}</h3></md-grid-tile-footer>
+                        </md-grid-tile>
+                    </md-grid-list>
+
+                    <md-content class="md-default-theme">
+                        <md-list id="listContent" class="no-padding md-default-theme" style="display: block; padding-left: 5px; padding-top: 5px;" role="list">
+                            <!--  <md-subheader class="md-no-sticky">3 line item</md-subheader>-->
+                            <!--
+                            <md-list-item class="md-3-line" ng-repeat="item in todos" ng-click="goTo(item)">
+                              <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+                              <div class="md-list-item-text">
+                                <h3>{{ item.who }}</h3>
+                                <h4>{{ item.what }}</h4>
+                                <p>{{ item.notes }}</p>
+                                <p>{{ item.selected ? "---" : '' }}</p>
+                              </div>
+                            </md-list-item>
+                            -->
+
+                            <!--
+                                    <md-list-item class="md-3-line" ng-repeat="item in todos" ng-click="goTo(item)">
+                                      <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+                                      <div class="md-list-item-text">
+                                        <h3>{{ item.who }}</h3>
+                                        <h4>{{ item.what }}</h4>
+                                        <p>{{ item.notes }}</p>
+                                        <p>{{ item.selected ? "---" : '' }}</p>
+                                      </div>
+                                    </md-list-item>
+                            -->
+
+
+
+                            <!--
+                            <md-divider ></md-divider>
+                            <md-subheader class="md-no-sticky">2 line item</md-subheader>
+                            <md-list-item class="md-2-line">
+                              <img ng-src="{{todos[0].face}}?20" class="md-avatar" alt="{{todos[0].who}}" />
+                              <div class="md-list-item-text">
+                                <h3>{{ todos[0].who }}</h3>
+                                <p>Secondary text</p>
+                              </div>
+                            </md-list-item>
+                            <md-divider ></md-divider>
+                            <md-subheader class="md-no-sticky">3 line item, long paragraph (see on mobile)</md-subheader>
+                            <md-list-item class="md-3-line">
+                              <img ng-src="{{todos[0].face}}?25" class="md-avatar" alt="{{todos[0].who}}" />
+                              <div class="md-list-item-text">
+                                <h3>{{ todos[0].who }}</h3>
+                                <p>Secondary line text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam massa quam.</p>
+                              </div>
+                            </md-list-item>
+                            <md-divider ></md-divider>
+                            <md-subheader class="md-no-sticky">md-offset class</md-subheader>
+                            <md-list-item class="md-2-line" ng-repeat="phone in phones">
+                              <md-icon md-svg-icon="communication:phone" ng-if="$index === 0"></md-icon>
+                              <div class="md-list-item-text" ng-class="{'md-offset': $index != 0 }">
+                                <h3> {{ phone.number }} </h3>
+                                <p> {{ phone.type }} </p>
+                              </div>
+                            </md-list-item>
+                            -->
+                            <list>
+                                <!--length: {{vmC.items.length}}-->
+                                <ul id="listHolder" class="quick-crud-list">
+                                    <!-- ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        lsx6t7ksxzbccrawz5mi
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true --><div ng-if="item.selected==true" class="ng-scope">selected</div><!-- end ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        9cd81q3hafs7ldblc8fr
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        tosyawtjlpzz2jfw29
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        a85gfbs4m0zd0w0l766r
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        990toz8jveixbkpgb9
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        lq2u2f1ducip5zziwwmi
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        jtzfoclci0ae0sbgldi
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        a68vigm112k1cxmq85mi
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        a6g7z7vvfys5h3tprpb9
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items --><li ng-repeat="item in vmC.items" class="ng-scope">
+
+                                    <div ng-click="goTo(item)" class="sideNavTextRow2 ng-binding" role="button" tabindex="0">
+                                        hcsvz1f6qcl3kphqia4i
+
+
+                                    </div>
+                                    <div ng-click="vmC.$scope.$parent.deleteItem(item)" role="button" tabindex="0">x</div>
+                                    <!-- ngIf: item.selected==true -->
+                                </li><!-- end ngRepeat: item in vmC.items -->
+                                </ul>
+
+                                <!--<li ng-repeat="item in vmC.items" class="" >
+                                  {{item.name}}
+                                  <div ng-click="goTo(item)"
+                                       class="sideNavTextRow2">{{item.first_name}}
+                                    {{item.last_name}}
+                                  </div>
+                                  <div ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
+
+                                  <div ng-click="vmC.$scope.$parent.deleteItem(item)">yx</div>
+                                  <div ng-if="item.selected==true">selected</div>
+                                </li>-->
+
+                            </list></md-list>
+                    </md-content>
+                </div>
+
+
+                <div id="footerContent" class="panel-footer clearfix" style="display: none;"></div>
+            </div></quicklist2>
+
+
+        <!-- <div>Pagination</div> -->
+        <quick-paginate config="paginatorConfig" class="ng-isolate-scope">
+
+            <div id="quickPaginate" class="ng-scope"> <!-- class="panel panel-default" -->
+
+                <div id="debugPanel" class="hide ng-binding">
+                    Total Count
+
+                    Pages
+
+                    Page #:
+
+                </div>
+
+  <span id="btns">
+
+    <!-- ngRepeat: item in buttons -->
+
+  </span>
+                &nbsp;
+                <a ng-disabled="morePages==false" ng-show="morePages" id="btnNext" class="btn btn-primary" ng-click="goToNextPage()" tabindex="0" aria-hidden="false" aria-disabled="false">Next</a>
+
+                <div class="hidex">
+
+                </div>
+
+            </div></quick-paginate>
+    </div>
+
+
+    <!--
+    <div  id="colRight" class="quick-crud-rightcol">
+      <quick-form
+        title="formForCrud"
+        _data-object="dataObject"
+        _data-object2="dataObject"
+        form-object="vm.formObject"
+        config="vm.config"
+        fx-save="saveFormObject"
+        ></quick-form>
+    </div>
+    -->
+
+    <!--
+    <div  id="colRight" class="quick-crud-rightcol">
+      <quick-form
+        title="formForCrud"
+        data-object="vm.config.dataObject"
+        form-object="vm.config.formObject"
+        config="vm.config.quickFormConfig"
+        fx-save="saveFormObject"
+        ></quick-form>
+    </div>
+    -->
+
+
+    <div id="colRight" ng-style="vm.colRightStyle" class="quick-crud-rightcol">
+        <!--   <br />
+
+           dataObject:
+           {{dataObject}} <br />
+           formObject:
+           {{formObject}} <br />
+           <br />-->
+        <!--
+        <br/>
+        {{config.name}}
+        {{vm.config.name}} {{vm.config.dataObject}}
+        {{refresh}}
+        <br/>
+        -->
+
+        <!--  <div>
+         formObject:
+         {{formObject}} <br />
+         </div>-->
+        <quickform2 titlex="formForCrud" config="quickFormConfig" fx-save="saveFormObject" refresh="refresh" class="ng-isolate-scope"><div id="quickForm" class="ng-scope"> <!-- class="panel panel-default" -->
+            <div id="headerContent" class="hide panel-heading">
+            </div>
+            <!--
+            scope: {{vm}} <br />
+            -->
+            <!--
+            scope-dataObject: {{vm.dataObject}} <br />
+            scope-dataObject:  {{dataObject}} <br />
+            scope-formObject:  {{formObject}} <br />
+            scope-dataObjectB:  {{vm.formData}} <br />
+            scope-refresh: {{vm.refresh}}
+            <br /><br />
+            scope: {{vm}} <br />
+            -->
+            <!--
+            {{dataObject}} <br />
+            ++++ <br />
+            {{dataObject.prompt.prompt_type}}
+            -->
+            <!-- class="panel panel-default" -->
+            <div id="bodyContent">
+                <form name="userForm2" class="ng-pristine ng-valid"><md-input-container ng-show="!formObject.name.hiddenComponent" ng-disabled="testDisable(&quot;name&quot;)" class="md-default-theme md-input-has-value" aria-hidden="false" aria-disabled="false"><label for="input_112">what your name?</label><input ng-model="dataObject.name" class="ng-pristine ng-untouched ng-valid md-input" id="input_112" tabindex="0" aria-invalid="false"><div ng-messages="qf" ng-show="formObject.name.msgs.length>0" aria-live="assertive" aria-hidden="true" class="ng-hide"><!-- ngRepeat: msg in formObject.name.msgs --><br></div><div ng-messages="qf" ng-show="formObject.name.help.length>0" aria-live="assertive" aria-hidden="true" class="ng-hide"><!-- ngRepeat: msg in formObject.name.help --><br></div><div ng-messages="qf" style="position: absolute; right: 4px; top: 4px; opacity: 0.7; width: 100%;" ng-show="formObject.name.help2.length>0" ng-hide="vm.config.showDebug!=true" aria-live="assertive" aria-hidden="true" class="ng-hide"><!-- ngRepeat: msg in formObject.name.help2 --><div ng-message="auto" style="color: black; position: absolute; right: 0px; top: 0px; opacity: 0.7;" ng-repeat="msg in formObject.name.help2" class="ng-binding ng-scope">what your name? 1 1   1 1   1 1</div><!-- end ngRepeat: msg in formObject.name.help2 --><br></div></md-input-container></form></div>
+
+            <div id="footerContent" class="hide panel-footer clearfix">
+
+            </div>
+
+
+            <section layout="row" id="btnRow" layout-sm="column" layout-align="center center">
+                <button class="md-raised md-button md-default-theme" ng-transclude="" ng-click="cancelFormData()" tabindex="0"><span class="ng-scope">Cancel</span></button>
+                <button class="md-raised md-primary md-button md-default-theme" ng-transclude="" id="btnSave" ng-click="saveFormData()" ng-disabled="errors.length > 0" tabindex="0" aria-disabled="false"><span class="ng-scope">Save</span></button>
+
+            </section>
+        </div></quickform2>
+
+    </div>
+
+</div>
+</div>

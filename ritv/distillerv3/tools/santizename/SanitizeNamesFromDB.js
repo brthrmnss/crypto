@@ -808,6 +808,19 @@ function SanitizeNamesFromDB() {
                     errorRows.unshift(sh.join(arr))
                     stg.json = self.data.imdbInfosNotFound;
                     sh.writeFile2(stg);
+
+
+
+                    var stg = {};
+                    stg.name = 'missing imdb info_raw_list.json';
+                    stg.dir = 'output/'
+                    errorRows.unshift('this file tells what files were missig')
+                    stg.json = errorRows;
+                    sh.writeFile2(stg);
+
+
+
+
                     console.error( arr );
                     self.proc('done with sets')
                     return;
@@ -869,10 +882,24 @@ function SanitizeNamesFromDB() {
                                 fxDone()
                             } else {
                                 if ( imdbInfo ) {
+                                    var title = [ imdbInfo.name, sh.qq( imdbInfo.imdb_series_id),
+                                        imdbInfo.seasonNumber, 'x', imdbInfo.episodeNumber,
+                                        imdbInfo.episode_name,
+                                        imdbInfo.imdb_id].join(' ')
+
+                                    if ( imdbInfo.seasonNumber == 0 || imdbInfo.episodeNumber == 0 ) {
+                                        console.error('got 0 epixode ', title)
+                                        fxDone()
+                                        return;
+                                    }
                                     if ( ! sh.includes(self.data.imdbInfosNotFound,imdbInfoQuery)) {
                                         self.data.imdbInfosNotFound.push(imdbInfoQuery)
                                         imdbInfoQuery.index = self.data.imdbInfosNotFound.length
                                     }
+
+                                    imdbInfoQuery.missingFiles = sh.dv(imdbInfoQuery.missingFiles, [])
+                                    imdbInfoQuery.missingFiles.push(title)
+                                    imdbInfoQuery.missingFiles = imdbInfoQuery.missingFiles.sort();
                                 }
                                 self.data.notFound.push(imdbInfo)
                                 fxDone()
@@ -979,9 +1006,11 @@ function SanitizeNamesFromDB() {
                 }
 
                 var  skipBc = null;
-                var removeFileTypes = ['.icon', '.epub', '.pdf', '.ico', '.mobi']
+                var removeFileTypes = ['.icon', '.epub', '.pdf', '.ico', '.mobi',
+                    '.jpg', '.png', '.htm', '.rar', '.xml',
+                    '.smi']
                 sh.each(removeFileTypes, function onFile(k,v) {
-                    if (sh.includes(localFilePath,v)) {
+                    if (sh.endsWith(localFilePath,v)) {
                         skipBc = v
                         return false;
                     }
@@ -1026,7 +1055,7 @@ function SanitizeNamesFromDB() {
             if ( showRemovedItems ) {
                 sh.each(files, function showRemovedFiles(i,origfile) {
                     if (filteredFiles.indexOf(origfile) == -1 ) {
-                       console.error(origfile)
+                        console.error(origfile)
                     }
                 })
                 process.exit()
@@ -1035,8 +1064,8 @@ function SanitizeNamesFromDB() {
             //showIncludedItems = true
             if ( showIncludedItems ) {
                 sh.each(filteredFiles, function showAllIncludedFiles(i,origfile) {
-                      // if ( i < 9000 )
-                        console.log(i,origfile)
+                    // if ( i < 9000 )
+                    console.log(i,origfile)
                 })
                 process.exit()
             }
@@ -1055,7 +1084,7 @@ function SanitizeNamesFromDB() {
                     var old = self.data.succOldFilePaths[localFilePath];
                     if ( old != null ) {
                         //asdf.g
-                       // fxDone();
+                        // fxDone();
                         return;
                     }
                 }
@@ -1066,7 +1095,7 @@ function SanitizeNamesFromDB() {
             if ( showRemovedItems ) {
                 sh.each(files, function showRemovedFiles(i,origfile) {
                     if (filteredFiles.indexOf(origfile) == -1 ) {
-                       console.error(origfile)
+                        console.error(origfile)
                     }
                 })
                 process.exit()
@@ -1075,8 +1104,8 @@ function SanitizeNamesFromDB() {
             //showIncludedItems = true
             if ( showIncludedItems ) {
                 sh.each(filteredFiles, function showAllIncludedFiles(i,origfile) {
-                      // if ( i < 9000 )
-                        console.log(i,origfile)
+                    // if ( i < 9000 )
+                    console.log(i,origfile)
                 })
                 process.exit()
             }

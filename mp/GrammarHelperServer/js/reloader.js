@@ -11,10 +11,11 @@
 
 //alert('....')
 
+window.initializedAddOnApps = true
 var baseUrl = 'https://127.0.0.1:8043/apps/speak/'
 var baseBaseUrl = 'https://127.0.0.1:8043/'
 var baseBaseUrl = 'http://127.0.0.1:4080/'
-var baseBaseUrl = 'http://127.0.0.1:5557/'
+var baseBaseUrl = 'http://127.0.0.1:14002/'
 var loadEval = true
 if ( loadEval ) {
     function loadEvalApp(){
@@ -33,7 +34,7 @@ if ( loadEval ) {
         };
         // alert('load eval')
         loadJS2(baseBaseUrl+
-            'socket.io-1.2.0.js.', function loadedSocket(a){
+            'socket.io-1.2.0.js.ignore', function loadedSocket(a){
 
             //return;
             var socket = io(baseBaseUrl);
@@ -51,6 +52,7 @@ if ( loadEval ) {
                 $('#messages').append($('<li>').text(msg));
             });
             socket.on('window.invoke', function(msg){
+                console.clear();
                 console.log('invoke.window', msg)
                 if ( window.fxInvoke == null ) {
                     return;

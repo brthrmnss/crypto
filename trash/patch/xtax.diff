@@ -1,0 +1,1370 @@
+Index: mp/Tx/prev/txIteratorsAuto/JSONSetIteratorAMZ.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsAuto/JSONSetIteratorAMZ.js   (revision )
++++ mp/Tx/prev/txIteratorsAuto/JSONSetIteratorAMZ.js   (revision )
+@@ -0,0 +1,323 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches = ['Amazon']
++        var addItem = false
++        if ( self.utils2.filterIfPropMatches(self.item, validMatches) )
++        {
++            addItem = true;
++        }
++
++       /* if ( addItem == false  ) {
++            var validMatches = self.settings.it.matchesPersonal;
++            if (validMatches &&
++                self.utils2.filterIfPropMatches(self.item, validMatches)) {
++                addItem = true
++            }
++        }*/
++
++        if ( addItem ) {
++            self.item.filtered = true;
++            self.data.matches.push(self.item)
++            // console.log(sh.each.print.values(self.item))
++        }
++
++        self.fx()
++
++    }
++
++
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        /*
++         self.item = item;
++         self.fx = fx
++         self.i = i;
++         self.runner */
++        self.isAmz()
++
++
++        return;
++
++        delete item.throwErrorWhenQueryNotFound
++        var skipUrls = false;
++        skipUrls = true;
++        var doNotRetryPbNotFound = true;
++        // doNotRetryPbNotFound = false
++        var highlight = 'firefly';
++        highlight = null
++        highlight = 'sopranos';
++        // highlight = 'atlantis';
++
++
++
++        sh.isAnyInAny(item.name, [' with John Oliver','','One Piece'])
++
++
++        highlight = null
++        if ( highlight ) {
++            self.data.modeHighlight1Query = true;
++            if ( self.hitHihglihgted != true ) {
++                self.replaceListfileterdIwth = [];//=runner.data.listFiltered
++                self.hitHihglihgted = true;
++                // runner.data.listFiltered = [];
++                // asdf.g
++            }
++
++            if ( sh.includes( item.query, highlight, true))  {
++                self.replaceListfileterdIwth.push(item)
++                skipUrls = false;
++            } else {
++
++                //runner.data.listFiltered = []
++                fx();
++                return;
++            };
++        };
++
++
++        if (  skipUrls ) {
++            if ( item.urlTorrent != null    ) {
++                fx();
++                return;
++            };
++
++
++        };
++
++        if ( doNotRetryPbNotFound    &&  item.pbNotFound == true ) {
++            fx();
++            return;
++        };
++
++
++
++        self.item = item; //why: for util fx access
++        self.utils = {};
++        self.utils.isItemTVShow =  function isItemTVShow() {
++            if ( self.item.series == true )
++                return true;
++
++            return false;
++        }
++        if ( self.utils.isItemTVShow() ) {
++            if ( item.seasons < 1 || item.seasons == null  ) {
++                // fx();
++                //return; //why: bail b/c nothign to expand
++            } else if ( item.clonedFrom != null ) {
++            }
++            else
++            {
++
++                var seasons = sh.each.times(item.seasons)
++                var queryExpandedSeasons = [item.name , 'season',  seasons.join(' ')].join(' ')
++                // asdf.g
++
++                item.queriesAlternates.push(queryExpandedSeasons)
++            }
++        }
++
++        //why: invoked when action processed
++        //console.log('....what', sh.toJSON(item))
++        console.log('....what', sh.toJSONString(config));
++        var options = {};
++        options.token = {};
++
++        var SearchPB_Test = require('G:/Dropbox/projects/crypto/ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
++
++        var go = new SearchPB_Test();
++        options.list = [item];
++        options.token.fxBail = function (x) {
++            console.log('bail')
++            throw new Error(x)
++        }
++        options.fxReturnFirstResult = function onDone(url) {
++            console.log('SearchPB complete:', url);
++            if ( url ) {
++                item.size = url.size;
++                item.urlTorrent = url.urlTorrent;
++                item.nameTorrent = url.nameTorrent
++            }
++            else  {
++                item.pbNotFound = true
++
++                if ( self.expandItem(item, fx, i, runner) ) {
++                    return;
++                }
++            }
++
++            fx();
++        }
++
++
++
++        var maxI = -1
++        if ( maxI > 0 && i > maxI ) {
++            runner.finishedWriting();
++            return;
++        }
++
++        go.go(options);
++
++
++
++        return;
++
++    }
++
++    var y = {
++        "name": "The Sopranos",
++        "query": "The Sopranos  complete series",
++        "rating": 9.2,
++        "imdb_id": "tt0141842",
++        "series": true,
++        "dirRemoteMega": "/Root/tv/The_Sopranos_1999/tt0141842/The_Sopranos__complete_series/",
++        "seasons": 6,
++        "index": 222,
++        "queriesAlternates": [
++            "The Sopranos season 1 - 6",
++            "The Sopranos all seasons",
++            "The Sopranos complete s01-s06",
++            "The Sopranos complete series",
++            "The Sopranos 6 seasons",
++            "The Sopranos complete 1-6"
++        ],
++        "boo1": true,
++        "pbCategory": 208,
++        "pbMinSeederCount": 5,
++        "urlTorrent": null,
++        "pbNotFound": true
++    }
++
++    p.expandItem = function expandItem_Complete(item,  fx, i, runner) {
++        if ( item.seasons < 1 || item.seasons == null  ) {
++            // fx();
++            return; //why: bail b/c nothign to expand
++        }
++
++        if ( sh.includes(item.query, ' complete series', true) ) {
++
++        } else {
++            //fx();
++            return;
++        }
++
++        var items = sh.each.times(item.seasons)
++
++        var iterationController = {}
++        iterationController.couldNotFindATorrent = false;
++        sh.async(items, function epxandItemIntoSeasons(number, fxDoneWihtCloning) {
++
++            function xRayFinishedGettingClonedUrl() {
++                var y = clonedItem.urlTorrent
++                runner.data.listFiltered.push(clonedItem);
++                //  asdf.g
++                if ( clonedItem.pbNotFound ) {
++                    //asdf.f
++                    iterationController.couldNotFindATorrent = true
++                }
++                fxDoneWihtCloning()
++                return;
++            }
++
++            var clonedItem = sh.clone(item);
++            clonedItem.clonedFrom = item.query;
++            clonedItem.queriesAlternates = null;
++            clonedItem.query =  item.name + ' ' + 'season ' + number;
++            clonedItem.dirRemoteMega = item.dirRemoteMega.replace('__complete_series',   '_season_' + number);
++            delete clonedItem.pbNotFound;
++            self.fxCallback(clonedItem, xRayFinishedGettingClonedUrl, number, runner)
++        }, function doneExpanding() {
++            // asdf.g
++            /*if ( iterationController.couldNotFindATorrent == false ) {
++             //  asdf.d
++             item.filtered = true; //why: prevent adding item
++             }*/
++            item.filtered = true; //always remove filtered item...
++            fx();
++        })
++
++
++        return true;
++
++    }
++
++
++    p.getAmountTotal = function getAmountTotal() {
++        var amt = 0;
++        sh.each(self.data.matches, function asdf(k,item) {
++            amt += parseFloat(item.amount);
++        })
++        amt = amt.toFixed(2)
++        self.proc('amount amz', '$', amt)
++        return amt;
++    }
++
++
++    p.fxDone = function onDone(){
++
++        // console.log(self.data.matches)
++        //console.log(self.runner.data.work.list)
++
++        self.proc('amz got', self.data.matches.length,
++            sh.percent(
++                self.data.matches.length/
++                self.runner.data.work.list.length
++            )
++        )
++
++        self.getAmountTotal()
++
++
++
++        // self.runner.data.listFiltered=[];
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/txIteratorsOld/JSONSetIterator_Housing.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsOld/JSONSetIterator_Housing.js   (revision )
++++ mp/Tx/prev/txIteratorsOld/JSONSetIterator_Housing.js   (revision )
+@@ -0,0 +1,89 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches =  ['Preserve']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++        self.fx()
++    }
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++
++    p.getAmountTotal = function getAmountTotal() {
++        var amt = 0;
++        sh.each(self.data.matches, function asdf(k,item) {
++            amt += parseFloat(item.amount);
++        })
++        amt = amt.toFixed(2)
++        self.proc('amount amz', '$', amt)
++        return amt;
++    }
++
++
++    p.fxDone = function onDone(){
++
++        self.proc('house got', self.data.matches.length,
++            sh.percent(
++                self.data.matches.length/
++                self.runner.data.work.list.length
++            )
++        )
++
++        self.getAmountTotal()
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/txIteratorsOld/JSONSetIterator_Gas.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsOld/JSONSetIterator_Gas.js   (revision )
++++ mp/Tx/prev/txIteratorsOld/JSONSetIterator_Gas.js   (revision )
+@@ -0,0 +1,70 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    self.name = 'JunkFood'
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches =  ['Sunoco',
++            'Texaco']
++        if ( self.utils2.filterIfPropMatches(self.item, validMatches) )
++            self.data.matches.push(self.item)
++        self.fx()
++    }
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++    p.fxDone = function onDone(){
++        self.utils2.percentageOfWorkList(self.data.matches , self.name)
++        self.utils2.sumArray(self.data.matches, 'amount' , self.name)
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/txIteratorsOld/JSONSetIterator_JunkFood.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsOld/JSONSetIterator_JunkFood.js  (revision )
++++ mp/Tx/prev/txIteratorsOld/JSONSetIterator_JunkFood.js  (revision )
+@@ -0,0 +1,84 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    self.name = 'JunkFood'
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches =  ['Pizza',
++            'Chipotle']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++
++        var validMatches =  ['Taka House', 'Ledo']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++
++
++        self.fx()
++
++
++    }
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++    p.fxDone = function onDone(){
++        self.utils2.percentageOfWorkList(self.data.matches , self.name)
++        self.utils2.sumArray(self.data.matches, 'amount' , self.name)
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/txIteratorsOld/JSONSetIterator_Utilities.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsOld/JSONSetIterator_Utilities.js (revision )
++++ mp/Tx/prev/txIteratorsOld/JSONSetIterator_Utilities.js (revision )
+@@ -0,0 +1,81 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches =  ['Waterwatch Trace']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++
++        var validMatches =  ['Roch Gas Elec']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++
++
++        self.fx()
++
++
++    }
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++    p.fxDone = function onDone(){
++        self.utils2.percentageOfWorkList(self.data.matches , 'utils')
++        self.utils2.sumArray(self.data.matches, 'amount' , 'utils')
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/JSONSetRunner_tx.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/JSONSetRunner_tx.js (revision )
++++ mp/Tx/prev/JSONSetRunner_tx.js (revision )
+@@ -0,0 +1,403 @@
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++var JSONSetRunner = require('./JSONSetRunner').JSONSetRunner;
++
++
++/*
++ open file
++ run through many 'rule' files
++ keep filtering list until finished
++ most do not filter list
++
++ get things, filter list,
++ generate output files, add to global question files
++ remove item if you want to ...
++
++
++ running docs
++ questions about transactions
++ useful to know facts
++
++ tag stuff
++ amz, what is total, fed, huge, fraud, housing, medical,  def business, maybe business
++
++ items untouched (if u see something , it can be removed
++
++ */
++
++if (module.parent == null) {
++
++    var dirIterators = 'txIterators/';
++    var dirIteratorsAuto = 'txIteratorsAuto/';
++    var fileInput = 'mint 2014.csv';
++    JSONSetRunner.runSetDir(fileInput, dirIteratorsAuto)
++    //return;
++    var cfg = {}
++    cfg.it = {}
++    cfg.announce = false;
++    cfgBase = sh.clone(cfg);
++
++    cfg.fxPreProcess = function preProccess(item) {
++        item.amount = parseFloat(item.amount);
++        if (  item.transactionType == 'credit') {
++
++        } else {
++            if ( item.amount > 0 )
++                item.amount = item.amount * -1
++        }
++
++        return item;
++    }
++
++
++
++    var fileIterator = dirIterators + 'JSONSetIterator_Generic.js'
++    var JSONSetIterator_Generic = require('./'+fileIterator).IteratorClass
++    fileIterator = sh.fs.resolve(fileIterator)
++    //cfg.resetList = true
++    cfg.it.iteratorName = 'Cell Phone'
++    cfg.it.matchesDefault = ['Sprint', 'Wireless']
++    /*JSONSetIterator_Generic.utils.tag = function () {
++
++     } */
++
++    JSONSetRunner.runSet.fxPost = function clearIt(){
++        cfg.it.iteratorName = null
++        cfg.it.matchesDefault = null
++        cfg.it.matchesPersonal = null
++        cfg.resetList = false
++        cfg.it.fxDone = null ;
++        cfg.it.fxDone = null;
++        cfg.includeAllItmes = null
++    }
++
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Air Travel'
++    cfg.it.matchesDefault = ['Airlines', 'SW AIR', 'Southwest Airlines']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Transfers'
++    cfg.it.matchesDefault = ['Transfer']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Rental Cars'
++    cfg.it.matchesDefault = [
++        'BUDGET RENT A CAR',
++        'BUDGET.COM']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Groceries'
++    cfg.it.matchesDefault =
++        ['Trader Joe',
++            'Giant', 'Safeway',
++            'Wegmans', 'Market', 'Grocery',
++            'Hegedorn',
++            'Farms']
++    cfg.it.matchesPersonal =
++        ['Bouchard Family Farms']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Utilities'
++    cfg.it.matchesDefault = [
++        'TIME WARNER CABLE',
++        'Waterwatch Trace',
++        'WEBWATER WATCH',
++        'WATERWATCH ROCHESTER',
++        'Roch Gas Elec'
++    ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Rent'
++    cfg.it.matchesDefault =
++        ["PRESERVE M - P"
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Dry Cleaning'
++    cfg.it.matchesDefault =
++        ['BAYVIEW CLEANERS'
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Amex Payments'
++    cfg.it.matchesDefault =
++        ['EPAYMENT AMEX EPayment'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Pills'
++    cfg.it.matchesDefault =
++        ['VITAMIN AND CARD OUTLE' ,
++            'PUREFORMULAS.COM',
++            'CUSTOMPROBI',
++            '*LIFTMODE',
++            'SYNAPTENT', //lifemode
++            'ORGANIC3COM', //probiotics
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Fraud'
++    cfg.it.matchesDefault =
++        ['FS *FSPRG.COM', //file sharing ? Fast Share
++            'Gpo Haslemere Gb'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Gym'
++    cfg.it.matchesDefault =
++        ['WORLD GYM'
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Crypto currencies'
++    cfg.it.matchesDefault =
++        ['Coinbasebtc'
++            ,'WEBCOINBASE',
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Loans'
++    cfg.it.matchesDefault =
++        ["Sallie Mae",
++            'Slma Ed Serv'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Federal Taxes'
++    cfg.it.matchesDefault =
++        ["IRS (USATAXPYMT)",
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'State Taxes'
++    cfg.it.matchesDefault =
++        ["COMP OF MARYLAND",
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Gas'
++    cfg.it.matchesDefault = [
++        'EXXONMOBIL',
++        'SUNOCO',
++    ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'CPU Utilities'
++    cfg.it.matchesDefault =
++        ['GH *GITHUB.COM', 'Github',
++            'Dropbox',
++            'Evernote',
++            'Rackspace',
++            'IDrive'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Income'
++    cfg.it.matchesDefault =
++        ['Deposit',
++            '']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Audiobooks'
++    cfg.it.matchesDefault =
++        ['Audible',
++            '']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Freelancers'
++    cfg.it.matchesDefault =
++        ['ELANCE INC',
++            'Freelancer.com',
++            'Dropbox',
++            'Elance escrow',
++            'WEBFREELANCER',
++            'Fancy Hands']
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Junk Food'
++    cfg.it.matchesDefault =
++        ['Pizza','Pizzeria',
++            'Chipotle',
++            'Taka House',
++            'ESPADA BRAZILIAN'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Crypto currencies'
++    cfg.it.matchesDefault =
++        ['Coinbasebtc'
++            ,'WEBCOINBASE',
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Retirement IRA Cont'
++    cfg.it.matchesDefault =
++        ['Betterment',
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Insurance'
++    cfg.it.matchesDefault =
++        ['PREM CAR RENTAL PROTECTION',
++            'Golden Rule Ins'
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Clothes'
++    cfg.it.matchesDefault =
++        ["Khol's",'Target',
++            "KOHL'S"
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'ATM'
++    cfg.it.matchesDefault =
++        ['Withdrawaln',
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Doctor'
++    cfg.it.matchesDefault =
++        ['Rghs Rochester',
++            '@ WEBSTER MEDICAL GROUP'
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Travel Incidentals'
++    cfg.it.matchesDefault =
++        ['MCAA PARKING'
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Mobile Apps'
++    cfg.it.matchesDefault =
++        ['Google.com/'
++
++        ]
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Total Deposits'
++    cfg.it.matchesDefault = []
++    cfg.it.noOutput = true
++    cfg.includeAllItmes = true
++    cfg.it.fxFilter = function fxFilter(item) {
++        if ( item.transactionType == 'credit' ){
++            return true;
++        }
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Total Debits'
++    cfg.it.matchesDefault = []
++    cfg.it.noOutput = true
++    cfg.includeAllItmes = true
++    cfg.it.fxFilter = function fxFilter(item) {
++        if ( item.transactionType == 'debit' ){
++            return true;
++        }
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++    cfg.it.iteratorName = 'Total Debits'
++    cfg.it.matchesDefault = []
++    cfg.it.noOutput = true
++    cfg.includeAllItmes = true
++    cfg.it.fxFilter = function fxFilter(item) {
++        if ( item.transactionType == 'debit' ){
++            return true;
++        }
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    cfg.it.iteratorName = 'Large Purchases'
++    cfg.it.matchesDefault = []
++    cfg.it.noOutput = true
++    cfg.includeAllItmes = true
++    cfg.it.fxFilter = function fxFilter(item) {
++        item.amount = parseFloat(item.amount);
++        if ( item.transactionType == 'credit' ){
++            return false;
++        }
++        if ( Math.abs(item.amount) > 10000 ){
++            return true;
++        }
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++
++    var count = 0;
++    cfg.it.iteratorName = 'Unknown'
++    cfg.it.matchesDefault = []
++    cfg.it.noOutput = true
++    cfg.includeAllItmes = false
++    cfg.it.fxFilter = function fxFilter(item) {
++        count++
++        //console.log(count)
++        return true;
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++
++    cfg.it.iteratorName = 'Final'
++    cfg.it.matchesDefault = []
++    cfg.it.fxDone = function fxDone(runner, it) {
++        runner.createAdditionalFile('comments', JSONSetIterator_Generic.comments)
++    }
++    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
++
++}
++
++
++
+Index: mp/Tx/xgoal.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/xgoal.js (revision )
++++ mp/Tx/xgoal.js (revision )
+@@ -0,0 +1,14 @@
++/**
++ * Created by morriste on 9/20/2016.
++ */
++
++/*
++open file
++run through many 'rule' files
++keep filtering list until finished
++most do not filter list
++
++get things, filter list,
++generate output files, add to global question files
++remove item if you want to ...
++ */
+\ No newline at end of file
+Index: mp/Tx/prev/txIterators/JSONSetIterator_Generic.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIterators/JSONSetIterator_Generic.js  (revision )
++++ mp/Tx/prev/txIterators/JSONSetIterator_Generic.js  (revision )
+@@ -0,0 +1,127 @@
++/**
++ * Why: class is an example iterator for JSONSetIterator_Generic
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetIterator_Generic() {
++    var p = JSONSetIterator_Generic.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    self.name = 'rename';
++
++    p.init = function init(config) {
++        //self.name = JSONSetIterator_Generic.iteratorName;
++        self.settings = sh.dv(config, {});
++        //if ( self.settings.it ) {
++        self.name = self.settings.it.iteratorName;
++        //}
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches = self.settings.it.matchesDefault;
++
++        if ( self.item.description == 'Sprint PCS'){
++            // debugger;
++        }
++
++        if ( self.item.description == 'Time Warner' &&
++            self.settings.name == 'Utilities'){
++            debugger;
++        }
++        var addItem = false
++        if ( self.utils2.filterIfPropMatches(self.item, validMatches) )
++        {
++            addItem = true;
++        }
++
++        if ( addItem == false  ) {
++            var validMatches = self.settings.it.matchesPersonal;
++            if (validMatches &&
++                self.utils2.filterIfPropMatches(self.item, validMatches)) {
++                addItem = true
++            }
++        }
++        if(self.name=='Total Deposits') {
++            console.log(self.settings.it)
++            //asdf.g
++        }
++        if ( self.settings.it.fxFilter ) {
++        //  assddf.g
++            var output = sh.callIfDefined(self.settings.it.fxFilter,self.item)
++            if ( output == false ) {
++                self.fx()
++                return;
++            }
++            if ( output  == true) {
++                addItem = true;
++            }
++        }
++
++
++        if ( addItem ) {
++            self.item.filtered = true;
++            self.data.matches.push(self.item)
++            // console.log(sh.each.print.values(self.item))
++        }
++
++        self.fx()
++
++    }
++
++
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++    p.fxDone = function onDone(){
++        var percentage = self.utils2.percentageOfWorkList(self.data.matches , self.name)
++        var sum = self.utils2.sumArray(self.data.matches, 'amount' , self.name)
++        self.runner.createAdditionalFile(self.name, self.data.matches)
++        JSONSetIterator_Generic.comments = sh.dv(JSONSetIterator_Generic.comments, [])
++        JSONSetIterator_Generic.comments.push(
++            sh.join('Total for', self.name, sum, self.data.matches.length, percentage)
++        )
++
++        var output = sh.callIfDefined(self.settings.it.fxDone,self.runner,self.item)
++
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSetIterator_Generic = JSONSetIterator_Generic;
++exports.IteratorClass =  JSONSetIterator_Generic
++
++if (module.parent == null) {
++    var instance = new JSONSetIterator_Generic();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++
+Index: mp/Tx/prev/txIteratorsOld/JSONSetIterator_Food.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/Tx/prev/txIteratorsOld/JSONSetIterator_Food.js  (revision )
++++ mp/Tx/prev/txIteratorsOld/JSONSetIterator_Food.js  (revision )
+@@ -0,0 +1,106 @@
++/**
++ * Why: class is an example iterator for jsonsettestiterator
++ */
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++function JSONSetTestIterator() {
++    var p = JSONSetTestIterator.prototype;
++    p = this;
++    var self = this;
++
++    self.settings = {};
++    self.data = {}
++
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++        config = self.settings;
++        self.data.matches = [];
++    }
++
++
++    self.isAmz = function isAmz() {
++        var validMatches =  ['Giant', 'Safeway',
++            'Wegmans', 'Market', 'Grocery',
++            'Hegedorn',
++            'Farms']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatches)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++
++
++        var validMatchesPers =  [
++            'Bouchard Family Farms']
++        if ( sh.isAnyInAny(self.item.description,
++                validMatchesPers)){
++            self.data.matches.push(self.item)
++            self.item.filtered = true;
++        }
++        self.fx()
++    }
++
++    p.fxCallback = function fxCallback(item,  fx, i, runner) {
++        self.isAmz()
++        return;
++    }
++
++
++    p.getAmountTotal = function getAmountTotal() {
++
++        var amt = 0;
++        sh.each(self.data.matches, function asdf(k,item) {
++            var itemAmt = parseFloat(item.amount);
++            if ( isNaN(itemAmt)) {
++                console.error('with transaction', item)
++            }
++            amt += itemAmt
++        })
++        amt = amt.toFixed(2)
++        self.proc('amount food', '$', amt)
++        return amt;
++    }
++
++
++    p.fxDone = function onDone(){
++
++        self.proc('food got', self.data.matches.length,
++            sh.percent(
++                self.data.matches.length/
++                self.runner.data.work.list.length
++            )
++        )
++
++        self.getAmountTotal()
++    }
++    p.test = function test(config) {
++    }
++
++    function defineUtils() {
++        var utils = {};
++        p.proc = function debugLogger() {
++            if ( self.silent == true) {
++                return;
++            }
++            sh.sLog(arguments);
++        };
++    }
++    defineUtils()
++}
++
++exports.JSONSet = JSONSetTestIterator;
++exports.IteratorClass =  JSONSetTestIterator
++
++if (module.parent == null) {
++    var instance = new JSONSetTestIterator();
++    var config = {};
++    instance.init(config)
++    instance.test();
++    instance.fxCallback({}, function done(){
++
++    })
++}
++
++
++

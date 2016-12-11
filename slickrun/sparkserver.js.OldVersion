@@ -1,0 +1,750 @@
+/**
+ * Created by user on 1/5/15.
+ */
+/*
+ program will run commands
+ has autocomplete
+
+ history
+ fallback and fall through
+ */
+
+/**
+ * Created by user on 1/5/15.
+ */
+
+/*
+ program will run commands
+ has autocomplete
+
+ history
+ fallback and fall through
+ */
+
+var shelpers = require('shelpers')
+var sh = shelpers.shelpers
+var ExpressServerHelper = shelpers.ExpressServerHelper
+var TestHelper = shelpers.TestHelper;
+var reqPost = TestHelper.reqPost;
+
+var proxy = require('express-http-proxy');
+
+
+function SparkServer() {
+    var p = SparkServer.prototype;
+    p = this;
+    var self = this;
+
+    var types = {};
+    types.POST = 'POST'
+    types.GET = 'GET'
+    types.Wildcard = '~'
+    types.json = {}
+    types.json.StoreFile = 'store'; //if set, where to store file to
+    types.json.isQuery = 'is_query'
+
+
+
+    p.start = function start() {
+
+        self.linux = true
+        self.win = false;
+        self.mac = false;
+
+
+    }
+
+
+    //setupProxy
+    self.setupProxy = function setupProxy(server) {
+        server.use('/proxy', proxy( function getHost(req, res){
+            if ( req.query != null ) {
+                /*  if ( sh.startsWith(req.query.url, '__')){
+                 req.query.url= req.query.url.slice(2);
+                 }*/
+                var info = require('url').parse(req.query.url)
+                var output = require('url').parse(req.query.url).host
+                output = req.query.url;
+                console.log('outputhost',output )
+                return   output;
+            }
+            var host =  require('url').parse(req.url).host;
+            return host ;
+        }, {
+            forwardPath: function(req, res) {
+                if ( req.query != null ) {
+                    /*if ( sh.startsWith(req.query.url, '__')){
+                     req.query.url= req.query.url.slice(2);
+                     }*/
+                    var decoded = decodeURIComponent( req.query.url);
+                    return require('url').parse(decoded).path;
+                }
+                return require('url').parse(req.url).path;
+            },
+            interceptx: function(rsp, data, req, res, callback) {
+                // rsp - original response from the target
+                // data = JSON.parse(data.toString('utf8'));
+                // callback(null, JSON.stringify(data));
+            },
+            decorateRequest: function(req) {
+
+                //req.headers['Content-Type'] = '';
+                var hostname = req.hostname
+                if ( hostname == null ) {
+                    hostname = ''
+                }
+                if ( hostname.indexOf('youtube')== -1 ) {
+
+                    req.headers["Access-Control-Allow-Origin"] = "*";
+                    req.headers["Access-Control-Allow-Headers"] = "X-Requested-With";
+                } else {
+                    self.proc('youtube magic', req.hostname, req.url, req.originalUrl)
+                    /*req["authority"] = "www.youtube.com";
+                    req["scheme"] = "https";
+                    //req.headers["x-client-data"] = "asd.gd";
+                    delete req.headers["x-requested-with"];
+                    delete req.headers["cookie"];
+                    delete req.headers["connection"];
+                    req.headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*!/!*;q=0.8";
+
+                    req.headers["Access-Control-Allow-Origin"] = "*";
+                    req.headers["Access-Control-Allow-Headers"] = "X-Requested-With";
+
+                    req.hostname = 'https://www.youtube.com'
+                    sh.each(req.headers , function removeAll(k,v){
+                        delete req.headers[k]
+                    })
+*/
+
+                    req.hostname = 'www.youtube.com'
+                    req.protocol = 'https:'
+                    //req.port = 443;
+                }
+
+                if ( req.hostname && req.hostname.indexOf('https') != -1 ) {
+                    self.proc('to https')
+                    req.port = 443;
+
+                }
+
+                delete req.headers['referer']
+
+                self.proc('full request', sh.toJSONString(req))
+                //req.method = 'GET';
+                //req.bodyContent = wrap(req.bodyContent);
+                return req;
+            }
+        }));
+
+
+
+        server.use('/proxy2', function (req, res) {
+            var request = require('request');
+            request = request.defaults({jar: true, followAllRedirect:false,
+                followRedirect: false, rejectUnauthorized:false});
+
+            var reqoptions = {}
+            reqoptions.url  = 'https://www.youtube.com/results?lclk=long&filters=long&search_query=Furious+72015'
+            reqoptions.url = decodeURIComponent(req.query.url);
+            console.log('url', reqoptions.url)
+            if ( sh.endsWith(reqoptions.url , '.jpg') ) {
+                reqoptions.encoding = 'binary';
+            }
+            request(reqoptions, function (error, response, body) {
+                if (response != null && body == null) {
+                    body = response.body;
+                }
+
+                //res.unbinary = false;
+                if ( response != null ) {
+                    sh.each(response.headers, function fix(k, v) {
+                        if (!sh.includes(['content-length...', 'content-encoding...', 'content-type'], k, true)) {
+                            return;
+                        }
+                        res.setHeader(k, v);
+                    })
+                }
+
+                var bodyLength= 'no length for body null'
+                if ( body != null ) {
+                    bodyLength = body.length;
+                }
+                if (   reqoptions.encoding == 'binary' )   {
+                    res.encodedAs = 'binary';
+                }
+                self.proc( reqoptions.url, bodyLength);
+                res.send(body);
+            })
+        })
+        return
+        //proxy
+        server.use('/proxy', proxy('www.google.com', {
+            forwardPath: function(req, res) {
+                return require('url').parse(req.url).path;
+            }
+        }));
+    }
+
+
+
+    //session
+
+    self.setupSessionHelper = function setupSessionHelper(server) {
+        server.post('/setSession', self.setSession);
+        server.get('/getSession', self.changeEnv);
+    }
+
+    self.setSession = function setSession(req, res) {
+        self.proc('setSession');
+        self.cookie = req.body;
+        res.end();
+    }
+
+    self.getSession = function getSession(req, res) {
+        //make work with cookies coo
+        //set cookie
+        self.proc('change');
+        res.send(self.cookie)
+        res.end();
+    }
+
+
+
+
+
+
+
+    self.changeEnv = function changeEnv(req, res) {
+        self.proc('change');
+        res.end();
+    }
+
+    p.init = function init(config) {
+        self.startServer(config);
+        self.start();
+    }
+
+    p.startServer = function startServer(_config) {
+        //do you have simple?
+        var config = _config
+        if ( config == null ) {
+            config = {}
+        }
+        var configDefaults = {}
+        configDefaults.port = 10001
+
+        sh.defaults(configDefaults, config);
+        /*
+         if ( _config != null ) {
+         if ( _config.port != null ) {
+         config.port = _config.port;
+         }
+         }
+         */
+        var server = ExpressServerHelper.new(config)
+        sh.callIfDefined(_config.fxPreSetup,server);
+
+
+        //server.get('/changeEnv', self.changeEnv);
+
+        server.eSH.addResourceDir('/mnt/hgfs/Dropbox/projects/crypto/quick')
+        server.eSH.addResourceDir('public_html')
+        //server.use(express.static('/mnt/hgfs/Dropbox/projects/crypto/quick/output'))
+
+        self.server = server;
+
+        self.settings = _config;
+        self.settings.port = config.port;
+
+        if ( self.settings.noProxy == true ) {}
+        else {
+            self.setupProxy(server)
+        }
+        self.setupSessionHelper(server)
+
+
+        if ( self.settings.wildcards != false ) {
+            setTimeout(function defineWildCardRouteAfterRestHelpers() {
+                server.all('/*', self.processWildCardUrls)
+            }, 5)
+        }
+
+
+
+        config.fx = function postStartupFx() {
+            self.postStartup()
+            sh.callIfDefined(_config.fxDone);
+        }
+
+
+
+        if ( config.restHelper != null ) {
+            sh.each(config.restHelper, function asdf(i, restName) {
+                var RestHelper = require('shelpers').RestHelper
+
+                if ( sh.isString(restName)){
+                    var tasks = new RestHelper();
+                    var taskApiSettings = {}
+                    taskApiSettings.name = restName
+                    taskApiSettings.file = __dirname + '/'+'rest_helper/'+restName+'.json'
+                    var tS = taskApiSettings;
+                    tS.createGetPostRoutes = true;
+                    tS.requiredFields = {name:""}
+                    tS.reset = false;
+                    tS.reset = true;
+                    tS.server = server
+                    tasks.load(taskApiSettings)
+                } else {
+                    var config = restName;
+                    restName = config.name;
+                    var restHelper = new RestHelper();
+                    //config.name = restName;
+                    config.file = __dirname + '/'+'rest_helper/'+restName+'.json';
+                    config.createGetPostRoutes = sh.defaultValue(config.createGetPostRoutes, true);
+                    //config.requiredFields = {name:""};
+                    config.server = server;
+                    config.reset = sh.defaultValue(config.reset, true);
+                    restHelper.load(config);
+                }
+            })
+        }
+
+
+
+
+
+    }
+
+    /**
+     * Method will handle all requests
+     * @param req
+     * @param res
+     */
+    p.processWildCardUrls =   function processWildCardUrls(req, res, next) {
+        if ( sh.includes(req.originalUrl, 'output/' ) ) {
+            next();
+            return
+        }
+        if ( sh.includes(req.originalUrl, '/proxy' ) ) {
+            next();
+            return
+        }
+        if (req.originalUrl == '/favicon.ico') {
+            //res.end()
+            //return;
+            next();
+            return
+        }
+
+        var url = req.originalUrl
+        //if GET, remove query string
+        if ( sh.includes(url, '?')){
+            url = url.split("?")[0]
+        }
+        if ( sh.startsWith(url, '/')){
+            url = url.slice(1);
+        }
+        var split = url.split('/');
+        var urlRest = split; //split.slice(1)
+        var reqMethod = split[0];
+        var methodRequest = null
+
+
+
+
+        if ( sh.includes(['get', 'post'], req.method.toLowerCase()  ) ) {
+            methodRequest = req.method.toLowerCase()
+        }
+
+        if ( sh.includes(['get', 'post'], reqMethod  ) ) {
+            console.log('reqMethod', reqMethod)
+            methodRequest = reqMethod
+        }
+
+        var body = req.body;
+
+
+        if ( methodRequest != null ) {
+            //find in directory
+            var dir = 'requests'
+            var fileName_ = methodRequest+'-'+split.join('-')
+            var fileName_filter = '-'+split.join('-'); //ignore method type for testing
+            var fileName = dir+'/'+methodRequest+'-'+split.slice(1).join('-')
+
+            function getFilesThatMatchAFilter(dir, filter ) {
+                var matches = []
+                var all = sh.getFilesInDirectory(dir)
+                sh.each(all, function processEach(i,fileName){
+                    if ( sh.includes(fileName, filter)){
+                        matches.push(fileName);
+                    }
+
+                })
+                return matches
+            }
+
+            var files = getFilesThatMatchAFilter(dir, fileName_filter);
+
+
+            function getPreferredFile(files, body, isWildcard  ) {
+
+
+
+                var matches = []
+
+                var high = null;
+                var highScore = 0;
+                var scores = {} //for debugging
+
+                sh.each(files, function processEach(i,fileName){
+                    var split = fileName.split('-');
+                    if ( split.length < 2 ) {
+                        return
+                    }
+
+                    var postBlock = split.slice(-1)[0];
+
+                    //sh.removeIfContains(postBlock, '.txt')
+                    var splitForFileExt = postBlock.split('.')
+                    var last = splitForFileExt.slice(-1)[0];
+                    if ( last.length == '3') {
+                        postBlock = postBlock.slice(0,-4);
+                    }
+
+
+                    //remove txt
+                    //username_fred,password_jay.txt
+                    if ( sh.includes(postBlock, '.')){
+                        postBlock = postBlock.split('.').slice(0,-1);
+                    }
+
+                    var isWildcard = false
+                    if ( postBlock == types.Wildcard ){
+                        postBlock = sh.replace(postBlock, '~')
+                        isWildcard = true
+                    }
+
+                    if (postBlock==null) {
+                        return
+                    }
+                    // postBlock = postBlock[0];
+
+                    var yy = postBlock.split(',')
+
+
+                    var fileVals = {}
+                    var fileValsLength = 0
+                    sh.each(yy, function processEachSection(i,vX){
+                        vX = vX.split('_')
+                        var key = vX[0];
+                        //REQ 16: Use ^ as a _
+                        key = sh.replace(key, '^', '_')
+                        if ( vX.length == 2 ) {
+                            fileVals[key] = vX[1];
+                            fileValsLength++
+                        }
+                    })
+
+                    var score = 0
+                    sh.each(body, function matchUpBodyParams(k,paramValue){
+                        var val = fileVals[k]
+                        if ( val == paramValue ) {
+                            score++
+                            return;
+                        }
+                        //assume empty string is same a null
+                        if ( paramValue == '' && val == null ) {
+                            return;
+                        }
+                        if ( val == '' && paramValue == null ) {
+                            return;
+                        }
+                        score--
+                    })
+                    if ( isWildcard ) {
+                        score = 0 ;
+                    }
+                    score -= fileValsLength *.01;
+                    if ( score >= highScore ) {
+                        high = fileName
+                    }
+
+                    scores[fileName]={score:score, vars:fileVals}
+                    return;
+
+                })
+                return high
+            }
+
+            var params = {}
+            params = req.body;
+            if ( methodRequest == 'get' ) {
+                params = req.query;
+            }
+
+            var preferredFile = getPreferredFile(files, params)
+            /*//not sure about this ...
+             //if only 1 file and file has no pamas specified, use it always?
+             if ( files.length == 0 && files[0].indexOf() == -1 ) {
+             preferredFile = files[0]
+             //if it doesn't have dynamic code ... prevent it
+             }*/
+            if ( preferredFile != null ) {
+                preferredFile = dir + '/' + preferredFile
+                if (sh.fileExists(preferredFile)) {
+                    content = sh.readFile(preferredFile)
+                }
+                var json = null
+                try {
+                    var content2 = sh.remove_win_newlines(content)
+                    content2  = content2.replace(/\n/g, '')
+                    //content = content.replace(/\n/g, '\\\n')
+                    var json = JSON.parse(content2);
+                } catch ( e ){
+                    res.end(e.toString())
+                    return;
+                }
+                if ( json != null ) {
+                    if (json.cmd == "jsonSet") {
+                        var dp = {}
+                        sh.each(json, function checkVals(k,v){
+                            if ( sh.includes(k, 'dp_') ) {
+                                if ( sh.startsWith(k,'dp_')) {
+                                    k = k.replace('dp_', '')
+                                }
+                                var read = sh.readFile('requests/'+v)
+                                var yread = JSON.parse(read)
+                                dp[k] = yread;
+                            }
+                        })
+                        // content = 'asdfasdfasdf'
+                        var times = json.times;
+                        var objs = []
+                        for (var i = 0; i < times; i++) {
+                            var item = {}
+                            var chance = Math.random();
+                            try {
+                                eval(json.code)
+                            }
+                            catch ( e ){
+                                res.end("eval block" +sh.n+ json.code+ sh.n+ e.toString())
+                                return;
+                            }
+                            objs.push(item)
+                        }
+                        content = JSON.stringify(objs);
+
+                        if ( json[types.json.StoreFile] != null) {
+                            var saveFileAs = dir + '/'+json[types.json.StoreFile]
+                            if ( sh.fileExists(saveFileAs)){
+                                content = sh.readFile(saveFileAs)
+                            } else {
+                                var formattedContent = sh.toJSONString(objs)
+                                sh.writeFile(saveFileAs, formattedContent);
+                            }
+                        }
+
+                        if ( json[types.json.isQuery] != null ) {
+                            var query = params.query;
+                            var matches = sh.arrayFilterByProp(objs,
+                                'name', query, true);
+                            content = sh.toJSONString(matches);
+                        }
+
+                        //content = 'asdfasdfasdf'
+                    }
+
+                    if (content != null) {
+                        res.end(content)
+                        return;
+                    }
+                }
+            }
+
+            var content = null;
+            if ( sh.fileExists(fileName) ) {
+                content = sh.readFile(fileName)
+            }
+            fileName += '.txt'
+            if ( sh.fileExists(fileName) ) {
+                content = sh.readFile(fileName)
+            }
+
+            if ( content != null ) {
+                res.end(content)
+                return;
+            }
+            //function searchFiles(dir, method)
+        }
+
+        res.end(req.originalUrl);
+    }
+
+    p.postStartup = function postStartup() {
+        self.runTests();
+    }
+
+    function testRoutes() {
+        p.testX = function testX() {
+            var reqoptions = {}
+            reqoptions.url = 'http://localhost:'+self.settings.port+'/changeEnv'
+            reqoptions.form = {}
+            reqoptions.method = 'GET'
+            reqoptions.fx2 = function storeContents(body){
+                console.log('test ok...')
+            };
+            reqoptions.name = 'test changeEnv'
+            console.log('testing...')
+            reqPost(reqoptions)
+        }
+        p.test2 = function test2() {
+            var reqoptions = {}
+            reqoptions.url = 'http://localhost:'+self.settings.port+'/post/jgrew'
+            reqoptions.form = {}
+            reqoptions.method = 'GET'
+            reqoptions.showBody =  true;
+            reqoptions.fx2 = function storeContents(body){
+                console.log(reqoptions.url, 'test ok...')
+            };
+            reqoptions.name = 'test changeEnv'
+            console.log('testing...')
+            reqPost(reqoptions)
+        }
+        p.quickRequest = function quickRequest(url, method, fx, postData, fx2) {
+            if ( method == null ) {
+                method = types.GET
+            }
+            var reqoptions = {}
+            reqoptions.url = 'http://localhost:'+self.settings.port+'/'+url
+            if ( postData == null ) { postData = {} }
+            if ( method == types.POST ) {
+                reqoptions.form = postData
+            } else {
+                reqoptions.qs = postData
+            }
+
+            reqoptions.method = method
+            reqoptions.showBody =  true;
+            reqoptions.fx2 = function storeContents(body, response){
+                console.log(reqoptions.url, 'test ok...')
+                if ( fx2 != null ) { fx2(body, response); }
+            };
+            reqoptions.name = 'test ' + sh.paren(url)
+            console.log('testing...')
+            reqPost(reqoptions)
+        }
+    }
+    testRoutes()
+
+    /**
+     *
+     */
+    p.runTests = function runTests() {
+        return;
+        //self.quickRequest('api/login', 'post', null )
+        //self.quickRequest('api/login', 'post', null, {username:"fred"})
+
+        function testBreadCrumbs() {
+            self.quickRequest('api/breadcrumbs', 'get', null, {user_id:"6"})
+            self.quickRequest('api/breadcrumbs', 'get', null, {user_id:"6"})
+        }
+        testBreadCrumbs();
+        var RestHelperTests = require('./resthelpertests').RestHelperTests;
+
+        var rest = new RestHelperTests()
+        rest.quickRequest = self.quickRequest;
+
+
+        rest.runTests();
+        return;
+        self.quickRequest('api/getSession', 'get', null, {user_id:"6"})
+        return
+    }
+
+
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        sh.sLog(arguments)
+    }
+
+}
+
+
+
+exports.TestServer = SparkServer;
+
+if ( module.parent == null ) {
+
+
+    var s = new SparkServer()
+
+    var restings = []
+    var contentsTable =
+    {name: 'contents',
+        requiredFields: {"name": ""},
+        gen: {
+            times: 6,
+            fx: function (item, id, dp) {
+                item.id = id;
+                item.name = 'name'
+            }
+        },
+        reset: true
+    }
+    restings.push(contentsTable);
+
+
+    var breadCrumbs =
+    {name: 'breadcrumbs',
+        requiredFields: {"imdb_id": ""},
+        db: {},
+        gen: {
+            times: 30,
+            fx: function generateBreadCrumbs(item, id, dp) {
+                item.id = id;
+                item.imdb_id = '345345';
+                item.user_id = '2';
+                item.progress = Math.random()
+
+                item.name = 'name...zzz'
+                item.year = '1111'
+                item.rating = '4'
+                item.series = 'false'
+                item.desc = 'asfffff'
+            }
+        },
+        reset: true,
+        reset: false,
+        createFx2: function createFilter_checkForExisting(item, controller) {
+            var results = controller.helper.utils.find({user_id: item.user_id, imdb_id: item.imdb_id})
+            if (results.length == 0) {
+                return;
+            }
+            var updatedItem = results[0];
+            controller.helper.utils.updateItem(item, updatedItem);
+            controller.doNotSend = true;
+            controller.rest.accepted(controller.path + updatedItem.id);
+        }
+    }
+    restings.push(breadCrumbs);
+
+
+    s.init({port: 10001, dir: 'requests/', _restHelper_: ['contents',
+        'users',
+        'breadcrumbs'],
+        restHelper: restings
+
+
+    });
+
+
+    setTimeout(function () {
+        var RestHelperIMDBTests = require('./RestHelperIMDBTests').RestHelperIMDBTests;
+        var tester = new RestHelperIMDBTests();
+        tester.runTests();
+    }, 1000)
+
+
+}

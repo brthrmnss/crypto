@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="jquery.js.ignore_scan" ></script>
+    <script src="../themes/minimal_v0/js/ui_utils.js" ></script>
+   <!-- <script src="js.cookie.js" ></script>-->
+    <!--
+    <script src="shelpers-mini.js" ></script>
+    <script src="PromiseHelperV3.js" ></script>
+    <script src="testFramework.js" ></script>
+    <script src="tests.js" ></script>
+    -->
+
+    <script>
+       // window.preamble = '/test3/';
+    </script>
+    <script src="testLL.js"></script>
+
+    <script>
+        function lazyLoadAndRunTest() {
+            loadTestFramework(function onReady(){
+                testStackingDemo2B(true);
+            })
+        }
+        function autoloadTestFramework() {
+            window.location += '?loadTestFramework=true'
+        }
+    </script>
+</head>
+<body>
+<button>Test</button> <br />
+<button onclick="lazyLoadAndRunTest()">LL Test 2</button>  <br />
+<button onclick="tH.clickTest2()">Run Test 2</button>  <br />
+<textarea id="txtArea" ></textarea>
+<button id="btnTest">Test</button>
+
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+    asdf
+</div>
+</body>
+</html>

@@ -1,0 +1,1005 @@
+Index: mp/QuickJSON/FileWatcher.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/QuickJSON/FileWatcher.js    (revision )
++++ mp/QuickJSON/FileWatcher.js    (revision )
+@@ -0,0 +1,261 @@
++
++
++var sh = require('shelpers').shelpers;
++var shelpers = require('shelpers');
++
++
++sh.isFileType = function isFileType(file, type) {
++    var path = require('path');
++    var ext = path.extname(file);
++
++    ext = ext.slice(1).toLowerCase();
++    if ( ext == type ) {
++        return true;
++    }
++
++    return false;
++}
++
++
++fsmonitor = require('fsmonitor');
++
++
++
++function FileWatcher() {
++    var p = FileWatcher.prototype;
++    p = this;
++    var self = this;
++    p.init = function init(config) {
++        self.settings = sh.dv(config, {});
++
++        self.watchDirs();
++        self.setupSocket();
++    }
++
++    p.watchDirs = function watchDirs(config) {
++        if ( self.settings.dir ) {
++            self.watchWinDir(self.settings.dir)
++
++            return;
++        }
++        self.watchWinDir(self.settings.file)
++    }
++
++    p.trigger = function trigger(file, changes) {
++        if ( self.settings.tellAboutFile ) {
++            if ( changes ) {
++                var file = null;
++                if (changes.addedFiles.length > 0) {
++                    file = changes.addedFiles[0];
++                }
++                if (changes.modifiedFiles.length > 0) {
++                    file = changes.modifiedFiles[0];
++                }
++                if ( file == null ) {
++                    return;
++                }
++                if (file.indexOf('_old___') != -1)
++                    return;
++                if (file.indexOf('_tmp___') != -1)
++                    return;
++                file = self.settings.dir + '/' + file
++            }
++            else {
++                return;
++            }
++        }
++        self.proc('hit file', file)
++        if ( self.settings.fxTransformFile ) {
++            file = self.settings.fxTransformFile(file);
++        }
++        self.socket.emit('window.invoke', file)
++        return;
++
++        /*
++         var yyy = sh.runAsync2('node',
++         [self.settings.file])
++         */
++        var  y= sh.runAsync('node '+ self.settings.file)
++        //  var  yy= sh.run('node '+ self.settings.file)
++//spit stdout to screen
++        y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
++
++//spit stderr to screen
++        y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
++
++        return;
++
++        var spawn = require('child_process').spawn;
++
++//kick off process
++        var child = spawn('node', ['-latkR', '/']);
++
++//spit stdout to screen
++        child.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
++
++//spit stderr to screen
++        child.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
++
++        child.on('close', function (code) {
++            console.log("Finished with code " + code);
++        });
++
++        return;
++    }
++
++    p.setupSocket = function setupSocket(config) {
++        var socket = require('socket.io-client')('https://local.helloworld3000.com:8043/');
++        var socket = require('socket.io-client')('http://localhost:3001/');
++
++        socket.on('connect', function(){});
++        socket.on('event', function(data){});
++        socket.on('disconnect', function(){});
++        socket.emit('my other event', __filename + ' is listening')
++        self.socket = socket;
++        /*
++         var sh = require('shelpers').shelpers;
++         var shelpers = require('shelpers');
++         */
++
++
++    }
++
++
++    p.test = function testTrigger() {
++        self.trigger('somerandomfile')
++    }
++
++    function defineWatchers( ){
++        //why: different modules for different operating systems
++
++        function macWatch() {
++            var terminal = require('child_process').spawn('fswatch', [dirMonitored2]);
++
++            terminal.stdout.on('data', function (data) {
++                data = data.toString().split("\n");
++                console.log('stdout: ' + data);
++                sh.each ( data, function (i, file) {
++                    if ( sh.isFileType(file, 'js') ) {
++                        helper.trigger(file)
++                    }
++                    if ( sh.isFileType(file, 'html') ) {
++                        helper.trigger(file)
++                    }
++                    //var split = file.split("");
++                })
++
++            });
++
++            terminal.on('exit', function (code) {
++                console.log('child process exited with code ' + code);
++            });
++
++        }
++
++
++
++        p.watchWinDir = function other(dir) {
++
++
++            /**
++             * Check if dir is examples, generators
++             * check if file type is .js, or
++             * @type {*}
++             */
++            if ( path.extname(dir)!= '' ) {
++                dir = path.dirname(dir) ; //why: get path only
++            }
++            self.proc('dir', dir)
++
++            var debug = false
++            var monitor = fsmonitor.watch(dir, {
++                // include files
++                matches: function (relpath) {
++                    relpath = relpath.replace(/\\/g, "/")
++
++                    if (relpath.match(/.js/gi)) {
++                        if ( debug )   console.log('valid flie', relpath);
++                        return true;
++                    }
++                    if (relpath.match(/.css/gi)) {
++                        if ( debug )   console.log('valid flie', relpath);
++                        return true;
++                    }
++
++                    return false;
++
++                    if (relpath.match(/examples\//gi)) {
++                        return true;
++                    }
++
++                    if (relpath.match(/generators\//gi)) {
++                        return true;
++                    }
++                    return false;
++
++                    // return relpath.match(/\.js$/i) !== null;
++                },
++                // exclude directories
++                excludes: function (relpath) {
++                    return relpath.match(/^\.git$/i) !== null;
++                }
++            });
++
++            monitor.on('change', function (changes) {
++                var file = dirMonitored2 + '/ ' + changes.modifiedFiles[0]
++                console.log(file, changes);
++                self.trigger(file, changes);
++                // asdf.g
++                return;
++            });
++        }
++
++    }
++    defineWatchers();
++
++    p.proc = function debugLogger() {
++        if ( self.silent == true) {
++            return;
++        }
++        sh.sLog(arguments);
++    };
++}
++
++exports.FileWatcher = FileWatcher;
++
++if (module.parent == null) {
++    var instance = new FileWatcher();
++    var config = {};
++    instance.init(config)
++
++}
++
++
++
++
++
++/**
++ * Monitor port 3
++ */
++var dirMonitored2 = __dirname+'/'+'../'+'../'+'../'+'learn angular/port3/';
++var path = require('path')
++
++
++var helper = {};
++helper.trigger = function trigger(file) {
++    console.log('matched', file)
++    socket.emit('window.invoke', file)
++}
++
++/*(function() {
++ var childProcess = require("child_process");
++ var oldSpawn = childProcess.spawn;
++ function mySpawn() {
++ console.log('spawn called');
++ console.log(arguments);
++ var result = oldSpawn.apply(this, arguments);
++ return result;
++ }
++ childProcess.spawn = mySpawn;
++ })();*/
++
+Index: mp/QuickJSON/quickJSONServicePlay.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/QuickJSON/quickJSONServicePlay.js   (revision )
++++ mp/QuickJSON/quickJSONServicePlay.js   (revision )
+@@ -0,0 +1,285 @@
++'use strict';
++/**
++ * Helper shows vanilla reloadable helper test service
++ * why: When you want to reload services with your apps
++ */
++( function() {
++
++    var isNode = true
++
++    if (typeof exports === 'undefined' || exports.isNode == false) {
++        isNode = false
++    } else {
++
++    }
++
++    function QuickJSONServicePlay(sh) {
++        var self = this;
++        var p = this;
++
++        if ( sh == null && isNode ) {
++            var sh = require('shelpers').shelpers;
++        }
++
++        p.init = function init(qs) {
++            self.settings = {};
++            self.data = {};
++            self.data.qs = qs;
++            self.target = self.data.qs.data.json;
++        }
++
++        p.play = function play() {
++            var p = {};
++            self.data.playback = p;
++            p.currentIndex = 0;
++            p.currentSlide = self.target.slides[p.currentIndex]
++            p.isPlaying = true;
++            self.data.qs.data.playback = p;
++            self.content = p;
++        }
++
++        p.nextSlide = function nextSlide() {
++            var p = self.data.playback;
++            p.currentIndex++;
++            p.currentSlide = self.target.slides[p.currentIndex]
++            console.log('new slide', JSON.stringify(p.currentSlide)
++
++            )
++            if (p.currentSlide == null) {
++                self.atEnd();
++            }
++            p.currentAction = null;
++            p.currentActionIndex = 0;
++        }
++
++        p.restart = function restart() {
++            var p = self.data.playback;
++            p.currentIndex-1;
++            self.nextSlide()
++        }
++
++        p.atEnd = function atEnd() {
++            self.proc('at end')
++        }
++
++        function defineSlideMethods2() {
++            //why: characters, questions, deocration
++            p.drawSlide = function drawSlide(count) {
++                //why: show represetnation of slide
++                console.log('slide', JSON.stringify(self.content.currentSlide))
++            }
++
++            p.drawAction = function drawAction(count) {
++                //why: show represetnation of slide
++                self.proc('action', JSON.stringify(self.content.currentAction))
++            }
++
++            p.nextAction = function nextAction(count) {
++                var s = self.content.currentSlide;
++                if (  self.content.currentAction == null ) {
++                    self.content.currentActionIndex = 0;
++                    self.content.currentAction =  self.content.currentSlide.actions[0];
++                    if (self.content.currentSlide.actions.length == 0) {
++                        self.proc('next slide')
++                        self.nextSlide();
++                        return;
++                    }
++                } else {
++                    self.content.currentActionIndex++;
++                    self.content.currentAction =  s.actions[self.content.currentActionIndex];
++
++                    if ( self.content.currentActionIndex > s.actions.length -1 ) {
++                        self.proc('last action, next slide')
++                        self.nextSlide();
++                        return;
++                    }
++                }
++                //why: show represetnation of slide
++                self.proc('current action is', JSON.stringify(self.content.currentAction))
++                self.drawAction();
++            }
++
++        }
++        defineSlideMethods2();
++
++        function defineCharacterMethods() {
++            //why: assets, audio, animations
++            p.char = function addCharacter(name) {
++                var char  = {};
++                self.currentCharacter = char
++                self.utils.addToObjectIf(self.currentCharacter, name, 'name')
++                self.utils.addToObjectIf(self.currentSlide, char, 'characters', true)
++
++                return self;
++            }
++
++            p.emots = function addEmotion(config) {
++                var prepend = config.prepend;
++
++                if ( prepend ) {
++                    delete config.prepend;
++                    $.each(config, function (k,src) {
++                        config[k] = config.prepend + src
++                    })
++                }
++                self.currentCharacter.emotions = config;
++                //debugger
++                return self;
++            }
++
++
++
++        }
++        defineCharacterMethods();
++
++        function defineDialogMethods() {
++            //why: characters, questions, deocration
++            p.dialog = function addDialog(prompt, options,
++                                          correctAnswerOrIndex, fxAction) {
++                var d = {};
++                self.currentDialog = d
++                self.utils.addToObjectIf(d, prompt, 'prompt')
++                self.utils.addToObjectIf(d, options, 'options')
++                self.utils.addToObjectIf(d, correctAnswerOrIndex, 'correctAnswerOrIndex')
++                self.utils.addToObjectIf(d, fxAction, 'fxAction', false, true)
++                self.utils.addToObjectIf(self.currentSlide, d, 'dialogs', true)
++                //debugger
++                //TODO: how to hanlde actions? when reposnd ... do sthings ...
++                //self.currentCharacter.data.emotion = val;
++                //yes embed js that can run in context
++                return self;
++            }
++        }
++        defineDialogMethods();
++
++        function defineActionMethods() {
++            var actions = {};
++            p.actions = actions;
++            actions.userAction = function userActions(select) {
++                var a = self.content.currentAction
++                var index = a.options.indexOf(select)
++                console.error('choice', select)
++                if ( index == a.correctAnswerOrIndex ) {
++                    self.actionComplete(index)
++                    return;
++                }
++                if ( select == a.correctAnswerOrIndex ) {
++                    actions.actionComplete(select)
++                    return;
++                }
++                self.proc('wrong choice', select)
++            }
++            actions.actionComplete = function anyResponse() {
++                console.error("\t","\t",'actionComplete', 'ok..')
++                var a = self.content.currentAction
++                self.nextAction()
++            }
++
++            actions.wrongResponse = function wrongResponse() {
++                var a = self.content.currentAction
++                if (a.options) {
++                    if ( sh.isNumber(a.correctAnswerOrIndex)) {
++                        var options = a.options.concat()
++                        options = options.splice(a.correctAnswerOrIndex-1,1)
++                        var choice = options[0];
++                    } else {
++                        var options = a.options.concat()
++                        var index = options.indexOf(a.correctAnswerOrIndex)
++                        options = options.splice(index-1,1)
++                        console.error('waht is array',index, options, a.options.concat())
++                        var choice = options[0];
++                    }
++                }
++                return choice
++            }
++
++            actions.correctResponse = function correctResponse(select) {
++                var a = self.content.currentAction
++                if (a.options) {
++                    if ( sh.isNumber(a.correctAnswerOrIndex)) {
++                        var options = a.options; //.concat()
++                        var choice = options[a.correctAnswerOrIndex];
++                    } else {
++                        choice = a.correctAnswerOrIndex;
++                    }
++                }
++                return choice
++            }
++        }
++        defineActionMethods();
++
++        function defineUtils() {
++            var utils = {}
++            self.utils = utils;
++
++
++            utils.assert = function assert(exp, msg, prop, isArray, toStr) {
++                if ( exp === false ) {
++                    if ( sh.isArray(msg )) {
++                        msg = msg.join(' ');
++                    }
++                    throw new Error(msg)
++                }
++
++            }
++            utils.searchByName = function searchByName(array, searchVal) {
++                return utils.searchArrayByProp(array, searchVal, 'name')
++            }
++
++            utils.searchArrayByProp = function searchArrayByProp(array, searchVal, prop) {
++                var item = null;
++                if (prop == null) {
++                    throw new Error('need prop')
++                }
++                sh.each(array, function(k,v) {
++                    var val = v[prop]
++                    if ( val == searchVal ) {
++                        item  =  v;
++                    }
++                })
++
++                return item
++            }
++        }
++        defineUtils();
++
++
++        p.json = function json() {
++            var d = sh;
++
++            /// debugger;
++            //self.currentSlide = []
++            return  self.data.json ;
++            // return sh.toJSONString( self.data.json);
++        }
++
++
++        p.proc = function debugLogger() {
++            if ( isNode ) {
++                if ( self.silent == true) {
++                    return
++                }
++                sh.sLog(arguments)
++                return;
++            }
++            var args = Array.prototype.slice.call(arguments, 0);
++
++            console.log(args)
++        }
++    }
++
++
++    if ( typeof angular != 'undefined') {
++        //debugger
++        var wrapperRelodableService = window.reloadableHelper.makeServiceReloadable('QuickJSONService', QuickJSONConvertor)
++        //  debugger;
++        angular.module('com.sync.quick').factory('quickJSON', wrapperRelodableService);
++    }
++    if ( isNode ) {
++
++        exports.QuickJSONServicePlay = QuickJSONServicePlay;
++
++
++
++    }
++}());
+\ No newline at end of file
+Index: mp/QuickJSON/quickJSONServiceRerun.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/QuickJSON/quickJSONServiceRerun.js  (revision )
++++ mp/QuickJSON/quickJSONServiceRerun.js  (revision )
+@@ -0,0 +1,13 @@
++/**
++ * Created by morriste on 8/9/16.
++ */
++
++var FileWatcher = require('./FileWatcher').FileWatcher;
++
++
++var f = new FileWatcher();
++var config = {
++    file:"C://Users//morriste//train//train_drive//trash//node2//mp//QuickJSON//quickJSONService.js",
++    runNode:"__file__"
++}
++f.init(config)
+\ No newline at end of file
+Index: mp/QuickJSON/quickJSONServiceTest.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/QuickJSON/quickJSONServiceTest.js   (revision )
++++ mp/QuickJSON/quickJSONServiceTest.js   (revision )
+@@ -0,0 +1,187 @@
++'use strict';
++/**
++ * Helper shows vanilla reloadable helper test service
++ * why: When you want to reload services with your apps
++ */
++( function() {
++
++    //console.error('reloding quickUI')
++
++    var isNode = true
++
++    if (typeof exports === 'undefined' || exports.isNode == false) {
++        isNode = false
++    } else {
++
++    }
++
++    function QuickJSONServiceTest(sh) {
++        var self = this;
++        var p = this;
++
++        if ( sh == null && isNode ) {
++            var sh = require('shelpers').shelpers;
++        }
++
++        p.init = function init(qs) {
++            self.settings = {};
++            self.data = {};
++            self.data.qs = qs;
++            self.target = self.data.qs.data.json;
++            self.qs = qs;
++        }
++
++        p.new = function create() {
++            var s = new QuickJSONConvertor();
++            console.log('inside create', ',,,,,,7,,,,,,')
++            // debugger;
++            s.init();
++            return s;
++        }
++
++        function defineSlideMethods2() {
++            //why: characters, questions, deocration
++            p.hasSlides = function hasxSlides(count) {
++                self.utils.assert(
++                    self.target.slides.length==count, 'not enough slides')
++                return self;
++            }
++
++            p.hasSlide = function hasSlide(slideName) {
++                var slide= self.utils.searchByName(self.target.slides, slideName)
++
++                self.utils.assert(
++                    slide!=null, ['slide not added',slideName])
++                return self;
++            }
++            p.isCurrentSlide = function isCurrentSlide(slideName) {
++                self.utils.assert(
++                    self.qs.data.playback.currentSlide.name==slideName, ['slide current',slideName])
++                return self;
++            }
++            p.isCurrentAction = function isCurrentAction(slideName) {
++                if ( slideName ==null ) {
++                    self.utils.assert(
++                        self.qs.data.playback.currentAction==null, ['current action not null',slideName])
++                    return self;
++                }
++                self.utils.assert(
++                    self.qs.data.playback.currentAction.name==slideName, ['current action',slideName])
++                return self;
++            }
++
++
++        }
++        defineSlideMethods2();
++
++        function defineCharacterMethods() {
++            //why: assets, audio, animations
++            p.char = function addCharacter(name) {
++                var char  = {};
++                self.currentCharacter = char
++                self.utils.addToObjectIf(self.currentCharacter, name, 'name')
++                self.utils.addToObjectIf(self.currentSlide, char, 'characters', true)
++
++                return self;
++            }
++
++            p.emots = function addEmotion(config) {
++                var prepend = config.prepend;
++
++                if ( prepend ) {
++                    delete config.prepend;
++                    $.each(config, function (k,src) {
++                        config[k] = config.prepend + src
++                    })
++                }
++                self.currentCharacter.emotions = config;
++                //debugger
++                return self;
++            }
++
++
++
++        }
++        defineCharacterMethods();
++
++        function defineDialogMethods() {
++            //why: characters, questions, deocration
++            p.dialog = function addDialog(prompt, options,
++                                          correctAnswerOrIndex, fxAction) {
++                var d = {};
++                self.currentDialog = d
++                self.utils.addToObjectIf(d, prompt, 'prompt')
++                self.utils.addToObjectIf(d, options, 'options')
++                self.utils.addToObjectIf(d, correctAnswerOrIndex, 'correctAnswerOrIndex')
++                self.utils.addToObjectIf(d, fxAction, 'fxAction', false, true)
++                self.utils.addToObjectIf(self.currentSlide, d, 'dialogs', true)
++                //debugger
++                //TODO: how to hanlde actions? when reposnd ... do sthings ...
++                //self.currentCharacter.data.emotion = val;
++                //yes embed js that can run in context
++                return self;
++            }
++        }
++        defineDialogMethods();
++
++        function defineUtils() {
++            var utils = {}
++            self.utils = utils;
++
++
++            utils.assert = function assert(exp, msg, prop, isArray, toStr) {
++                if ( exp === false ) {
++                    if ( sh.isArray(msg )) {
++                        msg = msg.join(' ');
++                    }
++                    throw new Error(msg)
++                }
++
++            }
++            utils.searchByName = function searchByName(array, searchVal) {
++                return utils.searchArrayByProp(array, searchVal, 'name')
++            }
++
++            utils.searchArrayByProp = function searchArrayByProp(array, searchVal, prop) {
++                var item = null;
++                if (prop == null) {
++                    throw new Error('need prop')
++                }
++                sh.each(array, function(k,v) {
++                    var val = v[prop]
++                    if ( val == searchVal ) {
++                        item  =  v;
++                    }
++                })
++
++                return item
++            }
++        }
++        defineUtils();
++
++
++        p.json = function json() {
++            var d = sh;
++
++            /// debugger;
++            //self.currentSlide = []
++            return  self.data.json ;
++            // return sh.toJSONString( self.data.json);
++        }
++
++    }
++
++
++    if ( typeof angular != 'undefined') {
++        //debugger
++        var wrapperRelodableService = window.reloadableHelper.makeServiceReloadable('QuickJSONService', QuickJSONConvertor)
++        //  debugger;
++        angular.module('com.sync.quick').factory('quickJSON', wrapperRelodableService);
++    }
++    if ( isNode ) {
++
++        exports.quickJSONServiceTest = QuickJSONServiceTest;
++        return;
++
++    }
++}());
+\ No newline at end of file
+Index: mp/QuickJSON/quickJSONService.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/QuickJSON/quickJSONService.js   (revision )
++++ mp/QuickJSON/quickJSONService.js   (revision )
+@@ -0,0 +1,215 @@
++'use strict';
++/**
++ * Helper shows vanilla reloadable helper test service
++ * why: When you want to reload services with your apps
++ */
++( function() {
++
++    //console.error('reloding quickUI')
++
++    var isNode = true;
++
++    if (typeof exports === 'undefined' || exports.isNode == false) {
++        isNode = false
++    } else {
++        var sh = require('shelpers').shelpers;
++        var shelpers = require('shelpers');
++    }
++
++    function QuickJSONConvertor(sh) {
++        var self = this;
++        var p = this;
++
++        p.init = function init() {
++            self.settings = {};
++            self.data = {};
++            self.data.json = {}
++        }
++
++        p.new = function create() {
++            var s = new QuickJSONConvertor();
++            console.log('inside create', ',,,,,,7,,,,,,')
++            // debugger;
++            s.init();
++            return s;
++        }
++
++        function defineSlideMethods2() {
++            //why: characters, questions, deocration
++            p.slide = function slide(name) {
++                var s = {};
++                self.currentSlide = s
++                self.utils.addToObjectIf(s, name, 'name')
++                //self.data.json.push(self.currentSlide)
++                self.utils.addToObjectIf(self.data.json, s, 'slides', true)
++
++                //debugger
++                return self;
++            }
++        }
++        defineSlideMethods2();
++
++        function defineCharacterMethods() {
++            //why: assets, audio, animations
++            p.char = function addCharacter(name) {
++                var char  = {};
++                self.currentCharacter = char
++                self.utils.addToObjectIf(self.currentCharacter, name, 'name')
++                self.utils.addToObjectIf(self.currentSlide, char, 'characters', true)
++
++                return self;
++            }
++
++            p.emots = function addEmotion(config) {
++                var prepend = config.prepend;
++
++                if ( prepend ) {
++                    delete config.prepend;
++                    $.each(config, function (k,src) {
++                        config[k] = config.prepend + src
++                    })
++                }
++                self.currentCharacter.emotions = config;
++                //debugger
++                return self;
++            }
++
++
++
++        }
++        defineCharacterMethods();
++
++        function defineDialogMethods() {
++            //why: characters, questions, deocration
++            p.dialog = function addDialog(prompt, options,
++                                          correctAnswerOrIndex, fxAction) {
++                var d = {};
++                self.currentDialog = d
++                d.type = 'dialog'
++                self.utils.addToObjectIf(d, prompt, 'prompt')
++                self.utils.addToObjectIf(d, options, 'options')
++                self.utils.addToObjectIf(d, correctAnswerOrIndex, 'correctAnswerOrIndex')
++                self.utils.addToObjectIf(d, fxAction, 'fxAction', false, true)
++                self.utils.addToObjectIf(self.currentSlide, d, 'actions', true)
++                //debugger
++                //TODO: how to hanlde actions? when reposnd ... do sthings ...
++                //self.currentCharacter.data.emotion = val;
++                //yes embed js that can run in context
++                self.data.last = d;
++                return self;
++            }
++        }
++        defineDialogMethods();
++
++        function defineLastMethods() {
++            //why: modify (decorate) the last added elemeent
++            p.desc = function describeLast(name, desc) {
++                if ( sh.isString(name) == false ) {
++                    //mixin
++                    return self;
++                }
++                var obj = self.data.last
++                self.utils.addToObjectIf(obj, name, 'name')
++                self.utils.addToObjectIf(obj, desc, 'desc')
++                return self;
++            }
++        }
++        defineLastMethods();
++
++        function defineUtils() {
++            var utils = {}
++            self.utils = utils;
++
++            utils.addToObjectIf = function addTO(obj, val, prop, isArray, toStr) {
++                if ( prop == null ) throw new Error('prop not defined');
++                if ( obj == null ) throw new Error('obj not defined, '+ arguments);
++                if ( val == null ) return;
++
++                if ( toStr ) {
++                    val = val.toString();
++                }
++
++                if ( isArray === true ) {
++                    var curVal = obj[prop]
++                    if ( curVal == null ) curVal = [];
++                    curVal.push(val)
++                    obj[prop] = curVal;
++                    return;
++                }
++
++                obj[prop] = val;
++
++
++            }
++        }
++        defineUtils();
++
++
++        p.json = function json() {
++            var d = sh;
++
++            /// debugger;
++            //self.currentSlide = []
++            return  self.data.json ;
++            // return sh.toJSONString( self.data.json);
++        }
++
++    }
++
++
++    if ( typeof angular != 'undefined') {
++        //debugger
++        var wrapperRelodableService = window.reloadableHelper.makeServiceReloadable('QuickJSONService', QuickJSONConvertor)
++        //  debugger;
++        angular.module('com.sync.quick').factory('quickJSON', wrapperRelodableService);
++    }
++    if ( isNode ) {
++        //console.log('d')
++        var y = new QuickJSONConvertor(sh);
++        y.init()
++        y.slide('slide 1')
++        y.char('mark')
++        y.emots({
++            happy:'happy.jpg',
++            sad:'sad.jpg'
++        })
++        y.dialog('Yo, how are you?', ['bad', 'great'], 'great')
++        y.desc('dialog1', 'b/c test basic names')
++        y.slide('slide 2')
++        //make 2 slides,
++       // conform settings are correct,
++        //    run //play method ... ensure
++
++        //console.log(y.json())
++        sh.toJSONString(y.json(),true)
++        var util = require('util');
++      //  util.print("\u001b[2J\u001b[0;0H");
++
++        var quickJSONServiceTest = require('./quickJSONServiceTest').quickJSONServiceTest;
++        var QuickJSONServicePlay = require('./QuickJSONServicePlay').QuickJSONServicePlay;
++
++        var t = new quickJSONServiceTest();
++        t.init(y);
++        t.hasSlides(2)
++        t.hasSlide('slide 2')
++
++        var p = new QuickJSONServicePlay();
++        p.init(y);
++        p.play()
++        t.isCurrentSlide('slide 1')
++        t.hasSlide('slide 2')
++        p.nextSlide()
++        t.isCurrentSlide('slide 2')
++        p.restart()
++        p.play()
++        p.drawSlide() //put chars , on proper side in layout ...
++        p.nextAction(); //what's next hiro
++        //p.dialog() //what is this for?
++        t.isCurrentAction('dialog1')
++        p.actions.userAction(p.actions.wrongResponse())
++        t.isCurrentAction('dialog1')
++        p.actions.userAction(p.actions.correctResponse())
++        t.isCurrentAction(null)
++
++    }
++}());
+\ No newline at end of file

@@ -1,0 +1,392 @@
+/**
+ * Created by user1 on 9/21/2016.
+ */
+
+var express = require('express');
+var requireReload = require('require-reload')(require);
+//var proxy = require('express-http-proxy-extended2');
+var bodyParser = require('body-parser');
+
+/*
+ inights
+ system is ntermediate
+ user proper request module to make https requests, simpler than native
+ milldware iwll have ti parseBody for redirection, so hanlde posts appropariately (for test only)
+ use finalmidware to catch requests that have no been redirected using /resoruce.thml
+ */
+
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+var EasyRemoteTester = shelpers.EasyRemoteTester;
+
+function YoutubeProxy() {
+    var p = YoutubeProxy.prototype;
+    p = this;
+    var self = this;
+
+    self.settings = {};
+    self.data = {}
+
+    p.init = function init(config) {
+        self.settings = sh.dv(config, {});
+        config = self.settings;
+
+        self.startProxy();
+    }
+
+    p.startProxy = function startProxy(config) {
+
+        var app = express();
+        var bodyParser = require('body-parser');
+        var session = require('express-session');
+        var cookieParser= require('cookie-parser');
+
+        function proxyRedirectingMiddleware(req, res, next) {
+            console.log("\n\n\n")
+            console.log('proxyRedirectingMiddleware', 'req', req.originalUrl)
+
+            var file = 'G:/Dropbox/projects/crypto/node_modules/express-http-proxy-extended2/node_modules/express-http-proxy/index.js'
+            var proxy = requireReload(file) //'express-http-proxy-extended2');
+            var proxyMiddleware = proxy(
+                function getHost(req, res) {
+                    if ( req.query != null ) {
+                        /*  if ( sh.startsWith(req.query.url, '__')){
+                         req.query.url= req.query.url.slice(2);
+                         }*/
+                        console.error('-->', req.query.url, req.originalUrl, referer);
+                        var referer = req.headers['referer'];
+                        if ( sh.includes(referer,'url=') ) {
+
+                        }
+
+                        var reload = requireReload('require-reload')(require);
+                        var ProxyReload = reload('./proxyReload.js').ProxyReload;
+
+                        var api = new ProxyReload();
+                        var result = api.getHost(req, res)
+                        if (result) {
+                            return result;
+                        }
+                        if (req.query.url==null) {
+                            console.error('cannot redirect request')
+                            return '';
+                        }
+                        var info = require('url').parse(req.query.url)
+                        var output = require('url').parse(req.query.url).host
+                        output = req.query.url;
+                        req.url = output
+                        //req.originalUrl = output
+                        console.log('outputhost', output, req.originalUrl);
+                        return   output;
+                    }
+                    var host =  require('url').parse(req.url).host;
+                    return host ;
+                }, {
+                    preserveHostHdr: true,
+                    fxGetPath:function fxGetPath(req, res) {
+
+                        var ProxyReload = requireReload('./proxyReload.js').ProxyReload;
+
+                        var api = new ProxyReload();
+                        var result = api.getPath(req, res)
+                        if (result) {
+                            return result;
+                        }
+
+                        if ( req.query != null ) {
+                            if (req.query.url==null) {
+                                console.error('cannot redirect request')
+                                return '';
+                            }
+                            var path = require('url').parse(req.query.url).path
+                            console.log('outputhost', path);
+                            return   path;
+                        }
+
+                        var path =  require('url').parse(url).path;
+                        return path ;
+                    },
+                    // changeOrigin: true,
+                    xforwardPath: function(req, res) {
+                        if ( req.query != null ) {
+                            /*if ( sh.startsWith(req.query.url, '__')){
+                             req.query.url= req.query.url.slice(2);
+                             }*/
+                            var decoded = decodeURIComponent( req.query.url);
+                            return require('url').parse(decoded).path;
+                        }
+                        return require('url').parse(req.url).path;
+                    },
+                    interceptx: function(rsp, data, req, res, callback) {
+                        // rsp - original response from the target
+                        // data = JSON.parse(data.toString('utf8'));
+                        // callback(null, JSON.stringify(data));
+                    },
+                    xdecorateRequest: function(proxyReq, originalReq) {
+
+
+                        return proxyReq;
+
+                        //req.headers['Content-Type'] = '';
+                        var hostname = req.hostname
+                        if ( hostname == null ) {
+                            hostname = ''
+                        }
+                        if ( hostname.indexOf('youtube')== -1 ) {
+
+                            req.headers["Access-Control-Allow-Origin"] = "*";
+                            req.headers["Access-Control-Allow-Headers"] = "X-Requested-With";
+                        } else {
+                            self.proc('youtube magic', req.hostname, req.url, req.originalUrl)
+                            /*req["authority"] = "www.youtube.com";
+                             req["scheme"] = "https";
+                             //req.headers["x-client-data"] = "asd.gd";
+                             delete req.headers["x-requested-with"];
+                             delete req.headers["cookie"];
+                             delete req.headers["connection"];
+                             req.headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*!/!*;q=0.8";
+
+                             req.headers["Access-Control-Allow-Origin"] = "*";
+                             req.headers["Access-Control-Allow-Headers"] = "X-Requested-With";
+
+                             req.hostname = 'https://www.youtube.com'
+                             sh.each(req.headers , function removeAll(k,v){
+                             delete req.headers[k]
+                             })
+                             */
+
+                            req.hostname = 'www.youtube.com'
+                            req.protocol = 'https:'
+                            //req.port = 443;
+                        }
+
+                        if ( req.hostname && req.hostname.indexOf('https') != -1 ) {
+                            self.proc('to https')
+                            req.port = 443;
+
+                        }
+
+                        delete req.headers['referer']
+
+                        self.proc('full request', sh.toJSONString(req))
+                        //req.method = 'GET';
+                        //req.bodyContent = wrap(req.bodyContent);
+                        return req;
+                    }
+                });
+
+            proxyMiddleware(req, res, next)
+
+        };
+
+        app.use(function forProxyRequestsToProxy(req, res, next) {
+            console.log('req', req.originalUrl)
+            if ( sh.startsWith(req.originalUrl, '/proxy?url') ) {
+                proxyRedirectingMiddleware(req, res, next)
+                return;
+            }
+            next();
+        });
+
+        app.use(bodyParser());
+        app.use(cookieParser());
+
+        app.use(function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
+
+        app.get('/set_cookie', function simplePost(req,res){
+            //asdf.g
+            console.log('set_cookie', req.body)
+
+            res.cookie('test', 'dog', {})
+            res.send(sh.json.good())
+        })
+
+        app.post('/simple_post', function simplePost(req,res){
+            //asdf.g
+            console.log('simple_post', req.body)
+            // sh.exit()
+            var action = req.body.action
+            if ( action == null ) {
+                res.status(404)
+                res.send(sh.json.error('did not get a body'))
+                return;
+            }
+            res.send(sh.json.good())
+        })
+
+
+        app.post('/simple_post_form', function simplePost(req,res){
+            //asdf.g
+            console.log('simple_post_form', req.body)
+            // sh.exit()
+            var action = req.body.action
+            //var yyy = req.body
+            if ( action != '333' ) {
+                res.status(404)
+                //  res.statusCode = 403
+                res.send(sh.json.error('did not get a form body'))
+                return;
+            }
+            res.send(sh.json.good())
+        })
+
+        app.post('/return_403_error', function simplePost(req,res){
+            //asdf.g
+            console.log('simple_post_form', req.body)
+            // sh.exit()
+            var action = req.body.action
+            if ( action == null ) {
+                res.status(404)
+                res.statusCode = 403
+                res.send(sh.json.error('did not get a body'))
+                return;
+            }
+            res.send(sh.json.good())
+        })
+
+        app.use(function finalMiddlware(req, res, next) {
+            console.log('finalMiddlware', 'end of the line ...', req.originalUrl)
+            proxyRedirectingMiddleware(req, res, next);
+            return;
+
+        } );
+
+        app.listen(3000, function () {
+            console.log('Example app listening on port 3000!');
+        });
+
+//http://localhost:3000/proxyg
+
+    }
+
+    p.test = function test(config) {
+
+        var c  = {}
+        c.baseUrl  = 'http://localhost:'+3000
+        c.baseUrl2  = 'http://localhost:'+3000+'/'
+        c.proxy = function proxyUrl(proxyUrl) {
+            var y= '?url='+ proxyUrl
+            return y;
+        }
+        c.silent = true;
+        var t = EasyRemoteTester.create('test Real Content Provider API', c);
+        var urls = {}
+
+        /*urls.youtube = t.utils.createTestingUrl('/proxyg')
+         t.add(function tryYoutube() {
+         t.quickRequest( urls.youtube,
+         'get', result)
+         function result(body) {
+         t.assert(body.length>=0, 'post-verify did not let me do a search');
+         t.cb();
+         }
+         }
+         );*/
+
+        urls.proxy = t.utils.createTestingUrl('/proxy')
+        function asdf () {
+            // t.disable()
+            t.add(function tryYoutube() {
+                    t.quickRequest(urls.proxy,//+'/https://gmail.com',
+                        'get', result, {url: 'https://gmail.com'})
+                    function result(body) {
+                        t.assert(body.length >= 0, 'post-verify did not let me do a search');
+                        t.cb();
+                    }
+                }
+            );
+
+            t.add(function tryYoutube() {
+                    t.quickRequest(urls.proxy,
+                        'get', result, {url: 'https://ssl.gstatic.com/accounts/ui/wlogostrip_230x17_1x.png'})
+                    function result(body) {
+
+                        t.assert(body.length >= 0, 'post-verify did not let me do a search');
+                        t.cb();
+                    }
+                }
+            );
+        }
+
+        //  asdf()
+        t.add(function test_SimplePost_Form() {
+            var postData = {action:'333'};
+            t.quickRequest(urls.proxy + c.proxy(c.baseUrl2 + 'simple_post_form'),
+                'post', result, postData, 'form')
+            //console.log('...................8888888888')
+            function result(body) {
+                // sh.sLog(body);
+                console.log('body', body)
+                t.assert.reqOk();
+                //t.assert.lastCallCompleted();
+                t.assert(body.error == null, 'did not get post data');
+                // t.assert(body.success, 'could not generate reset email');
+                t.cb();
+            }
+        });
+
+        return
+        t.add(function test_SimplePost() {
+            var postData = {action:'333'};
+            t.quickRequest(urls.proxy + c.proxy(c.baseUrl2 + 'simple_post'),
+                'post', result, postData)
+            //console.log('...................8888888888')
+            function result(body) {
+                console.log(body);
+                t.assert(body.error == null, 'did not get post data');
+                // t.assert(body.success, 'could not generate reset email');
+                t.cb();
+            }
+        });
+
+        return
+
+
+        t.add(function test_SimplePost() {
+                t.quickRequest( urls.proxy+c.proxy(c.baseUrl2+'simple_post'),
+                    'POST', result, {action:'333'})
+                function result(body) {
+                    self.proc('post', body)
+                    t.assert(body.length>=0, 'post-verify did not let me do a search');
+                    t.cb();
+                }
+            }
+        );
+
+
+
+
+    }
+
+
+    function defineUtils() {
+        var utils = {};
+        p.utils = utils;
+        utils.getFilePath = function getFilePath(file) {
+            var file = self.settings.dir+'/'+ file;
+            return file;
+        }
+
+        p.proc = function debugLogger() {
+            if ( self.silent == true) {
+                return;
+            }
+            sh.sLog(arguments);
+        };
+    }
+    defineUtils()
+}
+
+exports.YoutubeProxy = YoutubeProxy;
+
+if (module.parent == null) {
+    var instance = new YoutubeProxy();
+    var config = {};
+    instance.init(config)
+    instance.test();
+}
+

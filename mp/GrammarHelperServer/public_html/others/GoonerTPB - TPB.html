@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://thepiratebay.org/user/GoonerTPB/15/7 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>GoonerTPB - TPB</title>
+    
+    <meta name="google-site-verification" content="bERYeomIC5eBWlPLupPPYPYGA9GvAUKzFHh3WIw24Xs">
+    <link rel="search" type="application/opensearchdescription+xml" href="https://thepiratebay.org/opensearch.xml" title="Search The Pirate Bay">
+    <link rel="stylesheet" type="text/css" href="./GoonerTPB - TPB_files/pirate6.css">
+    <link rel="dns-prefetch" href="https://syndication.exoclick.com/">
+    <link rel="dns-prefetch" href="https://main.exoclick.com/">
+    <link rel="dns-prefetch" href="https://static-ssl.exoclick.com/">
+    <link rel="dns-prefetch" href="https://ads.exoclick.com/">
+    <link rel="canonical" href="https://thepiratebay.org/user/GoonerTPB/15/7">
+    <style type="text/css">
+        .searchBox{
+            margin: 6px;
+            width: 300px;
+            vertical-align: middle;
+            padding: 2px;
+            background-image:url('//thepiratebay.org/static/img/icon-https.gif');
+            background-repeat:no-repeat;
+            background-position: right;
+        }
+        .detLink {
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+        .detDesc {
+            color: #4e5456;
+        }
+        .detDesc a:hover {
+            color: #000099;
+            text-decoration: underline;
+        }
+        .sortby {
+            text-align: left;
+            float: left;
+        }
+        .detName {
+            padding-top: 3px;
+            padding-bottom: 2px;
+        }
+        .viewswitch {
+            font-style: normal;
+            float: right;
+            text-align: right;
+            font-weight: normal;
+        }
+    </style>
+    <script src="./GoonerTPB - TPB_files/jquery.min.js.download" type="text/javascript"></script>
+    <script src="./GoonerTPB - TPB_files/tpb.js.download" type="text/javascript"></script>
+    <meta name="description" content="Browse and Download any torrent from the user GoonerTPB. Direct downloads via magnet link.">
+    <meta name="keywords" content="GoonerTPB direct download torrent magnet tpb piratebay browse user list">
+
+    <script language="javascript" type="text/javascript">if (top.location != self.location) {top.location.replace(self.location);}</script>
+<script type="text/javascript" src="./GoonerTPB - TPB_files/9xsr9amltm"></script></head>
+
+<body><div id="holder"></div>
+    <div id="header">
+
+        <form method="get" id="q" action="https://thepiratebay.org/s/">
+            <a href="https://thepiratebay.org/" class="img"><img src="./GoonerTPB - TPB_files/tpblogo_sm_ny.gif" id="TPBlogo" alt="The Pirate Bay"></a>
+            <b><a href="https://thepiratebay.org/" title="Search Torrents">Search Torrents</a></b>&nbsp;&nbsp;|&nbsp;
+ <a href="https://thepiratebay.org/browse" title="Browse Torrents">Browse Torrents</a>&nbsp;&nbsp;|&nbsp;
+ <a href="https://thepiratebay.org/recent" title="Recent Torrent">Recent Torrents</a>&nbsp;&nbsp;|&nbsp;
+ <a href="https://thepiratebay.org/tv/" title="TV shows">TV shows</a>&nbsp;&nbsp;|&nbsp;
+ <a href="https://thepiratebay.org/music" title="Music">Music</a>&nbsp;&nbsp;|&nbsp;
+ <a href="https://thepiratebay.org/top" title="Top 100">Top 100</a>
+            <br><input type="search" class="inputbox" title="Pirate Search" name="q" placeholder="Search here..." value=""><input value="Pirate Search" type="submit" class="submitbutton"><br>            <label for="audio" title="Audio"><input id="audio" name="audio" onclick="javascript:rmAll();" type="checkbox">Audio</label>
+            <label for="video" title="Video"><input id="video" name="video" onclick="javascript:rmAll();" type="checkbox">Video</label>
+            <label for="apps" title="Applications"><input id="apps" name="apps" onclick="javascript:rmAll();" type="checkbox">Applications</label>
+            <label for="games" title="Games"><input id="games" name="games" onclick="javascript:rmAll();" type="checkbox">Games</label>
+            <label for="porn" title="Porn"><input id="porn" name="porn" onclick="javascript:rmAll();" type="checkbox">Porn</label>
+            <label for="other" title="Other"><input id="other" name="other" onclick="javascript:rmAll();" type="checkbox">Other</label>
+
+            <select id="category" name="category" onchange="javascript:setAll();">
+                <option value="0">All</option>
+                <optgroup label="Audio">
+                    <option value="101">Music</option>
+                    <option value="102">Audio books</option>
+                    <option value="103">Sound clips</option>
+                    <option value="104">FLAC</option>
+                    <option value="199">Other</option>
+                </optgroup>
+                <optgroup label="Video">
+                    <option value="201">Movies</option>
+                    <option value="202">Movies DVDR</option>
+                    <option value="203">Music videos</option>
+                    <option value="204">Movie clips</option>
+                    <option value="205">TV shows</option>
+                    <option value="206">Handheld</option>
+                    <option value="207">HD - Movies</option>
+                    <option value="208">HD - TV shows</option>
+                    <option value="209">3D</option>
+                    <option value="299">Other</option>
+                </optgroup>
+                <optgroup label="Applications">
+                    <option value="301">Windows</option>
+                    <option value="302">Mac</option>
+                    <option value="303">UNIX</option>
+                    <option value="304">Handheld</option>
+                    <option value="305">IOS (iPad/iPhone)</option>
+                    <option value="306">Android</option>
+                    <option value="399">Other OS</option>
+                </optgroup>
+                <optgroup label="Games">
+                    <option value="401">PC</option>
+                    <option value="402">Mac</option>
+                    <option value="403">PSx</option>
+                    <option value="404">XBOX360</option>
+                    <option value="405">Wii</option>
+                    <option value="406">Handheld</option>
+                    <option value="407">IOS (iPad/iPhone)</option>
+                    <option value="408">Android</option>
+                    <option value="499">Other</option>
+                </optgroup>
+                <optgroup label="Porn">
+                    <option value="501">Movies</option>
+                    <option value="502">Movies DVDR</option>
+                    <option value="503">Pictures</option>
+                    <option value="504">Games</option>
+                    <option value="505">HD - Movies</option>
+                    <option value="506">Movie clips</option>
+                    <option value="599">Other</option>
+                </optgroup>
+                <optgroup label="Other">
+                    <option value="601">E-books</option>
+                    <option value="602">Comics</option>
+                    <option value="603">Pictures</option>
+                    <option value="604">Covers</option>
+                    <option value="605">Physibles</option>
+                    <option value="699">Other</option>
+                </optgroup>
+            </select>
+
+            <input type="hidden" name="page" value="0">
+            <input type="hidden" name="orderby" value="99">
+        </form>
+    </div><!-- // div:header -->
+
+    <h2><span>Browse GoonerTPB</span>&nbsp;</h2>
+
+<div id="content">
+			<div id="sky-right">
+				 <iframe src="./GoonerTPB - TPB_files/sky2.html" width="160" height="600" frameborder="0" scrolling="no" style="display: none !important;"></iframe>
+			</div>
+	
+		 <iframe src="./GoonerTPB - TPB_files/center.html" id="sky-center" width="728" height="90" frameborder="0" scrolling="no" style="display: none !important;"></iframe>
+	<div id="main-content">
+<table id="searchResult">
+	<thead id="tableHead">
+		<tr class="header">
+			<th><a href="https://thepiratebay.org/user/GoonerTPB/15/13/0" title="Order by Type">Type</a></th>
+			<th><div class="sortby"><a href="https://thepiratebay.org/user/GoonerTPB/15/1/0" title="Order by Name">Name</a> (Order by: <a href="https://thepiratebay.org/user/GoonerTPB/15/3/0" title="Order by Uploaded">Uploaded</a>, <a href="https://thepiratebay.org/user/GoonerTPB/15/5/0" title="Order by Size">Size</a>, <span style="white-space: nowrap;"><a href="https://thepiratebay.org/user/GoonerTPB/15/11/0" title="Order by ULed by">ULed by</a></span>, <a href="https://thepiratebay.org/user/GoonerTPB/15/8/0" title="Order by Seeders">SE</a>, <a href="https://thepiratebay.org/user/GoonerTPB/15/9/0" title="Order by Leechers">LE</a>)</div><div class="viewswitch"> View: <a href="https://thepiratebay.org/switchview.php?view=s">Single</a> / Double&nbsp;</div></th>
+			<th><abbr title="Seeders"><a href="https://thepiratebay.org/user/GoonerTPB/15/8/0" title="Order by Seeders">SE</a></abbr></th>
+			<th><abbr title="Leechers"><a href="https://thepiratebay.org/user/GoonerTPB/15/9/0" title="Order by Leechers">LE</a></abbr></th>
+		</tr>
+	</thead>
+	<tbody><tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16160669/Top-Down_Crochet_Sweaters_(2016)_(Epub)_Gooner" class="detLink" title="Details for Top-Down Crochet Sweaters (2016) (Epub) Gooner">Top-Down Crochet Sweaters (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:83e4e1a486e0c2ac9fe1f267386b14215543d434&amp;dn=Top-Down+Crochet+Sweaters+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-31&nbsp;16:47, Size 14.34&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">17</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16192189/Frommers_Rio_de_Janeiro_Day_by_Day_-_2nd_Ed_(2015)_(Pdf)_Gooner" class="detLink" title="Details for Frommers Rio de Janeiro Day by Day - 2nd Ed (2015) (Pdf) Gooner">Frommers Rio de Janeiro Day by Day - 2nd Ed (2015) (Pdf) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:76db196b62b2dd9b66375496a43a891131fe2a42&amp;dn=Frommers+Rio+de+Janeiro+Day+by+Day+-+2nd+Ed+%282015%29+%28Pdf%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 11-04&nbsp;16:56, Size 90.68&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">17</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16257785/Fodors_Maui_2016_with_Molokai_and_Lanai_(2015)_(Epub)_Gooner" class="detLink" title="Details for Fodors Maui 2016 with Molokai and Lanai (2015) (Epub) Gooner">Fodors Maui 2016 with Molokai and Lanai (2015) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:aa607facb7b577f27848fc583d61a7cd300ca991&amp;dn=Fodors+Maui+2016+with+Molokai+and+Lanai+%282015%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 11-11&nbsp;17:08, Size 11.55&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">17</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16321048/Moon_-_Dominican_Republic_-_5th_Rev_Ed_(2016)_(Epub)_Gooner" class="detLink" title="Details for Moon - Dominican Republic - 5th Rev Ed (2016) (Epub) Gooner">Moon - Dominican Republic - 5th Rev Ed (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:8cc21cb4c2aa46764ab65afab006e2688b90ef10&amp;dn=Moon+-+Dominican+Republic+-+5th+Rev+Ed+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 11-20&nbsp;19:31, Size 9.81&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">17</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/8666233/The_Haynes_Welding_Manual.pdf_Gooner" class="detLink" title="Details for The Haynes Welding Manual.pdf Gooner">The Haynes Welding Manual.pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:7054b448250499af68ebc1e492faf4b521ad49b7&amp;dn=The+Haynes+Welding+Manual.pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 07-09&nbsp;2013, Size 10.04&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/8682993/DIY_Solar_Projects_-_How_to_Put_the_Sun_to_Work_in_Your_Home.pdf" class="detLink" title="Details for DIY Solar Projects - How to Put the Sun to Work in Your Home.pdf">DIY Solar Projects - How to Put the Sun to Work in Your Home.pdf</a>
+</div>
+<a href="magnet:?xt=urn:btih:4e6552901129423d90a79a758702bd663f470756&amp;dn=DIY+Solar+Projects+-+How+to+Put+the+Sun+to+Work+in+Your+Home.pdf&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 07-13&nbsp;2013, Size 48.31&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/8686964/Guide_To_The_Project_Management_Body_Of_Knowledge_-_5th_Edition." class="detLink" title="Details for Guide To The Project Management Body Of Knowledge - 5th Edition.">Guide To The Project Management Body Of Knowledge - 5th Edition.</a>
+</div>
+<a href="magnet:?xt=urn:btih:1afacdf9d0820ea0ec9e11c2caac3fc1d6f84423&amp;dn=Guide+To+The+Project+Management+Body+Of+Knowledge+-+5th+Edition.&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 07-14&nbsp;2013, Size 7.79&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/9727459/The_Stubborn_Fat_Solution_By_Lyle_McDonald.pdf_Gooner" class="detLink" title="Details for The Stubborn Fat Solution By Lyle McDonald.pdf Gooner">The Stubborn Fat Solution By Lyle McDonald.pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:29965c06f08c38c604eb1c5983ceb52af1f51c8f&amp;dn=The+Stubborn+Fat+Solution+By+Lyle+McDonald.pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 03-08&nbsp;2014, Size 12.16&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/9741411/Body_By_Science_-_A_Research_Based_Program_For_Strength_Training" class="detLink" title="Details for Body By Science - A Research Based Program For Strength Training">Body By Science - A Research Based Program For Strength Training</a>
+</div>
+<a href="magnet:?xt=urn:btih:67d63c3fabc880c3b1c3bc06435cca87a4e2fb0f&amp;dn=Body+By+Science+-+A+Research+Based+Program+For+Strength+Training&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 2 comments." title="This torrent has 2 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 03-11&nbsp;2014, Size 3.38&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/9852006/The_Charisma_Myth_-_How_Anyone_Can_Master_The_Art_And_Science_Of" class="detLink" title="Details for The Charisma Myth - How Anyone Can Master The Art And Science Of">The Charisma Myth - How Anyone Can Master The Art And Science Of</a>
+</div>
+<a href="magnet:?xt=urn:btih:99312a654fac5c0474cb9754fe8aaa2c15ab5643&amp;dn=The+Charisma+Myth+-+How+Anyone+Can+Master+The+Art+And+Science+Of&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 03-30&nbsp;2014, Size 395.65&nbsp;KiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/12305824/Blender_For_Dummies_-_3rd_Edition_(2015)_(Pdf__Epub_Mobi)_Gooner" class="detLink" title="Details for Blender For Dummies - 3rd Edition (2015) (Pdf, Epub,Mobi) Gooner">Blender For Dummies - 3rd Edition (2015) (Pdf, Epub,Mobi) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:b73a0b61f7b02a6af2c78c954876b1b11be49e1e&amp;dn=Blender+For+Dummies+-+3rd+Edition+%282015%29+%28Pdf%2C+Epub%2CMobi%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 08-28&nbsp;2015, Size 77.73&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/12650859/Precalculus_-_Mathematics_for_Calculus_-_7th_Ed_(2015)pdf_Gooner" class="detLink" title="Details for Precalculus - Mathematics for Calculus - 7th Ed (2015)pdf Gooner">Precalculus - Mathematics for Calculus - 7th Ed (2015)pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:06dbcd566932803d54fb45b7418b3792e0c1bc50&amp;dn=Precalculus+-+Mathematics+for+Calculus+-+7th+Ed+%282015%29pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 10-29&nbsp;2015, Size 56.82&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/13671694/Draw_50_Dinosaurs_and_Other_Prehistoric_Animals_(2012)_Gooner" class="detLink" title="Details for Draw 50 Dinosaurs and Other Prehistoric Animals (2012) Gooner">Draw 50 Dinosaurs and Other Prehistoric Animals (2012) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:445b75e77d775572e8ab66b3668d61be2ceee7d5&amp;dn=Draw+50+Dinosaurs+and+Other+Prehistoric+Animals+%282012%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 02-24&nbsp;20:13, Size 17.67&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/13802898/Mastering_Basic_Cheesemaking_(2016).epub_Gooner" class="detLink" title="Details for Mastering Basic Cheesemaking (2016).epub Gooner">Mastering Basic Cheesemaking (2016).epub Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:182cc25f6edd198961bdc3f359c98fca71ad8b3a&amp;dn=Mastering+Basic+Cheesemaking+%282016%29.epub+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 03-08&nbsp;20:37, Size 21.48&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/13840021/Encyclopedia_of_Food_and_Health_(5_Vol_Set)_(2015).pdf_Gooner" class="detLink" title="Details for Encyclopedia of Food and Health (5 Vol Set) (2015).pdf Gooner">Encyclopedia of Food and Health (5 Vol Set) (2015).pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:40f57d1f0fd3e6cfbd08341f1ee53c9166c98331&amp;dn=Encyclopedia+of+Food+and+Health+%285+Vol+Set%29+%282015%29.pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 03-12&nbsp;13:18, Size 104.87&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/14202618/Cybersecurity_(2015).pdf_Gooner" class="detLink" title="Details for Cybersecurity (2015).pdf Gooner">Cybersecurity (2015).pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:11d41b43cc67bc35ad9328bbe66de62d3301e76c&amp;dn=Cybersecurity+%282015%29.pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 04-06&nbsp;12:04, Size 1.75&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/14469030/Grilled_Pizza_the_Right_Way_(2015).epub_Gooner" class="detLink" title="Details for Grilled Pizza the Right Way (2015).epub Gooner">Grilled Pizza the Right Way (2015).epub Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:324e8360fa4acd53074509934b3fbb7a37427162&amp;dn=Grilled+Pizza+the+Right+Way+%282015%29.epub+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 04-28&nbsp;23:38, Size 17.53&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/15130728/Humans_-_An_Unauthorized_Biography_-_1st_Ed_(2016).pdf_Gooner" class="detLink" title="Details for Humans - An Unauthorized Biography - 1st Ed (2016).pdf Gooner">Humans - An Unauthorized Biography - 1st Ed (2016).pdf Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:3e08972f13464ccaf60219b2e54bad4cb841a8cb&amp;dn=Humans+-+An+Unauthorized+Biography+-+1st+Ed+%282016%29.pdf+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 06-28&nbsp;22:43, Size 2.51&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/15896076/The_420_Gourmet_(2016)_(Epub)_Gooner" class="detLink" title="Details for The 420 Gourmet (2016) (Epub) Gooner">The 420 Gourmet (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:e4a431fc5eae69c65e380349f7c33e598ce94dde&amp;dn=The+420+Gourmet+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 09-25&nbsp;11:50, Size 20.2&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/15956058/Brave_New_Weed_Adventures_into_the_Uncharted_World_of_Cannabis_(" class="detLink" title="Details for Brave New Weed Adventures into the Uncharted World of Cannabis (">Brave New Weed Adventures into the Uncharted World of Cannabis (</a>
+</div>
+<a href="magnet:?xt=urn:btih:c7da0dc87e6e30bb5c0a8839deb2465c40315499&amp;dn=Brave+New+Weed+Adventures+into+the+Uncharted+World+of+Cannabis+%28&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 2 comments." title="This torrent has 2 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 10-04&nbsp;22:33, Size 1.04&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/15968711/The_Complete_Riggers_Apprentice_-_2nd_Ed_(2016)_(Epub)_Gooner" class="detLink" title="Details for The Complete Riggers Apprentice - 2nd Ed (2016) (Epub) Gooner">The Complete Riggers Apprentice - 2nd Ed (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:d3039a16abdb84dd367ca5376810728408f22679&amp;dn=The+Complete+Riggers+Apprentice+-+2nd+Ed+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-06&nbsp;11:23, Size 41.8&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16026406/The_Rough_Guide_to_Walks_in_London_and_the_Southeast(2016)Gooner" class="detLink" title="Details for The Rough Guide to Walks in London and the Southeast(2016)Gooner">The Rough Guide to Walks in London and the Southeast(2016)Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:facd4c73de4c2cdb9d865ae72278926f6a6c15ff&amp;dn=The+Rough+Guide+to+Walks+in+London+and+the+Southeast%282016%29Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-13&nbsp;20:27, Size 58.77&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16050559/Delicious_Dump_Cakes_(2016)_(Epub)_Gooner" class="detLink" title="Details for Delicious Dump Cakes (2016) (Epub) Gooner">Delicious Dump Cakes (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:479bb18c81f48fb6feae58b30ccbf791dc41eb0e&amp;dn=Delicious+Dump+Cakes+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-16&nbsp;15:54, Size 28.32&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16058001/The_Fly_Creek_Cider_Mill_Cookbook_(2016)_(Pdf)_Gooner" class="detLink" title="Details for The Fly Creek Cider Mill Cookbook (2016) (Pdf) Gooner">The Fly Creek Cider Mill Cookbook (2016) (Pdf) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:4aeb1074da9cd62a1a7aeb67ecfc4085e5368958&amp;dn=The+Fly+Creek+Cider+Mill+Cookbook+%282016%29+%28Pdf%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-19&nbsp;10:56, Size 15.02&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">2</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16060201/When_Clowns_Attack_-_A_Survival_Guide_(2015)_(Epub)_Gooner" class="detLink" title="Details for When Clowns Attack - A Survival Guide (2015) (Epub) Gooner">When Clowns Attack - A Survival Guide (2015) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:78b978457be4dd7a04ec35ad5d40502aee6e6140&amp;dn=When+Clowns+Attack+-+A+Survival+Guide+%282015%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 10-19&nbsp;14:34, Size 58.54&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16062302/Food52_A_New_Way_to_Dinner_(2016)_(Epub)_Gooner" class="detLink" title="Details for Food52 A New Way to Dinner (2016) (Epub) Gooner">Food52 A New Way to Dinner (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:87beb4e565795e50a6fa1931dd670ce4cb2d897a&amp;dn=Food52+A+New+Way+to+Dinner+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-19&nbsp;19:43, Size 138.32&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">1</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16064514/Fact__Fiction_and_Flying_Saucers_(2016)_(Epub)_Gooner" class="detLink" title="Details for Fact, Fiction and Flying Saucers (2016) (Epub) Gooner">Fact, Fiction and Flying Saucers (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:ca65bb76d895ec15b45e5032de732055779c268e&amp;dn=Fact%2C+Fiction+and+Flying+Saucers+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><img src="./GoonerTPB - TPB_files/icon_comment.gif" alt="This torrent has 1 comments." title="This torrent has 1 comments."><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a>
+			<font class="detDesc">Uploaded 10-20&nbsp;00:30, Size 3.92&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16095129/Handbook_of_Digital_Games_and_Entertainment_Technologies_(2016)" class="detLink" title="Details for Handbook of Digital Games and Entertainment Technologies (2016)">Handbook of Digital Games and Entertainment Technologies (2016)</a>
+</div>
+<a href="magnet:?xt=urn:btih:5731148502185d74d7b520aaad894f56288ecd4a&amp;dn=Handbook+of+Digital+Games+and+Entertainment+Technologies+%282016%29&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-22&nbsp;22:48, Size 28.49&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr>
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16133086/My_Beer_Year_(2016)_(Epub)_Gooner" class="detLink" title="Details for My Beer Year (2016) (Epub) Gooner">My Beer Year (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:a32fe2d9986f219ec6bb4dbd387309e07f2b1cbd&amp;dn=My+Beer+Year+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-27&nbsp;21:01, Size 890.74&nbsp;KiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+	<tr class="alt">
+		<td class="vertTh">
+			<center>
+				<a href="https://thepiratebay.org/browse/600" title="More from this category">Other</a><br>
+				(<a href="https://thepiratebay.org/browse/601" title="More from this category">E-books</a>)
+			</center>
+		</td>
+		<td>
+<div class="detName">			<a href="https://thepiratebay.org/torrent/16141097/The_Teenage_Brain_(2016)_(Epub)_Gooner" class="detLink" title="Details for The Teenage Brain (2016) (Epub) Gooner">The Teenage Brain (2016) (Epub) Gooner</a>
+</div>
+<a href="magnet:?xt=urn:btih:b0427ed7025227cc667056a918347754c9d72f89&amp;dn=The+Teenage+Brain+%282016%29+%28Epub%29+Gooner&amp;tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&amp;tr=udp%3A%2F%2Fzer0day.ch%3A1337&amp;tr=udp%3A%2F%2Fopen.demonii.com%3A1337&amp;tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&amp;tr=udp%3A%2F%2Fexodus.desync.com%3A6969" title="Download this torrent using magnet"><img src="./GoonerTPB - TPB_files/icon-magnet.gif" alt="Magnet link"></a><a href="https://thepiratebay.org/user/GoonerTPB"><img src="./GoonerTPB - TPB_files/vip.gif" alt="VIP" title="VIP" style="width:11px;" border="0"></a><img src="./GoonerTPB - TPB_files/11x11p.png">
+			<font class="detDesc">Uploaded 10-29&nbsp;00:18, Size 5.66&nbsp;MiB, ULed by <a class="detDesc" href="https://thepiratebay.org/user/GoonerTPB/" title="Browse GoonerTPB">GoonerTPB</a></font>
+		</td>
+		<td align="right">16</td>
+		<td align="right">0</td>
+	</tr>
+<tr><td colspan="9" style="text-align:center;"><a href="https://thepiratebay.org/user/GoonerTPB/14/7"><img src="./GoonerTPB - TPB_files/prev.gif" border="0" alt="Previous"></a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/0/7">1</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/1/7">2</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/2/7">3</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/3/7">4</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/4/7">5</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/5/7">6</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/6/7">7</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/7/7">8</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/8/7">9</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/9/7">10</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/10/7">11</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/11/7">12</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/12/7">13</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/13/7">14</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/14/7">15</a>&nbsp;<b>16</b>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/16/7">17</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/17/7">18</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/18/7">19</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/19/7">20</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/20/7">21</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/21/7">22</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/22/7">23</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/23/7">24</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/24/7">25</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/25/7">26</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/26/7">27</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/27/7">28</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/28/7">29</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/29/7">30</a>&nbsp;<a href="https://thepiratebay.org/user/GoonerTPB/16/7"><img src="./GoonerTPB - TPB_files/next.gif" border="0" alt="Next"></a>&nbsp;
+</td></tr>
+</tbody></table>
+</div>
+
+			<div class="ads" id="sky-banner">
+				 <iframe src="./GoonerTPB - TPB_files/sky1.html" width="120" height="600" frameborder="0" scrolling="no" style="display: none !important;"></iframe>
+			</div>
+			<script type="text/javascript" src="https://thepiratebay.org/static/ads/ad-scroll.js"></script>
+	</div><!-- //div:content -->
+
+	<div id="foot" style="text-align:center;margin-top:1em;">
+
+			 <iframe src="./GoonerTPB - TPB_files/bottom.html" width="728" height="90" frameborder="0" scrolling="no" style="display: none !important;"></iframe>
+				<p>
+			<a href="https://thepiratebay.org/login" title="Login">Login</a> | 
+			<a href="https://thepiratebay.org/register" title="Register">Register</a> | 
+			<a href="https://thepiratebay.org/language" title="Select language">Language / Select language</a> |
+			<a href="https://thepiratebay.org/about" title="About">About</a> |
+			<a href="https://thepiratebay.org/blog" title="Blog">Blog</a>
+			<br>
+			<!--<a href="/contact" title="Contact us">Contact us</a> |-->
+			<a href="https://thepiratebay.org/policy" title="Usage policy">Usage policy</a> |
+			<a href="http://uj3wazyk5u4hnvtk.onion/" title="TOR">TOR</a> |
+			<a href="https://thepiratebay.org/doodles" title="Doodles">Doodles</a> |
+			<a href="http://pirates-forum.org/" title="Forum" target="_blank">Forum</a> 
+			<br>
+		</p>
+
+<br><a href="http://bitcoin.org/" target="_NEW">BitCoin</a>: <b><a href="bitcoin:129TQVAroeehD9fZpzK51NdZGQT4TqifbG">129TQVAroeehD9fZpzK51NdZGQT4TqifbG</a></b><br><br>
+
+		<div id="fbanners">
+			<a href="https://thepiratebay.org/rss" class="rss" title="RSS"><img src="./GoonerTPB - TPB_files/rss_small.gif" alt="RSS"></a>
+		</div><!-- // div:fbanners -->
+	</div><!-- // div:foot -->
+
+<script>
+var _wm_settings = {
+  popunder: {
+    url: 			'https://traffic.adxprts.com/?placement=289748&redirect',
+    times: 		2,
+    hours: 		12.000000,
+    cookie: 	'tpbpop',
+    fastbind:true
+  }
+};
+var _wm={initialize:function(){this.ua.initialize()},array:{is_array:function(a){return Object.prototype.toString.call(a)==='[object Array]'},sort:function(a,b,c){a=a.sort();if(b)a=a.reverse();if(c){for(var i=0;i<a.length;i++){var d=a[i];if(Object.prototype.toString.call(d)==='[object Object]')d=_wm.object.sort(d,b,true);else if(Object.prototype.toString.call(d)==='[object Array]')d=_wm.array.sort(d,b,true);a[i]=d}}return a},random_value:function(a){return a[Math.floor(a.length*Math.random())]}},object:{is_object:function(a){return Object.prototype.toString.call(a)==='[object Object]'},keys:function(a){var hasOwnProperty=Object.prototype.hasOwnProperty,hasDontEnumBug=!({toString:null}).propertyIsEnumerable('toString'),dontEnums=['toString','toLocaleString','valueOf','hasOwnProperty','isPrototypeOf','propertyIsEnumerable','constructor'],dontEnumsLength=dontEnums.length;var b=[];if(typeof a!=='object'&&typeof a!=='function'||a===null)return b;for(var c in a){if(hasOwnProperty.call(a,c))b.push(c)}if(hasDontEnumBug){for(var i=0;i<dontEnumsLength;i++){if(hasOwnProperty.call(a,dontEnums[i]))b.push(dontEnums[i])}}return b},sort:function(a,c,d){var e=_wm.array.sort(_wm.object.keys(a));if(c)e=e.reverse();var b={};for(var i=0;i<e.length;i++){var f=a[e[i]];if(d){if(_wm.object.is_object(f))f=_wm.object.sort(f,c,true);else if(_wm.array.is_array(f))f=_wm.array.sort(f,c,true)}b[e[i]]=f}return b},iterator:function(b){this.element=b;this.element_array=_wm.object.keys(b);this.current_index=0;this.hasNext=function(){return this.current_index<=this.element_array.length-1};this.next=function(){if(this.hasNext()){var a=[this.element_array[this.current_index],this.element[this.element_array[this.current_index]]];this.current_index++;return a}return false}},random_value:function(a){return a[_wm.array.random_value(_wm.object.keys(a))]},length:function(a){return _wm.object.keys(a).length}},ua:{initialize:function(){this.maps={browser:{oldsafari:{major:{'1':['/8','/1','/3'],'2':'/4','?':'/'},version:{'1.0':'/8','1.2':'/1','1.3':'/3','2.0':'/412','2.0.2':'/416','2.0.3':'/417','2.0.4':'/419','?':'/'}}},os:{windows:{version:{'ME':'4.90','NT 3.11':'NT3.51','NT 4.0':'NT4.0','2000':'NT 5.0','XP':['NT 5.1','NT 5.2'],'Vista':'NT 6.0','7':'NT 6.1','8':'NT 6.2','8.1':'NT 6.3','RT':'ARM'}}}};this.regexes={browser:[[/(opera\smini)\/((\d+)?[\w\.-]+)/i,/(opera\s[mobiletab]+).+version\/((\d+)?[\w\.-]+)/i,/(opera).+version\/((\d+)?[\w\.]+)/i,/(opera)[\/\s]+((\d+)?[\w\.]+)/i],['name','version','major'],[/\s(opr)\/((\d+)?[\w\.]+)/i],[['name','Opera'],'version','major'],[/(kindle)\/((\d+)?[\w\.]+)/i,/(lunascape|maxthon|netfront|jasmine|blazer)[\/\s]?((\d+)?[\w\.]+)*/i,/(avant\s|iemobile|slim|baidu)(?:browser)?[\/\s]?((\d+)?[\w\.]*)/i,/(?:ms|\()(ie)\s((\d+)?[\w\.]+)/i,/(rekonq)((?:\/)[\w\.]+)*/i,/(chromium|flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron)\/((\d+)?[\w\.-]+)/i],['name','version','major'],[/(trident).+rv[:\s]((\d+)?[\w\.]+).+like\sgecko/i],[['name','IE'],'version','major'],[/(yabrowser)\/((\d+)?[\w\.]+)/i],[['name','Yandex'],'version','major'],[/(comodo_dragon)\/((\d+)?[\w\.]+)/i],[['name',/_/g,' '],'version','major'],[/(chrome|omniweb|arora|[tizenoka]{5}\s?browser)\/v?((\d+)?[\w\.]+)/i],['name','version','major'],[/(dolfin)\/((\d+)?[\w\.]+)/i],[['name','Dolphin'],'version','major'],[/((?:android.+)crmo|crios)\/((\d+)?[\w\.]+)/i],[['name','Chrome'],'version','major'],[/version\/((\d+)?[\w\.]+).+?mobile\/\w+\s(safari)/i],['version','major',['name','Mobile Safari']],[/version\/((\d+)?[\w\.]+).+?(mobile\s?safari|safari)/i],['version','major','name'],[/webkit.+?(mobile\s?safari|safari)((\/[\w\.]+))/i],['name',['major',_wm.ua.mapper.str,_wm.ua.maps.browser.oldsafari.major],['version',_wm.ua.mapper.str,_wm.ua.maps.browser.oldsafari.version]],[/(konqueror)\/((\d+)?[\w\.]+)/i,/(webkit|khtml)\/((\d+)?[\w\.]+)/i],['name','version','major'],[/(navigator|netscape)\/((\d+)?[\w\.-]+)/i],[['name','Netscape'],'version','major'],[/(swiftfox)/i,/(icedragon|iceweasel|camino|chimera|fennec|maemo\sbrowser|minimo|conkeror)[\/\s]?((\d+)?[\w\.\+]+)/i,/(firefox|seamonkey|k-meleon|icecat|iceape|firebird|phoenix)\/((\d+)?[\w\.-]+)/i,/(mozilla)\/((\d+)?[\w\.]+).+rv\:.+gecko\/\d+/i,/(uc\s?browser|polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|qqbrowser)[\/\s]?((\d+)?[\w\.]+)/i,/(links)\s\(((\d+)?[\w\.]+)/i,/(gobrowser)\/?((\d+)?[\w\.]+)*/i,/(ice\s?browser)\/v?((\d+)?[\w\._]+)/i,/(mosaic)[\/\s]((\d+)?[\w\.]+)/i],['name','version','major']],os:[[/(windows)\snt\s6\.2;\s(arm)/i,/(windows\sphone(?:\sos)*|windows\smobile|windows)[\s\/]?([ntce\d\.\s]+\w)/i],['name',['version',_wm.ua.mapper.str,_wm.ua.maps.os.windows.version]],[/(win(?=3|9|n)|win\s9x\s)([nt\d\.]+)/i],[['name','Windows'],['version',_wm.ua.mapper.str,_wm.ua.maps.os.windows.version]],[/\((bb)(10);/i],[['name','BlackBerry'],'version'],[/(blackberry)\w*\/?([\w\.]+)*/i,/(tizen)\/([\w\.]+)/i,/(android|webos|palm\os|qnx|bada|rim\stablet\sos|meego)[\/\s-]?([\w\.]+)*/i],['name','version'],[/(symbian\s?os|symbos|s60(?=;))[\/\s-]?([\w\.]+)*/i],[['name','Symbian'],'version'],[/mozilla.+\(mobile;.+gecko.+firefox/i],[['name','Firefox OS'],'version'],[/(nintendo|playstation)\s([wids3portablevu]+)/i,/(mint)[\/\s\(]?(\w+)*/i,/(joli|[kxln]?ubuntu|debian|[open]*suse|gentoo|arch|slackware|fedora|mandriva|centos|pclinuxos|redhat|zenwalk)[\/\s-]?([\w\.-]+)*/i,/(hurd|linux)\s?([\w\.]+)*/i,/(gnu)\s?([\w\.]+)*/i],['name','version'],[/(cros)\s[\w]+\s([\w\.]+\w)/i],[['name','Chromium OS'],'version'],[/(sunos)\s?([\w\.]+\d)*/i],[['name','Solaris'],'version'],[/\s([frentopc-]{0,4}bsd|dragonfly)\s?([\w\.]+)*/i],['name','version'],[/(ip[honead]+)(?:.*os\s*([\w]+)*\slike\smac|;\sopera)/i],[['name','iOS'],['version',/_/g,'.']],[/(mac\sos\sx)\s?([\w\s\.]+\w)*/i],['name',['version',/_/g,'.']],[/(haiku)\s(\w+)/i,/(aix)\s((\d)(?=\.|\)|\s)[\w\.]*)*/i,/(macintosh|mac(?=_powerpc)|plan\s9|minix|beos|os\/2|amigaos|morphos|risc\sos)/i,/(unix)\s?([\w\.]+)*/i],['name','version']]},this.browser=this.get.browser();this.os=this.get.os()},ua:(window&&window.navigator&&window.navigator.userAgent)?window.navigator.userAgent:'',get:{browser:function(){return _wm.ua.mapper.rgx.apply(this,_wm.ua.regexes.browser)},os:function(){return _wm.ua.mapper.rgx.apply(this,_wm.ua.regexes.os)}},util:{has:function(a,b){return b.toLowerCase().indexOf(a.toLowerCase())!==-1},lowerize:function(a){return a.toLowerCase()}},mapper:{rgx:function(){for(var a,i=0,j,k,p,q,matches,match,args=arguments;i<args.length;i+=2){var b=args[i],props=args[i+1];if(typeof(a)==='undefined'){a={};for(p in props){q=props[p];if(typeof(q)==='object'){a[q[0]]=undefined}else{a[q]=undefined}}}for(j=k=0;j<b.length;j++){matches=b[j].exec(_wm.ua.ua);if(!!matches){for(p=0;p<props.length;p++){match=matches[++k];q=props[p];if(typeof(q)==='object'&&q.length>0){if(q.length==2){if(typeof(q[1])=='function'){a[q[0]]=q[1].call(this,match)}else{a[q[0]]=q[1]}}else if(q.length==3){if(typeof(q[1])==='function'&&!(q[1].exec&&q[1].test)){a[q[0]]=match?q[1].call(this,match,q[2]):undefined}else{a[q[0]]=match?match.replace(q[1],q[2]):undefined}}else if(q.length==4){a[q[0]]=match?q[3].call(this,match.replace(q[1],q[2])):undefined}}else{a[q]=match?match:undefined}}break}}if(!!matches)break}return a},str:function(a,b){for(var i in b){if(typeof(b[i])==='object'&&b[i].length>0){for(var j=0;j<b[i].length;j++){if(_wm.ua.util.has(b[i][j],a)){return(i==='?')?undefined:i}}}else if(_wm.ua.util.has(b[i],a)){return(i==='?')?undefined:i}}return a}}},cookie:{get:function(a,b){var c=new Date();c.setTime(c.getTime());var d=new Date(c.getTime()+(1000*60*60*b)).toGMTString();var e=document.cookie.split(';');var f='';var g='';var h=[0,d];for(var i=0;i<e.length;i++){f=e[i].split('=');g=f[0].replace(/^\s+|\s+$/g,'');if(g==a){b_cookie_found=true;if(f.length>1){h=unescape(f[1]).split('|');if(h.length==1)h[1]=d}return h}f=null;g=''}return h},set:function(a,b,c){document.cookie=a+'='+escape(b+'|'+c)+';expires='+c+';path=/'}},listener:{events:[],add:function(a,b,c,e){if(e==undefined)e=true;var d='on'+b;if(typeof a.addEventListener!='undefined')a.addEventListener(b,c,e);else if(typeof a.attachEvent!='undefined')a.attachEvent(d,c);else{if(typeof a[d]!='function')a[d]=c;else{var e=a[d];a['old_'+d]=e;a[d]=function(){e();return c()}}}_wm.listener.events.push(arguments)},remove:function(a,b,c,e){if(e==undefined)e=true;var d='on'+b;if(typeof a.removeEventListener!='undefined')a.removeEventListener(b,c,e);else if(typeof a.detachEvent!='undefined')a.detachEvent(d,c);else{if(typeof a['old_'+d]!='function')a[d]=null;else a[d]=a['old_'+d]}outer:for(var i=0;i<_wm.listener.events.length;i++){inner:for(var j=0;j<_wm.listener.events[i].length;j++){if(_wm.listener.events[i][j]!==arguments[j])continue outer}_wm.listener.events=_wm.listener.events.slice(0,i).concat(_wm.listener.events.slice(i+1));break outer}},clear:function(){while(_wm.listener.events.length>0)_wm.listener.remove.apply(undefined,_wm.listener.events[0])}},format:{},random:function(){return Math.floor(Math.random()*1000001)}};_wm.initialize();_wm.format.popunder={settings:typeof _wm_settings==='object'&&_wm_settings.popunder||false,config:'width='+screen.width+', height='+screen.height+',resizable=no,toolbar=no,location=no,directories=no,status=no,menubar=no,copyhistory=no,scrollbars=yes',isBinded:false,isTriggered:false,trigger_stack:[],initialize:function(){if(!_wm.format.popunder.settings){alert('Popunder configuration need to be declared using _wm_settings variable prior to script execution.');return}var a=_wm.cookie.get(_wm.format.popunder.settings.cookie,_wm.format.popunder.settings.hours);this.cookie={};this.cookie.times=!isNaN(Number(a[0]))?Number(a[0]):0;this.cookie.expires=!isNaN(Date.parse(a[1]))?a[1]:new Date().toGMTString();if(_wm.format.popunder.settings.fastbind)_wm.format.popunder.handler.bind();else{if(document.readyState=='complete')_wm.format.popunder.handler.bind();else{_wm.listener.add(document,'DOMContentLoaded',function(){_wm.listener.remove(document,'DOMContentLoaded');_wm.format.popunder.handler.bind()});_wm.listener.add(document,'onreadystatechange',function(){if(document.readyState=='complete'){_wm.listener.remove(document,'onreadystatechange');_wm.format.popunder.handler.bind()}});_wm.listener.add(window,'load',_wm.format.popunder.handler.bind)}}},url:function(){var a=_wm.format.popunder.settings.url;if(typeof a=='string')return a;if(_wm.array.is_array(a))return _wm.array.random_value(a);if((_wm.object.is_object(a)&&!_wm.format.popunder.settings.hours))return _wm.object.random_value(a);if(_wm.object.is_object(a)){if(a[_wm.format.popunder.cookie.times]!=undefined)return a[_wm.format.popunder.cookie.times];else return _wm.object.random_value(a)}return null},handler:{bind:function(){if(_wm.format.popunder.isBinded)return;_wm.format.popunder.isBinded=true;if(_wm.format.popunder.cookie.times>=_wm.format.popunder.settings.times&&_wm.format.popunder.settings.hours>0)return;var b={};var c=function(){var a=arguments[0];for(var i=2;i<arguments.length;i++){if(i%2)arguments[i]=arguments[i]+'.0';if(!a.hasOwnProperty(arguments[i])&&i<arguments.length-1)a[arguments[i]]={};if(i==arguments.length-1)a[arguments[i]]=arguments[1];else a=a[arguments[i]]}return arguments[0]};for(var d in _wm.format.popunder.callback.binder){if(!_wm.format.popunder.callback.binder.hasOwnProperty(d))continue;var e=_wm.format.popunder.callback.binder[d];var f=d.split(',');for(var g in f){if(!f.hasOwnProperty(g))continue;var h=f[g].split(':');var j=h.length==1?['all',0].concat(h[0].split('_')):(h[0].indexOf('_')!=-1?h[0].split('_'):h[0].split('_').concat([0])).concat(h[1].split('_'));if(j.length==3)j.push(0);b=c.apply(null,[b,e].concat(j))}}b=_wm.object.sort(b,true,true);var k={};var l=[_wm.ua.os.name.toLowerCase().split(' ').shift(),parseInt(_wm.ua.os.version)||0,_wm.ua.browser.name.toLowerCase().split(' ').shift(),parseInt(_wm.ua.browser.major)||0];var m=[],trace_values=[];var n=b;for(var i=0;i>=0&&i<l.length;i++){var o=(trace_values.length>0?trace_values.join(':')+':':'')+''+i;if(k[o]){var p=k[o]}else{var p=new _wm.object.iterator(n);k[o]=p}var q=false;while(p.hasNext()){var r=p.next();if((i%2&&r[0]<=parseFloat(l[i]))||(i%2==0&&(r[0]==l[i])||r[0]==='all')){q=r[0];break}}if(q){m.push(n);trace_values.push(q);n=n[q]}else{trace_values.pop();n=m.pop();i-=2}}if(typeof n==='function')n()},trigger:function(e){if(_wm.ua.browser.name.toLowerCase()!=='ie'||_wm.ua.browser.major>8)e.stopImmediatePropagation();_wm.listener.clear();if(!_wm.format.popunder.registerTrigger())return;var a;while(a=_wm.format.popunder.trigger_stack.shift())_wm.format.popunder.callback.trigger[a.shift()].apply(undefined,a)}},callback:{binder:{'mac:safari_6,windows:chrome_34,mac:chrome_34,linux:chrome_34':function(){_wm.format.popunder.trigger_stack.push(['tab_trigger']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'windows:chrome_31,mac:chrome_31,linux:chrome_31':function(){_wm.format.popunder.trigger_stack.push(['flash_trigger']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'windows:chrome_28,mac:chrome_28,linux:chrome_28':function(){_wm.format.popunder.trigger_stack.push(['triple_trigger']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'firefox_12,chrome_21':function(){_wm.format.popunder.trigger_stack.push(['double_trigger']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'explorer':function(){_wm.format.popunder.trigger_stack.push(['single_delay']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'android:all,ios:all':function(){_wm.format.popunder.trigger_stack.push(['single']);_wm.listener.add(document,'touchend',_wm.format.popunder.handler.trigger);_wm.listener.add(document,'touchcancel',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'windows:iemobile':function(){_wm.format.popunder.trigger_stack.push(['single']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()},'all':function(){_wm.format.popunder.trigger_stack.push(['single']);_wm.listener.add(document,'click',_wm.format.popunder.handler.trigger);_wm.format.popunder.occupy()}},trigger:{flash_trigger:function(){var d=document.createElement('div');document.body.appendChild(d);d.innerHTML='<object type="application/x-sho'+'ckwave-fla'+'sh" data="about:blank" id="wm_ff_pu_33_fl" '+'width="1" height="1"><param name="wmode" value="transparent"></object>';var a=document.getElementById('wm_ff_pu_33_fl');a.focus();a.style.display='none';window.open(_wm.format.popunder.url(),'pu_'+_wm.random(),_wm.format.popunder.config);window.open('').close()},tab_trigger:function(){var a=document.createElement('a');a.href=_wm.format.popunder.url();a.setAttribute('target','_blank');top.window.document.body.appendChild(a);var e=document.createEvent('MouseEvents');e.initMouseEvent('click',true,true,window,0,0,0,0,0,true,false,false,true,0,null);a.dispatchEvent(e)},triple_trigger:function(){window.open('javascript:window.focus()','_self');var w=window.open('about:blank','pu_'+_wm.random(),_wm.format.popunder.config);var a=document.createElement('a');a.setAttribute('href','data:text/html,<scr'+'ipt>window.close();</scr'+'ipt>');a.style.display='none';document.body.appendChild(a);var e=document.createEvent('MouseEvents');e.initMouseEvent('click',true,true,window,0,0,0,0,0,true,false,false,true,0,null);a.dispatchEvent(e);document.body.removeChild(a);w.document.open().write('<scr'+'ipt type="text/javascript">window.location="'+_wm.format.popunder.url()+'";<\/scr'+'ipt>');w.document.close()},double_trigger:function(){var w=window.open(_wm.format.popunder.url(),'pu_'+_wm.random(),_wm.format.popunder.config);if(w){w.blur();try{var b=w.window.open('about:blank');b.close()}catch(i){}if(_wm.ua.browser=='Firefox')window.showModalDialog("javascript:window.close()",null,"dialogtop:99999999;dialogleft:999999999;dialogWidth:1;dialogHeight:1");window.focus()}},single_delay:function(){var w=window.open(_wm.format.popunder.url(),'pu_'+_wm.random(),_wm.format.popunder.config);window.setTimeout(window.focus,750);window.setTimeout(window.focus,850);if(w)w.blur()},single:function(a){var w=window.open(_wm.format.popunder.url(),'pu_'+_wm.random(),_wm.format.popunder.config);if(w){w.blur();window.focus()}},}},occupy:function(a){if(!a){a=['mousedown','mouseup']}for(var i=0;i<a.length;i++){_wm.listener.add(document,a[i],function(e){if(_wm.ua.browser.name.toLowerCase()!=='ie'||_wm.ua.browser.major>8)e.stopImmediatePropagation()})}},registerTrigger:function(){if(_wm.format.popunder.isTriggered)return false;_wm.format.popunder.isTriggered=true;if(_wm.format.popunder.settings.hours>0)_wm.cookie.set(_wm.format.popunder.settings.cookie,++_wm.format.popunder.cookie.times,_wm.format.popunder.cookie.expires);return true}};(function(){_wm.format.popunder.initialize()})();
+</script>
+<script type="text/javascript" src="https://traffic.adxprts.com/ads/ads.js"></script> <script type="text/javascript"> if (typeof asjdebsbnhjx === 'undefined') { var head = document.getElementsByTagName('head')[0]; var script = document.createElement('script'); script.type = 'text/javascript';  script.src  = '/9xsr9amltm'; head.appendChild(script);  }</script>
+
+<script aria-hidden="true" type="application/x-lastpass" id="hiddenlpsubmitdiv" style="display: none;"></script><script>try{(function() { for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){ var lastpass_f = document.forms[lastpass_iter]; if(typeof(lastpass_f.lpsubmitorig2)=="undefined"){ lastpass_f.lpsubmitorig2 = lastpass_f.submit; if (typeof(lastpass_f.lpsubmitorig2)=='object'){ continue;}lastpass_f.submit = function(){ var form=this; var customEvent = document.createEvent("Event"); customEvent.initEvent("lpCustomEvent", true, true); var d = document.getElementById("hiddenlpsubmitdiv"); if (d) {for(var i = 0; i < document.forms.length; i++){ if(document.forms[i]==form){ if (typeof(d.innerText) != 'undefined') { d.innerText=i.toString(); } else { d.textContent=i.toString(); } } } d.dispatchEvent(customEvent); }form.lpsubmitorig2(); } } }})()}catch(e){}</script></body><script>function inject() {
+
+	var originalOpenWndFnKey = "originalOpenFunction";
+
+			var originalWindowOpenFn 	= window.open,
+			    originalCreateElementFn = document.createElement,
+			    originalCreateEventFn 	= document.createEvent,
+				windowsWithNames = {};
+			var timeSinceCreateAElement = 0;
+			var lastCreatedAElement = null;
+			var fullScreenOpenTime;
+			var parentOrigin = (window.location != window.parent.location) ? document.referrer: document.location;
+
+			window[originalOpenWndFnKey] = window.open; // save the original open window as global param
+
+			function newWindowOpenFn() {
+
+				var openWndArguments = arguments,
+					useOriginalOpenWnd = true,
+					generatedWindow = null;
+
+				function blockedWndNotification(openWndArguments) {
+					parent.postMessage({ type: "blockedWindow", args: JSON.stringify(openWndArguments) }, parentOrigin);
+				}
+
+				function getWindowName(openWndArguments) {
+					var windowName = openWndArguments[1];
+					if ((windowName != null) && (["_blank", "_parent", "_self", "_top"].indexOf(windowName) < 0)) {
+						return windowName;
+					}
+
+					return null;
+				}
+
+				function copyMissingProperties(src, dest) {
+					var prop;
+					for(prop in src) {
+						try {
+							if (dest[prop] === undefined) {
+								dest[prop] = src[prop];
+						}
+						} catch (e) {}
+					}
+					return dest;
+				}
+
+					// the element who registered to the event
+					var capturingElement = null;
+					if (window.event != null) {
+						capturingElement = window.event.currentTarget;
+					}
+
+					if (capturingElement == null) {
+						var caller = openWndArguments.callee;
+						while ((caller.arguments != null) && (caller.arguments.callee.caller != null)) {
+							caller = caller.arguments.callee.caller;
+						}
+						if ((caller.arguments != null) && (caller.arguments.length > 0) && (caller.arguments[0].currentTarget != null)) {
+							capturingElement = caller.arguments[0].currentTarget;
+						}
+					}
+
+				/////////////////////////////////////////////////////////////////////////////////
+				// Blocked if a click on background element occurred (<body> or document)
+				/////////////////////////////////////////////////////////////////////////////////
+
+					if ((capturingElement != null) && (
+							(capturingElement instanceof Window) ||
+							(capturingElement === document) ||
+							(
+								(capturingElement.URL != null) && (capturingElement.body != null)
+							) ||
+							(
+								(capturingElement.nodeName != null) && (
+									(capturingElement.nodeName.toLowerCase() == "body") ||
+									(capturingElement.nodeName.toLowerCase() == "#document")
+								)
+							)
+						)) {
+							window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because it was triggered by the " + capturingElement.nodeName + " element";
+							// console.info(window.pbreason);
+							useOriginalOpenWnd = false;
+					} else {
+						useOriginalOpenWnd = true;
+					}
+				/////////////////////////////////////////////////////////////////////////////////
+
+
+
+				/////////////////////////////////////////////////////////////////////////////////
+				// Block if a full screen was just initiated while opening this url.
+				/////////////////////////////////////////////////////////////////////////////////
+
+					// console.info("fullscreen: " + ((new Date()).getTime() - fullScreenOpenTime));
+					// console.info("webkitFullscreenElement: " + document.webkitFullscreenElement);
+					var fullScreenElement = document.webkitFullscreenElement || document.mozFullscreenElement || document.fullscreenElement
+					if ((((new Date()).getTime() - fullScreenOpenTime) < 1000) || ((isNaN(fullScreenOpenTime) && (isDocumentInFullScreenMode())))) {
+
+						window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because a full screen was just initiated while opening this url.";
+						// console.info(window.pbreason);
+
+						/* JRA REMOVED
+						if (window[script_params.fullScreenFnKey]) {
+							window.clearTimeout(window[script_params.fullScreenFnKey]);
+						}
+						*/
+
+						if (document.exitFullscreen) {
+							document.exitFullscreen();
+						}
+						else if (document.mozCancelFullScreen) {
+							document.mozCancelFullScreen();
+						}
+						else if (document.webkitCancelFullScreen) {
+							document.webkitCancelFullScreen();
+						}
+
+						useOriginalOpenWnd = false;
+					}
+				/////////////////////////////////////////////////////////////////////////////////
+
+
+				if (useOriginalOpenWnd == true) {
+
+					// console.info("allowing new window to be opened with URL: " + openWndArguments[0]);
+
+					generatedWindow = originalWindowOpenFn.apply(this, openWndArguments);
+
+					// save the window by name, for latter use.
+					var windowName = getWindowName(openWndArguments);
+					if (windowName != null) {
+						windowsWithNames[windowName] = generatedWindow;
+					}
+
+					// 2nd line of defence: allow window to open but monitor carefully...
+
+					/////////////////////////////////////////////////////////////////////////////////
+					// Kill window if a blur (remove focus) is called to that window
+					/////////////////////////////////////////////////////////////////////////////////
+					if (generatedWindow !== window) {
+						var openTime = (new Date()).getTime();
+						var originalWndBlurFn = generatedWindow.blur;
+						generatedWindow.blur = function() {
+							if (((new Date()).getTime() - openTime) < 1000 /* one second */) {
+								window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because a it was blured";
+								// console.info(window.pbreason);
+								generatedWindow.close();
+								blockedWndNotification(openWndArguments);
+							} else {
+								// console.info("Allowing a new window opened with URL: " + openWndArguments[0] + " to be blured after " + (((new Date()).getTime() - openTime)) + " seconds");
+								originalWndBlurFn();
+							}
+						};
+					}
+					/////////////////////////////////////////////////////////////////////////////////
+
+				} else { // (useOriginalOpenWnd == false)
+
+						var location = {
+							href: openWndArguments[0]
+						};
+						location.replace = function(url) {
+							location.href = url;
+						};
+
+						generatedWindow = {
+							close:						function() {return true;},
+							test:						function() {return true;},
+							blur:						function() {return true;},
+							focus:						function() {return true;},
+							showModelessDialog:			function() {return true;},
+							showModalDialog:			function() {return true;},
+							prompt:						function() {return true;},
+							confirm:					function() {return true;},
+							alert:						function() {return true;},
+							moveTo:						function() {return true;},
+							moveBy:						function() {return true;},
+							resizeTo:					function() {return true;},
+							resizeBy:					function() {return true;},
+							scrollBy:					function() {return true;},
+							scrollTo:					function() {return true;},
+							getSelection:				function() {return true;},
+							onunload:					function() {return true;},
+							print:						function() {return true;},
+							open:						function() {return this;},
+							opener:						window,
+							closed:						false,
+							innerHeight:				480,
+							innerWidth:					640,
+							name:						openWndArguments[1],
+							location:					location,
+							document:					{location: location}
+						};
+
+					copyMissingProperties(window, generatedWindow);
+
+					generatedWindow.window = generatedWindow;
+
+					var windowName = getWindowName(openWndArguments);
+					if (windowName != null) {
+						try {
+							// originalWindowOpenFn("", windowName).close();
+							windowsWithNames[windowName].close();
+							// console.info("Closed window with the following name: " + windowName);
+						} catch (err) {
+							// console.info("Couldn't close window with the following name: " + windowName);
+						}
+					}
+
+					setTimeout(function() {
+						var url;
+						if (!(generatedWindow.location instanceof Object)) {
+							url = generatedWindow.location;
+						} else if (!(generatedWindow.document.location instanceof Object)) {
+							url = generatedWindow.document.location;
+						} else if (location.href != null) {
+							url = location.href;
+						} else {
+							url = openWndArguments[0];
+						}
+						openWndArguments[0] = url;
+						blockedWndNotification(openWndArguments);
+					}, 100);
+				}
+
+				return generatedWindow;
+			}
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Replace the window open method with Poper Blocker's
+			/////////////////////////////////////////////////////////////////////////////////
+			window.open = function() {
+				try {
+					return newWindowOpenFn.apply(this, arguments);
+				} catch(err) {
+					return null;
+				}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Monitor dynamic html element creation to prevent generating <a> elements with click dispatching event
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			document.createElement = function() {
+
+					var newElement = originalCreateElementFn.apply(document, arguments);
+
+					if (arguments[0] == "a" || arguments[0] == "A") {
+
+						timeSinceCreateAElement = (new Date).getTime();
+
+						var originalDispatchEventFn = newElement.dispatchEvent;
+
+						newElement.dispatchEvent = function(event) {
+							if (event.type != null && (("" + event.type).toLocaleLowerCase() == "click")) {
+								window.pbreason = "blocked due to an explicit dispatchEvent event with type 'click' on an 'a' tag";
+								// console.info(window.pbreason);
+								parent.postMessage({type:"blockedWindow", args: JSON.stringify({"0": newElement.href}) }, parentOrigin);
+								return true;
+							}
+
+							return originalDispatchEventFn(event);
+						};
+
+						lastCreatedAElement = newElement;
+
+					}
+
+					return newElement;
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Block artificial mouse click on frashly created <a> elements
+			/////////////////////////////////////////////////////////////////////////////////
+			document.createEvent = function() {
+				try {
+					if ((arguments[0].toLowerCase().indexOf("mouse") >= 0) && ((new Date).getTime() - timeSinceCreateAElement) <= 50) {
+						window.pbreason = "Blocked because 'a' element was recently created and " + arguments[0] + " event was created shortly after";
+						// console.info(window.pbreason);
+						arguments[0] = lastCreatedAElement.href;
+						parent.postMessage({ type: "blockedWindow", args: JSON.stringify({"0": lastCreatedAElement.href}) }, parentOrigin);
+						return null;
+					}
+					return originalCreateEventFn.apply(document, arguments);
+				} catch(err) {}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Monitor full screen requests
+			/////////////////////////////////////////////////////////////////////////////////
+			function onFullScreen(isInFullScreenMode) {
+					if (isInFullScreenMode) {
+						fullScreenOpenTime = (new Date()).getTime();
+						// console.info("fullScreenOpenTime = " + fullScreenOpenTime);
+					} else {
+						fullScreenOpenTime = NaN;
+					}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+			function isDocumentInFullScreenMode() {
+				// Note that the browser fullscreen (triggered by short keys) might
+				// be considered different from content fullscreen when expecting a boolean
+				return ((document.fullScreenElement && document.fullScreenElement !== null) ||    // alternative standard methods
+					((document.mozFullscreenElement != null) || (document.webkitFullscreenElement != null)));                   // current working methods
+			}
+
+			document.addEventListener("fullscreenchange", function () {
+				onFullScreen(document.fullscreen);
+			}, false);
+
+			document.addEventListener("mozfullscreenchange", function () {
+				onFullScreen(document.mozFullScreen);
+			}, false);
+
+			document.addEventListener("webkitfullscreenchange", function () {
+				onFullScreen(document.webkitIsFullScreen);
+			}, false);
+
+		} inject()</script>
+
+
+
+<script src="http://localhost:10110/reloader.js" ></script>
+<script src="drawPB.js" ></script>
+<script>
+	reloader.reloadWhen('index6.html')
+
+	reloader.filter = '/others/'
+	reloader.reloadWhenFx('drawPB.js', function onTestOneJs(a,b,c){
+		//console.log('pussy', a,b,c)
+		//window.drawPBJS.go();
+	})
+	//reloader
+</script>
+</html>

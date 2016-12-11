@@ -46,6 +46,47 @@
             var split = [];
             str = str.replace(/(\r\n|\n|\r)/gm, "\n");
             split = str.split("\n")
+
+
+            var sentences = [];
+            //   $.each(split, function processChar(i,sentence) {
+            var endAt = null;
+            var currentSentence = '';
+
+            var strArr = [];
+            for ( var i = 0; i < str.length; i++) {
+                strArr.push(str[i]);
+            }
+
+            $.each(strArr, function processChar(i, char) {
+                var nextChar = str[i + 1]
+                var valid = ['. ', '! ', '? ', '" ', "\n", ': ']
+                if ( nextChar == null || nextChar.trim() == '' ) {
+                    nextChar = ' ';
+                }
+                var join = char + nextChar;
+                $.each(valid, function compareForEndSent(k, v) {
+                    if (v == join) {
+                        endAt = v;
+                        return false;
+                    }
+                })
+                currentSentence += char
+                if (endAt) {
+                    sentences.push(currentSentence)
+                    /*h.addSentence(currentSentence, h.lastParent[0], 'split inside sentence')
+
+                     h.addSentence2(currentSentence,
+                     _parent,'',
+                     child
+                     )*/
+                    currentSentence = ''
+                    endAt = null;
+                }
+            });
+            //  });
+            //debugger;
+            return sentences
             return split;
         }
 
@@ -78,16 +119,37 @@
                         if ( vlidEnds.indexOf(lastCharOfLastLine) == -1 ) {
                             lines2[lines2.length-1] += ' ' + v
                             lastLine = v;
+
+
+
                             if ( v != 'reply')
                                 return;
-                           // if ( v == 'reply' == 'END Comment')
+                            // if ( v == 'reply' == 'END Comment')
+
+
                         }
                     }
                 }
+
                 lastLine = v;
                 var y = v.trim();
+                y = y.replace("permalinkembedsaveparentgive gold", "")
+                y = y.replace("permalinkembedsavegive gold", "")
+
                 lines2.push(y)
             })
+
+            var lines3 = [];
+            var repeatLines= 1;
+           // repeatLines = 3;
+            $.each(lines2, function (k, line) {
+                for ( var i =0;i<repeatLines;i++) {
+                    lines3.push(line)
+                }
+            })
+            //debugger;
+
+            lines2 = lines3;
 
             currentVal = lines2.join("\n")
 

@@ -23,6 +23,8 @@ var publicDir = path.join(__dirname, 'public');
 
 
 function ValidateOrgin(req, res, allowAnything ) {
+  console.error('...zzz...', req, res, allowAnything)
+
   var origin = '';
   var headerOrigin = '';
   if ( req.header('origin') != null ) {
@@ -60,7 +62,8 @@ function ValidateOrgin(req, res, allowAnything ) {
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
   res.setHeader('Access-Control-Allow-Credentials', true);
-  console.log('...')
+  self.proc('...////')
+  //next()
 }
 
 

@@ -1,0 +1,467 @@
+/**
+ * Created by user1 on 2/7/14.
+ *
+ *
+ * 1 find content on piratebay
+ * 2 download content via put.io to blasdf
+ * 3 iterate over content, add rotten tomato information
+ * 4 add new content to db
+ *
+ * insight:  seperate rotten as a later step
+ * get content first
+ */
+
+/**
+ *
+ * pb get from name
+ * pb get from names
+ *
+ * put io download file
+ * mega upload upload file (delete afterwards)
+ *
+ * sync folder
+ * connect to mega
+ * download missing content
+ * import to ritv-db
+ *
+ * idempotence , have db
+ */
+
+var request = require('request');
+var cheerio = require('cheerio');
+var sh = require('shelpers').shelpers
+var PromiseHelper = require('shelpers').PromiseHelper;
+var OptionsHelper = require('shelpers').OptionsHelper
+var fs = require("fs")
+var async = require('async');
+var request = require('request');
+var request = request.defaults({jar: true})
+
+/*
+ wiht new promise helpers
+ spromos
+
+ search for content, query==>url
+ */
+function SearchPB() {
+
+    var p = SearchPB.prototype;
+    p = this
+    var self = this;
+
+    self.go = function go_createWorkChain(options) {
+        var paramsHelper = new OptionsHelper();
+        paramsHelper.loadOptions(options)
+        var fxCallback = paramsHelper.addOption('callback', 'completion callback', true)
+        var query = paramsHelper.addOption('query',
+            'what torrent to look for', true)
+
+        self.settings = {}
+
+        var token = {}
+        self.token = token
+        token.query=query
+        token.pbCategory = paramsHelper.addOption('pbCategory',
+            'what category to limit search in', false, 0)
+        token.pbMinSeederCount = paramsHelper.addOption('pbMinSeederCount',
+            'min seeds to consider search valid', false, 5);
+        token.fxCallback=fxCallback;
+        token.bail = false
+        //placeholders
+        token.urlTorrent = null
+        token.urlMagnet = null
+        token.throwErrorWhenQueryNotFound = paramsHelper.addOption('throwErrorWhenQueryNotFound',
+            'if no torrents are found for an item ... we will end the script', false, false)
+        token.fxBail = paramsHelper.addOption('fxBail',
+            'callback to leave method', false )
+
+        var work = new PromiseHelper();
+        token.silentToken = true
+        work.wait = token.simulate==false;
+        work.startChain(token)
+            .add(self.createSearchUrl)
+            .log()
+            .add(self.getFirstQuery)
+            .add(self.convertMagnetLinkToTorrent)
+            .log()
+            .add(self.logic.returnMagnetLink)
+            .end();
+    }
+
+
+    function defineWork() {
+        p.createSearchUrl = function createSearchUrl(token, cb) {
+            var query = token.query
+            self.proc('completing torrent search for', query)
+
+            query = query.replace(/["']/g, "")
+
+            //strip alpha numeric?
+            var removeCharsFromQuery = ['!', '&', ':']
+            sh.each(removeCharsFromQuery, function removeChar(i, char) {
+                query = sh.replace(query, char, '')
+            })
+
+
+
+            self.settings.query = query;
+            //convert query to aporopay formate
+            if (sh.includes(query, ' ')) {
+                query = query.split(' ').join('+')
+            }
+            var queryToTorrent = {}
+            var url = "http://thepiratebay.se/search/" + query + "/0/7/0" //sort by popularity
+
+            var url = "http://thepiratebay.se/search/" + query + "/0/7/" //sort by popularity
+            url += token.pbCategory; //append category limit
+            self.proc('url', url) //, 'url')
+            token.url = url
+            cb()
+        }
+
+        p.getFirstQuery = function getFirstQueryResultInner(token, cb) {
+            var url = token.url
+            self.proc('getFirstQueryResultInner', 'completing torrent search for', url)
+            var fxCallback = function onRecievePBResults(err, resp, body) {
+                if ( resp == null ) {
+                    var msg = 'SearchPB.js resp is null ' + url
+                    console.error(msg)
+                    self.bail(msg)
+                    return;
+                }
+
+                if ( resp.headers == null ) {
+                    var msg = 'SearchPB.js resp.headers is null'
+                    console.error(msg)
+                    //self.bail(msg)
+                    //return;
+                }
+                //handle gzip encoding
+                if( resp.headers != null && resp.headers['content-encoding'] == 'gzip'){
+                    var zlib = require('zlib');
+                    zlib.gunzip(body, function(err, dezipped) {
+                        //callback(dezipped.toString());
+                        resp.headers['content-encoding'] = null
+                        fxCallback(err, resp, dezipped.toString())
+                    });
+                    return;
+                } else {
+                    // callback(body);
+                }
+
+                self.processTorrentLinks(body, token, cb);
+
+            }
+
+
+            var options = {}
+            options.url = url
+            options.encoding  =  null
+            //options['accept-encoding']= 'gzip;q=0,deflate,sdch'
+            //options['accept-encoding']= 'identity'
+
+            var SearchPBCachedRequest = require('./SearchPBCachedRequest').SearchPBCachedRequest;
+            var instance = new SearchPBCachedRequest();
+            var config = {};
+            config.fileExt = '.html'
+            config.ignoreIf = 'Database maintenance, please check back in 10 minutes.'
+            instance.init(config)
+            instance.request(options, fxCallback)
+            //instance.test();
+           // request(options, fxCallback)
+        }
+
+
+        p.convertMagnetLinkToTorrent = function convertMagnetLinkToTorrent(token, callback) {
+            var urlTorrent = token.urlTorrent
+            self.proc('convertMagnetLinkToTorrentInner', urlTorrent)
+            if (urlTorrent == null) {
+                sh.callIfDefined(callback, token)
+                return;
+            }
+
+            //append piratebay
+            if (urlTorrent.indexOf('htt') != 0) {
+                urlTorrent = 'http://thepiratebay.se' + urlTorrent
+            }
+
+            var onGetTorrentLink = function onGetTorrentLink(err, resp, body) {
+
+                if ( resp == null || resp.headers == null ) {
+                    //console.error('onGetTorrentLink', 'null resp');
+                    self.bail('onGetTorrentLink', 'null resp', urlTorrent);
+                    return;
+                }
+
+                if(resp.headers['content-encoding'] == 'gzip'){
+                    var zlib = require('zlib');
+                    zlib.gunzip(body, function(err, dezipped) {
+                        resp.headers['content-encoding'] = null
+                        onGetTorrentLink(err, resp, dezipped.toString())
+                    });
+                    //loop back once more
+                    return;
+                }
+                //console.log('......', link)
+                //console.log(body)
+                var $ = cheerio.load(body);
+                var torrentlinks = $("[title='Get this torrent']")
+                torrentlinks = torrentlinks.slice(0, 1)
+                if (torrentlinks.length == 0) {
+                    self.proc('convertMagnetLinkToTorrentInner', 'torrentlinks.length == 0')
+                    sh.callIfDefined(callback, token)
+                    return;
+                }
+                torrentlinks.each(function (link) {
+                    var x = $(this)
+                    self.proc('convertMagnetLinkToTorrentInner', x.attr('href'))
+                    var link = x.attr('href')
+                    token.urlMagnet = link
+                    token.torrentName = $('title').text().replace(' (download torrent) - TPB', '')
+                    sh.callIfDefined(callback, token)
+                })
+            }
+
+            var options = {}
+            options.url = urlTorrent
+            options.encoding  =  null
+            request(options, onGetTorrentLink)
+        }
+
+        p.bail = function bail(message) {
+            self.token.fxBail(message);
+            return
+        }
+
+
+
+
+
+
+    }
+    defineWork()
+
+
+    function createLogic() {
+        p.logic = {}
+        /**
+         * Iterates
+         * @param body
+         * @param token
+         * @param cb
+         */
+        p.processTorrentLinks = function processTorrentLinks(body, token, cb) {
+            $ = cheerio.load(body);
+            body = null;
+            var torrentlinks = $("[class='detLink']");
+
+            self.proc('length of links', torrentlinks.length);
+            var queryWordsArray = self.settings.query.split(' ');
+            var linkzSimplified = [];
+
+            sh.each(torrentlinks, function filterLink(i, link) {
+                var title = link.attribs['title'].toLowerCase().split(' ');
+                var simplifiedLink = {}
+                simplifiedLink.title = link.attribs['title'];
+                simplifiedLink.href = link.attribs['href'];
+                linkzSimplified.push(simplifiedLink);
+            })
+
+            var linkz = [];
+            sh.each(torrentlinks, function filterLink(i, link) {
+                var title = link.attribs['title']
+                var titleTemp = title.toLowerCase();
+                var removeChars = ['[', ']', '{', '}', '(', ')']
+                sh.each(removeChars, function removeChar(i, char) {
+                    titleTemp = sh.replace(titleTemp, char, '')
+                })
+
+                var invalidSplitIndicators = ['.720p.', '.1080p.', '.DD5.1.', '.WEB-DL.', /*'.HDTV.'*/]
+                var validSplitIndicators = ['.Season.'/*, '.S0', '.HDTV.', '.x264'*/]
+
+                sh.convertToLowercase = function (strs) {
+                    var r = [];
+                    sh.each(strs, function toLow(i, str) {
+                        r.push(str.toLowerCase())
+                    })
+                    return r;
+                }
+                invalidSplitIndicators = sh.convertToLowercase(invalidSplitIndicators);
+                validSplitIndicators = sh.convertToLowercase(validSplitIndicators);
+
+                var splitIndicators = invalidSplitIndicators.concat(validSplitIndicators);
+
+                var hasOne = false;
+                sh.each(splitIndicators, function searchForWord(i, searchWord) {
+                    hasOne = titleTemp.indexOf(searchWord) != -1
+                    if (hasOne)
+                        return false;
+                });
+
+                //work on period string
+                if (hasOne) {
+                    //remove dobly digital numbers
+                    sh.each(invalidSplitIndicators, function searchForWord(i, searchWord) {
+                        var searchWord = searchWord.slice(0, -1);
+                        titleTemp = sh.replace(titleTemp, searchWord, '');
+                    });
+                    titleTemp = sh.replace(titleTemp, '.', ' ');
+                    console.log('modified a removed dots from string', titleTemp, title)
+                }
+
+                //TODO: 1/29/2016: hesitatnt to do this initial... why?
+                var numPeriods = titleTemp.split('.').length;
+                if (numPeriods > 3 && titleTemp.length > 15) {
+                    console.log('modified: has too many periods', numPeriods)
+                    titleTemp = sh.replace(titleTemp, '.', ' ');
+                    console.log('modified a removed dots from string', titleTemp, title)
+                }
+
+                var titleWordsArray = titleTemp.split(' ');
+                var missing = false;
+
+                sh.each(queryWordsArray, function testEach(y, queryWord) {
+                    //if ( sh.includes(title, queryWord.toLowerCase())== false) {
+                    // if ( title.toLowerCase().indexOf(queryWord.toLowerCase()) == -1 ) {
+                    queryWord = queryWord.toLowerCase()
+                    if (titleWordsArray.indexOf(queryWord) == -1) {
+                        missing = true;
+                        self.proc('rejecting', title, 'bc did not have', queryWord)
+                        return false;
+                    }
+                })
+                if (missing == false) {
+                    linkz.push(link)
+                }
+            })
+
+            self.proc('length of links', linkz.length)
+
+            // torrentlinks = linkz
+
+
+            if (torrentlinks.length > 1) {
+                //hack: do not know how to get a proper list
+                torrentlinks[0] = linkz[0]
+                torrentlinks = torrentlinks.slice(0, 1)
+            } else {
+                //console.log(body.toString())
+            }
+
+
+            if (torrentlinks.length == 0) {
+
+                var msg = ['found no results for', token.query, sh.paren(token.url)].join(' ')
+                self.proc(msg)
+                console.error(msg)
+                if (token.throwErrorWhenQueryNotFound) {
+                    throw msg
+                } else {
+                    self.bail(msg)
+                    return;
+                }
+                sh.callIfDefined(cb, token)
+                return;
+            }
+
+
+            function getNumberOfSeeders() {
+                var tableRows = $("tr")
+                var firstRow = tableRows[1]; //skip header
+                if (firstRow == null) {
+                    return 0;
+                }
+
+                var colSeeders = firstRow.children[5]
+                if (colSeeders == null) {
+                    self.proc("can't find col col seeders")
+                    return 0;
+                }
+                var seeders = colSeeders.children[0].data
+                return seeders
+            }
+
+            var seeders = getNumberOfSeeders();
+
+            if (token.pbMinSeederCount != null) {
+                if (seeders < token.pbMinSeederCount) {
+                    console.error('message')
+                    self.bail('not enough seeders found', seeders, '< ', token.pbMinSeederCount)
+                    return;
+                }
+            }
+
+            var selectedLink = linkz[0]
+            self.logic.getFileSize = function getFileSize(selectedLink, token) {
+                token.urlTorrent = selectedLink.urlTorrent;
+                token.nameTorrent = selectedLink.title;
+                if ( sh.includes(selectedLink.size, ' GB')) {
+                    selectedLink.size = selectedLink.size.replace(' GB', '');
+                }
+                if ( sh.includes(selectedLink.size, ' MB')) {
+                    selectedLink.size = selectedLink.size.replace(' MB', '');
+                    selectedLink.size = parseInt(selectedLink.size)/1000
+                }
+                token.size = selectedLink.size;
+
+            }
+            self.logic.getFileSize(selectedLink, token)
+
+            torrentlinks.each(function (link) {
+                var x = $(this)
+                link = x.attr('href')
+
+
+                token.urlTorrent = link;
+                try {
+                    token.nameTorrent = x[0].children[0].data;
+                } catch (e) {
+
+                }
+                console.log('returning this link---------------->',
+                    token.nameTorrent, "\n\t", link);
+                sh.callIfDefined(cb, token);
+                return false; //only loop 1x...
+            })
+        }
+    }
+    createLogic();
+
+
+    function defineUtils() {
+        p.utils = {}
+    }
+
+    defineUtils();
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        sh.sLog(arguments)
+    }
+}
+
+
+SearchPB.searchPBQuick = function searchPBQuick(config, callback ) {
+    asdf.g
+}
+
+if (module.parent == null) {
+    var options = {}
+    options.callback = function onDone(url){
+        console.log('SearchPB complete:', url)
+    }
+    options.query = '5th Element'
+    options.query = 'lynda advanced unity'
+    options.query = 'Game of thrones season 4'
+
+    //options.pbCategory = 103
+    //options.pbMinSeederCount = 20
+    var go = new SearchPB()
+    go.go(options);
+    return;
+
+}
+
+
+exports.SearchPB = SearchPB;

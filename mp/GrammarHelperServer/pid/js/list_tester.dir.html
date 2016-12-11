@@ -1,0 +1,162 @@
+<div    id="listTester"  >
+  listTester
+
+
+
+    <quick-nav id="topA"
+                   desc="main area navigation"
+                   config="viewsConfig"
+    >
+    </quick-nav>
+
+
+    <quick-crud hide
+            id="viewListLogs"
+            config="qCrudPromptList"
+    >
+        <item-renderer>
+            <li ng-repeat="item in vmC.items" class="">
+                {{item.name}}
+                <div ng-click="goTo(item)"
+                     class="sideNavTextRow2">{{item.first_name}}
+                    {{item.last_name}} {{item.prompt.first_name}}
+
+                </div>
+
+            <span layout="row" layout-align="center center">
+            <button
+                    class="btn btn-sm btn-info ng-click-active"
+                    ng-click="config.fxEditItem(item)">edit
+            </button>
+
+               <button ng-hide
+                       class="btn btn-sm btn-danger ng-click-active"
+                       ng-click="vmC.$scope.$parent.deleteItem(item)">X
+               </button>
+
+            <div ng-if="item.selected==true"> $</div>
+            </span>
+            </li>
+
+
+        </item-renderer>
+        <!--
+         <item-renderer>
+          <div >GGGGGGGGg</div>
+         </item-renderer>
+         -->
+    </quick-crud>
+
+    <quick-crud hide
+            id="viewListLogs"
+            config="qCrudList1"
+    >
+        <item-renderer>
+            <li ng-repeat="item in vmC.items" class="">
+                {{item.name}}
+                <div ng-click="goTo(item)"
+                     class="sideNavTextRow2">{{item.first_name}}
+                    {{item.last_name}} {{item.prompt.first_name}}
+
+                </div>
+
+            <span layout="row" layout-align="center center">
+            <button
+                    class="btn btn-sm btn-info ng-click-active"
+                    ng-click="config.fxEditItem(item)">edit
+            </button>
+
+               <button ng-hide
+                       class="btn btn-sm btn-danger ng-click-active"
+                       ng-click="vmC.$scope.$parent.deleteItem(item)">X
+               </button>
+
+            <div ng-if="item.selected==true"> $</div>
+            </span>
+            </li>
+
+
+        </item-renderer>
+        <!--
+         <item-renderer>
+          <div >GGGGGGGGg</div>
+         </item-renderer>
+         -->
+    </quick-crud>
+
+    <quick-crud
+            id="viewListLogs"
+            config="qCrud_ListOfEntries"
+    >
+        <item-renderer>
+            <li ng-repeat="item in vmC.items" class="">
+                {{item.name}}
+                <div ng-click="goTo(item)"
+                     class="sideNavTextRow2">{{item.first_name}}
+                    {{item.last_name}} {{item.prompt.first_name}}
+
+                </div>
+
+            <span layout="row" layout-align="center center">
+            <button
+                    class="btn btn-sm btn-info ng-click-active"
+                    ng-click="config.fxEditItem(item)">edit
+            </button>
+
+               <button ng-hide
+                       class="btn btn-sm btn-danger ng-click-active"
+                       ng-click="vmC.$scope.$parent.deleteItem(item)">X
+               </button>
+
+            <div ng-if="item.selected==true"> $</div>
+            </span>
+            </li>
+
+
+        </item-renderer>
+        <!--
+         <item-renderer>
+          <div >GGGGGGGGg</div>
+         </item-renderer>
+         -->
+    </quick-crud>
+
+  <quick-crud
+          id="viewListLogs"
+          show-title="Log List"
+          config="qCrudList1"
+  >
+    <item-renderer>
+      <li ng-repeat="item in vmC.items" class="">
+        {{item.name}}
+        <div ng-click="goTo(item)"
+             class="sideNavTextRow2">{{item.first_name}}
+          {{item.last_name}} {{item.prompt.first_name}}
+
+        </div>
+
+            <span layout="row" layout-align="center center">
+            <button
+                    class="btn btn-sm btn-info ng-click-active"
+                    ng-click="config.fxEditItem(item)">edit
+            </button>
+
+               <button ng-hide
+                       class="btn btn-sm btn-danger ng-click-active"
+                       ng-click="vmC.$scope.$parent.deleteItem(item)">X
+               </button>
+
+            <div ng-if="item.selected==true"> $</div>
+            </span>
+      </li>
+
+
+    </item-renderer>
+    <!--
+     <item-renderer>
+      <div >GGGGGGGGg</div>
+     </item-renderer>
+     -->
+  </quick-crud>
+
+</div>

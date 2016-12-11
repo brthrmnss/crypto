@@ -406,7 +406,8 @@ function tX() {
 
     self.utils = utils;
 
-    $('iframe').remove();
+    $('iframe[notKeep!="true"]').remove();
+    //$('iframe').remove();
 }
 
 
