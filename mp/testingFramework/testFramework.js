@@ -114,6 +114,9 @@ function defineJQueryHelpers() {
         if ($.isFunction(content)) {
             return content = content();
         }
+        if ( $.isString(content)) {
+         //   content = $(content)
+        }
 
         return content;
 
@@ -122,10 +125,14 @@ function defineJQueryHelpers() {
 defineJQueryHelpers();
 var tH = testHelper;
 
+testHelper.defaults = {};
+//testHelper.defaults.timeout = 5
+
 window.runTest2 = function runTestLate(testName) {
     //used by dialogTestSearch to run tests
     setTimeout(function runTest() {
-        window.tests[testName](tH);
+        tH.runTest(testName)
+        //  window.tests[testName](tH);
     }, 200)
 }
 
@@ -138,10 +145,19 @@ function defineTestTransportFxs() {
         var token = {};
         token.silentToken = true
         token.delayChain = 500;
-        token.timeout = 10;
-        token.name = tH.currentTestName; 
+        token.timeout = 30;
+
+        if ( window.testHelper.defaults.timeout )
+            token.timeout = testHelper.defaults.timeout;
+
+        token.name = tH.currentTestName;
         work.wait = token.simulate==false;
-        work.startChain(token)
+        function startTestLater() {
+            work.startChain(token)
+        }
+        // window.testHelper.fxStartNextTest = startTestLater;
+        startTestLater()
+        //setTimeout(startTestLater); //test can't run if defineTest fails ...
         tH.test = t;
         window.tH = tH;
         window.testStop = function stopCurrentTest() {
@@ -152,17 +168,55 @@ function defineTestTransportFxs() {
         if ( panelAdded != true ) {
             panelAdded = true
             tH.addLogPanel = function addLogPanel() {
-                if ( $('#testLogPanel').length == 0 ) {
-                    $('body').append('<div style="background-color: white; padding:10px;' +
-                        ' border: solid 1px black; position: fixed; ' +
-                        'bottom: 10px; right: 10px; ' +
-                        'max-height:85%; overflow:auto; ' +
-                        ' display: none; " id="testLogPanel">'+
-                        '<span>Test Log</span>' +
-                        '<div id="logPrevious"></div> ' +
-                        '<div id="logCurrent"></div> ' +
-                        '  </div>')
+                /*
+                 var divId = '#testSearchTest';
+                 if ( uiUtils.ifFound(divId) ) { return; }
+                 uiUtils.panel.br(divId);
+
+                 */
+                var isHere = $('#annotation').length
+                if ( isHere > 1 ) {
+
+                } else {
+                    var annotation = $('<img/>')
+                    annotation.attr('src', 'test3/cursor-png.png')
+                    $('body').append(annotation)
+                    annotation.attr('id','annotation')
+                    uiUtils.makeAbs(annotation, 100)
+                    annotation.addClass('transitionAll');
+                    annotation.hide();
                 }
+
+                if ( $('#testLogPanel').length > 0 ) {
+                    return;
+                }
+                var panel = $('<div style="background-color: #f2f2f2; padding:10px;' +
+                    ' border: solid 1px #666666; position: fixed; ' +
+                    'bottom: 260px; right: 10px; ' +
+                    'max-height:85%; overflow:auto; ' +
+                    '    max-height: calc(100% - 340px);'+
+                    ' display: none; " id="testLogPanel">'+
+                    '<b>Test Log</b>' +
+                    '<div id="logPrevious"></div> ' +
+                    '<div id="logCurrent"></div> ' +
+                    '  </div>');
+                $('body').append(panel)
+                $('#testLogPanel').css('opacity', 0.7);
+
+
+                /*if ( $('#testLogPanel').length == 0 ) {
+                 $('body').append('<div style="background-color: #f2f2f2; padding:10px;' +
+                 ' border: solid 1px #666666; position: fixed; ' +
+                 'bottom: 260px; right: 10px; ' +
+                 'max-height:85%; overflow:auto; ' +
+                 '    max-height: calc(100% - 320px);'+
+                 ' display: none; " id="testLogPanel">'+
+                 '<b>Test Log</b>' +
+                 '<div id="logPrevious"></div> ' +
+                 '<div id="logCurrent"></div> ' +
+                 '  </div>')
+                 $('#testLogPanel').css('opacity', 0.7);
+                 }*/
             }
             tH.addLogPanel();
         }
@@ -186,6 +240,9 @@ function defineTestTransportFxs() {
     function defineAssertions(tH) {
         tH.assert =  function assert(eq, msg) {
 
+            var args = sh.convertArgumentsToArray(arguments)
+            if ( args.length > 2 )
+                msg = args.slice(1).join(' ');
 
             if ( eq == false ) {
                 throw new Error(msg)
@@ -270,8 +327,9 @@ function defineTestTransportTimeout(tH) {
 
 
     tH.testHoldUpForever = function testHoldUpForever(asdf) {
+        debugger
         //why: create an item that does not work ...
-        tH.add(function waitLink() {
+        tH.add(function waitLink1() {
             var waitTime = 1
             setTimeout(function resumeTest(){
                 tH.log('test 2')
@@ -281,7 +339,7 @@ function defineTestTransportTimeout(tH) {
             }, waitTime* 1000)
         })
 
-        tH.add(function waitLink() {
+        tH.add(function waitLink2() {
             var waitTime = 3
             setTimeout(function resumeTest(){
                 tH.logNow('holding it up ... for ever 2')
@@ -345,16 +403,20 @@ function defineTestMethods() {
     tH.click = click;
     function clickJ(strOrJ) { //find based on jquery
         tH.add(function clickAction() {
-           // console.error('endhash-W', 1, window.location.href );
+            // console.error('endhash-W', 1, window.location.href );
             var element = $(strOrJ);
             element.css('color', 'red');
             element[0].click();
             // element[0].click();
             element.click();
-        //    console.error('endhash-W', 2, window.location.href );
+            //    console.error('endhash-W', 2, window.location.href );
             console.log('click', strOrJ, element.length)
             tH.test.cb();
-         //   console.error('endhash-W', 3, window.location.href );
+
+
+            tH.moveCursorTo(element);
+
+            //   console.error('endhash-W', 3, window.location.href );
         })
     }
 
@@ -420,6 +482,12 @@ function defineTestMethods() {
         // function log() {
         // console.log('logged',str)
         $('#testLogPanel').show()
+        /*
+         $('#testLogPanel').animate({
+         scrollTop: $(jquery).offset().top
+         }, 300);*/
+        uiUtils.scrollToBottom('#testLogPanel')
+
         $('#logCurrent').html(str)
         if ( tH.lastStr ) {
             //console.log(lastStr)
@@ -428,13 +496,13 @@ function defineTestMethods() {
         tH.lastStr = str;
         //  tH.test.cb();
         //   }
-    } 
+    }
     tH.log2 = tH.log = tH.logNow;
     function wait(waitTime) {
-        tH.add(function waitLink() {
+        tH.add(function waitLinkTime() {
             setTimeout(function resumeTest(){
                 tH.test.cb();
-            }, waitTime* 1000)
+            }, waitTime* 1000);
         })
     }
     wait.desc = 'Wait x seconds'
@@ -657,6 +725,7 @@ function defineCompoundMethods() {
             tH.waitForError = waitForFailureReason + ' (waitForShow)'
         tH.waitFor(function isDialogVisible(){ //waitForHide
             var jquery = tH.convertJquery(jquery)
+            tH.moveCursorTo(jQuery)
             if ($(jquery) != "0") {
                 return true
             }
@@ -730,6 +799,48 @@ function defineCompoundMethods() {
             debugger;
             window.location.hash =tH.windowLocationHash;
         });
+    }
+    tH.moveCursorTo = function moveCursorTo(jquery) {
+        var annotation = $('#annotation')
+        annotation.show();
+
+        jquery = tH.convertJquery(jquery)
+
+        var element = $(jquery)
+        if ( element.length == 0 ) {
+            //not found
+            return;
+        }
+        /*var position = $(element).offset();
+        if ( position == null ) {
+            console.warn('position si null', element, position)
+            return;
+        }*/
+
+        if ( jquery.trigger == null ) {
+            var element = $(jquery)
+            var position = $(element).offset();
+
+            position.left += element.width();
+        } else {
+            element = $((jquery));
+            var position = $(element).offset();
+        }
+
+        if ( position == null ){
+            console.warn('failed to curosr to ', jquery)
+            return;
+        }
+        //var dbg = [position.left , $('body').width()]
+        //debugger;
+        if ( position.left >= $('body').width() * .80 ) {
+            delete position.left;
+            position.right = 20;
+            console.log('move on left size')
+            //positon.left = $('body').width - 250;
+        }
+        console.log('where is', jquery, position)
+        annotation.css(position)
     }
     tH.pointTo = function pointTo(jquery, msg ) {
         tH.run(function add(){
@@ -999,8 +1110,7 @@ function defineContinuitiyMethods() {
                             return;
                         }
 
-
-                        window.tests[testName](tH);
+                        tH.runTest(testName)
                     }, 200+testDelay)
                 } else{
                     runTest();
@@ -1045,7 +1155,24 @@ if ( typeof $ === 'undefined' ) {
     JqueryImpersonatorFx.isFunction = function (x){}
     var $ = JqueryImpersonatorFx
 }
+
+
+tH.runTest = function runTest(testName) {
+    tH.currentTestName = testName;
+    window.lastRunTestName = testName;
+    window.tests[testName](tH);
+    // window.testHelper.fxStartNextTest();
+}
+
+tH.rerunLastTest = function reRunLastTest() {
+    tH.runTest(window.lastRunTestName);
+}
+
 function whenReady(){
+    if ( window.whenReadyHasRunTesting ) {
+        return;
+    }
+    window.whenReadyHasRunTesting = true;
     //http://localhost:10050/test2/test2.html?runTest=true
     if ( tH.params.runTest=='true' || window.runTest == true ) {
         var testName = tH.params.testName;
@@ -1064,8 +1191,7 @@ function whenReady(){
                     console.debug('waiting for test to load...')
                     return;
                 };
-                tH.currentTestName = testName;
-                window.tests[testName](tH);
+                tH.runTest(testName)
             }, 200+testDelay)
         } else{
             runTest();
@@ -1073,7 +1199,8 @@ function whenReady(){
     } else {
 
         console.log(
-            'Skipped All tests....', testName
+            'Skipped All tests....', tH.params.testName,
+            tH.params.runTest
         )
     }
 

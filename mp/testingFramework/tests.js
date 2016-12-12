@@ -3,6 +3,7 @@
  */
 
 window.testsLoaded = true;
+window.testHelper.defaults.timeout = 5;
 
 //test2.html?runTest=true&testName=rHome
 //http://10.211.55.4:33031/index.html?runTest=true&testName=rHome#
@@ -113,6 +114,7 @@ function testStackingDemo2() {
         tH.waitForShow( "#dialogSearch" );
         tH.moreThanX( '.result', 0 );
         tH.wait(1);
+
         //tH.clickOne( '.result', -2*-1 );
         tH.clickOne( '.result', 4 );
         tH.desc('playing vid')
@@ -209,7 +211,7 @@ function defineRo() {
                 tH.add(function getFiles2(){
                     window.serverHelper.getDefaultData(verifyUserC);
                     function verifyUserC(data) {
-                       //
+                        //
 
                         tH.data.files = data.nono;
                         //verified();
@@ -230,6 +232,42 @@ function defineRo() {
                         function verifyUserC() {
                             var didCreditMatchUP = window.serverHelper.data.user.credits == creditCount;
                             tH.assert(didCreditMatchUP, 'Credits did not match up');
+                            //verified();
+                            callIfDefined(fxDone)
+                            tH.test.cb();
+                        }
+                    }
+                    return;
+                })
+            };
+
+            p.verifyCreditCount = function verifyCreditCount(tH, creditCount, fxDone, negate) {
+                tH.add(function setCreditRemote(){
+                    window.serverHelper.getUserInfo(verifyUserC);
+                    function verifyUserC() {
+                        var userCreditCount = window.serverHelper.data.user.credits;
+                        var didCreditMatchUP = userCreditCount == creditCount;
+                        if ( negate != true ) {
+                            tH.assert(didCreditMatchUP, 'Credits did not match up', creditCount, '!=', userCreditCount);
+                        } else {
+                            tH.assert(!didCreditMatchUP, 'Credits  not match up', creditCount, '==', userCreditCount);
+                        }
+
+                        callIfDefined(fxDone)
+                        tH.test.cb();
+                    }
+                })
+            };
+
+
+            p.clearUsersCredits = function clearUsersCredits(tH, creditCount, fxDone) {
+                tH.add(function clearUsersCredits_Remote(){
+                    tH2.clearCredits(onCreditsCleared);
+                    function onCreditsCleared(data) {
+                        window.serverHelper.getUserInfo(verifyUserC);
+                        function verifyUserC() {
+                            // var didCreditMatchUP = window.serverHelper.data.user.credits == creditCount;
+                            // tH.assert(didCreditMatchUP, 'Credits did not match up');
                             //verified();
                             callIfDefined(fxDone)
                             tH.test.cb();
@@ -295,8 +333,108 @@ function defineRo() {
                 })
             };
 
+            p.canNotWatchVideo = function canNotWatchVideo(tH, file, fxDone) {
+                p.canWatchVideo(tH, file, true, fxDone)
+            };
+
         }
         defineCreditStuff();
+
+        p.searchHomePageSet = function searchHomePageSet(tH) {
+            tH.clickJ('#header-home');
+            tH.waitForShow('#taskPageArea');
+            tH.run(function addSearchText(){
+                $('#search').val('Test Started ')
+            })
+            tH.desc('waiting for task page to load')
+
+            tH.wait(0.5)
+
+
+            tH.run(function addSearchText(){
+                $('#search').val('Test Started ')
+            })
+            tH.desc('waiting for task page to load');
+            tH.waitFor(function(){
+                return $('.media-num').length > 10;
+                t.data.mediaFiles = $('.media-num').length
+            } )
+            tH.desc('click to get more b uttons');
+            tH.clickJ('#btnMore');
+            tH.wait(1);
+            tH.desc('verify more buttons created');
+            tH.run(function addSearchText(){
+                tH.data.mediaFiles2 = $('.media-num').length;
+                if ( tH.data.mediaFiles2 <= tH.data.mediaFiles ) {
+                    tH.fail();
+                }
+            });
+
+            ro.searchHomePage(tH, 'yyy ....');
+
+            tH.desc('try search isDialogVisible');
+            tH.waitFor(function isDialogVisible(){
+                return $("#dialogSearch").is(":visible")
+            });
+            tH.desc('try search once');
+            //tH.wait(3); //wait for results to come back
+            tH.waitFor(function verifyNoSearchResults(){
+                if ( $('.search-result').length == 0 ) {
+                    return true;
+                }
+
+                if ( $('.search-result').length == 1 &&
+                    $('.search-result').text().indexOf('00') != -1  )
+                    return true;
+                return false
+            });
+            tH.desc('try search again');
+            tH.clickJ('#dialogSearch .closebtn');
+            tH.waitForHide( "#listing");
+
+            ro.searchHomePage(tH, '');
+
+            tH.waitForShow( "#dialogSearch" );
+
+            tH.moreThanX( '.search-result', 0 );
+            tH.wait(1);
+            tH.clickOne( '.search-result', 0 );
+            tH.wait(1);
+            tH.desc('expect the error container to show')
+            tH.waitForShow( '#containerError')
+
+            tH.clickJ('.video-wrapper .closebtn')
+            tH.desc('hide the error container')
+            tH.waitForHide( '#containerError')
+
+            tH.desc('seach again')
+            ro.searchHomePage(tH, '');
+            tH.waitForShow( "#dialogSearch" );
+            tH.moreThanX( '.result', 0 );
+            tH.wait(1);
+        }
+
+        p.searchHomePage = function searchHomePage(tH, text) {
+            tH.run(function addSearchText(){
+                var txtInput =  $('#search');
+                txtInput.val('yyy ... ');
+                tH.moveCursorTo(txtInput);
+                //$('#search').trigger(jQuery.Event('keypress', {which: 13}));
+                var e = jQuery.Event("keypress");
+                var e = jQuery.Event("keydown");
+                e.which = 13; //choose the one you want
+                e.keyCode = 13;
+                e.charCode = 13;
+                txtInput.trigger(e)
+            });
+        };
+
+
+        p.searchDialogClose =  function searchDialogClose(tH) {
+            tH.clickJ('#dialogSearch .closebtn')
+        }
+
+
 
         p.proc = function debugLogger() {
             if ( self.silent == true) {
@@ -362,14 +500,27 @@ function testSmoke() {
         //tH.click('home');
         tH.wait(0.5)
 
-       // tH.setTestTimeout(1)
-       // tH.testHoldUpForever(tH);
+        // tH.setTestTimeout(1)
+        // tH.testHoldUpForever(tH);
 
         ro.getFiles(tH)
+        ro.clearUsersCredits(tH)
         ro.setCreditsTo(tH, 0)
         //ro.useCredit(tH, ro.urls.file1)
         ro.canNotUseCredit(tH, ro.urls.file1)
-        ro.canWatchVideo(tH, ro.urls.file1, true)
+        ro.canNotWatchVideo(tH, ro.urls.file1)
+
+        ro.setCreditsTo(tH, 2000)
+        ro.useCredit(tH, ro.urls.file1)
+        ro.verifyCreditCount(tH, 1999)
+        ro.canNotUseCredit(tH, 'asdf')
+        ro.verifyCreditCount(tH, 1998, null,  true)
+        ro.verifyCreditCount(tH, 1999)
+
+        ro.canWatchVideo(tH, ro.urls.file1)
+        ro.clearUsersCredits(tH)
+
+        ro.canNotWatchVideo(tH, ro.urls.file1)
         /*
          set credits to 0
          fail to use crite
@@ -380,15 +531,21 @@ function testSmoke() {
          can't watch video 
          confirm credits set to 1999
          */
+    }
+    test.desc = 'Test Paying stuff'
+    window.tests.rPay = test;
 
 
-        tH.log('what is happening')
-
-        tH.clickJ('#header-home');
-        tH.waitForShow('#taskPageArea');
-
-        return;;
+    var test = function defineTestA(tH) {
+        var t = tH.createNewTest();
+        tH.log('test 2')
+        //tH.click('home');
         tH.wait(0.5)
+
+        ro.searchHomePageSet(tH);
+
+        return;
+
 
         tH.clickJ('#header-list');
         tH.waitForShow('#loadingPlayistSearchHolder');
@@ -413,8 +570,9 @@ function testSmoke() {
         tH.log('test 2')
 
     }
-    test.desc = 'Test Paying stuff'
-    window.tests.rPay = test;
+    test.desc = 'Touch Every Screen Hard'
+    window.tests.rSmoke2 = test;
+
 
 }
 testSmoke();

@@ -29,6 +29,7 @@ var loadScript2 = function loadScript2(_scripts2, fxDone) {
 
 
     var debug = false;
+   // debug = true;
     if ( debug ) {
         console.log('downloading', url)
     }
@@ -52,12 +53,14 @@ var loadScript2 = function loadScript2(_scripts2, fxDone) {
 }
 
 
-function loadTestFramework(fxDone) {
-    if (window.tH && window.tH.add) {
-        fxDone();
-        return;
+function loadTestFramework(fxDone, force) {
+    if ( force != true ) {
+        if (window.tH && window.tH.add) {
+            fxDone();
+            return;
+        }
     }
-    loadScript2(scripts2, fxDone2)
+    loadScript2(scripts2.concat(), fxDone2)
     function fxDone2() {
         window.tests.loaded = true;
         if ( fxDone ) { fxDone() }
@@ -69,7 +72,7 @@ var loadTestFrameworkInUrl =  window.location.href.indexOf('loadTestFramework=tr
 
 
 if (  runTest || loadTestFrameworkInUrl ) {
-    loadScript2(scripts2);
+    loadScript2(scripts2.concat());
 }
 
 function loadTests() {
@@ -86,5 +89,5 @@ function loadTests() {
 var cookie =  localStorage.getItem('nextTest')
 cookie = JSON.parse(cookie);
 if ( cookie ) {
-    loadScript2(scripts2);
+    loadScript2(scripts2.concat());
 }

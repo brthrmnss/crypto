@@ -125,6 +125,7 @@ window.fxInvoke = function (classToUpdate) {
 
 window.reloadFile = function reloadFile(file, fx) {
     // $scope.watchFile(file)
+    //what about css?
     console.log('reloadFile', file);
     jQuery.ajax({
         url: file,

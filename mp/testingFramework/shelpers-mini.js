@@ -13,9 +13,9 @@
     if ( isNode ) {
         var path = require('path')
     } else {
-        require = function () {
+       /* require = function () {
             return {};
-        }
+        }*/
     }
 
     function trim1(str) {
@@ -314,7 +314,6 @@
                 return output;
             }
 
-
         }
         sh.EasyTimer = EasyTimer;
     }
@@ -350,14 +349,14 @@
 
     if ( isNode ) {
         if (module.parent == null) {
-            function runTests(){
+            function runShelpersTests(){
                 testEachProp()
                 return;
                 //helper.tests.testDictArray()
                 //helper.tests.writeFile2Test();
             }
-
-            runTests();
+            debugger
+            runShelpersTests();
         }
     }
 

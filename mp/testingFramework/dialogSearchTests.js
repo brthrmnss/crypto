@@ -79,7 +79,7 @@ function dialogSearchTests(document) {
 
 
 window.dialogTransport = {}
-
+ 
 window.dialogTransport.init = function init() {
     var divId = '#testSearchTest';
     if ( uiUtils.ifFound(divId) ) { return; }
@@ -97,7 +97,7 @@ window.dialogTransport.init = function init() {
         
         cfg.ui.css('opacity', 0.7)
 
-        function testTestName() { 
+        function testTestName() {
 
             var testName = uiUtils.utils.getParams()['testName'];
             //console.error('what is test name', testName)

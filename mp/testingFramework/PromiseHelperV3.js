@@ -11,14 +11,18 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
 }
 
 if ( isNode ) {
-    try {
+    try { 
         var sh = require('shelpers').shelpers
     } catch (e ) {
         var sh = require('./shelpers').shelpers
     }
 } else {
-    var exports = {};
-    var  module = {};
+    if (typeof exports === 'undefined') {
+        var exports = {};
+    }
+    if (typeof module === 'undefined') {
+        var module = {};
+    }
 }
 //var Q = require("q");
 function PromiseHelperV3() {
@@ -30,6 +34,7 @@ function PromiseHelperV3() {
     self.start = function start(arg1) {
         //var deferred = Q.defer();
        // console.log('starting...')
+        //debugger
         console.log('starting/', arg1.name, arg1 )
         //deferred.resolve(arg1);
         //deferred.promise.fail(function (error) {
@@ -87,12 +92,12 @@ function PromiseHelperV3() {
             var fxLinkFinishedCB = self.currentCallback;
             //REQ: support timeout delays
 
-
             if ( self.token.timeout){
                 var chainTimeoutHelper = {};
                 chainTimeoutHelper.currentMethod = meth;
                 setTimeout(function timeoutTimer() {
                     if ( self.currentMethod == chainTimeoutHelper.currentMethod){
+                        //debugger;
                         console.error('chain link timeout', self.currentMethod.name)
                         self.stop();
                         throw new Error('chain failed ...')
