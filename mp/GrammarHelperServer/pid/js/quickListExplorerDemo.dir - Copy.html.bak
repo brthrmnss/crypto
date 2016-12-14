@@ -1,0 +1,30 @@
+<div    id="listTester2"  >
+    <h1>Quick List Explorer</h1>
+    <span>This is a quick test of this</span>
+
+    <quicklist2 config="configList" />
+
+  <!--  <quickform2 config="configForm" />-->
+
+
+    <ui-hider title="config for form" >
+        {{configForm}}
+    </ui-hider>
+
+
+    <ui-hider title="config for configList"  >
+        {{configList}}
+    </ui-hider>
+
+    <br />
+
+
+    <quickcrud2 config="configCrud" />
+
+    <ui-hider title="config for configCrud"  >
+        {{configCrud}}
+    </ui-hider>
+
+    <br />
+    <br />
+</div>
