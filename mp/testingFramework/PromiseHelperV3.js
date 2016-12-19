@@ -11,7 +11,7 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
 }
 
 if ( isNode ) {
-    try { 
+    try {
         var sh = require('shelpers').shelpers
     } catch (e ) {
         var sh = require('./shelpers').shelpers
@@ -33,7 +33,7 @@ function PromiseHelperV3() {
     self.data = {}
     self.start = function start(arg1) {
         //var deferred = Q.defer();
-       // console.log('starting...')
+        // console.log('starting...')
         //debugger
         console.log('starting/', arg1.name, arg1 )
         //deferred.resolve(arg1);
@@ -53,6 +53,7 @@ function PromiseHelperV3() {
                 self.proc('double end call...');
                 return;
             }
+            self.data.methods.currentIndex++
             self.currentOperation = self.methods.shift();
             if (self.currentOperation == null) {
                 if (self.methods.length == 0) {
@@ -84,23 +85,41 @@ function PromiseHelperV3() {
             self.currentMethod = meth;
             //method is callled after chain is complete
             self.currentCallback = function currentCallback_onDoneMethod(token) {
+                //debugger
+                function fxResume() {
+                    var defaultTime = sh.dv(self.token.linkDelay, 0);
+                    setTimeout(self.startNextMethod, 10 + defaultTime);
+                }
+
+
                 //self.showProgress();
-                var defaultTime = sh.dv(self.token.linkDelay, 0);
-                setTimeout(self.startNextMethod, 10+defaultTime);
+                //self.data.index = asdf
+                //self.data.length = self.methods.length; 
+                var continueTest = sh.callIfDefined(self.token.fxStep, self, fxResume)
+                if( continueTest == false ) {
+                    self.currentMethod = null; //break the timer if a pause
+                    console.warn('test ended the test early')
+                    return;
+                }
+
+                fxResume();
             }
 
             var fxLinkFinishedCB = self.currentCallback;
             //REQ: support timeout delays
 
             if ( self.token.timeout){
+                var _tokenForTimeout = self.token;
                 var chainTimeoutHelper = {};
                 chainTimeoutHelper.currentMethod = meth;
                 setTimeout(function timeoutTimer() {
                     if ( self.currentMethod == chainTimeoutHelper.currentMethod){
                         //debugger;
-                        console.error('chain link timeout', self.currentMethod.name)
+                        var errorMsg = ['chain link timeout', self.currentMethod.name].join(', ');
+                        console.error(errorMsg);
                         self.stop();
-                        throw new Error('chain failed ...')
+                        sh.callIfDefined(_tokenForTimeout.fxError, errorMsg, self);
+                        throw new Error(errorMsg)
                     }
                 },self.token.timeout*1000)
             }
@@ -375,15 +394,15 @@ function PromiseHelperV3() {
     self.demo  = {}
     self.demo.exampleUsage = function exampleUsage() {
         log(data)
-            /*
-             .then(pb.searchForTorrent)
-             .then(log)
-             .then(pb.getFirstQueryResult)
-             .then(log)
-             .then(pb.convertMagnetLinkToTorrent)
-             .then(log)
-             */
-            //cleanup existing files beforehand(or after)
+        /*
+         .then(pb.searchForTorrent)
+         .then(log)
+         .then(pb.getFirstQueryResult)
+         .then(log)
+         .then(pb.convertMagnetLinkToTorrent)
+         .then(log)
+         */
+        //cleanup existing files beforehand(or after)
             .then(wrapMethod(pb.putIORemoveFiles))
             .then(log)
     }
@@ -401,7 +420,7 @@ function PromiseHelperV3() {
 exports.PromiseHelperV3 = PromiseHelperV3;
 if ( module.parent == null && window.testPromise ) {
     /*if ( window.testPromise == false)
-        return;*/
+     return;*/
     //return
     var self = {}
     self.searchByName = function search(token, cb){

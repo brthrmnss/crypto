@@ -1,9 +1,14 @@
 /**
  * Created by user2 on 2/13/16.
  */
-
-window.testsLoaded = true;
+//debugger
+window.tests.loaded = true;
 window.testHelper.defaults.timeout = 5;
+/*
+ window.testHelper.defaults.fxPre = [
+ ro.ensureWeHaveX
+ ]
+ */
 
 //test2.html?runTest=true&testName=rHome
 //http://10.211.55.4:33031/index.html?runTest=true&testName=rHome#
@@ -183,7 +188,12 @@ function defineRo() {
         p.init = function init(url, appCode) {
         };
 
-        p.goHome = function goHome(arg) {
+        p.goHome = function goHome(tH) {
+            tH.addSync(function (){
+                gUtils.setLocationHash('')
+            })
+            tH.wait(1)
+            tH.waitForShow('#taskPageArea');
         }
         p.home = p.goHome
 
@@ -207,22 +217,42 @@ function defineRo() {
         function defineCreditStuff() {
             //why: chains as loop pairs
 
-            p.getFiles = function getFiles(tH, creditCount, fxDone) {
-                tH.add(function getFiles2(){
+            p.getFiles = function getFiles(tH, fxDone, noTest) {
+                if ( noTest ) {
+                    getFiles2(true)
+                    return;
+                }
+
+
+                function getFiles2(){
                     window.serverHelper.getDefaultData(verifyUserC);
                     function verifyUserC(data) {
-                        //
 
                         tH.data.files = data.nono;
                         //verified();
                         //debugger
                         callIfDefined(fxDone)
-                        tH.test.cb();
+                        if ( noTest != true)
+                            tH.test.cb();
                     }
                     return;
-                })
+                }
+
+                tH.add(getFiles2);
             };
 
+
+            p.ensureWeHaveX = function ensureWeHaveX(tH) {
+                tH.add(function checkFIFilesReady(){
+                    if ( tH.data.files ){
+                        tH.test.cb();
+                        return
+                    }
+
+                    ro.getFiles(tH, tH.test.cb, true );
+
+                })
+            }
 
             p.setCreditsTo = function setCreditsTo(tH, creditCount, fxDone) {
                 tH.add(function setCreditRemote(){
@@ -240,6 +270,44 @@ function defineRo() {
                     return;
                 })
             };
+
+            p.setAutoPlayTo = function setAutoPlayTo(tH, autoPlayENabled, fxDone) {
+                tH.add(function setCreditRemote(){
+                    tH2.setAutoplay(autoPlayENabled, verifyCount);
+                    function verifyCount() {
+                        callIfDefined(fxDone)
+                        tH.test.cb();
+                    }
+                    return;
+                })
+            };
+            p.whatIsAutoplay = function whatIsAutoplay(tH, fxDone) {
+                tH.add(function setCreditRemote(){
+                    var val = tH2.hasAutoplay();
+                    console.log('val', val)
+                    callIfDefined(fxDone)
+                    tH.test.cb();
+
+                })
+            };
+
+            p.setCreditsToX = function setCreditsTo(tH, creditCount, fxDone) {
+                tH.add(function setCreditRemote(){
+                    tH2.resetCreditCount(creditCount, verifyCount);
+                    function verifyCount() {
+                        window.serverHelper.getUserInfo(verifyUserC);
+                        function verifyUserC() {
+                            var didCreditMatchUP = window.serverHelper.data.user.credits == creditCount;
+                            tH.assert(didCreditMatchUP, 'Credits did not match up');
+                            //verified();
+                            callIfDefined(fxDone)
+                            tH.test.cb();
+                        }
+                    }
+                    return;
+                })
+            };
+
 
             p.verifyCreditCount = function verifyCreditCount(tH, creditCount, fxDone, negate) {
                 tH.add(function setCreditRemote(){
@@ -312,18 +380,34 @@ function defineRo() {
 
             p.canWatchVideo = function canWatchVideo(tH, file, cannotWatch, fxDone) {
                 tH.add(function canWatchVideoRemote(){
+                    if( file == null ) {
+                        file = tH.data.files.fileTestVidShooter+'?random='+Math.random()
+                    }
                     if ( file == null ) {
                         file = tH.data.files.fileTestVideo
                     }
-                    window.serverHelper.watchShow(file, verifyCount, 50);
-                    function verifyCount(result) {
+                    window.serverHelper.watchShow(file, onCheckWatchabilityOfFile, 50);
+                    function onCheckWatchabilityOfFile(result) {
                         // window.serverHelper.getUserInfo(verifyContent);
                         // function verifyContent() {
-                        if ( cannotWatch ) {
+                        if (cannotWatch) {
+                            //console.error(result)
+                            if ( result.responseText == null )
+                            {
+                                tH.assert(false, 'Could watch content', file);
+
+                            }
+                            result.responseText
+                                .includes('could not get credit');
+                            var failed = result.status.toString().slice(0,1) == ('4') //404 400
                             //
+                            tH.assert(failed, 'Could watch content', file, result);
+                        } else {
+                            tH.assert( ! result.responseText
+                                .includes('could not get credit'), 'Could not watch conent', file , result);;
+                            // var didCreditMatchUP = $.isString(result) == false;
+                            // tH.assert(didCreditMatchUP, 'Coudl watch conent');
                         }
-                        var didCreditMatchUP = $.isString(result) == false ;
-                        tH.assert(didCreditMatchUP, 'Coudl watch conent');
                         //verified();
                         callIfDefined(fxDone)
                         tH.test.cb();
@@ -435,6 +519,269 @@ function defineRo() {
         }
 
 
+
+        p.isCreditDialogUp = function isCreditDialogUp(tH, msg) {
+            msg = dv(msg, '')
+            tH.waitForShow('#creditDialog', 'did not see the credit dialog ' + msg);
+
+        }
+
+        p.isCreditDialogClosed = function isCreditDialogUp(tH, msg) {
+            msg = dv(msg, '')
+            tH.waitForHide('#creditDialog', 'did not hide the credit dialog ' + msg);
+        }
+
+
+        p.creditDialogOk = function creditDialogOk(tH) {
+            tH.waitForShow('#creditDialog', 'cant click to watch b/c video is here, but video palyer did not show');
+            tH.clickJ('#cd_btnOK');
+        }
+
+
+
+
+        p.clickWatchIt = function clickWatchIt(tH) {
+            tH.waitForShow('#creditDialog', 'cant click to watch b/c video is here, but video palyer did not show');
+            tH.click('#cd-usecredit');
+        }
+
+
+
+
+        p.videoIsPlaying = function videoIsPlaying(tH) {
+            tH.wait(0.5)
+            tH.addSync(function storeTime(){
+                tH.data.playheadTime = vp.currentTime();
+            })
+            tH.wait(1.5)
+            tH.addSync(function storeTime(){
+                var furtherAlong = tH.data.playheadTime > vp.currentTime()
+                tH.assert(furtherAlong, 'Videl player not movingvp.')
+                tH.assert(vp.paused()==false, 'Videl player not movingvp.')
+            })
+        }
+
+
+
+
+
+        p.watchVid = function watchVid(tH, file, cannotWatch, fxDone) {
+
+            ro.ensureWeHaveX(tH)
+            tH.add(function goToVid(){
+                if( file == null ) {
+                    file = tH.data.files.fileTestVidShooter+'?random='+Math.random()
+                }
+                file = file+'?random='+Math.random()
+
+                window.serverHelper.utils.playMedia(file)
+                //showVideoPlayer(file);
+                tH.test.cb()
+            })
+
+            tH.waitForShow('#videoplayer', 'when to video state, but video palyer did not show');
+            tH.add(function playVid(){
+                vp.currentTime(0);
+                vp.play();
+                tH.test.cb()
+            })
+            return;
+            //self.go
+            tH.add(function canWatchVideoRemote(){
+                if ( file == null ) {
+                    file = tH.data.files.fileTestVideo
+                }
+                window.serverHelper.watchShow(file, verifyCount, 50);
+                function verifyCount(result) {
+                    // window.serverHelper.getUserInfo(verifyContent);
+                    // function verifyContent() {
+                    if ( cannotWatch ) {
+                        //
+                    }
+                    var didCreditMatchUP = $.isString(result) == false ;
+                    tH.assert(didCreditMatchUP, 'Coudl watch conent');
+                    //verified();
+                    callIfDefined(fxDone)
+                    tH.test.cb();
+                    // }
+                }
+                return;
+            })
+        };
+
+        function defineCreditDialogStuff() {
+            var ro = self;
+            ro.cd = {}
+            ro.cd.hasXCredits = function hasXCredits(tH, creditCount) {
+                ro.cd.waitForDialog(tH)
+                tH.addAttrTest('#txtCreditCount', 'creditCount', creditCount,
+                    'Credit count did not match' + creditCount)
+            }
+            ro.cd.canReplay = function canReplay(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.waitForShow("#cd-replay", 'did not see the replay option on cd');
+            }
+            ro.cd.clickUseCredit = function clickUseCredit(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.clickJ("#cd-usecredit", 'use a credit');
+            }
+            ro.cd.isAutoPlayVisible = function showingAutoplay(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.waitForShow("#cd-autoplay", 'did not see the autoplay option on cd');
+            }
+            ro.cd.isAutoplayHidden = function isAutoplayHidden(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.waitForHide("#cd-autoplay");
+            }
+            ro.cd.canUseCredit = function canUseCredit(tH) {
+                ro.cd.waitForDialog(tH);
+                tH.waitForShow("#cd-usecredit", 'coudl not use a credit');
+            }
+            ro.cd.canBuyMoreCredits = function canBuyMoreCredits(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.waitForShow("#cd-account", 'coudl not go to moy account from cd dialog');
+            }
+            ro.cd.canNotBuyMoreCredits = function canBuyMoreCredits(tH) {
+                ro.cd.waitForDialog(tH)
+                tH.waitForHide("#cd-account", 'coudl go to moy account from cd dialog');
+            }
+
+            ro.cd.waitForDialog = function waitForDialog(tH, msg) {
+                tH.waitForShow('#creditDialog', 'did not see the credit dialog ');
+            }
+
+            ro.cd.showing = ro.cd.waitForDialog;
+
+            ro.cd.hidden = function isHiddenCreditDialog(tH, msg) {
+                tH.wait(1);
+                tH.waitForHide('#creditDialog', 'did not see the credit dialog');
+            };
+
+        }
+        defineCreditDialogStuff();
+
+        function definePlayerFx() {
+            var ro = self;
+            ro.player = {}
+            ro.player.closeDialog = function closeDialog(tH) {
+                tH.addSync(function closeDialog2(){
+                    window.creditHelper.closeCreditDialog();
+                })
+            }
+            ro.player.volume = function setvolume(tH, v) {
+                v = dv(v, 0)
+                tH.addSync(function closeDialog2(){
+                    vp.volume(v)
+                })
+
+            }
+            ro.player.watchVideoNoAutoplay = function watchRealVideoNoAutoplay() {
+                tH.log3('watchVideoNoAutoplay')
+                ro.goHome(tH);
+                ro.player.volume(tH)
+                ro.player.closeDialog(tH)
+                ro.setAutoPlayTo(tH, false)
+                ro.clearUsersCredits(tH);
+                ro.setCreditsTo(tH, 2000);
+                ro.canNotWatchVideo(tH);
+                ro.watchVid(tH);
+                ro.isCreditDialogUp(tH);
+            }
+            ro.player.watchVideoAutoplay = function watchVideoAutoplay() {
+                tH.log3('watchVideoAutoplay')
+                ro.goHome(tH);
+                ro.player.closeDialog(tH)
+                ro.setAutoPlayTo(tH, false)
+                ro.clearUsersCredits(tH);
+                ro.canNotWatchVideo(tH);
+                ro.setAutoPlayTo(tH, true)
+                ro.setCreditsTo(tH, 0);
+                ro.canNotWatchVideo(tH);
+                ro.setCreditsTo(tH, 2000);
+                ro.watchVid(tH);
+                ro.cd.hidden(tH);
+            }
+            ro.player.watchVideoAutoplayNoCredits = function watchVideoAutoplayNoCredits() {
+                tH.log3('watchVideoAutoplayNoCredits')
+                ro.goHome(tH);
+                ro.player.closeDialog(tH)
+                ro.setAutoPlayTo(tH, false)
+                ro.whatIsAutoplay(tH)
+                ro.clearUsersCredits(tH);
+                ro.canNotWatchVideo(tH);
+                ro.setAutoPlayTo(tH, true)
+                ro.whatIsAutoplay(tH)
+                ro.setCreditsTo(tH, 0);
+                ro.canNotWatchVideo(tH);
+                ro.watchVid(tH);
+                ro.cd.showing(tH, 'Buy more');
+                ro.cd.hasXCredits(tH, 0)
+                //ro.cd.canReplay(tH)
+                ro.cd.canBuyMoreCredits(tH);
+
+            }
+
+            ro.player.watchVideoNoCreditsNoAutoplay = function watchVideoNoCreditsNoAutoplay() {
+                tH.log3('watchVideoNoCreditsNoAutoplay')
+                ro.goHome(tH);
+                ro.player.closeDialog(tH)
+                ro.setAutoPlayTo(tH, false)
+                ro.whatIsAutoplay(tH)
+                ro.clearUsersCredits(tH);
+                ro.setCreditsTo(tH, 0);
+                ro.canNotWatchVideo(tH);
+                ro.watchVid(tH);
+                ro.isCreditDialogUp(tH);
+                ro.cd.hasXCredits(tH, 0)
+                //ro.cd.canReplay(tH)
+                ro.cd.canBuyMoreCredits(tH);
+            }
+
+
+            ro.player.watchBadVideo = function watchBadVideo() {
+                tH.log3('watchBadVideo')
+                ro.goHome(tH);
+                ro.player.closeDialog(tH)
+                var badFile = 'asdf44442';
+
+                ro.canNotWatchVideo(tH, badFile);
+                ro.watchVid(tH, badFile);
+                ro.isCreditDialogUp(tH, 'Error');
+                ro.cd.canNotBuyMoreCredits(tH);
+                ro.creditDialogOk(tH);
+                ro.isCreditDialogClosed(tH, 'Error');
+            }
+
+            ro.player.watchVideo = function watchVideo() {
+                tH.log3('watchVideo')
+                ro.goHome(tH);
+                ro.player.closeDialog(tH)
+                ro.setAutoPlayTo(tH, false);
+                ro.whatIsAutoplay(tH)
+                ro.clearUsersCredits(tH);
+                ro.setCreditsTo(tH, 1);
+                ro.canNotWatchVideo(tH);
+                ro.watchVid(tH);
+                ro.isCreditDialogUp(tH);
+                ro.cd.hasXCredits(tH, 1)
+               // tH.log3('what?')
+                ro.cd.clickUseCredit(tH)
+                ro.cd.hidden(tH);
+
+                ro.player.isPlaying(tH)
+                //ro.cd.canReplay(tH)
+            };
+
+            p.player.isPlaying = function isPlaying(tH) {
+                tH.wait(0.1)
+                tH.desc('ensure player is paused... ')
+                tH.verify(function pausePlayerWithClick(){
+                    //var vp = videojs('#videoplayer');
+                    return vp.paused() == false;
+                });
+            }
+        }
+        definePlayerFx();
 
         p.proc = function debugLogger() {
             if ( self.silent == true) {
@@ -572,6 +919,41 @@ function testSmoke() {
     }
     test.desc = 'Touch Every Screen Hard'
     window.tests.rSmoke2 = test;
+
+
+    var test = function defineTestA(tH) {
+        var t = tH.createNewTest();
+        tH.log(defineTestA.name);
+
+        ro.ensureWeHaveX(tH)
+
+        //tH.click('home');
+        tH.wait(0.5)
+        ro.goHome(tH);
+
+
+        ro.player.watchVideoNoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchBadVideo()
+        ro.player.watchVideo();
+        ro.player.watchVideoNoCreditsNoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchVideoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchVideoAutoplayNoCredits()
+        ro.player.watchVideo();
+
+
+        return;
+
+        //ro.searchHomePageSet(tH);
+        ro.clickWatchIt(tH);
+        ro.videoIsPlaying(tH);
+
+        return;
+    }
+    test.desc = 'Test Credit Dialog'
+    window.tests.rCreditDialog = test;
 
 
 }

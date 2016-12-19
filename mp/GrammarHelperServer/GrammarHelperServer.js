@@ -61,6 +61,7 @@ function GrammarHelperServer() {
              sh.writeFile(dirMag + req.query.name, req.query.url);
              links
              */
+            sh.allowWildcardRequests(req, res, null, true)
             var dirMag = 'c:/trash/mags/'
             var fileLinks = dirMag + 'input.txt';
             var content = sh.readFile(fileLinks, req.query.url);

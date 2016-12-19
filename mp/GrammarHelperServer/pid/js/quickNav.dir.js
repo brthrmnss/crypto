@@ -696,7 +696,7 @@
       }
 
       var areaHelper = new AreaHelper();
-      scope.vm.areaHelper = areaHelper;
+      scope.vm.areaHelper = areaHelper; 
 
       function xGen() {
         var y = appService.gen()

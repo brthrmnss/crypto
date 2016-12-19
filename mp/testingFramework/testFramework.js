@@ -12,8 +12,42 @@ if ( typeof window === 'undefined' ) {
     var PromiseHelperV3 = require('./PromiseHelperV3').PromiseHelperV3;
     var sh = require('./shelpers').shelpers;
 }
-window.tests = {}
-var testHelper = {};
+function defineInittest() {
+    window.tests = {}
+    var lastTestHelper = window.testHelper;
+    var testHelper = {};
+    window.testHelper = testHelper;
+    testHelper.data = {}
+
+    console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+    if (lastTestHelper) {
+        testHelper.data.invokeCount =
+            lastTestHelper.data.invokeCount;
+
+    }
+    if ( testHelper.data.invokeCount == null ){
+        testHelper.data.invokeCount = 0;
+    }
+    console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+
+    if ( $.isObject == null ) {
+        $.isObject = function isObject(obj) {
+            if ( $.isFunction(obj)) {
+                return false;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            return typeof obj == 'object'
+        }
+
+    }
+}
+
+defineInittest();
+
+
+
 function defineLoadParams() {
     testHelper.getParams = function getParamsFromUrl() {
         function getQueryObj() {
@@ -115,7 +149,21 @@ function defineJQueryHelpers() {
             return content = content();
         }
         if ( $.isString(content)) {
-         //   content = $(content)
+            //   content = $(content)
+        }
+        return content;
+    }
+
+    testHelper.convertJquery2 = function convertJquery2(content) {
+        var contentOrig = content;
+        //TODO: deprec old method with this one
+        //i jquery fx, string, or object, return jquery object
+        if ($.isFunction(content)) {
+            return content = content();
+        }
+        if ( $.isString(content)) {
+            content = $(content)
+            content.$orig = contentOrig;
         }
 
         return content;
@@ -155,6 +203,14 @@ function defineTestTransportFxs() {
         function startTestLater() {
             work.startChain(token)
         }
+
+        //debugger;
+        window.testHelper.data.invokeCount++;
+        console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+
+        $('#testLogPanel').css({'background-color':tH.data.origTestLogPanelBgcolor});
+        $('#testLogPanel').css({'background-color':'#f2f2f2'});
+
         // window.testHelper.fxStartNextTest = startTestLater;
         startTestLater()
         //setTimeout(startTestLater); //test can't run if defineTest fails ...
@@ -165,61 +221,9 @@ function defineTestTransportFxs() {
             t.stop();
         }
         window.stopTest = window.testStop;
-        if ( panelAdded != true ) {
-            panelAdded = true
-            tH.addLogPanel = function addLogPanel() {
-                /*
-                 var divId = '#testSearchTest';
-                 if ( uiUtils.ifFound(divId) ) { return; }
-                 uiUtils.panel.br(divId);
 
-                 */
-                var isHere = $('#annotation').length
-                if ( isHere > 1 ) {
-
-                } else {
-                    var annotation = $('<img/>')
-                    annotation.attr('src', 'test3/cursor-png.png')
-                    $('body').append(annotation)
-                    annotation.attr('id','annotation')
-                    uiUtils.makeAbs(annotation, 100)
-                    annotation.addClass('transitionAll');
-                    annotation.hide();
-                }
-
-                if ( $('#testLogPanel').length > 0 ) {
-                    return;
-                }
-                var panel = $('<div style="background-color: #f2f2f2; padding:10px;' +
-                    ' border: solid 1px #666666; position: fixed; ' +
-                    'bottom: 260px; right: 10px; ' +
-                    'max-height:85%; overflow:auto; ' +
-                    '    max-height: calc(100% - 340px);'+
-                    ' display: none; " id="testLogPanel">'+
-                    '<b>Test Log</b>' +
-                    '<div id="logPrevious"></div> ' +
-                    '<div id="logCurrent"></div> ' +
-                    '  </div>');
-                $('body').append(panel)
-                $('#testLogPanel').css('opacity', 0.7);
-
-
-                /*if ( $('#testLogPanel').length == 0 ) {
-                 $('body').append('<div style="background-color: #f2f2f2; padding:10px;' +
-                 ' border: solid 1px #666666; position: fixed; ' +
-                 'bottom: 260px; right: 10px; ' +
-                 'max-height:85%; overflow:auto; ' +
-                 '    max-height: calc(100% - 320px);'+
-                 ' display: none; " id="testLogPanel">'+
-                 '<b>Test Log</b>' +
-                 '<div id="logPrevious"></div> ' +
-                 '<div id="logCurrent"></div> ' +
-                 '  </div>')
-                 $('#testLogPanel').css('opacity', 0.7);
-                 }*/
-            }
-            tH.addLogPanel();
-        }
+        tH.addLogPanel();
+        tH.addTransportPanel();
         tH.windowLocationHash = window.location.hash; //why: store hash so we can replay test easily
 
         tH.data = {};
@@ -231,8 +235,35 @@ function defineTestTransportFxs() {
         timer.start()
         tH.logNow('starting test', sh.q(tH.currentTestName) );
         t.fxDone3 = function finishedTest() {
-
             tH.logNow('test ended', sh.q(tH.currentTestName), timer.secs() );
+            $('#testLogPanel').css({'background-color':'#C3E5C4'});
+            window.testHelper.transport.finished();
+            $('#txtTotalStepsCount').text(t.data.methods.currentIndex);
+        }
+
+        t.token.id = window.testHelper.currentTestId = Math.random();
+
+        t.token.fxStep = function onUpdateTransport(tx, fxResume) {
+            
+            if ( window.testHelper.transport.status == 'paused') {
+                window.testHelper.fxResumeTest = fxResume
+                console.warn('pause test')
+                return false;
+            }
+             
+            //debugger;
+            if ( t.token.id != window.testHelper.currentTestId ) {
+                return false;
+            }
+            $('#txtCurrentStepIndex').text(tx.data.methods.currentIndex);
+            $('#txtTotalStepsCount').text(tx.data.methods.count);
+            return;
+            /*    console.log('what is x?', tx.data.methods.currentIndex,
+             tx.data.methods.count);*/
+        }
+
+        t.fxError = function onError(errorMsg) {
+            tH.fail([errorMsg])
         }
         return t;
     }
@@ -241,8 +272,19 @@ function defineTestTransportFxs() {
         tH.assert =  function assert(eq, msg) {
 
             var args = sh.convertArgumentsToArray(arguments)
-            if ( args.length > 2 )
+            if (args.length > 2) {
+                var msgStr = '';
+                args = args.slice(1);
+                $.each(args, function onConverTIfHaveTo(k, v) {
+                    if ($.isObject(v)) {
+                        v = JSON.stringify(v);
+                    }
+                    msgStr += ' ' + v;
+                })
+                msg = msgStr;
+            } else {
                 msg = args.slice(1).join(' ');
+            }
 
             if ( eq == false ) {
                 throw new Error(msg)
@@ -316,6 +358,193 @@ function defineTestTransportFxs() {
     }
     tH.add = tH.addTestStep;
 
+    tH.addSync = function addSyncFunction(fx, error) {
+        var addFx = tH.test.addSync;
+        addFx(fx, null);
+    }
+    tH.addPlainFx = tH.addSync;
+
+    tH.addAttrTest = function addAttrTest(jquery, attr, val, error) {
+        tH.add(function attiributeTest() {
+            var ui = $(jquery)
+            var uiVal = ui.attr(attr);
+
+            var eq = uiVal == val;
+
+            tH.assert(eq, 'Failed assertion', attr, '!= ', val, error)
+
+            tH.test.cb();
+        })
+    }
+
+
+
+
+    tH.addLogPanel = function addLogPanel() {
+        /*
+         var divId = '#testSearchTest';
+         if ( uiUtils.ifFound(divId) ) { return; }
+         uiUtils.panel.br(divId);
+
+         */
+
+        function clearLogPanel() {
+            $('#logCurrent').html('');
+            $('#logPrevious').html('');
+        }
+        clearLogPanel();
+
+
+
+
+        $('#txtInvokeCount').text(' ('+window.testHelper.data.invokeCount+')');
+        console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+
+        tH.data.origTestLogPanelBgcolor = '#f2f2f2';
+
+
+        var isHere = $('#annotation').length
+        if ( isHere > 1 ) {
+
+        } else {
+            var annotation = $('<img/>')
+            annotation.attr('src', 'test3/images/cursor-png.png')
+            $('body').append(annotation)
+            annotation.attr('id','annotation')
+            uiUtils.makeAbs(annotation, 100)
+            annotation.addClass('transitionAll');
+            annotation.css('z-index',  10002)
+            annotation.hide();
+        }
+
+        if ( $('#testLogPanel').length > 0 ) {
+            return;
+        }
+
+
+
+        var panel = $('<div style="background-color: #f2f2f2; padding:10px;' +
+            ' border: solid 1px #666666; position: fixed; ' +
+            'bottom: 260px; right: 10px; ' +
+            'max-height:85%; overflow:auto; ' +
+            '    max-height: calc(100% - 340px);'+
+            ' display: none; " id="testLogPanel">'+
+            '<b>Test Log</b>' +
+            '<span id="txtInvokeCount"></span>' +
+            '<div id="logPrevious"></div> ' +
+            '<div id="logCurrent"></div> ' +
+            '  </div>');
+        $('body').append(panel)
+        $('#testLogPanel').css('opacity', 0.7);
+        panel.css('z-index',  10002)
+
+        /*if ( $('#testLogPanel').length == 0 ) {
+         $('body').append('<div style="background-color: #f2f2f2; padding:10px;' +
+         ' border: solid 1px #666666; position: fixed; ' +
+         'bottom: 260px; right: 10px; ' +
+         'max-height:85%; overflow:auto; ' +
+         '    max-height: calc(100% - 320px);'+
+         ' display: none; " id="testLogPanel">'+
+         '<b>Test Log</b>' +
+         '<div id="logPrevious"></div> ' +
+         '<div id="logCurrent"></div> ' +
+         '  </div>')
+         $('#testLogPanel').css('opacity', 0.7);
+         }*/
+    }
+
+
+    tH.addTransportPanel =function addTransportPanel() {
+        var cfg = {}
+        cfg.id = 'testTransportPanel';
+        cfg.clearIfFound = true
+        if ( window.uiUtils.makePanel(cfg) ) {
+            return; //already made
+        }
+        uiUtils.flagCfg = {};
+        uiUtils.flagCfg.id = cfg.id;
+        uiUtils.flagCfg.addTo = $(cfg.id);
+        //window.uiUtils.addTitle('Transport Panel');
+        window.uiUtils.addImage( 'test3/images/play-button.png', 'btnPlay');
+        window.uiUtils.addTooltip('Play')
+        window.uiUtils.addClick(function onPlay(){
+            if ( window.testHelper.transport.status == 'stopped') {
+                window.testHelper.rerunLastTest();
+                return;
+            }
+            if ( window.testHelper.transport.status == 'paused') {
+                window.testHelper.transport.playing = false;
+                window.testHelper.transport.pause = false;
+                window.testHelper.transport.status = 'playing'
+
+                uiUtils.enable('#btnPause')
+                uiUtils.enable('#btnStop')
+                uiUtils.enable('#btnRewind')
+
+                window.testHelper.fxResumeTest();
+                return;
+            }
+
+        });
+
+        window.uiUtils.addImage( 'test3/images/pause.png', 'btnPause')
+        window.uiUtils.addClick(function onPause(){
+            uiUtils.enable('#btnPlay')
+            uiUtils.disable('#btnPause')
+            window.testHelper.transport.playing = false;
+            window.testHelper.transport.pause = true;
+            window.testHelper.transport.status = 'paused'
+        });
+
+        window.uiUtils.addImage( 'test3/images/stop.png', 'btnStop')
+        window.uiUtils.addClick(function onStop(){
+            window.testHelper.transport.playing = false;
+            window.testHelper.transport.pause = false;
+            window.testHelper.transport.status = 'stopped'
+            uiUtils.disable('#btnPause')
+            uiUtils.disable('#btnStop')
+        });
+
+        window.uiUtils.addImage( 'test3/images/rewind.png', 'btnRewind')
+        window.uiUtils.addClick(function onRewind(){
+            window.testHelper.rerunLastTest();
+        });
+
+
+        window.uiUtils.ws()
+        window.uiUtils.addLabel( '0', 'txtCurrentStepIndex');
+        window.uiUtils.addLabel( '/' );
+        window.uiUtils.addLabel( '0', 'txtTotalStepsCount');
+
+        uiUtils.disable('#btnPlay')
+        uiUtils.disable('#btnPause')
+        uiUtils.disable('#btnStop')
+        uiUtils.disable('#btnRewind')
+
+
+        window.testHelper.transport = {};
+        window.testHelper.transport.playing = true;
+        uiUtils.enable('#btnPause')
+        uiUtils.enable('#btnStop')
+        uiUtils.enable('#btnRewind')
+
+
+        window.testHelper.transport.finished = function finished() {
+            window.testHelper.transport.status = 'stopped'
+            uiUtils.disable('#btnPause');
+            uiUtils.disable('#btnStop');
+            uiUtils.disable('#btnRewind');
+        }
+
+        // debugger;
+        return;
+        window.uiUtils.br();
+        window.uiUtils.addButton('Contact', function onContact() {
+            window.location.hash = '#contact';
+        });
+
+        window.uiUtils.br();
+    }
 }
 defineTestTransportFxs();
 
@@ -473,7 +702,7 @@ function defineTestMethods() {
             //  console.error('endhash-Z',91, window.location.href );
         })
     };
-    tH.logNext = tH.logNextLink;
+    tH.log3 = tH.logNext = tH.logNextLink;
 
     tH.logNow = function logCurrently(str) {
         var args = sh.convertArgumentsToArray(arguments)
@@ -489,7 +718,7 @@ function defineTestMethods() {
         uiUtils.scrollToBottom('#testLogPanel')
 
         $('#logCurrent').html(str)
-        if ( tH.lastStr ) {
+        if ( tH.lastStr !== null ) { //why this crazyiness?
             //console.log(lastStr)
             $('#logPrevious').append('<div>'+tH.lastStr+'</div>')
         }
@@ -513,6 +742,7 @@ function defineTestMethods() {
         failWhenDone = sh.dv(failWhenDone, true);
 
 
+        var dbgWait = false;
 
         if ( tH.waitForError ) {
             //console.error('waitFor', tH.waitForError);
@@ -544,8 +774,10 @@ function defineTestMethods() {
                     console.error('failed on', fx.name, e)
                     var result = fx(lastAttempt);
                 }
-                console.log('waitfor-result',result,
-                    innerT.iteration, innerT.maxIterations, fx.name)
+                if ( dbgWait) {
+                    console.log('waitfor-result', result,
+                        innerT.iteration, innerT.maxIterations, fx.name)
+                }
                 if ( result != true ){
                     if (lastAttempt) {
                         if ( failWhenDone ) {
@@ -636,6 +868,9 @@ function defineTestMethods() {
 
     tH.fail = function failTest(errorArr, asdf) {
         //alert('test failed')
+        tH.logNow('  ')
+        tH.logNow(' ');
+        tH.logNow('_________');
         tH.logNow('Test Failed')
         $('#testLogPanel').css({'background-color':'#F9C09D'});
 
@@ -710,29 +945,44 @@ defineTestMethods();
 
 function defineCompoundMethods() {
     tH.waitForHide = function waitForHide(jquery, waitForFailureReason) {
+        var dbgWait = false;
         if ( waitForFailureReason )
-            tH.waitForError = waitForFailureReason + ' (waitForHide)'
-        tH.waitFor(function isDialogVisible(){ //waitForHide
-            var jquery = tH.convertJquery(jquery)
-            if ($(jquery).css("opacity") == "0") {
+            tH.waitForError = waitForFailureReason + ' (waitForHide) ' + jquery
+        tH.waitFor(function isUIHidden(){ //waitForHide
+            //var jquery = tH.convertJquery(jquery)
+            var jq = tH.convertJquery2(jquery)
+            if ( jq.length == 0 ) {
+                console.warn('jqueryIs 0 length', jquery, 'isUIHidden')
+                return false;
+            }
+            var opacity = $(jquery).css("opacity");
+            var isVislbe= $(jquery).is(":visible");
+            if ( dbgWait ) {
+                console.log('opacit', jq, opacity, isVislbe)
+            }
+            if ( opacity == "0") {
                 return true
             }
-            return false==$(jquery).is(":visible")
+            return false==isVislbe
         });
     };
     tH.waitForShow = function waitForShow(jquery, waitForFailureReason) {
         if ( waitForFailureReason )
-            tH.waitForError = waitForFailureReason + ' (waitForShow)'
+            tH.waitForError = waitForFailureReason + ' (waitForShow) ' + jquery
         tH.waitFor(function isDialogVisible(){ //waitForHide
-            var jquery = tH.convertJquery(jquery)
-            tH.moveCursorTo(jQuery)
-            if ($(jquery) != "0") {
-                return true
+            var jq = tH.convertJquery2(jquery)
+            tH.moveCursorTo(jq)
+            if ( jq.length == 0 ) {
+                console.warn('jqueryIs 0 length', jquery)
+                return false;
             }
-            if ($(jquery).css("opacity") != "0") {
-                return true
+            /*if ($(jquery) != "0") {
+             return true
+             }*/
+            if ($(jq).css("opacity") == "0") {
+                return false
             }
-            return true==$(jquery).is(":visible")
+            return true==$(jq).is(":visible")
         });
     };
     tH.verifyHidden = function waitForShow(jquery) {
@@ -812,10 +1062,10 @@ function defineCompoundMethods() {
             return;
         }
         /*var position = $(element).offset();
-        if ( position == null ) {
-            console.warn('position si null', element, position)
-            return;
-        }*/
+         if ( position == null ) {
+         console.warn('position si null', element, position)
+         return;
+         }*/
 
         if ( jquery.trigger == null ) {
             var element = $(jquery)
@@ -839,6 +1089,9 @@ function defineCompoundMethods() {
             console.log('move on left size')
             //positon.left = $('body').width - 250;
         }
+        if ( position.left )
+            position.left += 10;
+        position.top += 10;
         console.log('where is', jquery, position)
         annotation.css(position)
     }
@@ -1102,14 +1355,13 @@ function defineContinuitiyMethods() {
                         'Running test', testName, ''
                     )
 
-                    setTimeout(function runTest() {
-
+                    setTimeout(function runTest_WhenUserTestsLoaded() {
                         if ( window.testsLoaded != true ) {
                             console.warn('tests not loaded yet')
                             setTimeout(runTest, 200+testDelay)
                             return;
                         }
-
+                        debugger; //debug this 12-17-2016-is it correct?
                         tH.runTest(testName)
                     }, 200+testDelay)
                 } else{
@@ -1161,6 +1413,7 @@ tH.runTest = function runTest(testName) {
     tH.currentTestName = testName;
     window.lastRunTestName = testName;
     window.tests[testName](tH);
+    //debugger;
     // window.testHelper.fxStartNextTest();
 }
 
@@ -1179,18 +1432,20 @@ function whenReady(){
         var testDelay = parseInt(tH.params.testDelay);
         testDelay= sh.dv(testDelay, 0);
         if ( isNaN(testDelay)) {
-            testDelay = 0;
+            testDelay = 500;
         }
         if ( testName ){
+            //debugger
             console.info(
                 'Running test', testName, '', window.tests, testDelay
             )
-            setTimeout(function runTest() {
+            setTimeout(function runTest_WhenTestFrameworkLoaded() {
                 if ( window.tests.loaded != true ) {
                     setTimeout(runTest, 500);
                     console.debug('waiting for test to load...')
                     return;
                 };
+                // debugger
                 tH.runTest(testName)
             }, 200+testDelay)
         } else{

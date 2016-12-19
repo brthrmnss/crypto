@@ -29,7 +29,7 @@ var loadScript2 = function loadScript2(_scripts2, fxDone) {
 
 
     var debug = false;
-   // debug = true;
+    // debug = true;
     if ( debug ) {
         console.log('downloading', url)
     }
@@ -56,7 +56,7 @@ var loadScript2 = function loadScript2(_scripts2, fxDone) {
 function loadTestFramework(fxDone, force) {
     if ( force != true ) {
         if (window.tH && window.tH.add) {
-            fxDone();
+            if ( fxDone ) { fxDone() }
             return;
         }
     }

@@ -47,10 +47,7 @@ function ProxyReload() {
                     referer += 'mail/u/0/'
                 }
             }
-            var gmailMode = false;
-            if (gmailMode ) {
-                referer = 'https://mail.google.com/mail/u/0/'
-            }
+            referer = 'https://mail.google.com/mail/u/0/'
             var url = referer + '' + originalUrl;
             output = referer;
             console.log(sh.t,'getHost...', output, req.originalUrl)
@@ -126,5 +123,3 @@ if (module.parent == null) {
 
 
 
-//localhost:3000/proxy?url=https%3A%2F%2Fgmail.com
-//localhost:10001/proxy?url=https://www.imdb.com/search/title?title=raging
