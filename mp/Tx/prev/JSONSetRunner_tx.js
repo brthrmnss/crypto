@@ -1,11 +1,40 @@
 var sh = require('shelpers').shelpers;
 var shelpers = require('shelpers');
-var pathJSONSetRunner = './../../../ritv/distillerv3/utils/JSONSet/JSONSetRunner'
-var file = sh.fs.resolve(pathJSONSetRunner)
-console.log(pathJSONSetRunner)
-var JSONSetRunner = require(pathJSONSetRunner).JSONSetRunner;
-//var JSONSetRunner = require('./JSONSetRunner').JSONSetRunner;
-//G:\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\JSONSetRunner.js
+var JSONSetRunner = require('./JSONSetRunner').JSONSetRunner;
+
+function TaxRunner() {
+    var p = TaxRunner.prototype;
+    p = this;
+    var self = this;
+    p.init = function init(config) {
+        self.settings = sh.dv(config, {});
+    }
+
+    p.method = function method(config) {
+    }
+    p.inputFile = function method(config) {
+    }
+    p.processTax = function method(config) {
+    }
+    p.saveOutput = function method(config) {
+    }
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return;
+        }
+        sh.sLog(arguments);
+    };
+}
+
+exports.TaxRunner = TaxRunner;
+
+if (module.parent == null) {
+    var instance = new TaxRunner();
+    var config = {};
+    instance.init(config)
+}
+
 /*
  open file
  run through many 'rule' files
@@ -19,7 +48,7 @@ var JSONSetRunner = require(pathJSONSetRunner).JSONSetRunner;
 
  running docs
  questions about transactions
- useful to know facts 
+ useful to know facts
 
  tag stuff
  amz, what is total, fed, huge, fraud, housing, medical,  def business, maybe business
@@ -33,15 +62,19 @@ if (module.parent == null) {
     var dirIterators = 'txIterators/';
     var dirIteratorsAuto = 'txIteratorsAuto/';
     var fileInput = 'mint 2014.csv';
-    fileInput = sh.fs.resolve(fileInput)
-    JSONSetRunner.runSetDir(fileInput, dirIteratorsAuto)
+    //JSONSetRunner.runSetDir(fileInput, dirIteratorsAuto)// why do not run all the iterators ... using custom now
     //return;
     var cfg = {}
     cfg.it = {}
     cfg.announce = false;
-    cfgBase = sh.clone(cfg);
+    // cfgBase = sh.clone(cfg);
+
+
+
+
 
     cfg.fxPreProcess = function preProccess(item) {
+        //ASDF.G
         item.amount = parseFloat(item.amount);
         if (  item.transactionType == 'credit') {
 
@@ -54,27 +87,112 @@ if (module.parent == null) {
     }
 
 
+    var data = {};
+    //data.allItems = sh.readFile(fileInput);
+
+
+    cfg.fxGetItems = function fxGetItems(_cfg) {
+        //asdf.g
+        if ( _cfg.includeAllItems) {
+            return data.allItems;
+        }
+        if ( data.allItems == null )
+            return null;
+        //asdf.g
+        _cfg.listAllItemsCount = data.allItems.length;
+        return data.unfilteredItems;
+
+        return [];
+    }
 
     var fileIterator = dirIterators + 'JSONSetIterator_Generic.js'
     var JSONSetIterator_Generic = require('./'+fileIterator).IteratorClass
-    fileIterator = sh.fs.resolve(fileIterator)
+    fileIterator = sh.fs.resolve(fileIterator);
     //cfg.resetList = true
-    cfg.it.iteratorName = 'Cell Phone'
-    cfg.it.matchesDefault = ['Sprint', 'Wireless']
+
+
     /*JSONSetIterator_Generic.utils.tag = function () {
 
      } */
 
-    JSONSetRunner.runSet.fxPost = function clearIt(){
+
+    JSONSetRunner.runSet.fxResetConfig = function fxResetConfig(_cfg){
+        cfg.it.iteratorName = null
+        cfg.it.matchesDefault = []
+        cfg.it.matchesPersonal = null
+        cfg.resetList = false
+        cfg.it.fxDone = null ;
+        cfg.it.fxDone = null;
+        cfg.includeAllItems = null
+        cfg.it.noOutput = false
+        delete cfg.it.noOutput;
+        delete cfg.it.desc;
+        cfg.it.fxFilter = null;
+        //  console.log('\t', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
+
+    }
+
+    JSONSetRunner.runSet.fxPost = function onFxPost(inst, _cfg){
         cfg.it.iteratorName = null
         cfg.it.matchesDefault = null
         cfg.it.matchesPersonal = null
         cfg.resetList = false
         cfg.it.fxDone = null ;
         cfg.it.fxDone = null;
-        cfg.includeAllItmes = null
+        cfg.includeAllItems = null
+        cfg.it.noOutput = false
+        delete cfg.it.noOutput;
+        delete cfg.it.desc;
+        cfg.it.fxFilter = null;
+        console.log('\t', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
+        //console.log(  inst.data.work.list )
+        //    console.log('')
+        //console.log(inst.data.listFiltered)
+        //console.log(inst.data.listMatched);
+
+        if ( data.allItems == null ) {
+            //why: cache all items the first time only
+            data.allItems = inst.data.work.list
+
+            //  process.exit()
+        }
+        data.unfilteredItems = inst.data.listFiltered;
+
+        //asdf.g
     }
 
+
+
+
+    cfg.it.iteratorName = 'Deposits'
+    cfg.it.desc = 'all income'
+    cfg.it.matchesDefault = []
+    //cfg.it.noOutput = true
+    //cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        if ( item.description.includes('Deposit')  ){
+            return true;
+        }
+        if ( item.originalDescription.includes('Deposit')  ){
+            return true;
+        }
+
+        /*if ( item.transactionType == 'credit' ){
+            return true;
+        }*/
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'Income'
+    cfg.it.matchesDefault =
+        ['Deposit',
+            '']
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'Cell Phone';
+    cfg.it.matchesDefault = ['Sprint', 'Wireless'];
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -83,12 +201,16 @@ if (module.parent == null) {
     cfg.it.matchesDefault = ['Airlines', 'SW AIR', 'Southwest Airlines']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
-
-    cfg.it.iteratorName = 'Transfers'
-    cfg.it.matchesDefault = ['Transfer']
+    cfg.it.iteratorName = 'IRA'
+    cfg.it.matchesDefault = ['Betterment']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+    cfg.it.iteratorName = 'Retirement IRA Cont'
+    cfg.it.matchesDefault =
+        ['Betterment', ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+ 
 
     cfg.it.iteratorName = 'Rental Cars'
     cfg.it.matchesDefault = [
@@ -142,6 +264,22 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
+    cfg.it.iteratorName = 'AUTOPAY Payments'
+    cfg.it.matchesDefault =
+        ['AUTOPAY'  ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+
+
+
+    cfg.it.iteratorName = 'Transfers'
+    cfg.it.matchesDefault = ['Transfer']
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+
+
 
     cfg.it.iteratorName = 'Pills'
     cfg.it.matchesDefault =
@@ -158,7 +296,7 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Fraud'
     cfg.it.matchesDefault =
-        ['FS *FSPRG.COM', //file sharing ? Fast Share
+        ['FS *FSPRG.COM', //file sharing ? Fast Share / putio
             'Gpo Haslemere Gb'
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
@@ -173,7 +311,7 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-    cfg.it.iteratorName = 'Crypto currencies'
+    cfg.it.iteratorName = 'Crypto_currencies'
     cfg.it.matchesDefault =
         ['Coinbasebtc'
             ,'WEBCOINBASE',
@@ -183,7 +321,7 @@ if (module.parent == null) {
 
 
 
-    cfg.it.iteratorName = 'Loans'
+    cfg.it.iteratorName = 'Student Loans'
     cfg.it.matchesDefault =
         ["Sallie Mae",
             'Slma Ed Serv'
@@ -195,6 +333,18 @@ if (module.parent == null) {
     cfg.it.matchesDefault =
         ["IRS (USATAXPYMT)",
         ]
+    cfg.it.fxFilter = function fxFilter(item) {
+     /*   if ( item.description.includes('Deposit')  ){
+            return true;
+        }*/
+        if ( item.originalDescription.includes('(USATAXPYMT)')  ){
+            return true;
+        }
+
+        /*if ( item.transactionType == 'credit' ){
+         return true;
+         }*/
+    }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -221,16 +371,11 @@ if (module.parent == null) {
             'Dropbox',
             'Evernote',
             'Rackspace',
-            'IDrive'
+            'IDrive', 'INMOTIONHOSTING', 'hover com'
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-    cfg.it.iteratorName = 'Income'
-    cfg.it.matchesDefault =
-        ['Deposit',
-            '']
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Audiobooks'
@@ -258,6 +403,7 @@ if (module.parent == null) {
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+/*
 
     cfg.it.iteratorName = 'Crypto currencies'
     cfg.it.matchesDefault =
@@ -266,15 +412,7 @@ if (module.parent == null) {
 
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
-    cfg.it.iteratorName = 'Retirement IRA Cont'
-    cfg.it.matchesDefault =
-        ['Betterment',
-
-        ]
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
+*/
 
     cfg.it.iteratorName = 'Insurance'
     cfg.it.matchesDefault =
@@ -295,11 +433,26 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'ATM'
     cfg.it.matchesDefault =
-        ['Withdrawaln',
+        ['atm', 'atmlk'
 
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+
+    cfg.it.iteratorName = 'Checks'
+    cfg.it.matchesDefault =
+        ['Check'
+
+        ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'Paypal'
+    cfg.it.matchesDefault =
+        ['paypal'
+
+        ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Doctor'
@@ -323,18 +476,31 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Mobile Apps'
     cfg.it.matchesDefault =
-        ['Google.com/'
+        ['Google.com/' ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
-        ]
+    cfg.it.iteratorName = 'Amazon'
+    cfg.it.matchesDefault =
+        ['Amazon' ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'Fees'
+    cfg.it.matchesDefault =
+        ['Fee' ]
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+    cfg.it.iteratorName = 'Untagged'
+    cfg.it.matchAll = true
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Total Deposits'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
-    cfg.includeAllItmes = true
+    cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.transactionType == 'credit' ){
+        if ( item.description.includes('Deposit') ) {
             return true;
         }
     }
@@ -343,7 +509,7 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Total Debits'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
-    cfg.includeAllItmes = true
+    cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
         if ( item.transactionType == 'debit' ){
             return true;
@@ -351,29 +517,30 @@ if (module.parent == null) {
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
-    cfg.it.iteratorName = 'Total Debits'
-    cfg.it.matchesDefault = []
-    cfg.it.noOutput = true
-    cfg.includeAllItmes = true
-    cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.transactionType == 'debit' ){
-            return true;
-        }
-    }
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    /* cfg.it.iteratorName = 'Total Debits'
+     cfg.it.matchesDefault = []
+     cfg.it.noOutput = true
+     cfg.includeAllItems = true
+     cfg.it.fxFilter = function fxFilter(item) {
+     if ( item.transactionType == 'debit' ){
+     return true;
+     }
+     }
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
 
 
 
     cfg.it.iteratorName = 'Large Purchases'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
-    cfg.includeAllItmes = true
+    cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
         item.amount = parseFloat(item.amount);
         if ( item.transactionType == 'credit' ){
-            return false;
+            return false; //skip income payments
         }
         if ( Math.abs(item.amount) > 10000 ){
+            //console.error(item)
             return true;
         }
     }
@@ -385,7 +552,7 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Unknown'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
-    cfg.includeAllItmes = false
+    cfg.includeAllItems = false
     cfg.it.fxFilter = function fxFilter(item) {
         count++
         //console.log(count)
@@ -396,12 +563,11 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Final'
     cfg.it.matchesDefault = []
-    cfg.it.fxDone = function fxDone(runner, it) {
-        runner.createAdditionalFile('comments', JSONSetIterator_Generic.comments)
+    cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
+        runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 }
-
 
 

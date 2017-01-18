@@ -8,6 +8,7 @@
  */
 
 var ritvConfigHelper = require('ritvHelpers');
+var rh = ritvConfigHelper.ritvHelpers.ritvHelper//.RitvHelper
 var imdb_dl_app = require('./../imdb_dl_app').imdb_dl_app;
 var sh = require('shelpers').shelpers;
 
@@ -60,6 +61,53 @@ function IMDBOnlyDL() {
     p.step1_processInput = function step1_processInput() {
         //content list
 
+
+        //g:\Dropbox\projects\crypto\ritv\imdb_movie_scraper/IMDB_App_Output/Movies_with_Aliens_ls070079493.json
+        self.data.fileOutputDlList = '';
+
+
+
+        self.utils.getListId = function listId(idUrlOrLsMissing) {
+
+            if ( idUrlOrLsMissing.includes('?')) {
+                  idUrlOrLsMissing = idUrlOrLsMissing.split('?')[0]
+            }
+            if ( idUrlOrLsMissing.startsWith('ls')) {
+                return idUrlOrLsMissing
+            }
+            if ( sh.isNumber(idUrlOrLsMissing)) {
+                return 'ls'+idUrlOrLsMissing;
+            }
+
+            if ( idUrlOrLsMissing.includes('/list/')) {
+                idUrlOrLsMissing = idUrlOrLsMissing.split('/list/')[1];
+
+                idUrlOrLsMissing = idUrlOrLsMissing.split('/').join('')
+                return idUrlOrLsMissing
+            }
+
+            sh.throw('bad input', idUrlOrLsMissing, 'could not make a listid out of this')
+            return null
+
+        }
+        var listId = self.utils.getListId(self.settings.urlList);
+
+        self.data.fileOutputDlList = rh.getRVDir('imdb_movie_scraper/IMDB_App_Output/',listId+'.json');
+        self.data.fileOutputDlMagsList = rh.getRVDir('imdb_movie_scraper/IMDB_App_Output/mags/',listId+'.json');
+
+        if ( self.settings.skipIfListExists ) {
+            if ( sh.fs.exists(self.data.fileOutputDlMagsList)) {
+                self.proc('found existing file for ', listId)
+                self.data.skipToDl = true;
+                if ( self.data.skipToDl ) {
+                    self.chain.nextLink();
+                    return;
+                }
+            }
+        }
+
+        //console.log('what', self.data.fileOutputDlList)
+        //sh.exit()
         var config = ritvConfigHelper.ritvHelpers.getConfig();
         process.chdir('../');
 
@@ -108,8 +156,17 @@ function IMDBOnlyDL() {
         }
 
 
+
+        self.data.calledTimes = 0;
+
         imdb2MegaConfig.fxDone = function onDoneGettingList(filename) {
             self.data.filename = filename;
+            console.log('filename', filename)
+
+            self.data.calledTimes++;
+            if ( self.data.calledTimes != 2) {
+                return;
+            }
             self.chain.cb();
         }
         imdb2MegaConfig.configRipper = {};
@@ -122,6 +179,11 @@ function IMDBOnlyDL() {
 
 
     p.step2_processDlList = function step2_processDlList(config) {
+        if ( self.data.skipToDl ) {
+            self.chain.nextLink();
+            return;
+        }
+     //   asdf.g
         //call the program
         var y = '../../distillerv3/utils/JSONSet/JSONSetRunner_AddPbToList.js'
         //
@@ -133,8 +195,15 @@ function IMDBOnlyDL() {
         r.addToFile(
             {
                 fileInput: self.data.filename,
-                fxDone: function onFinishedConvert() {
+                fxDone: function onFinishedConvert(file, itP) {
+                    //asdf.g
+                    sh.fs.copy(file, self.data.fileOutputDlMagsList, true);
+                    //
+                    self.proc('file is out in', self.data.fileOutputDlMagsList)
+
                     self.chain.cb();
+                    //process.exit();
+                    //asdf.g
                 },
                 itSettings:{
                     minRating:6.0
@@ -148,12 +217,12 @@ function IMDBOnlyDL() {
     p.step3_convertIMDBList_2_DlList = function step3_convertIMDBList_2_DlList(config) {
         //seasons
         self.chain.cb()
-        sh.callIfDefined(self.settings.fxDone)
+        //sh.callIfDefined(self.settings.fxDone)
     }
     p.step4_combineAllLIsts_Into_1List = function step4_combineAllLIsts_Into_1List(config) {
         //G:\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
         self.chain.cb()
-        sh.callIfDefined(self.settings.fxDone)
+        sh.callIfDefined(self.settings.fxDone, self.data.fileOutputDlMagsList, self)
     }
 
     p.test = function test(config) {
@@ -179,20 +248,103 @@ function IMDBOnlyDL() {
 
 exports.IMDBOnlyDL = IMDBOnlyDL;
 
+
+IMDBOnlyDL.testDownload = function testDownload(listIdsInput, skipIfListExists,
+                                                nameOfOutput, fxDone) {
+
+
+    /* y = [
+     //'http://www.imdb.com/list/ls057704895/',
+     // 'http://www.imdb.com/list/ls059288416/'
+     'http://www.imdb.com/list/ls051508539/'
+     ]*/
+
+    var listIds  =[]
+
+    sh.each(listIdsInput, function onConvertIdIntoUrl(k,listId) {
+        var url = listId;
+        if ( listId.startsWith('http://')) {
+
+        } else {
+            url = 'http://www.imdb.com/list/'+listId;
+        }
+        listIds.push(listId);
+    })
+
+
+
+    var files = [];
+    sh.async(listIds, function onDownloadList(urlList,cb){
+        var instance = new IMDBOnlyDL();
+        var config = {};
+        config.fxDone = function onDoneWithList(list) {
+            files.push(list)
+            cb()
+        };
+        config.urlList = urlList;
+        config.skipIfListExists = skipIfListExists;
+        instance.init(config)
+        instance.test();
+        //files.push(instance)
+
+    }, function onDone_CombineInto1DlList() {
+        var fileContent = [];
+
+        var aFile = '';
+        console.log('yyy', files)
+        var index = 0;
+        var dictIds = {};
+        var skippedCount =0
+        sh.each(files, function joinAllFiles(k,file) {
+            aFile = file;
+            var json = sh.readJSONFile(file)
+            sh.each(json, function addItem(k,item) {
+                var match = dictIds[item.imdb_id]
+                if ( match ) {
+                    //console.log('skipped', item.name)
+                    skippedCount++
+                    return;
+                }
+                dictIds[item.imdb_id] = item;
+                fileContent.push(item)
+                index++;
+                item.genIndex = index;
+            })
+
+        });
+
+
+       console.log('asdf length of listWr', index, skippedCount)
+
+        if ( nameOfOutput ){
+            var fileName = aFile.replace('/mags/', '/dlListsWrapC/')
+            var dirFileOutput = sh.getPath(fileName);
+
+            sh.fs.mkdirp(dirFileOutput)
+            fileName  =  dirFileOutput + '/' + nameOfOutput + '.json';
+
+            var content = sh.toJSONString(fileContent);
+            sh.writeJSONFile(fileName, fileContent)
+
+
+
+            sh.callIfDefined(fxDone, fileName);
+        }
+        //asdf.g
+        //C:\Users\user1\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
+    })
+
+}
+
 if (module.parent == null) {
-    /*
-     var instance = new IMDBOnlyDL();
-     var config = {};
-     instance.init(config)
-     instance.test();
 
 
-     */
 
-
-    var y =  [
-        'http://www.imdb.com/list/ls070079493/',
-        'http://www.imdb.com/list/ls070435844/',
+    var skipIfListExists = true;
+    var list =  [
+        'ls070079493',
+        //'http://www.imdb.com/list/ls070079493/',
+        '070435844',
         'http://www.imdb.com/list/ls070000750/',
         'http://www.imdb.com/list/ls006864188/?start=1&view=detail&sort=user_rating:desc&defaults=1&scb=0.9624636702918679',
         'http://www.imdb.com/list/ls004043006/',
@@ -217,40 +369,23 @@ if (module.parent == null) {
         'http://www.imdb.com/list/ls053184993/',
         'http://www.imdb.com/list/ls054431555/',
         'http://www.imdb.com/list/ls051118261/',
-      //  ''
+        //  ''
     ]
-
-   /* y = [
-        //'http://www.imdb.com/list/ls057704895/',
-       // 'http://www.imdb.com/list/ls059288416/'
-        'http://www.imdb.com/list/ls051508539/'
-    ]*/
-
-    sh.async(y, function ondoThing(urlList,cb){
-        var instance = new IMDBOnlyDL();
-        var config = {};
-        config.fxDone = cb;
-        config.urlList = urlList;
-        instance.init(config)
-        instance.test();
-
-    }, function onDone_CombineInto1DlList() {
-        asdf.g
-        //C:\Users\user1\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
+    //list = list.slice(0,3)
+    IMDBOnlyDL.testDownload(list, skipIfListExists, 'outputTo87', function onSaved(file) {
+        console.log(file, '...')
     })
+    /*
+     var instance = new IMDBOnlyDL();
+     var config = {};
+     instance.init(config)
+     instance.test();
+
+
+     */
+
 
 
 
 }
-
-
-
-
-
-
-if ( module.parent == null ) {
-
-    // runWrapper();
-
-    //  i.breed(imdb2MegaConfig);
-}
+ 

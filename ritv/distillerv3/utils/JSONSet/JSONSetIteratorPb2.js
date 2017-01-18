@@ -64,6 +64,12 @@ function JSONSetIteratorPB_IMDB() {
             return;
         }
 
+        if ( item.skip == true ) {
+            console.error('what is title', item)
+            fx()
+            return;
+        }
+
         self.item = item; //why: for util fx access
         self.i = i;
         self.runner = runner;
@@ -406,6 +412,7 @@ function JSONSetIteratorPB_IMDB() {
                 })
                 return queryList;
             }
+
 
             var nameSaveable = sh.stripSpecialChars(item.title);
             if (self.utils.isItemTVShow() == false) {

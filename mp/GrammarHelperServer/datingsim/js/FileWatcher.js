@@ -37,6 +37,10 @@ function FileWatcher() {
     }
 
     p.trigger = function method(file) {
+        if ( self.settings.fxTrigger ) {
+            self.settings.fxTrigger(file)
+            return;
+        }
         /*
          var yyy = sh.runAsync2('node',
          [self.settings.file])
@@ -130,6 +134,21 @@ function FileWatcher() {
                 matches: function (relpath) {
                     relpath = relpath.replace(/\\/g, "/")
 
+                    if ( relpath.includes('___jb_tmp___')) {
+                        return false;
+                    }
+
+                    if ( self.settings.match ) {
+
+                        //self.settings.match
+                        if (relpath.match(/.py/gi)) {
+                            if ( debug )   console.log('valid flie', relpath);
+                            return true;
+                        }
+                        
+                        return false 
+                    }
+                    
                     if (relpath.match(/.js/gi)) {
                         if ( debug )   console.log('valid flie', relpath);
                         return true;
@@ -139,6 +158,8 @@ function FileWatcher() {
                         return true;
                     }
 
+                    
+                    
                     return false;
 
                     if (relpath.match(/examples\//gi)) {
@@ -160,7 +181,19 @@ function FileWatcher() {
 
             monitor.on('change', function (changes) {
                 var file = dirMonitored2 + '/ ' + changes.modifiedFiles[0]
+
+                if ( self.settings.match) {
+                    var file = self.settings.file  + '/' + changes.modifiedFiles[0]
+                }
+
+                if ( changes.modifiedFiles.length == 0 ) {
+                    if ( self.settings.db ){
+                        console.log('no love file')
+                    }
+                    return;
+                }
                 console.log(file, changes);
+
                 self.trigger(file);
                 // asdf.g
                 return;

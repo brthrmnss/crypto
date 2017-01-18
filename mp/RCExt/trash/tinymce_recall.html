@@ -1,0 +1,461 @@
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>TinyMCE Reader</title>
+
+    <link rel="stylesheet" type="text/css" href="/js/contextMenu.css">
+    <script src="js/lib/jquery-1.11.2.min.js"></script>
+    <script src="js/speakHTMLText_Cleaned.js"></script>
+    <script src="js/list.js"></script>
+    <script src="js/nlp_compromise.js"></script>
+    <script src="js/lib/js.cookie.js"></script>
+    <!--<script src="js/reloader.js"></script>-->
+    <!-- <script src="js/lib/jquery-1.11.2.min.js"></script>
+     <script src="js/lib/js.cookie.js"></script>
+     <script src="js/speakHTMLText_Cleaned.js"></script>
+     <script src="js/contextMenu.js"></script>
+     <script src="js/reloader.js"></script>
+     <script src="js/dropzone.js"></script>
+
+     <script src="js/list.js"></script>
+     <script src="js/nlp_compromise.js"></script>
+
+     <link rel="stylesheet" type="text/css" href="/js/speak.css">
+     <link rel="stylesheet" type="text/css" href="css/layouts.css">
+
+     <link rel="stylesheet" type="text/css" href="/js/contextMenu.css">
+
+     <link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
+     <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css">
+
+     <style>
+         body {
+             font-family: Helvetica, Arial;
+         }
+     </style>
+     <script src="js/lib/bootstrap.min.js"></script>
+
+
+
+ -->
+
+    <script src="js/tinymce/tinymce.min.js"></script>
+    <script>
+
+
+        function initStyles() {
+
+            /*
+             background-color: #EEF8C8;
+             opacity: 1;
+             */
+
+            var head = $($('iframe')[1]).contents().find("head")
+            var css = '<style type="text/css">' +
+                    '.highlight{background-color: #EEF8C8; opacity: 1;}; ' +
+                    '</style>';
+            $(head).append(css);
+        }
+        setTimeout(initStyles, 2000)
+
+        window.handleIframes = false
+        var c = {};
+
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        c.speakCurrentElement = function () {
+            console.log('speak current');
+
+            var ui = $(c.element);
+
+            var text = ui.text().trim();
+            $('#txtEdit').text(text);
+            $('#speakingBox').show();
+            $('#speakingBox').attr('title', text);
+            c.status('speking:'+text)
+            console.log('speak current element');
+            window.speak({text:text });
+            ui.addClass('highlight')
+        }
+
+        c.status = function (c) {
+            console.log('speak current');
+            $('#txtConsole').text(c);
+        }
+
+        c.highlight =function highligiht() {
+
+        }
+
+        c.removeHighlight = function removeHighlight() {
+            if ( tinyMCE.get('mainContent') == null  )
+                return;
+            var content = tinyMCE.get('mainContent').getContent();
+            var b = $(tinyMCE.get('mainContent').getBody());
+            var content = b.text();
+            var children = b.children();
+            var children = b.find('*');
+            children.removeClass('highlight')
+        }
+
+        tinymce.init({ selector:'textarea',
+            height: 500,
+            theme: 'modern',
+            /*plugins: "spellchecker",
+             menubar: "tools",
+             toolbar: "spellchecker",*/
+            setup: function(editor) {
+                editor.on('change', function(e) {
+                    console.log('change event', e);
+                });
+                editor.on('undo', function(e) {
+                    console.log('undo event', e);
+                });
+
+                var play2 =  debounce( c.speakCurrentElement,500);
+                editor.on('keyup',function(e) {
+                    console.debug('Key up event: ' + e.keyCode);
+                    var content = tinyMCE.get('mainContent').getContent();
+                    Cookies.set('prevContent', content);
+
+
+                    if (e.keyCode == 86 && e.ctrlKey ) {
+                        console.debug('paste')
+                        c.pasted = true;
+                        setTimeout(function playAllSenctencesLater(){
+                            tHelper.playAllSentences();
+                        }, 300)
+                        return;
+                    }
+
+                    console.debug(e.keyCode, e.ctrlKey)
+                   return
+
+                    play2()
+                });
+
+                editor.on('dblclick',function(e) {
+                    console.debug('dblclick: ' + e.keyCode);
+                    c.status('doubleclick')
+                    helper.playAllSentences();
+                });
+
+
+                editor.on('nodeChangeX', function(e) {
+                    console.log('node event', e.element);
+                    if (  c.element == e.element ) {
+                        return
+                    }
+                    c.element = e.element
+                    var ui = $(e.element);
+
+                    // var ui = $(c.element)
+                    // var text = ui.text()
+                    // debugger;
+                    // console.debug(text, content.split(text)[1]);
+                    // var final = text  + content.split(text)[1];
+                    console.debug('txt to speac', text);
+                    window.speak(text)
+                    // play2()
+                })
+
+                editor.on('nodeChange', function onNodeChanged(e, wait) {
+                    if ( wait != false ) {
+                        setTimeout(function waitFewSecs(){
+                            onNodeChanged(e, false)
+                        },100)
+                        return;
+                    }
+                    console.log('node event', e.element, c.pasted);
+                    if ( c.pasted == true ) {
+                        c.pasted = false;
+                        return;
+                    }
+                    if (  c.element == e.element ) {
+                        return
+                    }
+                    c.element = e.element
+                    var ui = $(e.element);
+
+
+                    $('#txtEdit').text(ui.text())
+                    c.removeHighlight()
+                    window.speak({text:ui.text() })
+                    ui.addClass('highlight')
+                });
+            }
+        });
+
+        function reverse() {
+            var val = Cookies.get('prevContent');
+            console.log('set to ', val)
+            tinyMCE.get('mainContent').setContent(val)
+        }
+
+
+        var tHelper = {};
+        window.tHelper = tHelper;
+
+        tHelper.setupPaste = function setupPaste() {
+            $("body").on("change keyup paste", tHelper.pasteHandle)
+        }
+
+        tHelper.pasteHandle = function pasteHandle  (event, txt) {
+
+                console.log('pasted')
+
+                if ( txt == null ) {
+                    var currentVal = $(this).val();
+
+                } else {
+                    currentVal = txt;
+                }
+                var txtOrig = currentVal;
+
+                //fix issues with text
+                currentVal = currentVal.replace(//gm, "");
+                currentVal = currentVal.replace(/’/gm, "'");
+
+                if (currentVal == oldVal) {
+                    return; //check to prevent multiple simultaneous triggers
+                }
+        }
+
+        tHelper.playAllSentences = function readText() {
+            var tiny = tinyMCE.get('mainContent');
+            var content = tinyMCE.get('mainContent').getContent();
+            var b = $(tinyMCE.get('mainContent').getBody());
+            var content = b.text();
+            var children = b.children();
+            var foundElement = false;
+            console.debug('dblclick: ', children);
+            var text = '';
+
+            var toDiv = $($('iframe')[1]).contents().find('body')
+            window.sentenceHelper.setupSentences(toDiv,toDiv);
+            window.speak('paste command')
+            window.speak('paste')
+            setTimeout(function call() {
+                console.debug('go play all ..')
+                window.sentenceHelper.onPlay2UI()
+                return;
+                setTimeout(function call() {
+                    console.debug('go play all ..')
+                    window.sentenceHelper.onPlay2UI()
+                },200)
+            },700)
+
+            return;
+            $.each(children, function addEachChild(k,v) {
+                var ui = $(v)
+                var p = $(c.element).parent()[0]
+                console.log(v, ui, p)
+                if ( v == c.element )
+                    foundElement = true
+                if ( v == p )
+                    foundElement = true
+                if ( foundElement )
+                    text +=  ui.text().trim() +  ' ';
+            })
+
+                    // var ui = $(c.element)
+                    // var text = ui.text()
+                    // debugger;
+                    // console.debug(text, content.split(text)[1]);
+                    // var final = text  + content.split(text)[1];
+                    console.debug('txt to speac', text);
+                    window.speak(text)
+                    // play2()
+                };
+
+
+
+
+     //   debugger
+        tHelper.setupPaste()
+
+        tHelper.setupControlBox = function setup() {
+            //utils.addCheckbox('Speak On Paste')
+            //utils.ignoreAddLinkThings('Speak On Paste')
+        }
+        tHelper.setupControlBox();
+
+
+    </script>
+
+    <style>
+        .highlight {
+            background-color: #00b68f;
+            opacity: 0.3;
+
+            background-color: #EEF8C8;
+            opacity: 1;
+
+        }
+        .highlight2 {
+            background-color: #C6E746;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+
+<!--<div class="highlight highlight2" >sdffffffffff
+dfg
+dfg
+</div>-->
+<!-- initially hidden right-click menu -->
+<div class="hideContextMenu" id="rmenu">
+    <ul>
+        <li>
+            <a  onclick="contextMenuHelper.copy()">Copy</a>
+        </li>
+    </ul>
+</div>
+
+<!--
+$($('iframe')[1]).contents().find("head")
+var head = jQuery("#frame1").contents().find("head");
+var css = '<style type="text/css">' +
+'.container{background:blue}; ' +
+'</style>';
+jQuery(head).append(css);
+});
+-->
+
+<div class="hideContextMenu" id="contextAddBookmark">
+    <div id="contextAddBookmark_lbl" ></div>
+
+    <textarea id="contextAddBookmark_txt"
+              placeholder="important b/c ... inspires me to ..."
+              style="height: 200px; width: 150px; border: solid 1px white;"></textarea>
+
+    <br />
+    <button id="btnAddNote">Add Notes</button>
+    <button id="btnContextMenuClose">Close</button>
+    <br />
+    <br />
+    <div  id="btnBar" >
+        <button id="btnQuote">Quote</button>
+        <button >Cool</button>
+        <br />
+        <button id="btnTryThis">TODO</button>
+        <br />
+        <button id="btnEpiphany">Epi</button>
+        <button id="btnPainful">Pain</button>
+    </div>
+
+    <span id="contextSentiments" ></span>
+    <br />
+    <div id="txtAreaforBookMark" style="max-height: 100px; max-width: 150px; overflow: auto;" >sdfsdf</div>
+
+</div>
+
+
+
+<textarea id="mainContent">
+    <p style="text-align: center; font-size: 15px;">
+        <img title="TinyMCE Logo" src="//www.tinymce.com/images/glyph-tinymce@2x.png" alt="TinyMCE Logo" width="110" height="97" />
+    </p>
+    <h1 style="text-align: center;">Welcome to the TinyMCE editor demo!</h1>
+    <h5 style="text-align: center;">Note, this is not an "enterprise/premium" demo.<br>Visit the <a href="https://www.tinymce.com/pricing/#demo-enterprise">pricing page</a> to demo our premium plugins.</h5>
+    <p>Please try out the features provided in this full featured example.</p>
+    <p>Note that any <b>MoxieManager</b> file and image management functionality in this example is part of our commercial offering – the demo is to show the integration.</h2>
+
+    <h2>Got questions or need help?</h2>
+    <ul>
+        <li>Our <a href="//www.tinymce.com/docs/">documentation</a> is a great resource for learning how to configure TinyMCE.</li>
+        <li>Have a specific question? Visit the <a href="http://community.tinymce.com/forum/">Community Forum</a>.</li>
+        <li>We also offer enterprise grade support as part of <a href="http://tinymce.com/pricing">TinyMCE Enterprise</a>.</li>
+    </ul>
+
+    <h2>A simple table to play with</h2>
+    <table style="text-align: center;">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Cost</th>
+            <th>Really?</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>TinyMCE</td>
+            <td>Free</td>
+            <td>YES!</td>
+        </tr>
+        <tr>
+            <td>Plupload</td>
+            <td>Free</td>
+            <td>YES!</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Found a bug?</h2>
+    <p>If you think you have found a bug please create an issue on the <a href="https://github.com/tinymce/tinymce/issues">GitHub repo</a> to report it to the developers.</p>
+
+    <h2>Finally ...</h2>
+    <p>Don't forget to check out our other product <a href="http://www.plupload.com" target="_blank">Plupload</a>, your ultimate upload solution featuring HTML5 upload support.</p>
+    <p>Thanks for supporting TinyMCE! We hope it helps you and your users create great content.<br>All the best from the TinyMCE team.</p>
+</textarea>
+
+
+<br />
+<div id="txtEdit">
+
+</div>
+<span id="speakingBox">speaking</span>
+<div id="txtConsole" >sttaus</div>
+<button onclick="reverse()">asdf</button>
+<div id="controlBox"> </div>
+
+
+
+<script src="js/ui_utils.js" ></script>
+<script src="js/tinymce_autosave.js" ></script>
+<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>
+<script>
+    function onReloader() {
+        reloader.reloadWhen('tinymce_autosave.html');
+        reloader.filter = '/TTS-Reader/';
+        reloader.reloadWhenFx('tinymce_autosave.js', function onTestOneJs(a, b, c) {
+            console.log('reload it', a,b,c);
+            //window.drawPBJS.go();
+        })
+        reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
+            console.log('reload it', a,b,c);
+            window.bendIt()
+        })
+
+        //C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/test3/testFramework.js
+        reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/', '')
+        reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/delegation/Reader/TTS-Reader/www/', '')
+        //reloader
+    }
+    try {
+        onReloader()
+    } catch ( e) {
+        console.log('e', e)
+    }
+</script>
+
+</body>
+
+
+</html>

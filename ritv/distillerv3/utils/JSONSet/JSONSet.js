@@ -257,7 +257,7 @@ function JSONSet() {
         sh.fs.writeJSONFile(self.data.fileWork, self.data.work )
         sh.fs.writeJSONFile(self.data.fileOutput, self.data.listFiltered  )
 
-        sh.callIfDefined(self.settings.fxDone);
+        sh.callIfDefined(self.settings.fxDone, self.data.fileOutput, self);
     }
 
     p.createAdditionalFile = function createAdditionalJSONFile(name, data) {

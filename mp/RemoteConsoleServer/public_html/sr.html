@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SR</title>
+
+
+    <script src="js/socket.io-1.2.0.js.ignore"></script>
+    <script src="js/jquery-1.11.1.js.ignore"></script>
+    <script src="js/jquery-ui-1.12.1.js"></script>
+    <link rel="stylesheet" href="js/jquery-ui.css">
+
+    <script>
+        $( function() {
+            var availableTags = [
+                "ActionScript",
+                "AppleScript",
+                "Asp",
+                "BASIC",
+                "C",
+                "C++",
+                "Clojure",
+                "COBOL",
+                "ColdFusion",
+                "Erlang",
+                "Fortran",
+                "Groovy",
+                "Haskell",
+                "Java",
+                "JavaScript",
+                "Lisp",
+                "Perl",
+                "PHP",
+                "Python",
+                "Ruby",
+                "Scala",
+                "Scheme"
+            ];
+            $( "#tags" ).autocomplete({
+                source: availableTags
+            });
+            $( "#tags" ).on( "autocompleteselect",
+                    function onSelected( event, ui ) {
+                        console.log(event, ui)
+                        console.log('item', ui)
+                        window.sr.onAction(ui.item.label);
+
+                        //   console.log('what', $('#tags').val());
+                    } );
+            /* $( "#tags" ).on( "autocompletechange",
+             function onSelected( event, ui ) {
+             console.log(event, ui)
+             console.log('item', ui)
+             console.log('what', $('#tags').val());
+             } );*/
+
+        } );
+    </script>
+
+    <style>
+        .txt2 {
+            background: #fcfcfc;
+            border: solid 1px gray;
+            padding: 4px;
+            color: #666666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="ui-widget">
+    <label for="tags"> </label>
+    <input id="tags" class="txt2">
+    <span id="txtStatus2"></span>
+</div>
+
+
+<!--
+<script src="eval_client.js"></script>
+
+-->
+
+
+<script type="application/javascript" src="js/ui_utils.js"></script>
+
+<script type="application/javascript" src="sr.js"></script>
+
+<script src="http://localhost:10110/g/js/reloader.js" ></script>
+<script>
+    if ( window.reloader) {
+        reloader.reloadWhen('sr.html')
+
+        reloader.filter = '/public_html/'
+        //reloader.filter = '\\public_html\\'
+        reloader.reloadWhenFx('drawPB.js', function onTestOneJs(a, b, c) {
+            //console.log('pussy', a,b,c)
+            //window.drawPBJS.go();
+        })
+        //reloader
+    }
+</script>
+</body>
+</html>

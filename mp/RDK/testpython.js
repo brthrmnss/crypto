@@ -93,6 +93,7 @@ function GrammarHelperServer() {
         var c = {};
         c.port =  self.settings.port
         c.showBody = false
+        c.silent = true
         //c.fxDone = fxDone;
         var t = EasyRemoteTester.create('test search server API', c);
 
@@ -104,6 +105,8 @@ function GrammarHelperServer() {
         urls.localfile = t.utils.createTestingUrl('/g/blue/adf/index2.html');
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
+
+
 
         //t.testsDisable()
         /*   t.getR(urls.urlgenindex_userTemplate)
@@ -124,26 +127,79 @@ function GrammarHelperServer() {
             //var data = '5 + 2'
             t.quickRequest(urls.urlgenindex,
                 'post', result, data);
-            function result(body) {
+            function result(body,b,c) {
+                console.log(sh.t, 'results', body)
                 // t.assert(body.error == null , 'bad data ')
                 //   sh.callIfDefined(fxDone, body.credit)
                  t.cb();
             }
         })
 
+       // return;
         t.add(function noTryToTestContent() {
-
-            //return
             var data = 'print(y)'
             t.quickRequest(urls.urlgenindex,
                 'post', result, data);
             function result(body) {
-                // t.assert(body.error == null , 'bad data ')
-                //   sh.callIfDefined(fxDone, body.credit)
+                console.log(sh.t, '', data)
+                console.log(sh.t, 'results', body)
                 t.cb();
             }
         })
-        
+
+        t.add(function noTryToTestContent() {
+            var data = 'y'
+            t.quickRequest(urls.urlgenindex,
+                'post', result, data);
+            function result(body) {
+                console.log(sh.t, '', data)
+                console.log(sh.t, 'results', body)
+                t.cb();
+            }
+        })
+
+        t.add(function noTryToTestContent() {
+            var data = 'print(RDK.AddFile)'
+            t.quickRequest(urls.urlgenindex,
+                'post', result, data);
+            function result(body) {
+                console.log(sh.t, '', data)
+                console.log(sh.t, 'results', body)
+                t.cb();
+            }
+        })
+
+        function runCmd(cmd) {
+
+            t.add(function noTryToTestContent() {
+                var data = cmd
+                t.quickRequest(urls.urlgenindex,
+                    'post', result, data);
+                function result(body) {
+                    console.log(sh.t,  data)
+                    console.log(sh.t, 'results', body)
+                    t.cb();
+                }
+            })
+        }
+
+var y = `
+print(RDK.AddFile)
+r1= RDK.AddFile("C:/RoboDK/Library/KUKA_KR_210_2.robot")
+r1.setName("booty")
+r1b = RDK.Item("booty")
+print("is sname?",r1==r1b)
+r1
+`
+
+            console.log('y', y)
+        runCmd(y);
+        runCmd('');
+        t.wait(3)
+        runCmd('r1.Delete()');
+
+
+        return;
         var contents = sh.readFile('C:/Users/user1/Dropbox/projects/learndk/py.txt')
         t.add(function noTryToTestContent() {
             var data = contents

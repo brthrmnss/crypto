@@ -41,6 +41,14 @@ function GrammarHelperServer() {
         var express = require('express');
         var app = express();
 
+       // console.log('what is it', sh.allowWildcardRequests)
+       // sh.exit()
+       // app.use(sh.allowWildcardRequests)
+        app.use(function bo(req,res,next) {
+            console.log('iiii ... i am where', req.originalUrl)
+            sh.allowWildcardRequests(req, res, null, true)
+            next();
+        })
         app.get('/', function (req, res) {
             res.send('Hello World!');
         });
@@ -52,7 +60,7 @@ function GrammarHelperServer() {
         });
 
 
-        app.use(sh.allowWildcardRequests)
+
 
         app.get('/mag', function onDownloadMagnet(req, res){
 
@@ -92,6 +100,8 @@ function GrammarHelperServer() {
         app.use(express.static(self._dirYeomanApp)); //bower_components
 
         app.use(express.static(__dirname+ '/'+ 'public_html'));
+
+        app.use(express.static(__dirname+ '/../testingFramework/', 'testFramework'));
         //http://localhost:10110/g/redposter/index.html
         self.test()
     }

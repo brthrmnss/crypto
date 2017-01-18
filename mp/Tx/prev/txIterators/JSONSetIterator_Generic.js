@@ -11,7 +11,7 @@ function JSONSetIterator_Generic() {
 
     self.settings = {};
     self.data = {}
-
+    self.data.itemCount = 0;
     self.name = 'rename';
 
     p.init = function init(config) {
@@ -50,13 +50,13 @@ function JSONSetIterator_Generic() {
             }
         }
         if(self.name=='Total Deposits') {
-            console.log(self.settings.it)
+            self.proc(self.settings.it)
             //asdf.g
         }
         if ( self.settings.it.fxFilter ) {
-        //  assddf.g
+            //  assddf.g
             var output = sh.callIfDefined(self.settings.it.fxFilter,self.item)
-            if ( output == false ) {
+            if ( output !== true  ) {
                 self.fx()
                 return;
             }
@@ -65,6 +65,9 @@ function JSONSetIterator_Generic() {
             }
         }
 
+        if ( self.settings.it.matchAll ) {
+            addItem = true;
+        }
 
         if ( addItem ) {
             self.item.filtered = true;
@@ -79,17 +82,87 @@ function JSONSetIterator_Generic() {
 
 
     p.fxCallback = function fxCallback(item,  fx, i, runner) {
-        self.isAmz()
+        self.data.itemCount++
+        //asdf.g
+        self.isAmz();
         return;
     }
 
     p.fxDone = function onDone(){
+
         var percentage = self.utils2.percentageOfWorkList(self.data.matches , self.name)
         var sum = self.utils2.sumArray(self.data.matches, 'amount' , self.name)
         self.runner.createAdditionalFile(self.name, self.data.matches)
         JSONSetIterator_Generic.comments = sh.dv(JSONSetIterator_Generic.comments, [])
+        //console.error('whole config', self.settings)
+        //  process.exit()
+
+        function padLeft(str,size,padWith) {
+            padWith = sh.dv(padWith, ' ')
+            if(size <= str.length) {
+                return str;
+            } else {
+                return Array(size-str.length+1).join(padWith||'0')+str
+            }
+        }
+        String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")}
+        //padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")}
+
+
+        var name2 = self.name
+        if ( self.settings.includeAllItems) {
+            var name2 =  self.name + ' (all)'
+        }
+        name2 = name2.padRight(35);
+
+        var logLine =    sh.join('T:', name2, sh.t,
+            sum,sh.t,
+            self.data.matches.length, sh.t,
+            percentage)
+
+        var sumPrintable = sum.toString()
+        if ( sum >= 0 ) {
+            sumPrintable = ' ' + sumPrintable;
+        }
+
+        var xyx = self.data.matches.length + '/'+self.data.itemCount;
+
+        var  listAllItemsCount = self.settings.listAllItemsCount;
+        if ( listAllItemsCount) {
+            xyx = self.data.matches.length + '/'+self.data.itemCount+'/' + self.settings.listAllItemsCount;
+
+            //xyx += 'd'+self.data.itemCount
+            percentage = self.utils2.percentageOfWorkList(self.data.matches , self.name, self.settings.listAllItemsCount)
+            //xyx += 'd'
+            // sdfg.h
+        }
+        //  console.error('asdf',listAllItemsCount);
+
+        //process.exit()
+
+        var items = [
+            sumPrintable,
+            xyx,
+            percentage]
+
+        if ( self.settings.includeAllItems) {
+            var items = [
+                sumPrintable,
+                self.data.matches.length,
+                //'all',
+                percentage]
+        }
+
+        var logLine =    sh.join('T:', name2, sh.t)
+        sh.each(items, function padAllColumns(k,v) {
+            // console.log('v', v)
+            v = v.toString();
+            logLine +=v.padRight(12)
+        })
+
+
         JSONSetIterator_Generic.comments.push(
-            sh.join('Total for', self.name, sum, self.data.matches.length, percentage)
+            logLine
         )
 
         var output = sh.callIfDefined(self.settings.it.fxDone,self.runner,self.item)
@@ -122,6 +195,5 @@ if (module.parent == null) {
 
     })
 }
-
 
 

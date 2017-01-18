@@ -1,0 +1,131 @@
+"C:\Program Files (x86)\JetBrains\WebStorm 2016.1.3\bin\runnerw.exe" "C:\Program Files\nodejs\node.exe" RunBreed.js
+loading config from G:\Dropbox\projects\crypto\ritv\defaultConfig.json
+does this make sense?
+does this make sense?
+queries [ { title: 'Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG',
+    urlMagnet: 'magnet:?xt=urn:btih:84123e8b4e850a796403736e0cf02e409f0ef00b&dn=Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fpublic.popcorn-tracker.org%3A6969' } ]
+what is stop gen report? false
+>>>*>  doneLoadingSettingsFile  options [object Object] (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:76:18)
+>>>*>  doneLoadingSettingsFile  options [object Object] (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:314:18)
+filemega G:\Dropbox\projects\crypto\ritv\distillerv3//megals/mhvodyob@sharklasers.com_list.tst
+>>>*>  BulkerScript checkForExistingFileOnMegaAcct reading files from dir G:\Dropbox\projects\crypto\ritv\distillerv3//megals/mhvodyob@sharklasers.com_list.tst (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:993:22)
+>>>*>  BulkerScript checkForExistingFileOnMegaAcct did not find "/undefined" /root/movies/toy_story_3_2010/tt0435761/ (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:1016:22)
+>>>*>  BulkerScript checkForExistingFileOnMegaAcct did not find "/undefined" /root/movies/toy_story_3_2010/tt0435761/ (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:1016:22)
+writeJSONFile file was null
+>>>*>  processInnerSettings  shed  files 0 1 1 (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:237:22)
+>>>*>  BulkerScript testMegaUpload skipTestMega is true (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:1225:22)
+>>>*>  BulkerScript processItems processing 1 items (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:559:18)
+>>>*>  BulkerScript processItems where is file C:\Users\user1/trash/dl.logs/undefined.TXRun.json (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:603:18)
+what r u doing? ...., why no query name ... think of a query name
+>>>*>  goThroughItems  1 0 1 1 100.0% 0.00 (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:735:26)
+found multiple dirs 1 undefined [ 'e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/' ]
+	 bad match  e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/ 0.00
+	 removeBadDirs removing this directory  e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/ 0.00
+
+have to redo this b/c no good matches  Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG_ _
+
+>>>*>  finishDl  dl Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG_ _  (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:828:30)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie /media/sdb/incoming/downloads/cookies/query_u_Deadpool_2016_720p_HC_HDRip_x264_AAC_ETRGundefined.txt false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie c:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie e:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie g:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie i:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  onGoDrive  drive to to used e:/media/dls (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:374:22)
+>>>*>  onGoDrive  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 drive to to used e:/media/dls (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:978:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie e:/media/dls/incoming/downloads/cookies/query_u_Deadpool_2016_720p_HC_HDRip_x264_AAC_ETRGundefined.txt false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie c:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie e:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie g:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+>>>*>  findCookieInDir  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 looking for cookie i:/media/dls/cookies/undefined false (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:845:26)
+cmdToCheckSpace df -h e:/media/dls/incoming/finished/Root/movies/Toy_Story_3_2010/tt0435761/ | tail -1 | tr -s ' ' | cut -d' ' -f4 NaN
+>>>*>  testMegaUpload  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 skipMega/skipTestMega is true (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:1026:22)
+size 0 0
+getSizeOfDir du -hsb e:/media/dls/incoming/finished/Root/movies/Toy_Story_3_2010/tt0435761/ NaN
+size NaN NaN
+is current dir bigger than mini file false
+>>>*>  fxDirBigger  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 found existing dir, but not bigger (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:542:34)
+>>>*>  searchByName  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 already had torrent url  magnet:?xt=urn:btih:84123e8b4e850a796403736e0cf02e409f0ef00b&dn=Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fpublic.popcorn-tracker.org%3A6969 (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:566:22)
+output:
+>>>*>  fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") cant make json login (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:1138:22)
+>>>*>  fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") cant make json  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to target URL: <a href="/your-files?">/your-files?</a>.  If not click the link. (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:1139:22)
+output:
+>>>*>  onListedFiles_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") you have  files (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:1410:22)
+>>>*>  addMulti  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") token.completedFileInLibrary (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:1705:18)
+>>>*>  act_waitForTransferToComplete  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") token.completedFileInLibrary (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:322:18)
+output:
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") https://api.put.io/v2/files/zip?noredirect&file_ids=446896302 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:886:18)
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") url [object Object] (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:895:18)
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") zip_id 5084447 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:896:18)
+output:
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") https://api.put.io/v2/zips/5084447 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:943:18)
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") url https://atl3.put.io/zipstream/5084447.zip?tunnel=1&storage=s03&oauth_token=2IKMNBNO (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:951:18)
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") size according to putio 0.969504111 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:957:18)
+warning ... ignoring a cookie error on _csrf_token2=ffd60faaf0011471d793096a30da561c293d93a1; Domain=.s03.put.io; Path=/ [Error: Cookie not in this host's domain. Cookie:s03.put.io Request:atl3.put.io]
+warning ... ignoring a cookie error on _csrf_token2=ed99c4257820b81ff51de786a40d73bfd7555983; Domain=.s03.put.io; Path=/ [Error: Cookie not in this host's domain. Cookie:s03.put.io Request:atl3.put.io]
+output:
+>>>*>  fxGotFileInfoCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") had to change dl drive  to i:/media/dls (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:618:30)
+>>>*>  fxGotFileInfoCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") will download file to i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:638:26)
+>>>*>  fxGotFileInfoCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") cant skip file on mega b/c have no check to verify existing file in mega (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:644:30)
+output:
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") https://api.put.io/v2/files/zip?noredirect&file_ids=446896302 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:886:18)
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") url [object Object] (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:895:18)
+>>>*>  getDownloadLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") zip_id 5084449 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:896:18)
+output:
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") https://api.put.io/v2/zips/5084449 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:943:18)
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") url https://atl3.put.io/zipstream/5084449.zip?tunnel=1&storage=s02&oauth_token=2IKMNBNO (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:951:18)
+>>>*>  getZipLink_fxCallback  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") size according to putio 0.969504111 (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:957:18)
+0% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+10% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+20% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+30% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+40% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+50% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+60% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+70% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+80% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+90% i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+>>>*>  CommandRunner fxCallbackTestComplete [as callback] >>>>done downloading file (G:\Dropbox\projects\crypto\ritv\distillerv3\utils\AxelDownloader.js:74:18)
+>>>*>  Object fxCallback ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ok (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:775:26)
+output:
+output:
+output:
+>>>*>  extractFile  sending cmd to extract files .... i:/media/dls/downloads/extractions/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG (G:\Dropbox\projects\crypto\ritv\distillerv3\utils\FileExtractor.js:162:18)
+Archive:  i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+
+ extracting: i:/media/dls/downloads/extractions/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.mp4
+
+
+ extracting: i:/media/dls/downloads/extractions/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG/Torrent Downloaded From ExtraTorrent.cc.txt
+
+
+>>>*>  CommandRunner doneExtracting [as callback] done extracting ...  (G:\Dropbox\projects\crypto\ritv\distillerv3\utils\FileExtractor.js:144:22)
+>>>*>  endCallback  passed on  (G:\Dropbox\projects\crypto\ritv\distillerv3\utils\FileExtractor.js:183:22)
+>>>*>  Object onDone_ZipFileExtracted [as fxCallback] ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") done dirExtract: i:/media/dls/downloads/extractions/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:807:18)
+>>>*>  exitChain  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") passed on  (G:\Dropbox\projects\crypto\ritv\distillerv3\DistillerV2.js:272:18)
+token.pathDownloadedFile i:/media/dls/incoming/downloads/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG.zip
+>>>*>  uploadToMegaUploadUsingMegaSync  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 dirCopyExtractedFilesTo  files sent to e:/media/dls/incoming/finished/Root/movies/Toy_Story_3_2010/tt0435761/ (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:1124:22)
+>>>*>  uploadToMegaUploadUsingMegaSync  ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 uploadToMega false skipping mega upload (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:1215:22)
+>>>*>  Object fxCallback ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 deleting extraction dir i:/media/dls/downloads/extractions/Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:1193:30)
+>>>*>  Object fxCallback ("u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined") ("1 1 0.00 1") 	 	 	 upload finished location? true true (G:\Dropbox\projects\crypto\ritv\distillerv3\Step3_TDownloader.js:1210:22)
+>>>*>  Object fxAsyncDone2_BulkerInvoke [as fxCallback] finished_dl 1 1 0.00 1  "e:/media/dls/incoming/finished/Root/movies/Toy_Story_3_2010/tt0435761/" (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:756:30)
+found multiple dirs 1 undefined [ 'e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/' ]
+	 bad match  e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/ 0.90
+	 removeBadDirs removing this directory  e:/media/dls/incoming/finished//Root/movies/Toy_Story_3_2010/tt0435761/ 0.90
+>>>*>  doneAll  fiinished allresults... (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:835:26)
+>>>*>  doneAll  self.countItemsProcessed 1 (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:836:26)
+
+have to redo this b/c no good matches  Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRG_ _
+
+>>>*>  doneAll  where is file C:\Users\user1/trash/dl.logs/undefined.TXRun.json (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:837:26)
+deleting files before index 2
+deleting list: 2 [ 'BulkStatus_Unnammed_1-14-2017_10_39_58.json',
+  'BulkStatus_Unnammed_1-14-2017_12_48_54.json' ]
+deleting BulkStatus_Unnammed_1-14-2017_10_39_58.json
+deleting BulkStatus_Unnammed_1-14-2017_12_48_54.json
+>>>*>  BulkerScript self iteration finished (G:\Dropbox\projects\crypto\ritv\distillerv3\Step2_BulkTDownloader.js:878:18)
+1. finished_dl 1 1 0.00 1 u:Deadpool.2016.720p.HC.HDRip.x264.AAC-ETRGundefined "undefined" false downloaded found dirs 0.90
+
+Process finished with exit code 0

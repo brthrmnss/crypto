@@ -87,7 +87,7 @@ window.fxInvoke = function (classToUpdate) {
 
     if ( reloader.reloadWhens ) {
         $.each(reloader.reloadWhens, function onReloadWhen (i, reloadWhen) {
-           var match =  classToUpdate.toLowerCase().includes(reloadWhen.toLowerCase())
+            var match =  classToUpdate.toLowerCase().includes(reloadWhen.toLowerCase())
             if ( match ) {
                 location.reload();
             }
@@ -122,22 +122,70 @@ window.fxInvoke = function (classToUpdate) {
 
 }
 
+$.getScript2 = function getScript2(url, callback) {
+    var head = document.getElementsByTagName("head")[0];
+    var script = document.createElement("script");
+    script.src = url;
+    var existing = $('script[src="' + url + '"]');
+    console.log('lll',  existing.length )
+    existing.remove();
+    // Handle Script loading
+    {
+        var done = false;
+
+        // Attach handlers for all browsers
+        script.onload = script.onreadystatechange = function(){
+            if ( !done && (!this.readyState ||
+                this.readyState == "loaded" || this.readyState == "complete") ) {
+                done = true;
+                if (callback)
+                    callback();
+
+                // Handle memory leak in IE
+                script.onload = script.onreadystatechange = null;
+            }
+        };
+    }
+
+    head.appendChild(script);
+
+    // We handle everything using the script element injection
+    return undefined;
+};
+
+
 
 window.reloadFile = function reloadFile(file, fx) {
-    // $scope.watchFile(file)
-    //what about css?
-    console.log('reloadFile', file);
-    jQuery.ajax({
-        url: file,
-        dataType: "script",
-        cache: true
-    })
-        .error(function(s, b,c,d,e,f,g) {
-            console.error(c.stack);
+    if ( file.endsWith('.js')) {
+
+        if ( false == file.includes('://')) {
+            file = 'http://'+window.location.host + '/' + file
+            console.log('change file')
+        }
+
+
+
+        // $scope.watchFile(file)
+        //what about css?
+        console.log('reloadFile...', file);
+
+        $.getScript2(file)
+        return;
+
+        jQuery.ajax({
+            url: file,
+            //dataType: "script",
+            cache: true,
+            crossDomain:true
         })
-        .done(function() {
-            // sh.callIfDefined(fx)
-        });
+            .error(function(s, b,c,d,e,f,g) {
+                console.error(c.stack);
+            })
+            .done(function() {
+                // sh.callIfDefined(fx)
+            });
+
+    }
 }
 
 
