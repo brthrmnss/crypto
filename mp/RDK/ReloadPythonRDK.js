@@ -18,8 +18,6 @@ var config = {
     runNode:"__file__",
     fxTrigger:function t(file) {
         console.log('file', file)
- 
-
 
         var c = {};
         c.port =  8081

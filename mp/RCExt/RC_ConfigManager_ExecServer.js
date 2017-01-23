@@ -21,6 +21,7 @@ function RCConfigExecServer() {
     p.loadConfig = function loadConfig(config) {
         self.settings = config;
         config.port = sh.dv(config.port, 6008);
+        self.proc('go to ', 'http://localhost:'+ config.port)
         config.port2 = config.port;
         config.port += 2; //express can use any available port, we will forward to it 
         self.runServer();
@@ -163,7 +164,6 @@ function RCConfigExecServer() {
             })
 
         });
-
 
         self.http = http;
     }
@@ -315,17 +315,33 @@ function RCConfigExecServer() {
                 self.proc('copy', file, 'to', fileConfig)
             }
 
+
+            var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/'+
+                'wrappers/imdb_app_v3_wrapper.js'
+            var ConvertXToIMDB_PB_List = require(dirScript).ConvertXToIMDB_PB_List
+            
             fH.dlLists = function dlLists(token, cb) {
                 self.proc('dlLists');
 
-                var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/wrappers/imdb_app_breed_only_download_lists_wrapper.js'
-                    var IMDBOnlyDL = require(dirScript).IMDBOnlyDL
-                IMDBOnlyDL.testDownload(fx.data.listIds, true, fx.data.taskName, onSavedFile);
+               // return;
+                if (cmd.wrapType == 'ttIds') {
+                    ConvertXToIMDB_PB_List.downloadIds(fx.data.listIds, true, fx.data.taskName, onSavedFile);
+                    return;
+
+                }
+                if (cmd.wrapType == 'idList') {
+                    ConvertXToIMDB_PB_List.downloadIdList(fx.data.listIds, true, fx.data.taskName, onSavedFile);
+                    return;
+                }
+                
+                
+                
+                // if (cmd.wrapType == 'lsList') {
+                ConvertXToIMDB_PB_List.downloadLists(fx.data.listIds, true, fx.data.taskName, onSavedFile);
 
                 function onSavedFile(file) {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
-
                     cb();
                 }
 
@@ -335,7 +351,7 @@ function RCConfigExecServer() {
             fH.storeInFile = function storeInFile(token, cb) {
                 self.proc('storeInFile')
                 fx(fx.data.taskName, 'size');
-                //create manifest and return manifest name 
+                //create manifest and return manifest name
                 cb();
             }
 

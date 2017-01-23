@@ -129,6 +129,7 @@
     reloader.reloadWhenFx('baby_rend.js', function onTestOneJs(a, b, c) {
       console.log('reload it', a,b,c);
       //window.drawPBJS.go();
+      window.b.createScene();
     })
     reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
       console.log('reload it', a,b,c);
@@ -166,7 +167,7 @@
     var b = new BabyRend();
     b.init();
     b.setupStage()
-
+  window.b = b;
   };
 </script>
 </body>

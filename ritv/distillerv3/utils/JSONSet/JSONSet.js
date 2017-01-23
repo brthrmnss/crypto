@@ -46,13 +46,6 @@ function JSONSet() {
 
         self.data.fileOutputTemplate = fileWork  //why:: add files later
 
-        sh.throwErrorIfFileNotFound = function throwErrorIfFileNotFound(file, msg) {
-            msg = sh.dv(msg, '')
-            if ( sh.fileExists( file ) == false ) {
-                throw new Error(msg +  '  file not found: ' + file)
-            }
-        }
-
         sh.throwErrorIfFileNotFound(self.data.fileInput, 'inputFileNotFound')
 
         self.data.work = sh.fs.readJSONFile(self.data.fileWork ,{info:{},list:[]}, true )

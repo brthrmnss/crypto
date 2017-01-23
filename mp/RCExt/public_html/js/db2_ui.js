@@ -446,7 +446,7 @@ function onInitDB() {
                 uiUtils.br()
             }
             h.createListIds = function createListIds(){
-                uiUtils.addLabel({text:"List Ids", width:lblWidth})
+                uiUtils.addLabel({text:"List ls Ids", width:lblWidth})
                 // div.append('1 Off');
                 uiUtils.spacer();
                 uiUtils.addTextInput({
@@ -466,33 +466,124 @@ function onInitDB() {
                         //query:self.getValFrom(self.data.ui.txtName),
                         listIds:self.getValFrom(self.data.ui.txtListIds),
                         cmd:'listids'
+
                     }
                 })
 
                 uiUtils.br()
             }
 
-            h.createIds = function createIds(){
-                uiUtils.addLabel({text:"Ids", width:lblWidth})
+            h.createListOfTt_Ids = function createListOfTt_Ids(){
+                uiUtils.addLabel({text:"List tt Ids", width:lblWidth})
                 // div.append('1 Off');
                 uiUtils.spacer();
+                var defaultText = [
+                    'tt0068646',
+                    'tt0108052',
+                    'tt0108757'
+                ].join(', ')
                 uiUtils.addTextInput({
-                    text:'',
+                    text:defaultText,
                     placeholder:'imdbids , or " "',
-                    id:'txtOnOffQuery',
+                    id:'txtTTIds',
                     onDebounce:function onChanged(newName) {
                         console.log('debouched', newName)
                     } })
-                self.data.ui.txtName = uiUtils.lastId();
+                self.data.ui.txtTTIds = uiUtils.lastId();
 
                 uiUtils.addBtn({
                     text: 'Create DM',
                     addSpacerBefore:true,
-                    fxClick: self.onGetMag
+                    fxClick: self.onGetListsAndCreateDM,
+                    data:{
+                        listIds:self.getValFrom(self.data.ui.txtTTIds),
+                       // listMethod:'ttIds',
+                       // listStoreMethod:'ttIds',
+                        cmd:'listids',
+                        wrapType: "ttIds"
+                    }
                 })
 
                 uiUtils.br()
             }
+            h.createIdList = function createIdList(){
+                return;
+                uiUtils.addLabel({text:"List ttIds", width:lblWidth})
+                // div.append('1 Off');
+                uiUtils.spacer();
+                var defaultText = [
+                    'tt0068646',
+                    'tt0108052',
+                    'tt0108757'
+                ].join(', ')
+                uiUtils.addTextInput({
+                    text:defaultText,
+                    placeholder:'imdbids , or " "',
+                    id:'txtTTIds',
+                    onDebounce:function onChanged(newName) {
+                        console.log('debouched', newName)
+                    } })
+                self.data.ui.txtTTIds = uiUtils.lastId();
+
+                uiUtils.addBtn({
+                    text: 'Create DM',
+                    addSpacerBefore:true,
+                    fxClick: self.onGetListsAndCreateDM,
+                    data:{
+                        listIds:self.getValFrom(self.data.ui.txtTTIds),
+                       // listMethod:'ttIds',
+                       // listStoreMethod:'ttIds',
+                        cmd:'listids',
+                        wrapType: "ttIds"
+                    }
+                })
+
+                uiUtils.br()
+            }
+            h.create_dlConfigList = function create_dlConfigList(){
+                uiUtils.addLabel({text:"dl config", width:lblWidth})
+                uiUtils.spacer();
+
+                uiUtils.addDD({
+                    options:['Movies', "TV"],
+                    addSpaceAfter:true,
+                });
+
+                uiUtils.addDD({
+                    options:['Popularity', "Views"],
+                    addSpaceAfter:true,
+                });
+                uiUtils.addBtn({
+                    text: 'Create DM',
+                    addSpacerBefore:true,
+                    fxClick: self.onGetListsAndCreateDM,
+                    data:{
+                        listIds:self.getValFrom(self.data.ui.txtTTIds),
+                        // listMethod:'ttIds',
+                        // listStoreMethod:'ttIds',
+                        cmd:'listids',
+                        wrapType: "ttIds"
+                    }
+                })
+                uiUtils.br();
+                uiUtils.addLabel({text:"", width:lblWidth})
+                uiUtils.spacer();
+                uiUtils.addNumber({
+                    defaultValue:2017,
+                    width:60,
+                    addSpaceAfter:true,
+                });
+                uiUtils.addNumber({
+                    defaultValue:2017,
+                    width:60,
+                    addSpaceAfter:true,
+                });
+
+                uiUtils.br();
+
+                return;
+            }
+
             h.createFile = function createFile(){
                 uiUtils.addLabel({text:"File", width:lblWidth})
                 // div.append('1 Off');
@@ -540,8 +631,10 @@ function onInitDB() {
 
             h.create1Off();
             h.createListIds();
-            h.createIds();
-            h.createFile();
+            h.createListOfTt_Ids();
+            h.createIdList();
+            h.create_dlConfigList();
+           // h.createFile(); //TODO: This is by the task name ...
             h.createQueryUrl();
 
 
@@ -820,8 +913,39 @@ function onInitDB() {
                 return other;
             }
 
+            p.utils.makeTaskName = function makeTaskName(type, name) {
 
 
+                var taskTitle = self.getTaskTitle();
+                if ( self.data.lastNameIsDefault == false ) {
+                    console.warn('last name already set')
+                    return taskTitle;
+                }
+                //is taskName at default? false, then leave and use that name
+                if ( self.data.lastNameIsDefault == true || self.data.lastNameIsDefault== null) {
+                    //  was the lastType this type, then ignore
+                    if ( self.data.lastNameType == type ) {
+                        console.warn('type is same')
+                        return taskTitle;
+                    }
+
+                }
+
+
+                self.resetTaskTitle(name);
+                self.data.lastNameIsDefault = true;
+                self.data.lastNameType = type;
+                var taskTitle = self.getTaskTitle();
+                return taskTitle;
+
+                //self.resetTaskTitle2();
+
+
+                /*
+                 is task name defined? then set default
+                 */
+
+            }
 
 
             function defineRemotingMethods() {
@@ -856,52 +980,30 @@ function onInitDB() {
                   //  console.error('e', self.data.socket)
                     //console.error(e)
                     var target = $(e.target)
-                    console.log('d', target.attr('data'), e.target.data);
+                    console.log('onGetListsAndCreateDM', target.attr('data'), e.target.data);
                     var data = self.utils.processDARK(e.target.data);
                     
-                    self.utils.makeTaskName = function makeTaskName(type, name) {
-
-
-                        var taskTitle = self.getTaskTitle();
-                        if ( self.data.lastNameIsDefault == false ) {
-                            console.warn('last name already set')
-                            return taskTitle;
-                        }
-                        //is taskName at default? false, then leave and use that name
-                        if ( self.data.lastNameIsDefault == true || self.data.lastNameIsDefault== null) {
-                            //  was the lastType this type, then ignore
-                            if ( self.data.lastNameType == type ) {
-                                console.warn('type is same')
-                                return taskTitle;
-                            }
-
-                        }
-
-
-                        self.resetTaskTitle(name);
-                        self.data.lastNameIsDefault = true;
-                        self.data.lastNameType = type;
-                        var taskTitle = self.getTaskTitle();
-                        return taskTitle;
-
-                        //self.resetTaskTitle2();
-
-
-                        /*
-                        is task name defined? then set default
-                         */
-
+              
+                    if ( data.listMethod == null ) {
+                        data.listIds = sh.splitStrIntoArray(data.listIds)
+                    } else {
+                        data[data.listStoreMethod] = sh.splitStrIntoArray(data[data.listMethod])
                     }
 
-                    data.listIds = sh.splitStrIntoArray(data.listIds)
+                    var nameOfTask = 'listIds'
+                    if ( data.wrapType  ) {
+                        nameOfTask =  data.wrapType;
+                    }
 
-                    var taskName = self.utils.makeTaskName(this, 'listIds_'+data.listIds[0]+'_'+data.listIds.length);
+                    var taskName = self.utils.makeTaskName(this, nameOfTask+'_'+data.listIds[0]+'_'+data.listIds.length);
+
+
 
 
 
                     data.taskName = taskName;
 
-                   console.log(this.name, data);
+                   console.log('going with', this.name, data);
 
                    // return;
                     uiUtils.disable(self.data.ui.btnCreateDM_query);
@@ -997,6 +1099,8 @@ function onInitDB() {
              h.scrollToBottom();
              });*/
 
+
+          
 
         }
         defineRemoteUtils();

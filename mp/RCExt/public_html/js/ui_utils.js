@@ -165,6 +165,67 @@ function defineUtils() {
 		uiUtils.flagCfg = cfg;
 	}
 
+
+
+	uiUtils.addDropdown = function addLabel(cfg) {
+		cfg = u.cfg.str(cfg, 'text')
+		cfg.tag = dv(cfg.tag, 'select');
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+
+		var ui = u.tag(cfg.tag)
+		ui.html(cfg.text)
+
+		if ( cfg.options ) {
+			$.each(cfg.options, function onAddOtpion(k,v) {
+
+
+				if ( v.value == null ) {
+					v = {value:v, text:v}
+				}
+				console.log('k', v)
+				ui.append($('<option>', /*{
+					value: item.value,
+					text: item.text
+				}*/v ));
+
+			})
+		}
+		//$('<span/>')
+		/*if (cfg.width){
+			if ( $.isNumeric(cfg.width) ) {
+				cfg.width = cfg.width+'px';
+			}
+			lbl.css('width', cfg.width);
+			lbl.css('display', 'inline-block');
+		}
+		lbl.css('user-select', 'none');*/
+		u.addUI(cfg, ui);
+		return cfg;
+	}
+	uiUtils.addDD = uiUtils.addDropdown
+
+	uiUtils.addNumber = function addNumber(cfg) {
+		cfg = u.cfg.str(cfg, 'text')
+		cfg.tag = dv(cfg.tag, 'input');
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+
+		var lbl = u.tag(cfg.tag)
+		lbl.html(cfg.text)
+		//$('<span/>')
+		/*if (cfg.width){
+		 if ( $.isNumeric(cfg.width) ) {
+		 cfg.width = cfg.width+'px';
+		 }
+		 lbl.css('width', cfg.width);
+		 lbl.css('display', 'inline-block');
+		 }
+		 lbl.css('user-select', 'none');*/
+		lbl.attr('type', 'number');
+
+		u.addUI(cfg, lbl);
+		return cfg;
+	}
+
 	uiUtils.addLabel = function addLabel(cfg) {
 		cfg = u.cfg.str(cfg, 'text')
 		cfg.tag = dv(cfg.tag, 'span');
@@ -352,6 +413,9 @@ function defineUtils() {
 			_cfg[prop] = cfg;
 			cfg = _cfg;
 		}
+		if ( cfg == null ) {
+			cfg = {}
+		}
 		return cfg;
 	}
 
@@ -390,15 +454,27 @@ function defineUtils() {
 
 
 	p.addUI = function addUI(cfg, ui ) {
-		if ( cfg.addSpacerBefore ) {
+		if (cfg.addSpacerBefore) {
 			u.spacer()
 		}
-		if ( cfg.addTo ) {
+		if (cfg.addTo) {
 			cfg.addTo.append(ui)
 		}
-		if ( cfg.addSpacerAfter ) {
+		if (cfg.addSpacerAfter || cfg.addSpaceAfter) {
 			u.spacer()
-		} 
+		}
+
+		if (cfg.defaultValue) {
+			ui.val(cfg.defaultValue)
+		}
+
+		if (cfg.width) {
+			if ($.isNumeric(cfg.width)) {
+				cfg.width = cfg.width + 'px';
+			}
+			ui.css('width', cfg.width);
+			//lbl.css('display', 'inline-block');
+		}
 
 		if ( cfg.id ) {
 			cfg.jid = cfg.id;

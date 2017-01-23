@@ -66,7 +66,9 @@ function SearchPBCachedRequest() {
         };
 
         if ( test && test != 'undefined') {
-            self.proc('saved prev');
+            if ( self.settings.dbg ) {
+                self.proc('saved prev');
+            }
             callback(null, {}, test)
             return;
         }

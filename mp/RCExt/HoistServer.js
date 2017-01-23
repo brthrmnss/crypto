@@ -242,7 +242,7 @@ function HoistServer(_self) {
             });
 
             app.get('/playCustom', function onPlayCustom(req, res) {
-                var file = req.query.file;npm 
+                var file = req.query.file;  
                 sh.throwIfNull(file, 'need file path');
 
 

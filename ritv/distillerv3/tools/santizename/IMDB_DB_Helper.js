@@ -99,7 +99,8 @@ function IMDB_DB_Helper() {
         }
 
 
-        console.log('config', m, configDB)
+        if ( self.settings.dbg )
+        console.log('config---', m, configDB)
         self.cfg = configDB;
 
         var configDB = sh.clone(self.cfg)
