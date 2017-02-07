@@ -98,8 +98,114 @@ function RCConfigExecServer() {
             res.send('Hello World!');
         });
 
+        var JSONFileHelper = require('shelpers').JSONFileHelper;
+        
+        function defineResumeMethods() {
+
+            //var j = new JSONFileHelper();
+
+            var j = new JSONFileHelper();
+            var config = {};
+            config.file = __dirname + '/'+'recent_files.json';
+            j.init(config);
+            self.data.j = j;
+            
+            app.post('/saveFile', function onSaveFile (req, res) {
+                var body = req.body;
+                var name = body.name;
+                var contents = body.body;
+                //var name = req.params.name;
+                console.log(req.body);
+                var fileJSON = dirSaves+name+'.html';
+                sh.writeFile(fileJSON, contents);
 
 
+                var bookJSON = {
+                    file:fileJSON,
+                    name:name
+                }
+                self.data.j.addRecent(bookJSON, true, 'file');
+
+                res.send('Hello World!');
+            });
+
+            app.get('/removeFile', function onRemoveFile (req, res) {
+                var body = req.query;
+                var name = body.name;
+                var fileJSON = dirSaves+name+'.html';
+                self.proc('removing', name)
+
+                var bookJSON = {
+                    file:fileJSON,
+                    name:name
+                }
+                self.data.j.removeRecent(bookJSON, 'file');
+
+                res.send('removed');
+            });
+
+            app.get('/listFiles', function onSaveFile (req, res) {
+
+                var files = [];//self.utils.getfilesInDir();
+
+                files = self.data.j.readFile();
+                res.json(files)
+
+                return;
+                var body = req.body;
+                var name = body.name;
+                var contents = body.body;
+                //var name = req.params.name;
+                console.log(req.body)
+                sh.writeFile(dirSaves+name+'.html', contents)
+
+                res.send('Hello World!');
+            });
+
+        }
+        defineResumeMethods();
+
+
+
+        function defineVerifyStep() {
+            //move to other server
+            app.get('/getFiles', function onGetFiles (req, res) {
+                //start here and move to socket in other server
+
+
+                var dirs = []
+
+                
+                var dir3 = 
+                
+                sh.async(dirs, function onEachDir(dir,fx) {
+
+                }, function onEachDirsDione(){
+                    res.send('onGetFiles');
+                })
+
+                return
+            });
+
+            app.get('/listFiles', function onSaveFile (req, res) {
+                var files = [];
+
+                files = self.data.j.readFile();
+                res.json(files)
+
+                return;
+                var body = req.body;
+                var name = body.name;
+                var contents = body.body;
+                //var name = req.params.name;
+                console.log(req.body)
+                sh.writeFile(dirSaves+name+'.html', contents)
+
+                res.send('Hello World!');
+            });
+
+        }
+        defineVerifyStep();
 
         self.active_server = app.listen(self.settings.port, function () {
             console.log('Listening on ' +  self.settings.port)
@@ -112,7 +218,7 @@ function RCConfigExecServer() {
 
     self.startSocket = function startSocket() {
         //  return
-        console.error('cock block ... no no n')
+        console.error('startSocket ... no no n')
         var http = require('http').Server(self.app);
         var io = require('socket.io')(http);
         http.listen(self.settings.port2, function onSTarted() {
@@ -210,11 +316,11 @@ function RCConfigExecServer() {
             data.msg = msg;
             self.appSocket.emit('updateStatus', data);
         }
-        p.cmds.searchPb = function searchPb(cmd, fx) {
+        p.cmds.searchPb = function searchPb(data, fx) {
             var dirScript = dirCrypto + '/ritv/distillerv3/utils/SearchPB.js'
             var SearchPB = require(dirScript).SearchPB
 
-            self.cmds.status('msg ... starting search')
+            self.cmds.sendStatus('msg ... starting search')
 
             var token = {};
             token.query = data.query;
@@ -310,9 +416,18 @@ function RCConfigExecServer() {
                 //var fileConfig = sh.fs.makePath(__dirname, /*'../',*/ 'configs', name+'')
                // sh.fs.copy(file, fileConfig, true)
 
-                var fileConfig = sh.fs.makePath(__dirname,  'manifests', name)
-                sh.fs.copy(file, fileConfig, true)
-                self.proc('copy', file, 'to', fileConfig)
+                var fileConfig = sh.fs.makePath(__dirname,  'manifests', name);
+                sh.fs.copy(file, fileConfig, true);
+                self.proc('copy', file, 'to', fileConfig);
+
+                var bookJSON = {
+                    file:fileConfig,
+                    created_at:new Date(),
+                    name:name
+                }
+                self.data.j.addRecent(bookJSON, true, 'file');
+                //self.data.j.addRecent(j)
+
             }
 
 
@@ -342,6 +457,7 @@ function RCConfigExecServer() {
                 function onSavedFile(file) {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
+
                     cb();
                 }
 

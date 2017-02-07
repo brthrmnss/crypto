@@ -45,6 +45,11 @@ function IMDB_DB_Helper() {
     var p = IMDB_DB_Helper.prototype;
     p = this;
     var self = this;
+    self.dbg = {}
+
+    self.dbg.forceDB = false;
+    self.dbg.forceDB = true;
+
     self.data = {};
     p.method1 = function method1(url, appCode) {
     }
@@ -68,6 +73,7 @@ function IMDB_DB_Helper() {
         cluster_settings.mysql.password = 'password'
 
 
+
         if ( sh.isWin() == false ) {
             m.password = null;
             m.user = 'root'
@@ -80,14 +86,14 @@ function IMDB_DB_Helper() {
         self.cluster_settings = cluster_settings;
 //cluster_settings.mysql.password = 'password'
 
-
-        m.databasename = 'imdbtest'
+        m.databasename = 'imdb_info'
 
         if (config) {
             sh.mergeObjectsForce(config, m)
         }
 
-        //config.logging = true
+        //enable sql logging
+        config.logging = console.log
 
         var configDB = {
             host: cluster_settings.mysql.ip,
@@ -100,7 +106,7 @@ function IMDB_DB_Helper() {
 
 
         if ( self.settings.dbg )
-        console.log('config---', m, configDB)
+            console.log('config---', m, configDB)
         self.cfg = configDB;
 
         var configDB = sh.clone(self.cfg)
@@ -169,7 +175,7 @@ function IMDB_DB_Helper() {
     }
 
 
-    function defineX() {
+    function defineXDeleteDB() {
 
         self.connectToDb = function connectToDB(fxDone, fxDone2) {
             var connection = mysql.createConnection(self.cfg2);
@@ -206,7 +212,7 @@ function IMDB_DB_Helper() {
             var child_process = require('child_process');
             var cmd = dirMysql+"mysqldump\" -u " + self.cluster_settings.mysql.user
             if (self.cluster_settings.mysql.password) {
-                cmd += " --password=" + cluster_settings.mysql.password
+                cmd += " --password=" + self.cluster_settings.mysql.password
             }
             cmd += ' ' + self.cluster_settings.mysql.databasename + " > " + file_sql_export
             console.log('runnning file_sql_export...');
@@ -241,7 +247,11 @@ function IMDB_DB_Helper() {
         }
 
         self.deleteDB = function deleteDB() {
-            self.connectToDb(self.deleteDatabase);
+            self.connectToDb(null, self.deleteDatabase);
+        }
+
+        self.createDB = function createDB() {
+            self.connectToDb(null, null);
         }
 
 
@@ -250,7 +260,7 @@ function IMDB_DB_Helper() {
                 self.cluster_settings.mysql.databasename + ";"
             console.log('query ' + query);
             self.connection.query(query);
-            k.j
+            //k.j
         }
 
 
@@ -277,10 +287,10 @@ function IMDB_DB_Helper() {
         }
     }
 
-    defineX();
+    defineXDeleteDB();
 
 
-    function defineX() {
+    function defineX2() {
 
 
         self.x = {};
@@ -405,14 +415,15 @@ function IMDB_DB_Helper() {
         }
     }
 
-    defineX();
+    defineX2();
     p.createRESTHelper = function createRESTHelper() {
         var server = {};
         server = null; //? //dib;t want a server made
 
         var tableName = self.settings.tableName;
-        var tableName = sh.dv(tableName, 'breadcrumbs')
-        console.error(tableName, 'y', self.settings)
+        var tableName = sh.dv(tableName, 'imdb_info')
+        if ( self.settings.dbg )
+            console.error('createRESTHelper', tableName, 'y', self.settings)
         var fields = self.settings.fields;
 
         var defaultFields =  {
@@ -425,6 +436,8 @@ function IMDB_DB_Helper() {
             year: "",
             rating: "",
             series: true,
+            episode: true,
+            show_name:"",
             ended: true,
             start: new Date(),
             end: new Date(),
@@ -432,6 +445,7 @@ function IMDB_DB_Helper() {
         }
 
         fields = sh.dv(fields, defaultFields)
+
 
 
         self.breadcrumbs = RestHelperSQLTest.createHelper(tableName,
@@ -456,10 +470,11 @@ function IMDB_DB_Helper() {
         //asdf.g
         function testBreadCrumbsUserId() {
             //asdf.g
-            self.proc('imdb db rest helper created')
+            //self.proc('imdb db rest helper created')
             sh.callIfDefined(self.fxDone);
         }
 
+        //asdf.g
     }
 
 
@@ -467,6 +482,13 @@ function IMDB_DB_Helper() {
         //why: methods update records
         p.upsertIMDBContent = function upsertIMDBContent(content) {
 
+            self.proc('what is name of dbHelper?', self.nameDBHelper)
+
+            if ( self.breadcrumbs == null ) {
+                self.proc('name setting2', self.settings.name)
+                asdf.g
+            }
+            //asdf.g
             var y = self.breadcrumbs;
             var req = {}
             req.method = 'GET'
@@ -478,25 +500,43 @@ function IMDB_DB_Helper() {
             rest.created = sh.noOp;
             rest.accepted = sh.noOp;
             self.breadcrumbs.ext.createItem(req, rest)
-            return;
+            return;z
         }
 
 
         p.upsertIMDBEpisodeContent = function upsertIMDBEpisodeContent(content, epi) {
             content = sh.clone(content);
-            epi = sh.clone(epi);
 
-            epi.name = content.title;
-            epi.episode_name = epi.title;
-            epi.imdb_series_id = content.imdb_id;
 
-            var y = self.breadcrumbs;
             var req = {}
             req.method = 'GET';
-            req.query = epi;
-            req.url = ''; //for counting of upsertQuery in fxSearch
-            content.name = content.title;
-            req.query.upsertQuery = {imdb_id: epi.imdb_id}
+            if (epi) {
+                epi = sh.clone(epi);
+
+                epi.name = content.title;
+                epi.episode_name = epi.title;
+                epi.imdb_series_id = content.imdb_id;
+
+                if ( epi.episode ) {
+                    console.log('what is setting the episode?', '...')
+                }
+                delete epi.episode;
+                
+                epi.show_name = content.title; 
+
+                req.query = epi;
+                req.url = ''; //for counting of upsertQuery in fxSearch
+                content.name = content.title;
+                req.query.upsertQuery = {imdb_id: epi.imdb_id}
+            }
+            else {
+                req.query = content;
+                req.url = ''; //for counting of upsertQuery in fxSearch
+                content.name = content.title;
+                req.query.upsertQuery = {imdb_id: content.imdb_id}
+                //sh.exit('sdf')
+            }
+            //asdf.g
             var rest = {};
             rest.created = sh.noOp;
             rest.accepted = sh.noOp;
@@ -507,9 +547,12 @@ function IMDB_DB_Helper() {
 
 
 
-        p.getIMDBContentByID = function getIMDBContentByID(imdb_id, fxGotContent, seasonNumber, episodeNumber, getIMDBShowInformation) {
+        p.getIMDBContentByID = function getIMDBContentByID(imdb_id, fxGotContent,
+                                                           seasonNumber, episodeNumber,
+                                                           getIMDBShowInformation,
+                                                           overrideForceDB) {
             if ( self.data.searchAttempts == null ) {
-                self.data.searchAttempts  = {}; 
+                self.data.searchAttempts  = {};
             }
             var searchBeforeIndex = sh.join(imdb_id,seasonNumber,episodeNumber)
             //TODO: ADd logic to verify that something has been checked a few days ago
@@ -529,28 +572,42 @@ function IMDB_DB_Helper() {
             var rest = {};
             rest.ok = function onSearchResult(x) {
                 // self.proc('x', x)
+                if ( self.dbg.forceDB )
+                {
+                    if ( overrideForceDB != true) {
+                        self.proc('must forcedb again', x.length)
+                        //asdf.g
+                        x = [];
+                    }
+                }
                 // console.log('have reuslt', x)
-                 if ( x.length == 0 && getIMDBShowInformation != false) {
-                     var searchedBefore = self.data.searchAttempts[searchBeforeIndex];
-                     if ( searchedBefore ) {
-                         self.proc('searche for this episode preivously ... not sure what is going on', sh.join(seasonNumber,episodeNumber))
-                         sh.callIfDefined(fxGotContent, x)
-                         return;
-                     } else {
-                         self.data.searchAttempts[searchBeforeIndex]  = true;
-                     }
-                     self.getIMDB_fromInternet(imdb_id, function onUpdatedDatabase(imdbResult) {
+                if ( imdb_id != null &&
+                    x.length == 0 && getIMDBShowInformation != false) {
+                    var searchedBefore = self.data.searchAttempts[searchBeforeIndex];
+                    if ( searchedBefore ) {
+                        self.proc('searche for this episode preivously ... not sure what is going on', sh.join(seasonNumber,episodeNumber))
+                        sh.callIfDefined(fxGotContent, x)
+                        return;
+                    } else {
+                        self.data.searchAttempts[searchBeforeIndex]  = true;
+                    }
+                    self.proc("dont' have this idmb so looking it up")
+                    self.getIMDB_fromInternet(imdb_id, function onUpdatedDatabase(imdbResult) {
                         // sh.callIfDefined(fxGotContent, x)
 
-                         setTimeout(function callLaterAfterDBCommit () {
-                             p.getIMDBContentByID.apply(p, args); //try again with new file
-                         }, 500)
+                        setTimeout(function callLaterAfterDBCommit () {
+                            dbg =[imdbResult]
+                            p.getIMDBContentByID.apply(p, args); //try again with new file
+                        }, 500)
 
-                     })
+                    })
 
 
-                     return;
-                 }
+                    return;
+                }
+                if ( imdb_id == null ) {
+                    self.proc('path did not have imdb_id', imdb_id, 'what is the path...')
+                }
                 sh.callIfDefined(fxGotContent, x)
             }
             self.breadcrumbs.ext.searchItems(req, rest)
@@ -558,10 +615,32 @@ function IMDB_DB_Helper() {
         }
 
 
-        p.getIMDB_fromInternet = function asdf(imdb, cb) { //if imdb does not exist in database, add it
-           // var i = new imdb_api_get_content();
+        p.getIMDB_fromInternet = function getIMDB_fromInternet(imdb, cb) { //if imdb does not exist in database, add it
+
+            // var i = new imdb_api_get_content();
             var opts = {}
             opts.saveToDB=true
+
+            //opts.saveToDB=false
+            //remove after fix
+            opts.dbHelper = self.dbHelper;
+            opts.dbHelper = self;
+            self.nameDBHelper ='dbHelperFromTop'
+            // console.log('is null', self.breadcrumbs)
+            // sh.exit()
+            opts.fxDone = function onFinsihedCollectedAllItems(dictContent){
+                //console.log('boom', dictContent)
+                var count = 0
+                sh.each(dictContent, function onGoThroughEachResult_inIMDBDict(imdb_id, content) {
+                    count ++;
+                    console.log(count, 'for id', imdb_id, content.name, content.series, content.episodeSummary)
+                })
+                self.proc('finished collected all items', dictContent.length)
+                //asdf.g
+                cb()
+            }
+            //  sssssssssssssssssf.d
+            //imdb_api_get_content.getContentComplete(imdb, cb, opts)
             imdb_api_get_content.get_episodes(imdb, cb, opts)
         };
 
@@ -683,7 +762,7 @@ function IMDB_DB_Helper() {
         dbHelper.getAll = function getAll(fx) {
             dbHelper.search({}, fx);
         }
-        dbHelper.search = function search(query, fx, convert, debugQuery) {
+        dbHelper.search = function search(query, fx, convert, debugQuery, retry, doNotUpsert) {
             convert = sh.dv(convert, true)
             //table = sh.dv(table, self.Table);
             var fullQuery = dbHelper.utils.queryfy(query)
@@ -691,11 +770,63 @@ function IMDB_DB_Helper() {
             /*if ( self.settings.logConsole != false ) {
              console.error('full query', fullQuery)
              }*/
+
+            //debugQuery = true
+
+            console.log('-->fullQuery', 'agasint oldrcdb?',self.Table.name,  'todo:why?', fullQuery)
+
+
+            //console.log('-->fullQuery', self.Table)
             if ( debugQuery )
                 self.proc('full query', sh.toJSONString( fullQuery))
+
+
+
+
+            var y = new Error()
             self.Table.findAll(
                 fullQuery
-            ).then(function onResults(objs) {
+            ).then(function onResults_IMDB(objs) {
+
+                    if ( objs.length == 0 && retry != true ) {
+                        //sh.exit('see query', self.Table.name, objs.length,doNotUpsert,  y.stack,0 )
+                        //query, fx, convert, debugQuery, retry
+                        self.proc(sh.t, 'did not get any results for query', query)
+                        // asdf.g
+                        //  sh.exit('why not get epi and movie?  ')
+                        if ( doNotUpsert != true ) {
+                            if (query.imdb_id) {
+                                console.log(query.imdb_id)
+                                self.getIMDB_fromInternet([query.imdb_id], function sdf(sdf) {
+                                    dbHelper.search(query, fx, convert, debugQuery, true)
+                                })
+                                return;
+                                //asdf.g
+                            }
+
+                            if (query.imdb_series_id) {
+                                console.log(query.imdb_series_id)
+                                self.getIMDB_fromInternet([query.imdb_series_id], function sdf(sdf) {
+                                    dbHelper.search(query, fx, convert, debugQuery, true)
+                                })
+                                return;
+                                //asdf.g
+                            }
+                        } else {
+                            self.proc('doing no upsert...')
+                        }
+
+
+                        self.proc('i go back zero results, and i have no id, so i cannot continue ')
+                        console.error('got 0: no valid id on ', fullQuery, query)
+                        sh.callIfDefined(fx, [])
+                        return;
+                        asdf.g
+                    }
+                    if (  objs.length == 0 && retry == false  ) {
+                        asdf.g
+                    }
+                    //sh.exit('d')
                     if (convert) {
                         var records = [];
                         var ids = [];
@@ -878,15 +1009,21 @@ function IMDB_DB_Helper() {
 
             self.utils.fixRecordForSave(item)
 
-           // item.id = 14000
-           // item.id = null;
-           // delete item.id; 
+
+            //console.error(record)
+            //sh.x('what is record to add', record)
+            //asdf.g
+            // item.id = 14000
+            // item.id = null;
+            // delete item.id;
+            delete item.id
             var newRecords = [item];
             self.Table.bulkCreate(newRecords).then(function (objs) {
                 self.proc('all records created', objs.length);
                 sh.callIfDefined(fx);
             }).catch(function failedToAddNewRecord(err) {
                 self.proc('issue saving new record');
+                console.error('file', record)
                 console.error('addNewRecord', err, err.stack);
                 throw  err
             });
@@ -1007,6 +1144,7 @@ function IMDB_DB_Helper() {
             //attrs.global_updated_at = new Date();
 
             self.utils.fixRecordForSave(attrs)
+            console.error('wtf', attrs)
             record.updateAttributes(attrs).then( cb  );
         };
 
@@ -1026,7 +1164,8 @@ function IMDB_DB_Helper() {
     function defineUtils() {
         self.utils = {};
         self.utils.fixRecordForSave = function fixRecordForSave(item){
-            if ( item.originalFilename.indexOf('/') != -1  ) {
+            if ( item.originalFilename &&
+                item.originalFilename.indexOf('/') != -1  ) {
                 item.originalFilename = item.originalFilename.split('/').slice(-1)[0];
             }
         };

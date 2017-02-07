@@ -1,0 +1,555 @@
+/**
+ * Created by user on 7/4/15.
+ */
+/**
+ */
+//var rh = require('rhelpers')
+var shelpers = require('shelpers');
+var sh = shelpers.shelpers;
+var RestHelperSQLTest = require('shelpers').RestHelperSQLTest;
+var Sequelize = RestHelperSQLTest.Sequelize;
+var PromiseHelperV3 = shelpers.PromiseHelperV3;
+var PromiseHelper = require('shelpers').PromiseHelperV3;
+//Example Commands:
+
+
+function SanitizeNamesFromDB() {
+    var p = SanitizeNamesFromDB.prototype;
+    p = this;
+    var self = this;
+
+    self.settings = {};
+
+    p.init = function init(url, appCode) {
+        self.makeDBConnections();
+    }
+
+    function defineTests() {
+        p.tests = {};
+        p.tests.testSaveNewMovie = function testSaveNewEpisode() {
+            var episodeToSave = {
+                "tvMode": true,
+                "epi": "{\"s\":2,\"e\":44,\"dbg\":\"Episode number only in Name \",\"seasonNumber\":\"2\"}",
+                "i": 72,
+                "leaf": "One Piece -44- Fantastic Voyage.avi",
+                "sanitized": "One Piece -44- Fantastic Voyage  ",
+                "imdb_id": "tt0982395",
+                "line": "/media/sdb/incoming/finished/Root/tv/Wan_p_su__One_Piece_1999/tt0388629/Wan_p_su__One_Piece_Season_2/Season 2/One Piece -44- Fantastic Voyage.avi",
+                "episode_name": "Farewell, Drum Island! I'm Going Out to Sea!",
+                "imdb_series_id": "tt0388629"
+            }
+
+
+            self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest () {
+                self.proc('item updated')
+            });
+        }
+
+
+        p.addNewEpisodeToDatabase = function addNewEpidoeToDatabase(episodeToSave, fxDoneAddingEpisode) {
+
+            var token = {};
+            token.silentToken = true;
+
+            var query = {}
+
+            query.localFilePath = episodeToSave.line;
+
+
+
+            //yyy.episodeName = episodeToSave.episode_name;
+
+
+            var helper = {};
+            helper.updateEpidoe = function updateEpidoe(newEpisode) {
+
+                sh.mergeObjects(token.oldEpisode, newEpisode) //update current
+
+                newEpisode.episodeName = episodeToSave.episode_name;
+                newEpisode.episodeName = episodeToSave.episodeName;
+                var epi = JSON.parse(episodeToSave.epi)
+                newEpisode.imdb_id = episodeToSave.imdb_id;
+                newEpisode.imdb_series_id = episodeToSave.imdb_series_id;
+                newEpisode.episodeNumber = epi.e;
+                newEpisode.seasonNumber = epi.s;
+                newEpisode.originalFilename = episodeToSave.line;
+
+
+
+            }
+
+            helper.getEpisodeFromOldDb = function getEpisodeFromOldDb(t, cb) {
+                self.dbFrom.dbHelper2.search(query, function onGetIt (objs) {
+                    // console.log(objs, 'lll')
+                    if ( objs.length > 0 ) {
+                        var oldEpisode = objs[0];
+
+                        token.oldEpisode = oldEpisode;
+                        //console.log('datavalues', obj.values, obj.dataValues)
+                        //sh.mergeObjectsForce(yyy, obj.dataValues)
+
+                        //helper.updateEpidoe(obj.dataValues)
+
+                        self.proc('old episode', sh.toJSONString(oldEpisode) )
+
+
+                        cb()
+                        return;
+                    } else {
+                        sh.callIfDefined(fxDone) //no match nothing to update
+                        console.warn('no match on ', query)
+                    }
+
+
+
+
+                }, true);
+
+                return;
+            };
+
+            helper.updateEpisodeInNewDb = function updateEpisodeInNewDb(cb) {
+                self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
+                    // console.log(objs, 'lll')
+                    //self.proc('query', )
+
+                    if ( objs.length > 0 ) {
+                        var obj = objs[0];
+
+                        //console.error(query, obj.dataValues)
+                        // process.exit()
+                        //console.log('datavalues', obj.values, obj.dataValues)
+                        //sh.mergeObjectsForce(yyy, obj.dataValues)
+
+                        helper.updateEpidoe(obj.dataValues)
+
+                        self.dbTo.dbHelper2.updateRecord(obj, function onUpdated (obj) {
+                            //self.dbTo.dbHelper2.addNewRecord(yyy)
+                            self.proc('obj', obj)
+                            sh.callIfDefined(fxDoneAddingEpisode)
+                        });
+                        return;
+                    }
+
+                    var newEpi = sh.clone(episodeToSave);
+                    helper.updateEpidoe(newEpi)
+
+                    self.dbTo.dbHelper2.addNewRecord(newEpi, function onItemSaved(){
+                        sh.callIfDefined(fxDoneAddingEpisode)
+                        // process.exit()
+                    })
+                }, false);
+
+            }
+
+
+
+            var work = new PromiseHelper();
+            work.name = 'Update Episode'
+            work.wait = token.simulate==false;
+            work.startChain(token)
+                //.add(helper.updateEpidoe)
+                .add(helper.getEpisodeFromOldDb)
+                .add(helper.updateEpisodeInNewDb)
+
+
+
+
+            // helper.updateEpidoe(newEpi);
+
+
+
+
+
+        }
+    }
+    defineTests();
+
+    p.makeDBConnections = function makeDBConnections() {
+        //var dbname = 'imdb_info';
+        var DBHelper = require('./DBHelper').DBHelper
+        var dbFrom = new DBHelper();
+        //var cfg = i.utils.make()
+        var cfg = {
+            tableName: 'file',
+            databasename	: 'oldRCdb',
+            password: 'password',
+            logging: true,
+            tableOptions:{
+                freezeTableName: true,
+                tableName: 'file',
+                timestamps:false
+            },
+            fields:{
+                originalFilename:'',
+                localFilePath:'',
+                id:0,
+                fileType:'',
+                extension: '',
+                //    imdb_id: ''
+            }
+        }
+
+
+        if ( sh.isWin() == false ) {
+            cfg.password = null;
+            cfg.user = 'root'
+            cfg.password = 'your_password667'
+            //cfg.user ='yetidbuser';
+           // cfg.password = 'aSDDD545y';
+        }
+        
+        self.dbFrom = dbFrom;
+        self.dbFrom.init(cfg);
+        self.dbFrom.createRESTHelper();
+
+         return
+        //var dbname = 'imdb_info';
+        var dbTo = new DBHelper();
+        //var cfg = i.utils.make()
+        var cfg = {
+            databasename	: 'rcLive',
+            password: 'password',
+            tableName: 'file',
+            logging: true,
+            tableOptions:{
+                freezeTableName: true,
+                tableName: 'file',
+                timestamps:false
+            },
+            fields:{
+                originalFilename:'',
+                localFilePath:'',
+                imdb_id: "",
+                imdb_series_id: "",
+                seasonNumber: 0, episodeNumber: 0,
+                //user_id: 0,
+                //year: "",
+                //rating: ""
+
+            }
+        }
+
+        if ( sh.isWin() == false ) {
+            cfg.password = null;
+            cfg.user = 'root'
+            cfg.password = 'your_password667'
+        }
+
+
+
+        self.dbTo = dbTo;
+        self.dbTo.init(cfg);
+        self.dbTo.createRESTHelper();
+
+    }
+
+
+    p.iterateX = function iterateX() {
+
+
+        self.dbFrom.sequelize.count;
+        self.dbFrom.dbHelper2.getUntilDone({}, 200,
+            function (records, x, fxAsyncContinue) {
+                // asdf.g
+                //self.proc('recs', rec)
+
+                self.processSetOfRecordFilenames(records, fxAsyncContinue)
+                return true;
+
+                var NameSanitizer = require('./NameSanitizer').NameSanitizer
+                var i = new NameSanitizer();
+                i.initRemote();
+
+                i.initIMDB_DB();
+
+                i.settings.showAllItems = false;
+                //  i.loadFiles(records)
+                var fileNames = records.map(function (x) {
+                    return x.localFilePath; //search for local path
+                });
+                //input filenames,
+
+                var fileList = i.utils.filterFileList(fileNames); //convert filenames to epi/season #
+                i.getIMDBIds(self.saveEpisodesInNewDB)
+                //3 add episode_information for filename
+                //
+                //
+                return true
+
+            },
+            function (done) {
+                self.proc('recs', done)
+            },
+        10)
+    }
+
+    p.processSetOfRecordFilenames = function processSetOfRecordFilename(dbFileRecords, fxDone_processingFilenames) {
+
+        var NameSanitizer = require('./NameSanitizer').NameSanitizer
+        var nS = new NameSanitizer();
+        nS.initRemote();
+        nS.initIMDB_DB();
+
+        console.error(dbFileRecords)
+
+        var i = 0
+        sh.async(dbFileRecords, function process_DbFileRecord(record, fxDone) {
+
+
+                i++
+
+                function fxFault(msg) {
+                    fxDone()
+                }
+
+                var token = {};
+                token.record = record;
+
+
+                var helper = {};
+                helper.santizeName = function santizeName_convertFileNameToEpiAndSeasonNumber(t,cb) {
+
+
+                    //  i.loadFiles(records)
+
+                    var fileNames = [record.localFilePath]; //search for local path
+                    //input filenames,
+                    var fileList = nS.utils.filterFileList(fileNames); //convert filenames to epi/season #
+
+                    token.episode = fileList[0];
+                    if ( sh.isString(token.episode ) || fileList.length == 0  ) {
+                        //cb()
+                        fxFault();
+                        return;
+                    }
+                    cb()
+                }
+                helper.getIMDBEpisodeInformation = function getIMDBEpisodeInformation(t,cb) {
+                    var episode = token.episode;
+                    var epi = JSON.parse(episode.epi);
+                    if ( epi.s == '') {
+                        fxFault();
+                        return;
+                    }
+                    //console.error('episode', episode.imdb_id, episode.epi, epi["s"], epi.e)
+                    nS.dbHelper.getIMDBContentByID(episode.imdb_id,
+                        function onGot_ShowContent(content){
+                            // self.proc(content)
+                            //process.exit();
+                            if ( content.length == 0 ) {
+                                //console.error('could not find', episode.epi.s, episode.epi.e)
+                                fxDone();
+                                return // fuck ...
+                            }
+                            content = content[0]
+                            episode.episode_name = content.episode_name;
+                            episode.imdb_id = content.imdb_id;
+                            episode.imdb_series_id = content.imdb_series_id;
+                            cb()
+                        }
+                        , epi.s, epi.e)
+
+                }
+                helper.updateDatabase = function updateDatabase(t, cb) {
+                    var episodeToSave = t.episode
+                    self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest () {
+                        self.proc('item updated');
+                        cb();
+                    });
+                }
+
+                var work = new PromiseHelper();
+                work.name = 'Update Episode'
+                token.silentToken = true;
+                work.wait = token.simulate==false;
+                work.startChain(token)
+                    .add(helper.santizeName)
+                    .add(helper.getIMDBEpisodeInformation)
+                    .add(helper.updateDatabase)
+                    .add(function doneWithChain(t, cb){
+                        console.log('done with iteration', i)
+                        fxDone();
+                        cb()
+                    })
+
+            },
+            function recordsProcessed() {
+                sh.callIfDefined(fxDone_processingFilenames)
+            }
+        )
+
+
+    }
+
+
+
+    /*
+     PM  - exectuive assistsa
+     maintian backlog (maintian kanban)
+     assign asks
+     do task triage, or take tasks to increase efficients
+     managers --
+     */
+
+    p.saveEpisodesInNewDB = function saveEpisodesInNewDB(list) {
+        self.proc('saveEpisodesInNewDB', list)
+
+        sh.each(list, function addToDatabase(i, v) {
+            v.line
+            v.imdb_id
+            v.imdb_series_id
+            if (v.imdb_id == v.imdb_series_id ) {
+                return;
+            }
+            if (v.imdb_series_id == null ) {
+                return;
+            }
+            v.episode_name;
+//look for file in database, if found, update it
+            //if not found ... ignore
+            //if found, update with new record ...
+
+
+            return;
+            //if ()
+        });
+        return;
+    }
+
+
+
+    p.baseCodeToCopy = function asdf() {
+        /*
+         connect to database
+         get first 100
+         get next 1000
+         process each file
+         save to new database if saving is enabled ...
+         */
+        return
+        var dbname = 'imdb_info';
+        var DBHelper = require('./DBHelper').DBHelper
+        var i = new DBHelper();
+        //var cfg = i.utils.make()
+        var cfg = {
+            databasename	: 'oldRCdb',
+            password: "password"
+        }
+ 
+        i.init(cfg);
+
+
+        var chain = new PromiseHelperV3();
+        var token = {};
+        token.silentToken = true
+        chain.wait = token.simulate == false;
+        chain.startChain(token)
+        chain.add(i.x.connectToDb)
+        chain.add(i.x.step1_backupDb)
+        chain.add(i.x.step2_createDatabase)
+        //chain.add(i.x.step3_loadDatabase)
+        chain.add(function (k,v) {
+            i.x.importFile('fileimport.sql')
+        })
+    }
+
+
+
+
+    function defineUtils() {
+        p.getInfoFromJSON = function get(x, doNotLog) {
+            var dirRemoteMega = x.dirRemoteMega;
+            var output = {};
+            output.tv = dirRemoteMega.indexOf('/Root/tv/') ==  0;
+
+            var split = dirRemoteMega.split('/')
+
+            sh.each(split, function getTT(k, dir) {
+                if (dir.indexOf('tt') == 0) {
+                    output.imdb_id = dir;
+                }
+            });
+
+            if ( output.tv ) {
+                if ( doNotLog != true )
+                    console.error(x,output, dirRemoteMega)
+                if (x.query.indexOf(' Season ') == -1 ) {
+                    var epSeason = x.query.split(' ').slice(-1)[0]
+                    epSeason = epSeason.slice(1)
+                    var split = epSeason.split('E')
+                    output.seasonNumber = split[0]
+                    output.episodeNumber = split[1]
+                    output.searchEpisode = true
+                    if (x.seasons != null)  { // && x.ended == true ){
+                        output.seasonNumber = 1;
+                        output.seasonNumberEnd = x.seasons;
+                        output.episodeNumber =1
+
+                    }
+                } else {
+                    var str = dirRemoteMega.split('_Season_')[1];
+                    str = str.replace('/', '')
+                    output.seasonNumber = str;
+                }
+            }
+
+            return output;
+        }
+
+
+        p.findIMDB = function get(jsonInfo, fxD ) {
+
+            var query = {}
+            query.imdb_id = jsonInfo.imdb_id;
+            if ( jsonInfo.tv ) {
+                query = {};
+                query.imdb_series_id = jsonInfo.imdb_id;
+                query.episodeNumber = 1;
+                query.seasonNumber = jsonInfo.seasonNumber;
+
+                if ( jsonInfo.searchEpisode ) {
+                    query.episodeNumber = jsonInfo.episodeNumber
+                }
+            }
+            //self.dbTo.dbHelper2.settings.logConsole =  self.settings.logConsole
+            self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
+                if ( self.settings.logConsole != false )
+                    console.log('found results ... ' , objs)
+                if ( objs.length > 0 ) {
+                    var oldEpisode = objs[0];
+
+                }
+                fxD(objs)
+            })
+        }
+
+
+    }
+    defineUtils();
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return
+        }
+        sh.sLog(arguments)
+    }
+
+
+
+
+
+
+}
+
+exports.SanitizeNamesFromDB = SanitizeNamesFromDB;
+if ( module.parent == null ) {
+
+    var i = new SanitizeNamesFromDB();
+    i.init();
+
+    i.iterateX();
+
+    //i.tests.testSaveNewMovie();
+
+}

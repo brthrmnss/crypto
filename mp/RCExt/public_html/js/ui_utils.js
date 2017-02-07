@@ -47,6 +47,57 @@ function throwIfNull(prop, msg) {
 	}
 }
 
+function defineUtils2() {
+	$.async = function asyncHelper(items, fx, fxAllDone, delay, playIndex) {
+		//var index = 0
+		var asyncController = {};
+		asyncController.index = 0;
+		asyncController.getNext = function getNextItem() {
+			var next = items[asyncController.index+1];
+			return next;
+		}
+		if(playIndex>0){
+			asyncController.index = playIndex;
+		}
+		if(playIndex<0){
+			asyncController.index = items.length-1+playIndex;
+		}
+
+		asyncController.length = items.length;
+
+		if ( delay == null && $.isNumeric(fxAllDone)) {
+			delay = fxAllDone;
+		}
+
+		function goToNextSpan() {
+			var item = items[asyncController.index];
+			console.log('playindex', asyncController.index)
+			if (asyncController.index > items.length - 1) {
+				if ( fxAllDone ) {
+					fxAllDone();
+				}
+				return;
+			}
+			fx(/*asyncController.index,*/ item, fxCallback, asyncController, asyncController.index)
+			asyncController.index++;
+
+			function fxCallback() {
+				if (delay) {
+					setTimeout(goToNextSpan, delay);
+					return;
+				}
+				goToNextSpan();
+			}
+		}
+
+		goToNextSpan();
+		asyncController.runIteration = function runIteration() {
+			goToNextSpan();
+		}
+		return asyncController;
+	}
+}
+defineUtils2();
 
 
 var uiUtils = {};
@@ -66,22 +117,36 @@ function defineUtils() {
 		return typeof objectOrString == 'string'
 	}
 
+
+	self.clone = function clone(e) {
+		var eee = JSON.stringify(e)
+		return JSON.parse(eee)
+	}
+
 	uiUtils.makePanel = function makePanel(cfg) {
 		throwIfNull(cfg.id, 'need an id')
 		u.cfg.fixId(cfg)
 		var existingUI = $(cfg.id);
 
+		if ( cfg.clearOld &&  cfg.id ) {
+			$( cfg.id).remove();
+		}
+
 		if ( existingUI.length > 0 ) {
-			if ( existingUI.length > 1) {
+			if ( existingUI.length > 0) {
 				console.warn('you have multiple things')
 			}
-			//if ( cfg.toggleMode != false ) {
-
-			//		}
-			existingUI.show();
-			var cfg = uiUtils.dictCfg[cfg.id]
-			debugger;
-			return existingUI.cfg;
+			if ( cfg.clearIfFound !== true ) {
+				//if ( cfg.toggleMode != false ) {
+				//		}
+				existingUI.show();
+				var cfg = uiUtils.dictCfg[cfg.id]
+				//debugger;
+				return existingUI.cfg;
+			} else {
+				console.warn('removing existing version')
+				existingUI.remove();
+			}
 		}
 
 
@@ -164,8 +229,69 @@ function defineUtils() {
 	uiUtils.addDefaultCfg = function addDefaultCfg(cfg) {
 		uiUtils.flagCfg = cfg;
 	}
+	uiUtils.makeCheckbox = function makeCheckbox(cfg, id) {
+		cfg = u.cfg.str(cfg, 'text');
+		u.cfg.addToCfg(cfg, 'id', id);
+		cfg.tag = dv(cfg.tag, 'input');
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+
+		var ui = u.tag(cfg.tag)
+		ui.attr('type', 'checkbox')
+		ui.html(cfg.text)
+
+		if ( cfg.windowProp) {
+			var keyVal = 'store.' + cfg.windowProp;
+			var previousVal = uiUtils.getVal(keyVal);
 
 
+			if (previousVal != null) {
+			} else {
+				if (cfg.defaultValue) {
+					previousVal = cfg.defaultValue;
+				}
+			}
+
+			console.log('keyval', keyVal, previousVal)
+
+			if (previousVal != null) {
+				uiUtils.setVal(keyVal, previousVal);
+				setTimeout(function onLateR(){
+					callIfDefined(cfg.fxChange, previousVal)
+				},500)
+
+				window[cfg.windowProp] = previousVal;
+				var val = eval('window.' + cfg.windowProp);
+				ui.prop('checked', val);
+			}
+		}
+
+
+
+		ui.click(onChangeOptions);
+		function onChangeOptions(event) {
+			console.log('...', cfg.windowProp);
+			var val = ui.is(':checked');
+			if ( cfg.windowProp) {
+				var val = eval('window.'+cfg.windowProp+'='+val );
+				uiUtils.setVal(keyVal, val);
+				//ui.prop('checked', val);
+			};
+
+			callIfDefined(cfg.fxChange, val)
+
+		}
+
+
+
+		//	lbl.css('user-select', 'none');
+		u.addUI(cfg, ui);
+
+		if ( cfg.label ) {
+			uiUtils.addLabel(cfg.label)
+		}
+
+		return cfg;
+	}
 
 	uiUtils.addDropdown = function addLabel(cfg) {
 		cfg = u.cfg.str(cfg, 'text')
@@ -184,24 +310,25 @@ function defineUtils() {
 				}
 				console.log('k', v)
 				ui.append($('<option>', /*{
-					value: item.value,
-					text: item.text
-				}*/v ));
+				 value: item.value,
+				 text: item.text
+				 }*/v ));
 
 			})
 		}
 		//$('<span/>')
 		/*if (cfg.width){
-			if ( $.isNumeric(cfg.width) ) {
-				cfg.width = cfg.width+'px';
-			}
-			lbl.css('width', cfg.width);
-			lbl.css('display', 'inline-block');
-		}
-		lbl.css('user-select', 'none');*/
+		 if ( $.isNumeric(cfg.width) ) {
+		 cfg.width = cfg.width+'px';
+		 }
+		 lbl.css('width', cfg.width);
+		 lbl.css('display', 'inline-block');
+		 }
+		 lbl.css('user-select', 'none');*/
 		u.addUI(cfg, ui);
 		return cfg;
 	}
+
 	uiUtils.addDD = uiUtils.addDropdown
 
 	uiUtils.addNumber = function addNumber(cfg) {
@@ -226,8 +353,12 @@ function defineUtils() {
 		return cfg;
 	}
 
-	uiUtils.addLabel = function addLabel(cfg) {
-		cfg = u.cfg.str(cfg, 'text')
+	uiUtils.addSection = function addSection(fx) {
+		fx();
+	}
+	uiUtils.addLabel = function addLabel(cfg, id) {
+		cfg = u.cfg.str(cfg, 'text');
+		u.cfg.addToCfg(cfg, 'id', id);
 		cfg.tag = dv(cfg.tag, 'span');
 		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
 
@@ -258,24 +389,85 @@ function defineUtils() {
 		var ui = u.tag(cfg.tag)
 		ui.html(cfg.text)
 		u.addUI(cfg, ui);
+		if ( cfg.newBaseContainer ) {
+			cfg.lastAddTo = cfg.addTo
+			cfg.addTo = ui;
+		}
 		return cfg;
 	}
+	uiUtils.changeContainer = function focusOnContainer() {
+		uiUtils.flagCfg.lastAddTo = uiUtils.flagCfg.addTo;
+		uiUtils.flagCfg.addTo = uiUtils.lastCfg.ui;
+		//console.log('adding to', uiUtils.flagCfg.addTo)
+	}
+	uiUtils.popContainer = function popContainer() {
+		uiUtils.flagCfg.addTo = uiUtils.flagCfg.lastAddTo;
+	}
+
+	uiUtils.addRow = function addRow(id, fx) {
+		uiUtils.addDiv(
+			{id:id,
+				//width:170
+			})
+		//uiUtils.addBorder();
+		//uiUtils.makeInline();
+		uiUtils.changeContainer();
+		callIfDefined(fx)
+	}
+	uiUtils.leaveRow = function leaveRow() {
+		uiUtils.popContainer();
+	}
+
+	uiUtils.style = function style(prop, val) {
+		uiUtils.flagCfg.addTo.css(prop, val)
+	}
+
+
 	p.addTitle =function addtitle(cfg) {
 		cfg = u.cfg.str(cfg, 'text')
 		cfg.tag = 'div'
 		u.addLabel(cfg)
 	}
 
+	p.addIcon = function addIcon(iconName) {
+		var cfg = {}; //cfg = u.cfg.str(cfg, 'text')
+		cfg.tag = 'span'
+		var cfg = u.addLabel(cfg)
+		var span = cfg.ui;
+		span.addClass('glyphicon')
+		span.addClass('glyphicon-'+iconName) //+'-circle')
+		return cfg
+	}
+
 	uiUtils.fxTest = function fxTest() {
 		console.log('hello');
 	}
-
-	uiUtils.scrollToBottom = function scrollToBottom(jq){
-		//$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
-		$(jq).clearQueue();
-		$(jq).stop(true, true);
-		$(jq).animate({ scrollTop: $(jq).prop("scrollHeight")}, 10);
+	uiUtils.addBorder = function addBorder() {
+		uiUtils.lastCfg.ui.css('border', 'solid 1px #f2f2f2')
 	}
+
+	uiUtils.makeInline = function makeInline() {
+		uiUtils.lastCfg.ui.css('display', 'inline-block')
+	}
+
+	function defineScrollable() {
+		uiUtils.scrollToBottom = function scrollToBottom(jq) {
+
+			var ui = $(jq)
+			//$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
+			$(jq).clearQueue();
+			$(jq).stop(true, true);
+			$(jq).animate({scrollTop: $(jq).prop("scrollHeight")}, 10);
+			console.log('scrollto', ui.prop('scrollHeight'), ui.scrollTop() )
+		}
+
+		uiUtils.makeScrollable = function makeScrollaboe(div, height) {
+			div.css('overflow', 'auto')
+			div.css('max-height', height+'px')
+			//debugger
+		}
+	}
+	defineScrollable()
 
 	uiUtils.addBtn = function addBtn(cfg, fxD) {
 		cfg = u.cfg.str(cfg, 'text')
@@ -288,11 +480,11 @@ function defineUtils() {
 
 		//debugger;
 		/*
-		if ( cfg.addTo ) {
-			//debugger;
-			cfg.addTo.append(btn)
-		}
-		*/
+		 if ( cfg.addTo ) {
+		 //debugger;
+		 cfg.addTo.append(btn)
+		 }
+		 */
 
 		u.addUI(cfg, btn)
 
@@ -360,6 +552,28 @@ function defineUtils() {
 	}
 
 
+	uiUtils.addImage = function addBtn(cfg, id) {
+		cfg = u.cfg.str(cfg, 'src')
+		u.cfg.addToCfg(cfg, 'id', id);
+		cfg.tag = dv(cfg.tag, 'img');
+		//cfg.fxDone = dv(cfg.fxDone, fxD);
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+
+		var ui = u.tag(cfg.tag)
+		ui.attr('src', cfg.src)
+
+		u.addUI(cfg, ui)
+
+		uiUtils.lastUI = ui;
+	}
+
+	uiUtils.addClick = function addClick(fxD) {
+		uiUtils.lastUI[0].onclick = fxD;
+	}
+	uiUtils.addTooltip = function addTooltip(title) {
+		uiUtils.lastUI.attr('title', title)
+	}
+
 
 
 
@@ -371,6 +585,14 @@ function defineUtils() {
 		u.addUI(cfg, btn)
 	}
 
+	uiUtils.ws = function ws(cfg, fxD) {
+		cfg = dv(cfg, {})
+		cfg = u.cfg.str(cfg, 'text')
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+		var ui = u.tag('span')
+		ui.html(' ')
+		u.addUI(cfg, ui)
+	}
 
 	uiUtils.hr = function addBr(cfg, fxD) {
 		cfg = dv(cfg, {})
@@ -388,6 +610,15 @@ function defineUtils() {
 		btn.css('width', '10px')
 		btn.css('display', 'inline-block');
 		u.addUI(cfg, btn)
+	}
+	uiUtils.addSpace = uiUtils.spacer;
+
+	uiUtils.disable = function disable(id, fxD) {
+		$(id).css('opacity', 0.3);
+	}
+
+	uiUtils.enable = function enable(id, fxD) {
+		$(id).css('opacity', 1);
 	}
 
 	uiUtils.waitFor = function waitFor(id, fxD, count) {
@@ -413,9 +644,13 @@ function defineUtils() {
 			_cfg[prop] = cfg;
 			cfg = _cfg;
 		}
-		if ( cfg == null ) {
-			cfg = {}
-		}
+		return cfg;
+	};
+
+	p.cfg.addToCfg = function addToCfg(cfg, prop, val) {
+		if ( val != null ){
+			cfg[prop] = val;
+		};
 		return cfg;
 	}
 
@@ -481,6 +716,9 @@ function defineUtils() {
 			ui.attr('id', cfg.id);
 			cfg.id = '#'+cfg.id;
 		}
+		if ( cfg.tooltip ) {
+			ui.attr('title', cfg.tooltip)
+		}
 		cfg.ui = ui;
 		u.lastCfg = cfg;
 	}
@@ -538,6 +776,17 @@ function defineUtils() {
 				ui.text(val)
 			}
 		}
+
+		p.clearText = function clearText(delay, jq) {
+			throwIfNull(jq, 'need a jquery for delay');
+			delay = dv(3)
+			setTimeout(
+				function clearText(){
+					uiUtils.setText(jq, '')
+				}
+				, delay * 1000)
+		}
+
 		p.setHtml = function setHtml(jq, val) {
 			var ui = $(jq)
 			//console.log('what is ', jq, ui, val)
@@ -549,7 +798,7 @@ function defineUtils() {
 		p.glyph = function addGlyphIcon(iconName, val) {
 			var  iconHTML = '<span class="glyphicon glyphicon-'+iconName+'" aria-hidden="true"></span>'
 			var icon = $(iconHTML);
-			return icon; 
+			return icon;
 		}
 
 		p.setSelect = function setSelect(jq, vals, keyProp, valProp) {
@@ -665,14 +914,48 @@ function defineUtils() {
 	defineSetValues();
 
 
+	function defineClickHandler() {
+		p.setupclickListener = function setupclickListener(jq, val) {
+			function onKeyDown(e) {
+				if (e.keyCode == 16) {
+					//alert(e.which + " or Shift was pressed");
+					window.shiftKey = true
+					console.log('keydown')
+				}
+			}
+			function onKeyUp(e) {
+				if (e.keyCode == 16) {
+					//alert(e.which + " or Shift was pressed");
+					window.shiftKey = false
+					console.log('keyup')
+				}
+			}
+
+			$(document).off('keydown', onKeyDown);
+			$(document).off('keyup', onKeyUp);
+
+			$(document).keydown(onKeyDown);
+			window.onKeyDown = onKeyDown;
+
+			$(document).keyup(onKeyUp);
+			window.onKeyUp = onKeyUp;
+
+		}
+		//	p.setupclickListener()
+	}
+	defineClickHandler();
 
 
 	p.utils = {};
-	p.utils.mergeIn = function mergeIn(a, b ) {
+	p.utils.mergeIn = function mergeIn(a, b, overwriteVals ) {
 		if ( a == null ) { return }
 		if ( b == null ) { return }
 		//function copyProps(from, to) {
 		$.each(a, function(k,v){
+			var existingVal  = b[k];
+			if ( existingVal && overwriteVals != true ) {
+				return;
+			}
 			b[k]=v;
 		});
 		//	}
@@ -782,8 +1065,11 @@ function defineUtils() {
 			 */
 
 			var params = uiUtils.utils.getParams();
-			console.debug('addToUrl','params', window.location.hash, window.location.search,
-				params)
+
+			var dbg = false;
+			if ( dbg )
+				console.debug('addToUrl','params', window.location.hash,
+					window.location.search, params)
 			if ( params[key] == val.toString() ) {
 				return;
 			}
@@ -799,10 +1085,11 @@ function defineUtils() {
 			if ( urlFinal.includes('#')) {
 				urlFinal = urlFinal.split('#')[0];
 			}
-
-			console.debug('addToUrl', 'start', urlFinal)
+			if ( dbg )
+				console.debug('addToUrl', 'start', urlFinal)
 			var isEmptyHash = hash.slice(0,2) == '#?';
-			console.debug('addToUrl','hash', hash)
+			if ( dbg )
+				console.debug('addToUrl','hash', hash)
 			if ( isEmptyHash ) {
 				urlFinal +=  ''
 			} else if ( hash != ''  ) {
@@ -960,6 +1247,58 @@ function defineUtils() {
 	}
 	defineUI()
 
+	p.makeUIDict = function makeUIDict(name, why) {
+		function UIDict() {
+			//why: stores many ui items for action on later
+			var self = this;
+			var p = this;
+
+			self.data = {};
+			self.data.name = name;
+			self.data.why = why;
+			self.data.data = {};
+
+			p.addUI = function addUI(why, ui) {
+				var uiData = {}
+				uiData.why = why;
+				uiData.ui = ui;
+				if (ui == null) {
+					uiData.ui = uiUtils.getLastId()
+				}
+				dict.data.push(uiData)
+			}
+
+			p.addUI2 = function addUI2(why, ui) {
+				dict.data
+			}
+
+			p.getAllUI = function getAllUI() {
+				var results = [];
+				$.each(self.data, function onAdd(k,v){
+					var ui2 = ui.ui;
+					if ( $.isString(ui2)){
+						ui2 = $(ui2)
+					}
+					results.push(ui2)
+				})
+
+				return results;
+			}
+		}
+
+		var dict = new UIDict()
+		return dict
+
+	}
+
+	p.t = function setTimeoutShorten(){
+		var args = convertArgumentsToArray(arguments);
+		if ( args.length == 1 )
+			args.push(500);
+		//debugger
+		setTimeout.apply(null, args)
+	}
+
 
 	function defineComparison() {
 		p.utils.copyStyles = function copyStyles(from, to) {
@@ -1024,8 +1363,7 @@ function defineUtils() {
 				+ path;
 			return url;
 		}
-
-		p.getUrl = function getUrl(url, data, fxDone) {
+		p.getUrl = function getUrl(url, data, fxDone, fxError) {
 			if ( $.isFunction(data) && $.isPlainObject(fxDone)) {
 				//criss cross
 				var _fxDone = data;
@@ -1046,8 +1384,9 @@ function defineUtils() {
 					callIfDefined(fxDone, data)
 				},
 				error: function (a,b,c) {
-					console.error('request failed', a,b,c)
+					console.error(url,'request failed', a,b,c)
 					//gUtils.remoteFailed(a,b,c)
+					callIfDefined(fxError, a,b,c, url)
 				}
 			});
 		}
@@ -1128,6 +1467,27 @@ function defineUtils() {
 			});
 		}
 
+
+		u.debouncer = function debouncer(fx, name, time) {
+			//if ( time )
+			var d = {}
+			d.debounce = function debounce(fx2) {
+				if (d.waiting) {
+					clearTimeout(d.waiting)
+				}
+				//console.log('waiting', fx.name)
+				//d.waiting = true;
+				d.waiting = setTimeout(function onDebounced() {
+					if(fx2) {
+						fx2();
+						return;
+					}
+					fx()
+				}, time)
+			}
+			return d;
+		}
+
 	}
 
 	defineFX();
@@ -1143,7 +1503,23 @@ function defineUtils() {
 	}
 	ifHelpers()
 
-	
+
+	p.fadeInOnHover = function fadeInOnHover(ui) {
+		$(ui).css('opacity', 0.0)
+		$(ui).hover(
+			function onHover() {
+				$(ui).animate({
+					opacity:1
+				}, 300);
+				//console.log('fade in')
+			},
+			function onHoverOut() {
+				$(ui).animate({
+					opacity: 0.0
+				}, 300);
+			}
+		);
+	}
 	function defineLookAt() {
 		var gUtils = uiUtils
 		gUtils.setLocationHash = function setLocationHash(newHashVal) {
@@ -1236,7 +1612,6 @@ function defineUtils() {
 		}
 
 		uiUtils.socket.emit = function emit(msg, data, fxDone) {
-
 			self.data.socket.emit(msg, data)
 			var key = null;
 			if (key == null && uiUtils.socket.nextEmitter != null) {
@@ -1244,7 +1619,7 @@ function defineUtils() {
 			}
 			var existingListener = uiUtils.socket.dict[key];
 			if (existingListener != null) {
-				 console.warn('u already set this ...')
+				console.warn('u already set this ...')
 				return; //skip ...
 			}
 			uiUtils.socket.dict[key] = fxDone;
@@ -1273,6 +1648,107 @@ function defineUtils() {
 
 			})
 
+		}
+
+
+
+		uiUtils.socket.upgradeSocket = function upgradeSocket(socket) {
+			socket.emit2 = function emit(msg, data, fxDone) {
+				socket.emit(msg, data)
+				var key = null;
+				if (key == null && uiUtils.socket.nextEmitter != null) {
+					key = uiUtils.socket.nextEmitter
+				}
+				var existingListener = uiUtils.socket.dict[key];
+				if (existingListener != null) {
+					console.warn('u already set this ...')
+					return; //skip ...
+				}
+
+
+				//debugger
+				uiUtils.socket.dict[key] = fxDone;
+				socket.on(data.cmd + '_results', function _onResults(msg) {
+					console.log('msg', msg);
+					fxDone(msg)
+
+				})
+
+			}
+
+			socket.addListener2 = function addListener(type, fxDone, retryCount) {
+				if ( socket == null ) {
+					if ( retryCount == null ) { retryCount = 0; }
+					if ( retryCount > 10 ) { console.error('failed to ', this.name, type, fxDone)}
+					setTimeout(function onRetry() {
+						retryCount++
+						addListener(type, fxDone, retryCount)
+					}, 500);
+					return;
+				}
+				socket.on(type, function _onResults(data) {
+					//console.log('msg', msg);
+					fxDone(data)
+
+				})
+
+			}
+
+
+			uiUtils.waitForComp = function waitForComp(id, fx, args) {
+				var args = convertArgumentsToArray(args);
+				ui = $(id)
+				console.log('waitforcomp')
+				if ( ui.length == 0 ) {
+					setTimeout(function onRetry() {
+						console.log('onRetry')
+						//retryCount++
+						//addListener(type, fxDone, retryCount)
+						forwardArgsTo(fx, args);
+					}, 500);
+					console.log('ui.length')
+					return true
+				}
+				console.log('waitForComp')
+				return false
+			}
+
+
+			socket.listenForStatus = function listenForStatus(divId, fxDone, retryCount, type) {
+				var h = {};
+
+				divId = '#'+divId
+				var ui = $(divId)
+
+				if ( uiUtils.waitForComp(divId, socket.asdf, arguments) ) {
+					console.log('block')
+					return;
+				}
+
+				console.log('ok.l')
+				var msg = u.tag('ui')
+				msg.attr('id', 'messages')
+				ui.append(msg)
+
+				uiUtils.makeScrollable(ui, 35)
+
+
+				console.log('listening to', socket)
+				socket.on('updateStatus', function onRecieveStatusMsg(data){
+					/*if (msg.indexOf('eval-')==0) {
+					 msg = msg.replace('eval-', '')
+					 eval(msg);
+					 }*/
+
+					var scrollContainer = $(divId)
+					var ui = scrollContainer.find('#messages')
+					var li = $('<li>').text(data.msg)
+					ui.append(li);
+					console.log('chat', data, li, ui)
+					uiUtils.scrollToBottom(scrollContainer);
+				});
+
+			}
 		}
 	}
 

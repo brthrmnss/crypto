@@ -37,8 +37,10 @@ function BasicClass() {
         var t = new SelfReloadingTestScriptDemo();
         //t.init();
         var options = {};
-        options.fileToReload = dirCrypto+'mp/RCExt/RCConfigExecServer.js'
-        options.fileToReload2 = dirCrypto2+'mp/RCExt/RCConfigExecServer.js'
+        var fileScript = 'mp/RCExt/RC_ConfigManager_ExecServer.js'
+        options.fileToReload = dirCrypto+fileScript;
+        options.fileToReload2 = dirCrypto2+fileScript;
+        //'mp/RCExt/RC_ConfigManager_ExecServer.js'
         t.init(options);
     }
 

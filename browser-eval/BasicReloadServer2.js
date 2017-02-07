@@ -105,7 +105,7 @@ function BrowserEvalServer() {
 
 
 
-        console.log('hhh', http.use, io, server)
+       // console.log('hhh', http.use, io, server)
        // sh.exit()
 
         // open('http://localhost:5557')

@@ -48,6 +48,13 @@ function onInitDB() {
     function Db2() {
         var self = this;
         self.data = {}
+        self.data.port = 6012;
+        self.data.portData = '6008';
+        self.data.ip = '127.0.0.1';
+        self.data.url = self.data.ip + ':'+ self.data.port;
+        self.data.baseUrl = 'http://' + self.data.url;
+        self.data.baseDataUrl = 'http://' + self.data.ip + ':'+ self.data.portData;
+
         self.data.ui = {};
         self.data.timeAutosave = 10;
         self.data.timeRecentPages = 10;
@@ -64,6 +71,12 @@ function onInitDB() {
                 self.data.socket = window.oldInstance.data.socket;
                 self.data.socket.removeAllListeners()
                 uiUtils.data.socket = self.data.socket;
+
+
+                self.data.socketHoist = window.oldInstance.data.socketHoist;
+                self.data.socketHoist.removeAllListeners()
+                uiUtils.data.socketHoist = self.data.socketHoist;
+
                 uiUtils.socket.dict = {};
             }
             window.oldInstance = self;
@@ -77,13 +90,21 @@ function onInitDB() {
              setTimeout(function init2() {
              self.getRecentPageList(self.haveNewListLoadFirstOne)
              }, 1000)*/
+
+            self.data.taskReqd = uiUtils.makeUIDict();
+
+
+            self.connectSocket();
+
             t.createUI();
             t.createUI2();
             t.createUI3();
-            t.createUI4();
+            t.createVerifyBlock();
 
             self.isConnected()
-            self.connectSocket();
+
+
+            self.getPreviousTasks();
         }
 
 
@@ -104,6 +125,27 @@ function onInitDB() {
                 });
                 self.data.socket = socket;
                 uiUtils.data.socket = self.data.socket;
+
+
+
+
+
+                var portHoist = (parseInt(self.data.port)+2)
+                console.log('portHoist', portHoist)
+
+                var socket = io( 'http://'+self.data.ip + ':'+ portHoist );
+                socket.on('chat message', function(msg){
+                    if (msg.indexOf('eval-')==0) {
+                        msg = msg.replace('eval-', '')
+                        eval(msg);
+                    }
+                    console.log('chat')
+                    $('#messages').append($('<li>').text(msg));
+                    h.scrollToBottom();
+                });
+                uiUtils.socket.upgradeSocket(socket)
+                self.data.socketHoist = socket;
+                uiUtils.data.socketHoist = self.data.socketHoist;
             }
 
             p.testSocket = function testSocket() {
@@ -261,6 +303,7 @@ function onInitDB() {
         }
         defineRemote();
 
+        var lblWidth = 80;
 
         p.createUI = function createUI() {
 
@@ -272,13 +315,13 @@ function onInitDB() {
 
 
             uiUtils.br(); uiUtils.br();
-            uiUtils.addLabel({text:"Server", id:"txtServer"})
+            uiUtils.addLabel({text:"Server Brd", id:"txtServer"})
             uiUtils.makeBtn(uiUtils.lastId(), 'Test socket');
             uiUtils.onClick(uiUtils.lastId(), self.testSocket)
 
             uiUtils.br()
             uiUtils.addTextInput({
-                text:'127.0.0.1:6012',
+                text:self.data.url,
                 id:'txtIpHostpost',
                 onDebounce:function onChanged(newName) {
                     console.log('debouched', newName)
@@ -305,6 +348,8 @@ function onInitDB() {
                 }
             })
             self.data.ui.txtPort = uiUtils.lastId();
+            self.data.ui.txtBreedServerUrl = uiUtils.lastId();
+
 
             uiUtils.addLabel({id:'txtConnectedStatus',
                 addSpacerBefore:true,
@@ -333,43 +378,61 @@ function onInitDB() {
             uiUtils.hr()
 
 
-            uiUtils.addLabel({id:'x',
-                text:'Task Name'})
-            uiUtils.spacer();
-            uiUtils.addTextInput({
-                placeholder:'Task Name',
-                id:'txtTaskName',
-                onDebounce:function onChanged(newName) {
-                    self.data.lastNameIsDefault = false;
-                    console.log('debouched', newName)
-                    uiUtils.show(self.data.ui.txtRefreshTaskName)
-                }
-            })
-            self.data.ui.txtTaskName = uiUtils.lastId();
 
 
-            uiUtils.addLabel({
-                text:uiUtils.getTimestamp()+'.json',
-                id:'txtTaskDate'
-            })
-            self.data.ui.txtTaskDate = uiUtils.lastId();
-            uiUtils.addLabel({id:'txtRefreshTaskName',
-                addSpacerBefore:true,
-                tooltip:"refresh name",
-                text:'reload'})
-            self.data.ui.txtRefreshTaskName = uiUtils.lastId();
-            uiUtils.setHtml(self.data.ui.txtRefreshTaskName, uiUtils.glyph('refresh'))
-            uiUtils.makeBtn(self.data.ui.txtRefreshTaskName, 'Refresh Name')
-            uiUtils.onClick(self.data.ui.txtRefreshTaskName, function onClickedRefresh() {
-                self.data.lastNameIsDefault = true;
-                self.data.lastNameType = null
+
+            uiUtils.addSection(function onAddTaskName() {
+                uiUtils.addLabel({id:'x',
+                    width:lblWidth+0,
+                    text:'Task Name'})
+                uiUtils.spacer();
+                uiUtils.addTextInput({
+                    placeholder:'Task Name',
+                    id:'txtTaskName',
+                    onDebounce:function onChanged(newName) {
+                        self.data.lastNameIsDefault = false;
+                        console.log('debouched', newName)
+                        uiUtils.show(self.data.ui.txtRefreshTaskName)
+                    }
+                })
+                self.data.ui.txtTaskName = uiUtils.lastId();
+
+
+                uiUtils.addLabel({
+                    text:uiUtils.getTimestamp()+'.json',
+                    id:'txtTaskDate'
+                })
+                self.data.ui.txtTaskDate = uiUtils.lastId();
+                uiUtils.addLabel({id:'txtRefreshTaskName',
+                    addSpacerBefore:true,
+                    tooltip:"refresh name",
+                    text:'reload'})
+                self.data.ui.txtRefreshTaskName = uiUtils.lastId();
+                uiUtils.setHtml(self.data.ui.txtRefreshTaskName, uiUtils.glyph('refresh'))
+                uiUtils.makeBtn(self.data.ui.txtRefreshTaskName, 'Refresh Name')
+                uiUtils.onClick(self.data.ui.txtRefreshTaskName, function onClickedRefresh() {
+                    self.data.lastNameIsDefault = true;
+                    self.data.lastNameType = null
+                    uiUtils.hide(self.data.ui.txtRefreshTaskName)
+                    uiUtils.setText(self.data.ui.txtTaskName, '');
+                })
                 uiUtils.hide(self.data.ui.txtRefreshTaskName)
-                uiUtils.setText(self.data.ui.txtTaskName, '');
-            })
-            uiUtils.hide(self.data.ui.txtRefreshTaskName)
 
-            uiUtils.br()
-            uiUtils.hr()
+                uiUtils.br()
+
+                uiUtils.addLabel({text:"", width:lblWidth+0})
+                uiUtils.spacer()
+                uiUtils.addSelect({
+                    text:'yeah',
+                    id:'ddPrevTasks',
+                })
+                self.data.ui.ddPrevTasks = uiUtils.lastId();
+                uiUtils.updateSelect('ddPrevTasks', [1,2,3,4,5]);
+
+
+                uiUtils.hr()
+            })
+
 
 
         }
@@ -382,25 +445,38 @@ function onInitDB() {
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
 
-            uiUtils.addLabel({text:"Input", width:lblWidth})
+            uiUtils.addLabel({text:'Input', width:lblWidth, addSpaceAfter:true})
+
+            uiUtils.addLabel({text:"", id:"txtUpdateStatus"})
+            self.data.ui.txtConfigServerStatus = uiUtils.lastId();
+            uiUtils.socket.addListener('updateStatus',
+                function onFxDone_OnGotStatusMessage(msg) {
+                    uiUtils.setText(self.data.ui.txtConfigServerStatus,
+                        msg.msg)
+                    uiUtils.clearText(3, self.data.ui.txtConfigServerStatus)
+                })
             uiUtils.br()
 
-            var lblWidth = 80;
+
             uiUtils.btnDefaults = {minWidth:100}
 
             var h = {}
             h.create1Off = function create1Off(){
-                uiUtils.addLabel({text:"1 Off", width:lblWidth})
+
+                uiUtils.addRow();
+                uiUtils.addLabel({text:"1 Off",
+                    width:lblWidth,
+                    title: 'Search for 1 item'})
                 // div.append('1 Off');
                 uiUtils.spacer();
                 uiUtils.addTextInput({
-                    text:'',
+                    text:'sia mp3 single',
                     placeholder:'query',
-                    id:'txtOnOffQuery',
+                    id:'txtOneOffQuery',
                     onDebounce:function onChanged(newName) {
                         console.log('debouched', newName)
                     } })
-                self.data.ui.txtName = uiUtils.lastId();
+                self.data.ui.txtOneOffQuery = uiUtils.lastId();
 
                 self.getValFrom = function getValFrom(val) {
                     return {'getValFromId':val}
@@ -418,7 +494,7 @@ function onInitDB() {
                     addSpacerBefore:true,
                     fxClick: self.onGetMag,
                     data:{
-                        query:self.getValFrom(self.data.ui.txtName),
+                        query:self.getValFrom(self.data.ui.txtOneOffQuery),
                         cmd:'searchpb'
                     }
                 })
@@ -429,7 +505,7 @@ function onInitDB() {
                     addSpacerAfter:true,
                     data:{
                         tor:self.getValFromData('queryTor'),
-                        query:self.getValFrom(self.data.ui.btnCreateDM_query),
+                        query:self.getValFrom(self.data.ui.txtOneOffQuery),
                         cmd:'makemani'
 
                     },
@@ -442,8 +518,13 @@ function onInitDB() {
                 uiUtils.addLabel({id:"txtQueryResultInfo", text:''})
                 self.data.ui.txtQueryResultInfo = uiUtils.lastId();
 
+                uiUtils.style('margin-bottom', '-1px')
+                
+                uiUtils.leaveRow()
+                
+                
+             //   uiUtils.br()
 
-                uiUtils.br()
             }
             h.createListIds = function createListIds(){
                 uiUtils.addLabel({text:"List ls Ids", width:lblWidth})
@@ -497,8 +578,8 @@ function onInitDB() {
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
                         listIds:self.getValFrom(self.data.ui.txtTTIds),
-                       // listMethod:'ttIds',
-                       // listStoreMethod:'ttIds',
+                        // listMethod:'ttIds',
+                        // listStoreMethod:'ttIds',
                         cmd:'listids',
                         wrapType: "ttIds"
                     }
@@ -531,8 +612,8 @@ function onInitDB() {
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
                         listIds:self.getValFrom(self.data.ui.txtTTIds),
-                       // listMethod:'ttIds',
-                       // listStoreMethod:'ttIds',
+                        // listMethod:'ttIds',
+                        // listStoreMethod:'ttIds',
                         cmd:'listids',
                         wrapType: "ttIds"
                     }
@@ -541,43 +622,67 @@ function onInitDB() {
                 uiUtils.br()
             }
             h.create_dlConfigList = function create_dlConfigList(){
-                uiUtils.addLabel({text:"dl config", width:lblWidth})
+                uiUtils.addLabel({text:"dl config", width:lblWidth-0})
                 uiUtils.spacer();
 
+                uiUtils.addDiv(
+                    {id:'dl config',
+                        width:170
+                    })
+                //uiUtils.addBorder();
+                uiUtils.makeInline();
+                uiUtils.changeContainer();
+
                 uiUtils.addDD({
+                    id:"ddContentType",
                     options:['Movies', "TV"],
                     addSpaceAfter:true,
                 });
+                self.data.ui.ddContentType = uiUtils.lastId();
 
                 uiUtils.addDD({
+                    id:"ddSortType",
                     options:['Popularity', "Views"],
+                    addSpaceAfter:false,
+                });
+                self.data.ui.ddSortType = uiUtils.lastId();
+
+                uiUtils.br();
+
+                //uiUtils.addLabel({text:"", width:lblWidth})
+                //uiUtils.spacer();
+                uiUtils.addNumber({
+                    id:"ddSearchYearStart",
+                    defaultValue:2017,
+                    width:60,
                     addSpaceAfter:true,
                 });
+                self.data.ui.ddSearchYearStart = uiUtils.lastId();
+
+                uiUtils.addNumber({
+                    id:"ddSearchYearEnd",
+                    defaultValue:2017,
+                    width:60,
+                    addSpaceAfter:true,
+                });
+                self.data.ui.ddSearchYearEnd = uiUtils.lastId();
+
+                uiUtils.popContainer();
+
                 uiUtils.addBtn({
                     text: 'Create DM',
                     addSpacerBefore:true,
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
-                        listIds:self.getValFrom(self.data.ui.txtTTIds),
-                        // listMethod:'ttIds',
-                        // listStoreMethod:'ttIds',
-                        cmd:'listids',
+                        contentType:self.getValFrom(self.data.ui.ddContentType),
+                        sortType:self.getValFrom(self.data.ui.ddSortType),
+                        yearStart:self.getValFrom(self.data.ui.ddSearchYearStart),
+                        yearEnd:self.getValFrom(self.data.ui.ddSearchYearEnd),
+                        cmd:'listConfig',
                         wrapType: "ttIds"
                     }
                 })
-                uiUtils.br();
-                uiUtils.addLabel({text:"", width:lblWidth})
-                uiUtils.spacer();
-                uiUtils.addNumber({
-                    defaultValue:2017,
-                    width:60,
-                    addSpaceAfter:true,
-                });
-                uiUtils.addNumber({
-                    defaultValue:2017,
-                    width:60,
-                    addSpaceAfter:true,
-                });
+
 
                 uiUtils.br();
 
@@ -607,6 +712,7 @@ function onInitDB() {
             }
 
             h.createQueryUrl = function createQueryUrl(){
+                return;
                 uiUtils.addLabel({text:"QueryUrl", width:lblWidth})
                 // div.append('1 Off');
                 uiUtils.spacer();
@@ -634,8 +740,11 @@ function onInitDB() {
             h.createListOfTt_Ids();
             h.createIdList();
             h.create_dlConfigList();
-           // h.createFile(); //TODO: This is by the task name ...
+            // h.createFile(); //TODO: This is by the task name ...
             h.createQueryUrl();
+
+
+
 
 
             function extraStuff() {
@@ -648,7 +757,9 @@ function onInitDB() {
                 uiUtils.updateSelect('ddPaper', [1, 2, 3, 4, 5]);
 
 
-//uiUtils.addBtn()
+
+
+                //uiUtils.addBtn()
                 uiUtils.addBtn(
                     {
                         text: 'Load',
@@ -772,7 +883,7 @@ function onInitDB() {
 
                     var url = uiUtils.getLocation('useConfig', 6012);
 
-                   // return;
+                    // return;
                     uiUtils.getUrl(url, function onGotRecentList(sdf){
                         console.log('onGotRecentList', sdf)
 
@@ -805,7 +916,6 @@ function onInitDB() {
                     text: 'Status',
                 },
                 function onNew(){
-
                     var url = uiUtils.getLocation('getJSONPath', 6012);
                     uiUtils.openNewWindow(url)
 
@@ -818,7 +928,7 @@ function onInitDB() {
 
             return;
         }
-        p.createUI4 = function createUI4() {
+        p.createVerifyBlock = function createVerifyBlock() {
 
 
             var divParent = $('#divSaveArea');
@@ -834,33 +944,86 @@ function onInitDB() {
             uiUtils.br()
             uiUtils.addBtn(
                 {
+                    text: 'Test',
+                    addSpacer: true,
+                    fxClick: self.onTestHoistServer,
+                    data: {
+                        //url: self.data.ui.txtBreedServerUrl,
+                        //tor:self.getValFromData('queryTor'),
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        cmd: 'testit'
+                    }
+                }
+            );
+            uiUtils.addBtn(
+                {
+                    text: 'Get File List',
+                    addSpacer: true,
+                    fxClick: self.onHoistServerTask,
+                    data: {
+                        //url: self.data.ui.txtBreedServerUrl,
+                        //tor:self.getValFromData('queryTor'),
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        cmd: 'getFileList'
+                    }
+                }
+            );
+            uiUtils.addBtn(
+                {
                     text: '% Complete',
                     title:'folder found in expected directory',
                     addSpacer:true
                 },
                 self.statusComplete
             );
+
             uiUtils.addBtn(
                 {
-                    text: 'Get File List',
-                    addSpacer:true
-                },
-                self.statusComplete
-            );
-            uiUtils.addBtn(
-                {
-                    text: 'Content Verify',
+                    text: 'Santize File List',
                     tooltip: 'Check each id for oexpected match',
                     addSpacer:true
                 },
                 self.statusComplete
             );
 
+            var idDivHoistStatus = 'divContentLogStatus'
+            var div = uiUtils.addDiv(idDivHoistStatus).ui;
+
+
+            console.log('self',self.data.socketHoist)
+            self.data.socketHoist.listenForStatus( idDivHoistStatus);
+
+            /*
+             uiUtils.addBtn(
+             {
+             text: 'Content Verify',
+             tooltip: 'Check each id for oexpected match',
+             addSpacer:true
+             },
+             self.statusComplete
+             );
+
+             */
+
 
             uiUtils.br(); uiUtils.br();
 
         }
 
+
+        p.getPreviousTasks = function getPreviousTasks(fxDone) {
+
+            var url = self.data.baseDataUrl
+                + '/listFiles';
+            uiUtils.getUrl(url, function onGotRecentList(sdf){
+                // console.log('onGotRecentList', sdf)
+                uiUtils.setSelect(self.data.ui.ddPrevTasks,
+                    sdf, 'name', 'name');
+                callIfDefined(fxDone);
+            }, null, function onError(){
+                alert('server is not running start autoaveserver')
+            });
+        }
 
 
         p.keyup = function onKeyup(content, e) {
@@ -876,9 +1039,13 @@ function onInitDB() {
         }
 
 
+
         p.render = function render() {
             console.log('render', self.data.ui.txtName)
-            uiUtils.setText(self.data.ui.txtName, self.data.currentName)
+            uiUtils.setText(self.data.ui.txtName, self.data.currentName);
+
+            //if task not set, disable all of verify
+            //if task not set, disable upload and stop
         }
 
         function createUtils() {
@@ -976,14 +1143,15 @@ function onInitDB() {
                         data
                     )
                 }
+
                 p.onGetListsAndCreateDM = function onGetListsAndCreateDM(e) {
-                  //  console.error('e', self.data.socket)
+                    //  console.error('e', self.data.socket)
                     //console.error(e)
                     var target = $(e.target)
                     console.log('onGetListsAndCreateDM', target.attr('data'), e.target.data);
                     var data = self.utils.processDARK(e.target.data);
-                    
-              
+
+
                     if ( data.listMethod == null ) {
                         data.listIds = sh.splitStrIntoArray(data.listIds)
                     } else {
@@ -997,15 +1165,11 @@ function onInitDB() {
 
                     var taskName = self.utils.makeTaskName(this, nameOfTask+'_'+data.listIds[0]+'_'+data.listIds.length);
 
-
-
-
-
                     data.taskName = taskName;
 
-                   console.log('going with', this.name, data);
+                    console.log('going with', this.name, data);
 
-                   // return;
+                    // return;
                     uiUtils.disable(self.data.ui.btnCreateDM_query);
                     uiUtils.socket.nextEmit(this);
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {
@@ -1035,7 +1199,7 @@ function onInitDB() {
 
 
 
-                    self.resetTaskTitle('1off_query');
+                    self.resetTaskTitle('1off_query_'+data.query);
                     //self.resetTaskTitle2();
                     var title = self.getTaskTitle();
 
@@ -1044,6 +1208,7 @@ function onInitDB() {
                     uiUtils.socket.nextEmit(this);
                     console.log('title', title, data);
                     data.title = title;
+
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
                         uiUtils.enable(self.data.ui.btnCreateDM_query);
@@ -1054,6 +1219,66 @@ function onInitDB() {
                     self.data.socket.emit('cmd',
                         data
                     )
+                }
+
+                p.onTestHoistServer = function onTestHoistServer(e) {
+                    // console.error(e)
+                    var target = $(e.target)
+                    // console.log('d', target.attr('data'), e.target.data);
+                    var data = self.utils.processDARK(e.target.data);
+                    console.log('onServerTask', data);
+                    var title = self.getTaskTitle();
+                    //   uiUtils.disable(self.data.ui.btnCreateDM_query);
+                    uiUtils.socket.nextEmit(this);
+                    console.log('title', title, data);
+                    data.title = title;
+                    /*uiUtils.socket.addListener('updateStatus', function onStatusUpdated(e) {
+                        console.log('e1', e)
+                    })
+*/
+                 /*   self.data.socketHoist.on('updateStatus', function onStatusUpdated(e) {
+                        console.log('e2', e)
+                    })*/
+                    self.data.socketHoist.emit2('runcmd', data, function onResult(data2) {
+                        console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
+                        uiUtils.enable(self.data.ui.btnCreateDM_query);
+                        uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
+                    });
+                    return;
+                }
+
+                p.onHoistServerTask = function onHoistServerTask(e) {
+                    var target = $(e.target)
+                    var data = self.utils.processDARK(e.target.data);
+                    var title = self.getTaskTitle();
+                    uiUtils.socket.nextEmit(this);
+                    console.log('onHoistServerTask', 'title', title, data);
+                    data.title = title;
+                    self.data.socketHoist.emit2('runcmd', data, function onResult(data2) {
+                        console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
+                        uiUtils.enable(self.data.ui.btnCreateDM_query);
+                        uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
+                    });
+                    return;
+                }
+
+                p.onServerTask = function onServerTask(e) {
+                    // console.error(e)
+                    var target = $(e.target)
+                    // console.log('d', target.attr('data'), e.target.data);
+                    var data = self.utils.processDARK(e.target.data);
+                    console.log('onServerTask', data);
+                    var title = self.getTaskTitle();
+                    //   uiUtils.disable(self.data.ui.btnCreateDM_query);
+                    uiUtils.socket.nextEmit(this);
+                    console.log('title', title, data);
+                    data.title = title;
+                    uiUtils.socket.emit('runcmd', data, function onResult(data2) {
+                        console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
+                        uiUtils.enable(self.data.ui.btnCreateDM_query);
+                        uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
+                    })
+                    return;
                 }
 
 
@@ -1098,9 +1323,6 @@ function onInitDB() {
              $('#messages').append($('<li>').html(msg));
              h.scrollToBottom();
              });*/
-
-
-          
 
         }
         defineRemoteUtils();

@@ -19,7 +19,7 @@ function ImportOldFileTableDatabase() {
     var self = this;
 
     p.init = function init(url, appCode) {
-        var dbname = 'imdbtest';
+        var dbname = 'imdb_info';
         var DBHelper = require('./IMDB_DB_Helper').DBHelper
         var i = new DBHelper();
         //var cfg = i.utils.make()
@@ -42,7 +42,8 @@ function ImportOldFileTableDatabase() {
         //chain.add(i.x.step3_loadDatabase)
         chain.add(function (k,v) {
             i.x.importFile('rcdatabase.sql')
-        })
+        });
+        
         //  i.deleteDB();
         /*
          i.connectToDb(null, function onConnect(){

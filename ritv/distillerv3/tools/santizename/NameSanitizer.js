@@ -29,7 +29,7 @@ var sh = require('shelpers').shelpers;
 var columnify = require('columnify')
 
 
-var IMDB_DB_Helper = sh.fs.resolve('IMDB_DB_Helper.js');
+var IMDB_DB_Helper = sh.fs.resolve(__dirname + '/'+'IMDB_DB_Helper.js');
 var path = sh.fs.resolve(IMDB_DB_Helper);
 var IMDB_DB_Helper = require(IMDB_DB_Helper)
 //var columns = columnify(data, options)
