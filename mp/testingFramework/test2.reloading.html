@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="jquery.js.ignore_scan" ></script>
+    <script src="../themes/minimal_v0/js/ui_utils.js" ></script>
+   <!-- <script src="js.cookie.js" ></script>-->
+    <!--
+    <script src="shelpers-mini.js" ></script>
+    <script src="PromiseHelperV3.js" ></script>
+    <script src="testFramework.js" ></script>
+    <script src="tests.js" ></script>
+    -->
+
+    <script>
+        window.onRedButton = function onRedButton() {
+            console.log('ddd')}
+       // window.preamble = '/test3/';
+    </script>
+    <script src="testLL.js"></script>
+
+    <script>
+        function lazyLoadAndRunTest() {
+            loadTestFramework(function onReady(){
+                testStackingDemo2B(true);
+            })
+        } 
+        function autoloadTestFramework() {
+            window.location += '?loadTestFramework=true'
+        }
+    </script>
+    <style>
+        body {
+            font-weight: 400;
+            background-color: #3A2E51;
+            font-family: 'Arial';
+        }
+    </style>
+</head>
+<body>
+<button>Test</button> <br />
+<button onclick="lazyLoadAndRunTest()">LL Test 2</button>  <br />
+<button onclick="tH.clickTest2()">Run Test 2</button>  <br />
+<textarea id="txtArea" ></textarea>
+<button id="btnTest">Test</button>
+
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="ctestLogPanel" >
+    asdf
+</div>
+
+
+
+<div>
+    <button class="redTest"
+            onclick="onRedButton()" >Go</button>
+</div>
+
+<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>
+<script>
+    function onReloader() {
+        //reloader.reloadWhen('index_.html');
+        reloader.reloadWhen('test2.reloading.html');
+        reloader.filter = '/videoproject/';
+        reloader.reloadWhenFx('drawPB.js', function onTestOneJs(a, b, c) {
+            //console.log('pussy', a,b,c);
+            //window.drawPBJS.go();
+        })
+
+
+        reloader.reloadWhenFx('account_', function onTestOneJs(a, b, c) {
+            //console.log('pussy', a,b,c);
+            //window.drawPBJS.go();
+            var $modal_content = $('.modal-account .content');
+            $modal_content.removeClass('js-loaded')
+            window.xLoad = true
+            uiUtils.setHash('')
+            function myAccount() {
+                uiUtils.setHash('account')
+            }
+
+            setTimeout(myAccount, 500)
+        })
+        reloader.reloadWhenFx('test3/', function onTestOneJs(a, b, c) {
+            loadTestFramework(function onFinishedRerunTest() {
+                // window.tests.loaded = true;
+                //window.whenReadyHasRunTesting = false; do not reload again
+                console.log('rerun last test')
+                tH.rerunLastTest()
+            }, true)
+        })
+
+
+        //C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/test3/testFramework.js
+        reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/', '')
+        //reloader
+    }
+    try {
+        onReloader()
+    } catch ( e) {
+        console.log('e', e)
+    }
+</script>
+
+</body>
+</html>
