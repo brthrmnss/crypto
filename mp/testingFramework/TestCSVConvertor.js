@@ -60,11 +60,13 @@ function TestCSVConvertor() {
 
             var comment = null;
             /*if ( line.includes('#') ) {
-                var split = line.split('#')
-                line = split[0]
-                comment = split[1]
-            }*/ //jquery ids
-
+             var split = line.split('#')
+             line = split[0]
+             comment = split[1]
+             }*/ //jquery ids
+            if ( line.startsWith('#') ) {
+                return;
+            }
             if ( line.startsWith('~')  == false
                 && line.includes('~') ) {
                 var split = line.split('~')
@@ -117,6 +119,7 @@ function TestCSVConvertor() {
             item.lines = [];
 
             var validCmds = [
+                'click',
                 'waitForShow',
                 'waitForHide',
                 'verifyHidden',
@@ -124,13 +127,17 @@ function TestCSVConvertor() {
                 'clickOne','setItem','makeGreen',
                 'scrollTo','verifyExists'
             ];
-              if ( validCmds.includes(firstWord)) {
-             valid  = true;
-             item.fx = 'wait'
-             }
+            if ( validCmds.includes(firstWord)) {
+                valid  = true;
+                item.fx = firstWord
+            }
 
 
-
+            if ( firstWord == 'click') {
+                valid  = true;
+                item.fx = 'click'
+                itemCopyAtEnd.args = [args.join(' ')]
+            }
             if ( firstWord == 'clickJ') {
                 valid  = true;
                 item.fx = 'clickJ'
@@ -194,7 +201,7 @@ function TestCSVConvertor() {
 
             if ( valid == false ) {
                 return null
-            } 
+            }
 
             sh.copyProps(itemCopyAtEnd, item)
 
@@ -213,7 +220,7 @@ function TestCSVConvertor() {
 
         sh.printCol(lines)
 
-      //  debugger;
+        //  debugger;
         return lines;
 
     }

@@ -2149,7 +2149,7 @@
     }
     sh.copyProps = copyProps;
 
-
+ 
     /**
      * Remove your props
      * @param item

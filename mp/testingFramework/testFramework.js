@@ -255,7 +255,7 @@ function defineTestTransportFxs() {
             if ( t.token.id != window.testHelper.currentTestId ) {
                 return false;
             }
-            $('#txtCurrentStepIndex').text(tx.data.methods.currentIndex);
+            $('#txtCurrentStepIndex').text(tx.data.methods.currentIndex+1);
             $('#txtTotalStepsCount').text(tx.data.methods.count);
             return;
             /*    console.log('what is x?', tx.data.methods.currentIndex,
@@ -357,6 +357,15 @@ function defineTestTransportFxs() {
 
 
 
+    var urlBase = 'test3/'
+
+    if ( window.location.pathname ) {
+        if ( window.location.pathname.includes('test3/')) {
+            urlBase = '';
+        }
+    }
+
+
 
     tH.addLogPanel = function addLogPanel() {
         /*
@@ -385,7 +394,7 @@ function defineTestTransportFxs() {
 
         } else {
             var annotation = $('<img/>')
-            annotation.attr('src', 'test3/images/cursor-png.png')
+            annotation.attr('src', urlBase+'images/cursor-png.png')
             $('body').append(annotation)
             annotation.attr('id','annotation')
             uiUtils.makeAbs(annotation, 100)
@@ -442,13 +451,6 @@ function defineTestTransportFxs() {
         uiUtils.flagCfg.id = cfg.id;
         uiUtils.flagCfg.addTo = $(cfg.id);
 
-        var urlBase = 'test3/'
-
-        if ( window.location.pathname ) {
-            if ( window.location.pathname.includes('test3/')) {
-                urlBase = '';
-            }
-        }
 
 
         //window.uiUtils.addTitle('Transport Panel');
@@ -1020,7 +1022,9 @@ function defineCompoundMethods() {
     tH.waitForShow = function waitForShow(jquery, waitForFailureReason) {
         if ( waitForFailureReason )
             tH.waitForError = waitForFailureReason + ' (waitForShow) ' + jquery
-        tH.waitFor(function isDialogVisible(){ //waitForHide
+        else
+            tH.waitForError = '' + ' (waitForShow) ' + jquery
+        tH.waitFor(function isDialogVisible_waitForShow(){ //waitForHide
             var jq = tH.convertJquery2(jquery)
             tH.moveCursorTo(jq)
             if ( jq.length == 0 ) {
@@ -1129,6 +1133,18 @@ function defineCompoundMethods() {
             window.location.hash =tH.windowLocationHash;
         });
     }
+
+
+
+   /* tH.evalFx = function evalFx() {
+        tH.run(function makeGreen() { //verify more than 6
+            $('#testLogPanel').css({'background-color':'#C3E5C4'});
+            debugger;
+            window.location.hash =tH.windowLocationHash;
+        });
+    }*/
+
+
     tH.moveCursorTo = function moveCursorTo(jquery) {
         var annotation = $('#annotation')
         annotation.show();
@@ -1488,10 +1504,10 @@ if ( typeof $ === 'undefined' ) {
 }
 
 
-tH.runTest = function runTest(testName) {
+tH.runTest = function runTest(testName, arg1) {
     tH.currentTestName = testName;
     window.lastRunTestName = testName;
-    window.tests[testName](tH);
+    window.tests[testName](tH, arg1);
     //debugger;
     // window.testHelper.fxStartNextTest();
 }
@@ -1642,12 +1658,17 @@ testStackingDemo3();
 //http://localhost:10050/test2/test2.html?runTest=true&testName=testA
 function testCSVTest(runIt) {
 // return
-    window.tests.testCSV = function define_testCSV(tH) {
+    window.tests.testCSV = function define_testCSV(tH, urlX) {
         //var i = new TestCSV()
         var i = new TestCSVConvertor(); 
        // i.getTestScript('csvScripts/testCSVScript.txt', onGot)
         //var url = 'csvScripts/testCSVScript.txt';
         var url = 'csvScripts/test.txt';
+        if ( urlX ) {
+            url = urlX;
+            url = urlBase=urlX.split('test3/')[1]
+        }
+
         i.loadScript2(url, onGotItems)
         function onGotItems(objs, str,txt) {
             var t = tH.createNewTest();
@@ -1657,11 +1678,19 @@ function testCSVTest(runIt) {
             $.each(objs, function onADdObj(k,v) {
                 var fx = v[v.fx]
                 var fx = tH[v.fx]
+                if ( v.fx =='evalFx') {
+                    var str = '\n';
+                    for ( var i = 0; i < v.line; i++ ) {
+                        str += '\n'
+                    }
+                    eval(str+v.lines.join(';\n'));
+                    return;
+                }
                 if ( fx == null ) {
                     console.error('did not find', v.fx)
                     return;
                 }
-                console.log('go to', fx, v.args)
+                console.log('go to', v.fx, fx, v.args)
                 //sh.callIfDefined(fx, v.args)
                 fx.apply(this, v.args)
             })
@@ -1688,3 +1717,9 @@ function testCSVTest(runIt) {
 }
 testCSVTest();
 
+function defineTestLoaders() {
+    window.autoTestFrameworko = function autoloadTestFramework() {
+        window.location += '?loadTestFramework=true'
+    }
+}
+defineTestLoaders();
