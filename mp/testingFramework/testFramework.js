@@ -244,13 +244,13 @@ function defineTestTransportFxs() {
         t.token.id = window.testHelper.currentTestId = Math.random();
 
         t.token.fxStep = function onUpdateTransport(tx, fxResume) {
-            
+
             if ( window.testHelper.transport.status == 'paused') {
                 window.testHelper.fxResumeTest = fxResume
                 console.warn('pause test')
                 return false;
             }
-             
+
             //debugger;
             if ( t.token.id != window.testHelper.currentTestId ) {
                 return false;
@@ -287,33 +287,11 @@ function defineTestTransportFxs() {
             }
 
             if ( eq == false ) {
+                tH.fail(['failed to verify',msg, new Error().stack])
                 throw new Error(msg)
             }
             return;
-            tH.test = null;
-            /*if ( self.optionalAssertions == true ) {
-             msg = '<<<<Optional>>>>>>'
-             }*/
-            var throwError = !self.optionalAssertions;
-            if ( self.workChain.currentOperation == null ) {
-                console.error('do not call assert outside of block?', 'if in a call back make sur eit occurs before t.cb, or t.next')
-            }
-            var error = sh.errors.jumpError(msg, 5, eq,
-                self.workChain.currentOperation.stack, throwError)
-            if ( error ) {
-                self.errorWithReq = true;
-                if ( throwError ) {
-                    //give windows machine time to flush stdout
-                    setTimeout(function clearStout() {
-                        process.exit()
-                    }, 50)
-                } else {
-                    self.proc('last failure was <<<<<<<optional>>>> so thread not terminating')
-                }
-            }
-            /*if (eq == false) {
-             throw new Error(msg);
-             }*/
+
         }
     }
 
@@ -396,7 +374,6 @@ function defineTestTransportFxs() {
 
 
 
-
         $('#txtInvokeCount').text(' ('+window.testHelper.data.invokeCount+')');
         console.error('txtInvokeCount', window.testHelper.data.invokeCount);
 
@@ -464,8 +441,18 @@ function defineTestTransportFxs() {
         uiUtils.flagCfg = {};
         uiUtils.flagCfg.id = cfg.id;
         uiUtils.flagCfg.addTo = $(cfg.id);
+
+        var urlBase = 'test3/'
+
+        if ( window.location.pathname ) {
+            if ( window.location.pathname.includes('test3/')) {
+                urlBase = '';
+            }
+        }
+
+
         //window.uiUtils.addTitle('Transport Panel');
-        window.uiUtils.addImage( 'test3/images/play-button.png', 'btnPlay');
+        window.uiUtils.addImage( urlBase+'images/play-button.png', 'btnPlay');
         window.uiUtils.addTooltip('Play')
         window.uiUtils.addClick(function onPlay(){
             if ( window.testHelper.transport.status == 'stopped') {
@@ -484,10 +471,9 @@ function defineTestTransportFxs() {
                 window.testHelper.fxResumeTest();
                 return;
             }
-
         });
 
-        window.uiUtils.addImage( 'test3/images/pause.png', 'btnPause')
+        window.uiUtils.addImage( urlBase+'images/pause.png', 'btnPause')
         window.uiUtils.addClick(function onPause(){
             uiUtils.enable('#btnPlay')
             uiUtils.disable('#btnPause')
@@ -496,7 +482,7 @@ function defineTestTransportFxs() {
             window.testHelper.transport.status = 'paused'
         });
 
-        window.uiUtils.addImage( 'test3/images/stop.png', 'btnStop')
+        window.uiUtils.addImage( urlBase+'images/stop.png', 'btnStop')
         window.uiUtils.addClick(function onStop(){
             window.testHelper.transport.playing = false;
             window.testHelper.transport.pause = false;
@@ -505,7 +491,7 @@ function defineTestTransportFxs() {
             uiUtils.disable('#btnStop')
         });
 
-        window.uiUtils.addImage( 'test3/images/rewind.png', 'btnRewind')
+        window.uiUtils.addImage( urlBase+'images/rewind.png', 'btnRewind')
         window.uiUtils.addClick(function onRewind(){
             window.testHelper.rerunLastTest();
         });
@@ -630,11 +616,26 @@ function defineTestMethods() {
         })
     }
     tH.click = click;
+
+    tH.clickNow = function clickNow(strOrJ) {
+        //why: click but do not navigte
+        var element = $(strOrJ);
+        element.css('color', 'red');
+        element[0].click();
+        // element[0].click();
+        element.click();
+        //    console.error('endhash-W', 2, window.location.href );
+        console.log('click', strOrJ, element.length)
+        tH.moveCursorTo(element);
+    }
     function clickJ(strOrJ) { //find based on jquery
         tH.add(function clickAction() {
             // console.error('endhash-W', 1, window.location.href );
             var element = $(strOrJ);
             element.css('color', 'red');
+            if ( element[0] == null || element[0].click == null ) {
+                console.error('no match for', strOrJ)
+            }
             element[0].click();
             // element[0].click();
             element.click();
@@ -664,6 +665,48 @@ function defineTestMethods() {
 
     clickJ.desc = 'Click button. Get element from jquery stringn'
     tH.clickJ = clickJ;
+
+
+    function pressEnter(strOrJ) { //find based on jquery
+        tH.add(function pressEnterAction() {
+            var element = $(strOrJ);
+            element.css('color', 'red');
+
+
+            var e = jQuery.Event("keydown");
+            e.which = 13; //choose the one you want
+            e.keyCode = 13;
+            e.charCode = 13
+            element.trigger(e)
+
+            var e = jQuery.Event("keypress");
+            e.which = 13; //choose the one you want
+            e.keyCode = 13;
+            e.charCode = 13
+            element.trigger(e)
+
+            var e = jQuery.Event("keyup");
+            e.which = 13; //choose the one you want
+            e.keyCode = 13;
+            e.charCode = 13
+
+            element.trigger(e)
+            console.log('pressEnter', strOrJ, element.length)
+
+
+            tH.test.cb();
+
+
+            tH.moveCursorTo(element);
+
+            //   console.error('endhash-W', 3, window.location.href );
+        })
+    }
+
+
+    pressEnter.desc = 'Press enter. Get element from jquery stringn'
+    tH.pressEnter = pressEnter;
+
     function verify(fx, error) {
         tH.add(function clickAction() {
             if ($.isFunction(fx)) {
@@ -687,6 +730,9 @@ function defineTestMethods() {
 
 
     tH.logNextLink = function logNextLink(str) {
+        var args = sh.convertArgumentsToArray(arguments)
+        if ( args.length > 0 )
+            str = args.join(' ');
         var lastStr = null; //stor epreviosu string
         tH.add(function log() {
             // console.error('endhash-Z',90, window.location.href );
@@ -702,7 +748,7 @@ function defineTestMethods() {
             //  console.error('endhash-Z',91, window.location.href );
         })
     };
-    tH.log3 = tH.logNext = tH.logNextLink;
+    tH.trace = tH.log3 = tH.logNext = tH.logNextLink;
 
     tH.logNow = function logCurrently(str) {
         var args = sh.convertArgumentsToArray(arguments)
@@ -717,10 +763,15 @@ function defineTestMethods() {
          }, 300);*/
         uiUtils.scrollToBottom('#testLogPanel')
 
+        //debugger
         $('#logCurrent').html(str)
         if ( tH.lastStr !== null ) { //why this crazyiness?
             //console.log(lastStr)
-            $('#logPrevious').append('<div>'+tH.lastStr+'</div>')
+            var container =  $('#logPrevious')
+            if ( container.length == 0 ) {
+                console.log('asdf', container, 'is embty')
+            }
+            container.append('<div>'+tH.lastStr+'</div>')
         }
         tH.lastStr = str;
         //  tH.test.cb();
@@ -985,7 +1036,7 @@ function defineCompoundMethods() {
             return true==$(jq).is(":visible")
         });
     };
-    tH.verifyHidden = function waitForShow(jquery) {
+    tH.verifyHidden = function verifyHidden(jquery) {
         tH.waitFor(function isDialogVisible(){ //waitForHide
             var jquery = tH.convertJquery(jquery)
             if ($(jquery).css("opacity") == "0") {
@@ -994,7 +1045,7 @@ function defineCompoundMethods() {
             return false==$(jquery).is(":visible")
         });
     };
-    tH.verifyShow = function waitForShow(jquery) {
+    tH.verifyShow = function verifyShow(jquery) {
         tH.verify(function isDialogVisible(){ //waitForHide
             if ($(jquery).css("opacity") != "0") {
                 return true
@@ -1026,15 +1077,43 @@ function defineCompoundMethods() {
     tH.set = function setTextField(jquery, text) {
         tH.runAsync(function settext() { //verify more than 6
             $(jquery).focus();
+            // $(jquery).keydown();
+            var e = new Event("keydown");
+            e.key="a";    // just enter the char you want to send
+            e.keyCode=e.key.charCodeAt(0);
+            e.which=e.keyCode;
+            e.altKey=false;
+            e.ctrlKey=true;
+            e.shiftKey=false;
+            e.metaKey=false;
+            e.bubbles=true;
+            $(jquery)[0].dispatchEvent(e)
+
+
             $(jquery).val(text)
             $(jquery).change();
+            //$(jquery).keyup();
+
+            var e = new Event("keyup");
+            e.key="a";    // just enter the char you want to send
+            e.keyCode=e.key.charCodeAt(0);
+            e.which=e.keyCode;
+            e.altKey=false;
+            e.ctrlKey=true;
+            e.shiftKey=false;
+            e.metaKey=false;
+            e.bubbles=true;
+            $(jquery)[0].dispatchEvent(e)
+
             $(jquery).focusout();
             $(jquery).blur();
+            console.log('setting ', jquery, 'to text()')
             setTimeout(function waitToContinue(){
                 tH.test.cb();
             }, 500)
         });
     }
+    tH.setItem = tH.set;
 
     tH.makeRed = function makeRed(jquery, text) {
         tH.run(function makeRed() { //verify more than 6
@@ -1558,4 +1637,54 @@ function testStackingDemo3() {
     window.tests.testFeatures2.desc = 'Try to test 2 features'
 }
 testStackingDemo3();
+
+
+//http://localhost:10050/test2/test2.html?runTest=true&testName=testA
+function testCSVTest(runIt) {
+// return
+    window.tests.testCSV = function define_testCSV(tH) {
+        //var i = new TestCSV()
+        var i = new TestCSVConvertor(); 
+       // i.getTestScript('csvScripts/testCSVScript.txt', onGot)
+        //var url = 'csvScripts/testCSVScript.txt';
+        var url = 'csvScripts/test.txt';
+        i.loadScript2(url, onGotItems)
+        function onGotItems(objs, str,txt) {
+            var t = tH.createNewTest();
+            //convertor(contents)
+//debugger
+            console.log('objs', objs)
+            $.each(objs, function onADdObj(k,v) {
+                var fx = v[v.fx]
+                var fx = tH[v.fx]
+                if ( fx == null ) {
+                    console.error('did not find', v.fx)
+                    return;
+                }
+                console.log('go to', fx, v.args)
+                //sh.callIfDefined(fx, v.args)
+                fx.apply(this, v.args)
+            })
+
+            function origTest() {
+                tH.click('test 2');
+                tH.log('test 2');
+                tH.wait(1);
+                tH.log('test 2');
+                tH.set('#txtArea', 'set the text')
+            }
+            /*tH.run(function(){
+
+             })*/
+            tH.run(function () {
+                console.debug('ran test 2')
+            });
+        }
+    }
+    window.tests.testCSV.desc = 'load from csv'
+    if ( runIt ) {
+        window.tests.testA(tH);
+    }
+}
+testCSVTest();
 

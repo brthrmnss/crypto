@@ -10,6 +10,8 @@
         isNode = false
     }
 
+    window.isNode = isNode
+    
     if ( isNode ) {
         var path = require('path')
     } else {
@@ -105,6 +107,43 @@
 
         sh.bracket =  function bracket(text) {
             return "[" + text + "]"
+        }
+
+        sh.isObject = function isObject(obj) {
+            if ( $.isFunction(obj)) {
+                return false;
+            }
+            if ( obj == null ) {
+                return false;
+            }
+            return typeof obj == 'object'
+        }
+        sh.isString = $.isString
+        sh.isArray = $.isArray
+        sh.includes = function includes(arr, f, v) {
+            return arr.includes(f)
+        }
+
+        sh.startsWith =
+            function startsWith (str, subStr) {
+                if (str == null) {
+                    return;
+                }
+                return str.indexOf(subStr) == 0 ;
+            }
+
+
+
+        sh.copyProps = function copyProps(from, to) {
+            sh.each(from, function(k,v){
+                to[k]=v;
+            })
+        }
+
+        sh.printCol = function printCol( arr) {
+            sh.each(arr, function on(k,v) {
+                console.log(v)
+            })
         }
 
     }
@@ -319,6 +358,158 @@
     }
     defineTimer()
 
+
+    function defineEach() {
+        sh.each = function each(object, callback, args) {
+
+            var name, i = 0, length = object.length;
+
+            if (args) {
+                if (length === undefined) {
+                    for (name in object)
+                        if (callback.apply(object[name], args) === false)
+                            break;
+                } else
+                    for (; i < length;)
+                        if (callback.apply(object[i++], args) === false)
+                            break;
+
+                // A special, fast, case for the most common use of each
+            } else {
+                if (length === undefined) {
+                    for (name in object)
+                        if (callback.call(object[name], name, object[name]) === false)
+                            break;
+                } else
+                    for (var value = object[0];
+                         i < length && callback.call(value, i, value) !== false; value = object[++i]) {
+                    }
+            }
+
+            return object;
+        }
+    }
+    defineEach();
+
+    function defineLines() {
+        //AKA Lines helper
+        sh.each.lines = function lines(items, config) {
+            config = sh.dv(config, {})
+
+
+            if (sh.isObject(items)) {
+                config = items;
+            }
+            ;
+            if (config.str != null) {
+                items = config.str.split('\n');
+            }
+            ;
+            if (config.file != null) {
+                var contents = sh.readFile(config.file);
+                items = contents.split('\n');
+            }
+            ;
+
+
+            if (sh.isString(items)) {
+                items = items.split('\n');
+            }
+
+            var lines = [];
+            lines = sh.dv(config.addTo, []);
+
+
+            sh.each(items, function processLine(i, line) {
+
+                if (line == null) {
+                    return;
+                }
+                if (line.trim() == '' && config.skipEmpty != false) {
+                    return;
+                }
+
+                if (config.ignore != null) {
+                    var ignoreFault = false;
+                    sh.each(config.ignore, function testIgnoreLineFilter(x, ignore) {
+                        if (sh.includes(line, ignore)) {
+                            ignoreFault = true
+                            return false;
+                        }
+                    });
+                    if (ignoreFault) {
+                        return;
+                    }
+                    ;
+                }
+
+                if (config.ignoreEnd != null) {
+                    var ignoreFault = false;
+                    sh.each(config.ignoreEnd, function testIgnoreLineFilter(x, ignoreEnd) {
+                        var indexOfEnding = line.length - ignoreEnd.length;
+                        var indexOfEnder = line.toLowerCase().indexOf(ignoreEnd.toLowerCase(), indexOfEnding);
+                        var endGt = indexOfEnder > 0
+                        var okGt = indexOfEnder == line.length - ignoreEnd.length
+                        if (sh.includes(line, ignoreEnd) && okGt) {
+                            ignoreFault = true
+                            return false;
+                        }
+                    });
+                    if (ignoreFault) {
+                        return;
+                    }
+                    ;
+                }
+
+
+                if (config.ignoreComments) {
+                    var commentStartingChars = ["'", '//', '#']
+                    if (sh.isArray(config.ignoreComments)) {
+                        commentStartingChars = config.ignoreComments
+                    }
+                    var ignoreFault = false;
+                    sh.each(commentStartingChars, function testIgnoreLineFilter(x, ignore) {
+                        if (sh.startsWith(line, ignore)) {
+                            return false;
+                        }
+                    });
+                    if (ignoreFault) {
+                        return;
+                    }
+                    ;
+                }
+
+                if (config.fxProc != null) {
+                    config.line = line;
+                    config.includes = function includes(val) {
+                        return config.line.indexOf(val) != -1;
+                    };
+
+                    config.remove = function remove(val) {
+                        config.line = config.line.replace(val, '');
+                        return config;
+                    };
+
+                    line = sh.callIfDefined(config.fxProc, line, i, lines.length)
+                    if (line == null)
+                        return;
+                    if (line == false)
+                        return false; //stop processing
+                }
+
+
+                if (config.appendToLine != null) {
+                    line += config.appendToLine
+                }
+
+                lines.push(line)
+
+            })
+
+            return lines;
+        }
+    }
+    defineLines();
 
     if (typeof exports === 'undefined') {
         exports = {}

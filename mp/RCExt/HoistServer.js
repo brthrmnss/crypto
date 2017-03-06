@@ -43,7 +43,7 @@ function HoistServer(_self) {
 
         sh.mkdirp(__dirname + '/configs')
         // sh.mkdirp(__dirname + '/configUploads')
-        self.createHoistServer();
+        self.createHoitstServer();
     }
 
     p.method = function method(config) {

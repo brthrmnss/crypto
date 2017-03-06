@@ -2996,10 +2996,20 @@
 
         }
 
-        sh.runAsync = function runCommandAsync(cmd, fx, opts) {
+        sh.runAsync = function runCommandAsync(cmd, fxDone, opts) {
             console.log('running', cmd)
             var child_process = require('child_process');
-            var ipAdd = child_process.exec(cmd, opts, fx)
+            var ipAdd = child_process.exec(cmd, opts, fxDoneRedirect)
+            
+            function fxDoneRedirect(error, x, output) {
+                if ( error != null ) {
+                    console.error('error')
+                    console.error(error.message)
+                    console.error(error.cmd)
+                }
+                sh.callIfDefined(fxDone, error,x,output)
+            }
+            
         }
 
         sh.runAsync2 = function runCommandAsync_Spawn(cmd, args, fxDone, opts) {
@@ -3016,7 +3026,7 @@
                 return result;
             }
 
-            childProcess.spawn = mySpawn;
+            //childProcess.spawn = mySpawn;
             //  })();
 
 

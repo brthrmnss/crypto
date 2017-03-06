@@ -197,6 +197,14 @@ function defineRo() {
         }
         p.home = p.goHome
 
+        p.goList = function goList(tH) {
+            tH.addSync(function (){
+                gUtils.setLocationHash('searchListDialog')
+            })
+            tH.wait(1)
+            tH.waitForShow('#dialogLists');
+        }
+
         p.goWatch = function goWatch(arg) {
         }
         p.goSearch = function goSearch(arg) {
@@ -764,7 +772,7 @@ function defineRo() {
                 ro.watchVid(tH);
                 ro.isCreditDialogUp(tH);
                 ro.cd.hasXCredits(tH, 1)
-               // tH.log3('what?')
+                // tH.log3('what?')
                 ro.cd.clickUseCredit(tH)
                 ro.cd.hidden(tH);
 
@@ -797,6 +805,113 @@ function defineRo() {
     window.ro = ro;
 }
 defineRo();
+
+
+
+
+function defineListerHelper() {
+    function ListHelper() {
+        var p = ListHelper.prototype;
+        p = this;
+        var self = this;
+        self.data = {};
+
+        p.init = function init(url, appCode) {
+        };
+        p.configureListHelper = function configureListHelper(
+            listId, btnClear, btnMore, txtSearch) {
+            self.data.listId    = listId;
+            self.data.btnClear  = btnClear;
+            self.data.btnMore   = btnMore;
+            self.data.txtSearch = txtSearch;
+        };
+
+        p.waitForList = function waitForList(tH) {
+            tH.waitForShow(self.data.listId);
+        }
+        p.clearList = function clearList(tH) {
+            tH.clickJ(self.data.btnClear)
+        }
+        p.getMoreListItems = function getMoreListItems(tH) {
+            tH.clickJ(self.data.btnMore)
+        }
+        p.verifySizeOfList = function verifySizeOfList(tH, verifySize) {
+            tH.wait(0.5);
+            tH.addSync(function (){
+                var list = $(self.data.listId);
+                if ( self.data.listId == null || self.data.listId == '' ) {
+                    tH.assert(false, 'do not have a listId')
+                }
+                var size = list.find('li');
+               // console.log('what is this? ')
+                var listItemsCount = size.length;
+                if (verifySize == null ) {
+                    tH.log('size of list', self.data.listId, listItemsCount);
+                } else {
+                    if ( $.isFunction(verifySize)) {
+                        var sizeTheSame = verifySize(listItemsCount);
+                        tH.assert(sizeTheSame, 'fx failed were not the same', listItemsCount, '!=', verifySize.name)
+                    }else {
+                        var sizeTheSame = listItemsCount == verifySize;
+                        tH.assert(sizeTheSame, 'sizes were not the same', listItemsCount, '!=', verifySize);
+                    }
+                }
+                tH.data.lastSizeOfList = listItemsCount;
+            })
+            tH.wait(0.5)
+        }
+        p.verifySizeOfList_MoreThan = function verifySizeOfList_MoreThan(tH, moreThanVerifySize, msg) {
+            self.verifySizeOfList(tH, function verifySizeMotherThan(size) {
+                tH.assert(size>moreThanVerifySize, 'Too small', size, '! >', moreThanVerifySize, msg)
+            })
+        }
+        p.verifySizeOfList_MoreThanLastTime = function verifySizeOfList_MoreThanLastTime(tH, moreThanVerifySize, msg) {
+            self.verifySizeOfList(tH, function verifySizeMotherThan(size) {
+                tH.assert(size> tH.data.lastSizeOfList, 'Too small', size, '! >',  tH.data.lastSizeOfList, msg)
+            })
+        }
+        p.verifySizeOfList_FewerThanLastTime = function verifySizeOfList_FewerThanLastTime(tH, moreThanVerifySize, msg) {
+            self.verifySizeOfList(tH, function verifySizeFewerThanThan(size) {
+                tH.assert(size <  tH.data.lastSizeOfList, 'Too large', size, '! <',  tH.data.lastSizeOfList, msg)
+            })
+        }
+        p.searchListByText = function searchListByText(tH,text) {
+            // tH.addSync(function (){
+            tH.trace('set text to', self.data.txtSearch, text)
+            tH.setItem(self.data.txtSearch, text)
+            tH.pressEnter(self.data.txtSearch )
+            tH.wait(1)
+            //})
+        }
+
+        p.clickListItem = function clickListItem(tH, index) {
+            tH.wait(0.5);
+            tH.addSync(function (){
+                var list = $(self.data.listId);
+                var size = list.find('li');
+                var ui = size[index];
+                var ui = $(ui)
+                var link = ui.find('a');
+                tH.clickNow(link)
+            })
+            tH.wait(0.5)
+        }
+        p.verifyAt = function verifyAt(tH, id) {
+            tH.waitForShow(self.data.nextPageAfterClick);
+        }
+        p.proc = function debugLogger() {
+            if ( self.silent == true) {
+                return
+            }
+            sh.sLog(arguments)
+        }
+    }
+    var lH = new ListHelper();
+    window.lH = lH;
+    window.ListHelper = ListHelper;
+}
+defineListerHelper();
+
 
 
 
@@ -956,6 +1071,93 @@ function testSmoke() {
     window.tests.rCreditDialog = test;
 
 
+
+
+    var test = function defineTestA(tH) {
+        var t = tH.createNewTest();
+        tH.log(defineTestA.name);
+
+        ro.ensureWeHaveX(tH)
+
+        //tH.click('home');
+        tH.wait(0.5)
+        ro.goHome(tH);
+
+        ro.goList(tH);
+        //  return;
+
+        var lH = new window.ListHelper()
+
+
+        var listId    = '#dialogSearchLists_list';
+        var btnClear  = '#dialogSearchLists_btnClear';
+        var btnMore   = '#dialogSearchLists_btnMoreLoadingHolder';
+        var txtSearch = '#txtSearchLists';
+        lH.configureListHelper(listId, btnClear, btnMore, txtSearch)
+
+        lH.clearList(tH)
+
+        lH.verifySizeOfList(tH)
+        lH.verifySizeOfList(tH,0)
+        lH.searchListByText(tH, 'yyy$s')
+
+        lH.verifySizeOfList(tH,0)
+
+        lH.searchListByText(tH, '')
+
+        lH.verifySizeOfList_MoreThan(tH,0, 'did not perform valid search')
+
+        lH.getMoreListItems(tH)
+
+        lH.verifySizeOfList_MoreThanLastTime(tH,0)
+
+        lH.clickListItem(tH, 3)
+        lH.data.nextPageAfterClick = '#view-content-list';
+        lH.verifyAt(tH)
+
+        tH.wait(1);
+        tH.logNext('finished testing main list')
+
+        var lH2 = new window.ListHelper()
+        var listId    = '#view-content-list';
+        var btnClear  = '#dialogSearchLists_btnClear';
+        var btnMore   = '#dialogSearchLists_btnMoreLoadingHolder';
+        var txtSearch = '#txtContentListsDialog';
+        lH2.configureListHelper(listId, btnClear, btnMore, txtSearch)
+        lH2.searchListByText(tH, ' ')
+        lH2.verifySizeOfList_MoreThan(tH,3)
+        lH2.verifySizeOfList(tH)
+        lH2.searchListByText(tH, 'ee')
+        lH2.verifySizeOfList_FewerThanLastTime(tH,0)
+        lH2.searchListByText(tH, '')
+        lH2.verifySizeOfList_MoreThanLastTime(tH,0)
+        lH2.searchListByText(tH, 'e#$^%#,,,e')
+        lH2.verifySizeOfList_FewerThanLastTime(tH,0)
+        lH2.verifySizeOfList(tH,0, 'has more than 0 items for bad search result')
+        return
+
+        ro.player.watchVideoNoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchBadVideo()
+        ro.player.watchVideo();
+        ro.player.watchVideoNoCreditsNoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchVideoAutoplay()
+        ro.player.watchVideo();
+        ro.player.watchVideoAutoplayNoCredits()
+        ro.player.watchVideo();
+
+
+        return;
+
+        //ro.searchHomePageSet(tH);
+        ro.clickWatchIt(tH);
+        ro.videoIsPlaying(tH);
+
+        return;
+    }
+    test.desc = 'Test Lists Dialog'
+    window.tests.rLists = test;
 }
 testSmoke();
 

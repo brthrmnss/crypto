@@ -49,12 +49,14 @@ function onInitDB() {
         var self = this;
         self.data = {}
         self.data.port = 6012;
+        self.data.portHoist = 6012;
         self.data.portData = '6008';
         self.data.ip = '127.0.0.1';
+        self.data.ip = window.location.hostname
         self.data.url = self.data.ip + ':'+ self.data.port;
         self.data.baseUrl = 'http://' + self.data.url;
         self.data.baseDataUrl = 'http://' + self.data.ip + ':'+ self.data.portData;
-
+        self.data.urlHoist =  'http://' + self.data.url;
         self.data.ui = {};
         self.data.timeAutosave = 10;
         self.data.timeRecentPages = 10;
@@ -105,6 +107,9 @@ function onInitDB() {
 
 
             self.getPreviousTasks();
+
+
+           // uiUtils.setText(self.data.ui.txtTaskNameOverride, 'listIds_ls051393312.json');
         }
 
 
@@ -124,6 +129,7 @@ function onInitDB() {
                     h.scrollToBottom();
                 });
                 self.data.socket = socket;
+                uiUtils.socket.upgradeSocket(socket)
                 uiUtils.data.socket = self.data.socket;
 
 
@@ -167,6 +173,15 @@ function onInitDB() {
                     if ( sdf == 'connected') {
                         uiUtils.setHtml(self.data.ui.txtConnectedStatus, uiUtils.glyph('ok'))
                     }
+                });
+
+
+
+                var url = 'http://'+ port + //window.location.hostname + ':' + 6007 +
+                    '/hostname';
+                uiUtils.getUrl(url, function onGotConnectedStatus(hostname){
+                    console.log('onHostname', hostname)
+                    self.data.hostname = hostname
                 });
             }
 
@@ -429,6 +444,21 @@ function onInitDB() {
                 self.data.ui.ddPrevTasks = uiUtils.lastId();
                 uiUtils.updateSelect('ddPrevTasks', [1,2,3,4,5]);
 
+                uiUtils.br()
+                uiUtils.addLabel({id:'x',
+                    width:lblWidth+0,
+                    text:''})
+                uiUtils.spacer();
+                uiUtils.addTextInput({
+                    placeholder:'Task Name Override',
+                    id:'txtTaskNameOverride',
+                    onDebounce:function onChanged(newName) {
+                        //self.data.lastNameIsDefault = false;
+                        //console.log('debouched', newName)
+                        //uiUtils.show(self.data.ui.txtRefreshTaskName)
+                    }
+                })
+                self.data.ui.txtTaskNameOverride = uiUtils.lastId();
 
                 uiUtils.hr()
             })
@@ -519,11 +549,11 @@ function onInitDB() {
                 self.data.ui.txtQueryResultInfo = uiUtils.lastId();
 
                 uiUtils.style('margin-bottom', '-1px')
-                
+
                 uiUtils.leaveRow()
-                
-                
-             //   uiUtils.br()
+
+
+                //   uiUtils.br()
 
             }
             h.createListIds = function createListIds(){
@@ -968,20 +998,33 @@ function onInitDB() {
                     }
                 }
             );
-            uiUtils.addBtn(
-                {
-                    text: '% Complete',
-                    title:'folder found in expected directory',
-                    addSpacer:true
-                },
-                self.statusComplete
-            );
-
+            /*  uiUtils.addBtn(
+             {
+             text: '% Complete',
+             title:'folder found in expected directory',
+             addSpacer:true,
+             fxClick: self.onHoistServerTask,
+             data: {
+             url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+             cmd: 'sanitizeFileList'
+             }
+             },
+             self.statusComplete
+             );
+             */
             uiUtils.addBtn(
                 {
                     text: 'Santize File List',
                     tooltip: 'Check each id for oexpected match',
-                    addSpacer:true
+                    addSpacer:true,
+                    fxClick: self.onServerTask,
+                    data: {
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        ///howh to get this? 
+                        //fileManifest:self.getFxVal(self.data.utils.getManifestName),
+                        //url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        cmd: 'sanitizeFileList'
+                    }
                 },
                 self.statusComplete
             );
@@ -992,6 +1035,7 @@ function onInitDB() {
 
             console.log('self',self.data.socketHoist)
             self.data.socketHoist.listenForStatus( idDivHoistStatus);
+            self.data.socket.listenForStatus( idDivHoistStatus);
 
             /*
              uiUtils.addBtn(
@@ -1232,13 +1276,13 @@ function onInitDB() {
                     uiUtils.socket.nextEmit(this);
                     console.log('title', title, data);
                     data.title = title;
-                    /*uiUtils.socket.addListener('updateStatus', function onStatusUpdated(e) {
-                        console.log('e1', e)
-                    })
-*/
-                 /*   self.data.socketHoist.on('updateStatus', function onStatusUpdated(e) {
-                        console.log('e2', e)
-                    })*/
+                    /*uiUtils.socket.addListener('updateStatus', function onStatusUp dated(e) {
+                     console.log('e1', e)
+                     })
+                     */
+                    /*   self.data.socketHoist.on('updateStatus', function onStatusUpdated(e) {
+                     console.log('e2', e)
+                     })*/
                     self.data.socketHoist.emit2('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
                         uiUtils.enable(self.data.ui.btnCreateDM_query);
@@ -1256,8 +1300,25 @@ function onInitDB() {
                     data.title = title;
                     self.data.socketHoist.emit2('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
-                        uiUtils.enable(self.data.ui.btnCreateDM_query);
-                        uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
+
+                        if ( data.cmd == 'getFileList') {
+                            console.log('...')
+                            self.data.socketHoist.updateStatus('pussy')
+                            self.data.socketHoist.updateStatus('dl file', data2.a)
+
+                            //var url = http://127.0.0.1:6012/desktop_f4o5qnc.list.files.txt
+                            var url =self.data.urlHoist + '/' + data2.a;
+                            self.data.socketHoist.updateStatus('dl file', url)
+
+                            var cmdDlFileList = {}
+                            cmdDlFileList.cmd = 'dlFileList';
+                            cmdDlFileList.url  = url;
+                            self.data.socket.emit2('runcmd', cmdDlFileList, function onResult(data3) {
+                                console.log('cmdDLFileList', data3)
+                            })
+                        }
+                        //uiUtils.enable(self.data.ui.btnCreateDM_query);
+                        //uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
                     });
                     return;
                 }
@@ -1271,10 +1332,26 @@ function onInitDB() {
                     var title = self.getTaskTitle();
                     //   uiUtils.disable(self.data.ui.btnCreateDM_query);
                     uiUtils.socket.nextEmit(this);
-                    console.log('title', title, data);
+                    
+                    
                     data.title = title;
+                    self.data.fileFileList = self.data.hostname+'.list.files.txt'
+                    data.fileFileList = self.data.fileFileList;
+                    self.data.fileManifest = title;
+                    data.fileManifest = self.data.fileManifest;
+                    console.log('title', title, data);
+                    
+                    //return;
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
+
+                        if ( data.cmd == 'sanitizeFileList' ) {
+
+                            console.log('ok?', data2.a.percent, data2.a.found)
+                            self.data.socket.updateStatus(data2.a.percent, data2.a.found)
+                            return;
+                        }
+
                         uiUtils.enable(self.data.ui.btnCreateDM_query);
                         uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
                     })
@@ -1289,8 +1366,15 @@ function onInitDB() {
 
                 p.getTaskTitle = function getTaskTitle() {
                     self.data.txtTaskName =  uiUtils.getVal2(self.data.ui.txtTaskName)
-                    return  self.data.txtTaskName +
+                    var taskName = self.data.txtTaskName +
                         uiUtils.getVal2(self.data.ui.txtTaskDate);
+
+                    var txtTaskNameOverride = uiUtils.getVal2(self.data.ui.txtTaskNameOverride)
+                    if ( txtTaskNameOverride ) {
+                        taskName = txtTaskNameOverride;
+                    }
+                    //console.log('..', 'txtTaskNameOverride', txtTaskNameOverride)
+                    return taskName;
                 }
 
                 p.resetTaskTitle = function resetTaskTitle(dv) {

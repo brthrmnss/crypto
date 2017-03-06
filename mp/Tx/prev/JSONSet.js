@@ -45,7 +45,7 @@ function JSONSet() {
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
         config = self.settings;
-
+          self.settings.silent  = true
         self.getFiles();
     }
 
@@ -204,6 +204,8 @@ function JSONSet() {
                  }*/
                 if( item.filtered == true ) {
                     self.data.listMatched.push(item);
+                    //console.log('----item', item)
+                   //return
                     //asdf.g
                     // console.error('filtered', inst.name , sh.each.print.values(item) )
                     fxDone();
@@ -225,7 +227,9 @@ function JSONSet() {
         }, function allDone() {
             inst.runner = self;
             sh.callIfDefined(inst.fxDone)
-            self.proc('what is length', self.data.listFiltered.length)
+
+            if ( self.settings.silent != true )
+                self.proc('what is length', self.data.listFiltered.length)
 
             // process.exit()
 
@@ -241,6 +245,7 @@ function JSONSet() {
             v.index = k;
         });
         if ( self.settings.inputIsOutput_doesNotFilter ) {
+         //   sdfg.h
             //why: do not save file
             self.proc('not saving the output file again')
             sh.callIfDefined(self.settings.fxDone)
@@ -310,7 +315,8 @@ function JSONSet() {
                 amt += parseFloat(item[prop]);
             })
             amt = amt.toFixed(2)
-            self.proc(extratxt, '$', amt)
+            if ( self.settings.silent != true )
+                self.proc(extratxt, '$', amt)
             return amt;
         }
 
@@ -339,9 +345,10 @@ function JSONSet() {
                     arr.length/lengthTotal
 
                 )
-                self.proc(extratxt, arr.length,
-                    percentage
-                )
+                if ( self.settings.silent != true )
+                    self.proc(extratxt, arr.length,
+                        percentage
+                    )
 
                 return percentage
             }

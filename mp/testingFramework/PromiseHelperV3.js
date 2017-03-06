@@ -58,7 +58,7 @@ function PromiseHelperV3() {
             if (self.currentOperation == null) {
                 if (self.methods.length == 0) {
                     self.currentMethod = null;
-                    if (self.token.name != null) {
+                    if (self.token.name != null /*&& self.settings.silent != true */) {
                         self.proc('***Chain Complete', self.token.name);
                     } else {
                         console.log('done'); //, self.token.name);

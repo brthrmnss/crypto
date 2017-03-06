@@ -1,0 +1,41 @@
+#test for basic csv
+require "Win32API"
+Beep = Win32API.new("kernel32", "Beep", ["I", "I"], 'v')
+def beep freq, duration
+    #puts 'beep', freq, 'd', duration
+  Beep.call(freq, duration)
+end
+beep 600, 400
+
+click button
+clickJ .redTest //click red button
+clickText jump
+clickText test 2
+log test
+set #txtArea set the text
+set #txtArea; set the text ~use semi colon to delinate args
+set #txtArea |set the text ~use pika to delinate args
+alert new alert
+wait 2 //wait 2 seoncds
+/*
+block comment
+*/
+--comment
+eval
+functiion testRun() { alert('boom') }
+testRun()
+endeval
+eval //do something intricate
+window.testCallFromEval()
+endeval
+~some message alert //alias for log
+
+--comment
+eval
+functiion testRun() { alert('boom') }
+testRun()
+endeval
+eval //do something intricate
+window.testCallFromEval()
+endeval
+~some message alert //alias for log

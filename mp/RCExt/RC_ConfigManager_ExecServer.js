@@ -10,6 +10,7 @@ var shelpers = require('shelpers');
 var sh = require('shelpers').shelpers;
 
 var PromiseHelperV3 = shelpers.PromiseHelperV3;
+var EasyRemoteTester = shelpers.EasyRemoteTester;
 
 console.log('got a new one ..d..')
 function RCConfigExecServer() {
@@ -18,10 +19,14 @@ function RCConfigExecServer() {
     var self = this;
     self.data = {}
 
+    var indexPageSecurityEnding = '567.html'
+
     p.loadConfig = function loadConfig(config) {
         self.settings = config;
         config.port = sh.dv(config.port, 6008);
-        self.proc('go to ', 'http://localhost:'+ config.port)
+        self.proc('go to ', 'http://localhost:'+ config.port);
+        self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'index.html'+indexPageSecurityEnding);
+        
         config.port2 = config.port;
         config.port += 2; //express can use any available port, we will forward to it 
         self.runServer();
@@ -29,12 +34,16 @@ function RCConfigExecServer() {
         self.data.id = exports.RCExtV
         console.error('RCConfigExecServer', exports.RCExtV)
         //   asdf3g.f
+        self.data.dirDlManifests = sh.fs.makePath(__dirname,  'manifests')
+        self.data.dirFileList = sh.fs.join(__dirname, 'data', 'fileList')
     }
 
     self.runServer = function runServer() {
         var express = require('express')
         var app = express()
         self.app = app;
+
+        app.use(sh.blockIndexPage(indexPageSecurityEnding));
 
         app.use(function addCrossDomainMiddlware(req, res, next) {
             //asdf.g
@@ -302,7 +311,15 @@ function RCConfigExecServer() {
                 sh.writeJSONFile(dirManifest + data.title, tors)
                 fx('ok')
             }
-
+            if ( data.cmd == 'dlFileList'){
+                self.cmds.dlFileList(data, fx)
+            }
+            if ( data.cmd == 'sanitizeFileList'){
+                self.cmds.sanitizeFileList(data, fx)
+            }
+            if ( data.cmd == 'percentCompleteList'){
+                self.cmds.sanitizeFileList(data, fx)
+            }
             return;
         };
     }
@@ -554,6 +571,74 @@ function RCConfigExecServer() {
             }
             go.go(options);
         }
+        p.cmds.dlFileList = function dlFileList(cmd, fx) {
+
+
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+
+            //dl file
+            //put in fileOutput dir
+
+            var t = EasyRemoteTester.create('Dl List',{});
+            var data = {};
+            var urls = {};
+            urls.notes = {};
+            urls.reload = t.utils.createTestingUrl('reload')
+            urls.file = cmd.url;
+           // t.settings.baseUrl = baseUrl;
+            t.settings.silent = true;
+
+            var fileFileList = cmd.url.split('/').slice(-1)[0];
+
+
+            sh.mkdirp(self.data.dirFileList);
+            fileFileList = sh.fs.join(self.data.dirFileList, fileFileList)
+
+            t.add(function dlFile() {
+                    t.quickRequest(  urls.file,
+                        'get', onResult )
+                    function onResult(body) {
+
+                        self.proc('saving file to ', fileFileList)
+                        sh.writeFile(fileFileList, body)
+
+                        fx();
+                        // console.log('body', body)
+                       // t.assert(body.id>0, 'post-verify did not let me do a search');
+                        t.cb();
+                    }
+                }
+            );
+
+        }
+
+        p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+            var fileScript = sh.fs.join(__dirname, 'TestRCScripts.js');
+            var RCScripts = require(fileScript).RCScripts;
+
+
+
+           // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
+
+            var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+            var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+
+            self.cmds.sendStatus('running tool');
+
+            RCScripts.verifyComplete(fileDlManifest, fileFileList, function onDone(output) {
+                console.log('found how many?', output.foundCount);
+                output.itemsValid = null;
+                output.itemsFound = null;
+                output.lines = output.lines.length
+                sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+                fx(output);
+            });
+
+
+            return;
+        }
+
     }
     defineCmds();
 
@@ -623,12 +708,34 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict, clas
     return t;
 }
 if (module.parent == null) {
-    exports.reloadServer()
+
+    function runServer() {
+        exports.reloadServer()
 
 
-    setTimeout(function onReload() {
-        exports.reloadServer(RCConfigExecServer.oldServer)
-    }, 2500)
+        setTimeout(function onReload() {
+            exports.reloadServer(RCConfigExecServer.oldServer)
+        }, 2500)
+    }
+    runServer()
+
+
+
+
+    function testScript() {
+        var fileScript = sh.fs.join(__dirname, 'TestRCScripts.js');
+        var RCScripts = require(fileScript).RCScripts;
+
+        var fileDlManifest = 'G:/Dropbox/projects/crypto/mp/RCExt/manifests/listIds_ls051393312.json'
+        var fileFileList = 'G:/Dropbox/projects/crypto/mp/RCExt/data/fileList/desktop_f4o5qnc.list.files.txt'
+
+        RCScripts.verifyComplete(fileDlManifest, fileFileList, function onDone(output) {
+            console.log(output.percent)
+            console.log('found how many?', output.foundCount);
+            sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+        });
+    }
+  //  testScript()
 
 }
 

@@ -28,7 +28,7 @@
 
         p.new = function create() {
             var s = new QuickJSONConvertor();
-            console.log('inside create', ',,,,,,7,,,,,,')
+            console.log('inside create', ',,b,,,,7,,,,,,')
             // debugger;
             s.init();
             return s;

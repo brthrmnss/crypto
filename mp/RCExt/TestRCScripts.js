@@ -174,6 +174,8 @@ XO.verifyComplete = function verifyComplete(fileManifest, fileList, fxDone) {
     output.itemsFound = itemsFound
     output.itemsValid = itemsValid;
 
+    output.percent = sh.toPercent(foundCount/itemsValid.length);
+    
     sh.callIfDefined(fxDone, output)
 
     return;
@@ -327,7 +329,7 @@ if ( module.parent == null ) {
     
     var fileDlManifest = sh.fs.join(__dirname, 'testData', 'listIds_ls051393312.json');
 
-    XO.verifyComplete(fileDlManifest, fileOutputMoveTo, function onDone(output) {
+    RCScripts.verifyComplete(fileDlManifest, fileOutputMoveTo, function onDone(output) {
         console.log('found how many?', output.foundCount);
         sh.throwIf(output.foundCount != 2, 'did not match write count of items');
     });

@@ -41,9 +41,9 @@ function GrammarHelperServer() {
         var express = require('express');
         var app = express();
 
-       // console.log('what is it', sh.allowWildcardRequests)
-       // sh.exit()
-       // app.use(sh.allowWildcardRequests)
+        // console.log('what is it', sh.allowWildcardRequests)
+        // sh.exit()
+        // app.use(sh.allowWildcardRequests)
         app.use(function bo(req,res,next) {
             console.log('iiii ... i am where', req.originalUrl)
             sh.allowWildcardRequests(req, res, null, true)
@@ -85,6 +85,71 @@ function GrammarHelperServer() {
             res.sendfile(fileMag)
         });
 
+
+
+        app.get('/searchpb', function onDownloadMagnet(req, res){
+
+            var fileScript = sh.fs.join(__dirname, '..', '..', 'ritv/distillerv3/utils', 'SearchPB.js' )
+            fileScript = sh.fs.resolve(fileScript)
+            sh.throwErrorIfFileNotFound(fileScript)
+            var SearchPB = require(fileScript).SearchPB
+
+
+            var options = {}
+            options.callback = function onDone(url, token) {
+                //token.linkz
+                //asdf.g
+                var json = {}
+                if ( token == null ) {
+                    token = {};
+                }
+                if ( token.linkz == null ) {
+                    token.linkz = []
+                }
+                json.size = token.linkz.length;
+                json.linkz = token.linkz;
+                json.url = token.url // ... put this so we can see the links
+                json = token;
+                res.json(json)
+                console.log('SearchPB complete:', url)
+            }
+            options.fxBail = options.callback;
+            options.query = '5th Element'
+            options.query = 'lynda advanced unity'
+            options.query = 'Game of thrones season 4'
+
+            options.pbCategory = 601
+            options.query = req.query.query
+            //options.pbCategory = 103
+            //options.pbMinSeederCount = 20
+            var go = new SearchPB()
+            go.go(options);
+
+
+            return;
+
+
+            /*console.log(req.query);
+             var dirMag = 'c:/trash/mags/'
+             sh.writeFile(dirMag + req.query.name, req.query.url);
+             links
+             */
+            sh.allowWildcardRequests(req, res, null, true)
+            var dirMag = 'c:/trash/mags/'
+            var fileLinks = dirMag + 'input.txt';
+            var content = sh.readFile(fileLinks, req.query.url);
+            content += sh.n
+            content +=  req.query.url
+            sh.writeFile(fileLinks,content);
+            res.json(req.query)
+
+            return;
+            var fileMag = 'temp.mag'
+            fileMag = __dirname + "/" + fileMag;
+            __
+            res.sendfile(fileMag)
+        });
+
         app.listen(self.settings.port)
         self.app = app;
 
@@ -102,6 +167,14 @@ function GrammarHelperServer() {
         app.use(express.static(__dirname+ '/'+ 'public_html'));
 
         app.use(express.static(__dirname+ '/../testingFramework/', 'testFramework'));
+
+
+        var dirExtProxy  = __dirname+ '/../ExtProxy/'
+        console.log(dirExtProxy, sh.fs.resolve(dirExtProxy))
+        // sh.x()
+        app.use(express.static(dirExtProxy, 'ExtProxy'));
+        app.use(express.static(dirExtProxy));
+
         //http://localhost:10110/g/redposter/index.html
         self.test()
     }
@@ -523,6 +596,7 @@ function GrammarHelperServer() {
         var t = EasyRemoteTester.create('test search server API', c);
 
         var urls = {}
+        urls.searchpb = t.utils.createTestingUrl('/searchpb');
         urls.urlgenindex = t.utils.createTestingUrl('/g/blue/index.html');
         urls.urlgenindex_userTemplate = t.utils.createTestingUrl('/g/red/index.html');
         urls.badfile = t.utils.createTestingUrl('/g/blue/adf/yu.html');
@@ -530,6 +604,7 @@ function GrammarHelperServer() {
         urls.localfile = t.utils.createTestingUrl('/g/blue/adf/index2.html');
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
+
 
 
         // http://localhost:10110/***/js/quickreloadable2.dir.html
@@ -550,6 +625,12 @@ function GrammarHelperServer() {
         t.getR(urls.urlgenindex_userTemplate)
             .why('test with user template')
             .fxDone(function onUrl(result) {
+            });
+        t.getR(urls.searchpb).with({query:'what if'})
+            .why('test for pb results')
+            .fxDone(function onUrl(result) {
+                console.log('results', result)
+                //sh.x()
             });
 
         t.getR(urls.urlgenindex)

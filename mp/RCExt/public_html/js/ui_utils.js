@@ -777,6 +777,22 @@ function defineUtils() {
 			}
 		}
 
+
+		uiUtils.setVal2 = function getVal2(id, val, newOptions) {
+			var ui = id;
+			if ( $.isString(id)){
+				if ( id.includes('#') == false ) {
+					id = '#'+id;
+				}
+				var ui = $(id);
+			}
+			if ( ui.is('span') || ui.is('div')){
+				return ui.html(val);
+			}
+			return ui.val(val)
+		}
+
+
 		p.clearText = function clearText(delay, jq) {
 			throwIfNull(jq, 'need a jquery for delay');
 			delay = dv(3)
@@ -1714,10 +1730,14 @@ function defineUtils() {
 			}
 
 
+
+
+
 			socket.listenForStatus = function listenForStatus(divId, fxDone, retryCount, type) {
 				var h = {};
 
-				divId = '#'+divId
+				divId = '#'+divId;
+				socket.divId = divId;
 				var ui = $(divId)
 
 				if ( uiUtils.waitForComp(divId, socket.asdf, arguments) ) {
@@ -1730,7 +1750,7 @@ function defineUtils() {
 				msg.attr('id', 'messages')
 				ui.append(msg)
 
-				uiUtils.makeScrollable(ui, 35)
+				uiUtils.makeScrollable(ui, 70)
 
 
 				console.log('listening to', socket)
@@ -1747,6 +1767,24 @@ function defineUtils() {
 					console.log('chat', data, li, ui)
 					uiUtils.scrollToBottom(scrollContainer);
 				});
+
+			}
+
+
+			socket.updateStatus = function updateStatus(txt) {
+
+				var args = convertArgumentsToArray(arguments)
+				txt = args.join(' ')
+
+				var divId = socket.divId
+
+
+				var scrollContainer = $(divId)
+				var ui = scrollContainer.find('#messages')
+				var li = $('<li>').text(txt)
+				ui.append(li);
+				//console.log('chat', txt, li, ui)
+				uiUtils.scrollToBottom(scrollContainer);
 
 			}
 		}

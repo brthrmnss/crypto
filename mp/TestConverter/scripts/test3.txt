@@ -1,0 +1,9 @@
+--comment
+eval
+function testRun() { alert('boom') }
+testRun()
+endeval
+eval //do something intricate
+window.testCallFromEval()
+endeval
+~some message alert //alias for log

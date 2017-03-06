@@ -1,6 +1,8 @@
 var sh = require('shelpers').shelpers;
 var shelpers = require('shelpers');
 var JSONSetRunner = require('./JSONSetRunner').JSONSetRunner;
+var columnify = require('columnify')
+
 
 function TaxRunner() {
     var p = TaxRunner.prototype;
@@ -121,7 +123,11 @@ if (module.parent == null) {
         cfg.it.matchesDefault = []
         cfg.it.matchesPersonal = null
         cfg.resetList = false
+        cfg.inputIsOutput_doesNotFilter=null
         cfg.it.fxDone = null ;
+        cfg.it.fxDone = null;
+        cfg.it.tagWhy = null
+        cfg.it.peachTreeAcct = null
         cfg.it.fxDone = null;
         cfg.includeAllItems = null
         cfg.it.noOutput = false
@@ -144,7 +150,8 @@ if (module.parent == null) {
         delete cfg.it.noOutput;
         delete cfg.it.desc;
         cfg.it.fxFilter = null;
-        console.log('\t', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
+        if ( cfg.it.spit )
+            console.log('\t', 'JSONSetRunner.runSet.fxPost', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
         //console.log(  inst.data.work.list )
         //    console.log('')
         //console.log(inst.data.listFiltered)
@@ -162,7 +169,109 @@ if (module.parent == null) {
     }
 
 
+    /*
+     cfg.it.iteratorName = 'Filter Years'
+     cfg.it.desc = 'Ensure all payments are in valid date range'
+     cfg.it.matchesDefault = []
+     //cfg.it.noOutput = true
+     //cfg.includeAllItems = true
+     cfg.it.fxFilter = function fxFilter(item) {
+     if ( item.description.includes('Deposit')  ){
+     return true;
+     }
+     if ( item.originalDescription.includes('Deposit')  ){
+     return true;
+     }
 
+     /!*if ( item.transactionType == 'credit' ){
+     return true;
+     }*!/
+     }
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+     */
+
+
+
+    function removeInvalidDates() {
+        cfg.it.iteratorName = 'Invalid Entires'
+        cfg.it.desc = 'remove outside of target year ( Ensure All Dates in range)'
+        cfg.it.tagWhy = 'sdfsdfsdfsdfsdf'
+        cfg.it.peachTreeAcct = 54654564
+
+        cfg.it.matchesDefault = []
+        cfg.it.fxFilter = function fxFilter(item) {
+            // console.log(item.date2.getFullYear())
+            if ( item.date2.getFullYear() != 2014 ) {
+             //asdf.g
+                return true
+            }
+
+            //item.ZZZZZZZZZZZZZZZZZZZZ = 456456456456456
+            //return false;
+        }
+        cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
+
+           // console.log(runner)
+            sh.sortByNumber(runner.data.listFiltered, 'amount' )
+            var columns         = columnify(   runner.data.listFiltered      );
+          //  console.log(columns)
+            runner.createAdditionalFlatFile('all_valid_sorted_amount', columns)
+
+        }
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+    }
+
+    removeInvalidDates()
+
+
+
+    cfg.it.iteratorName = 'Personal Loans through FCU'
+    cfg.it.desc = 'do not count loands to other accounts. Transfers to other people '
+    cfg.it.matchesDefault = []
+    //cfg.it.noOutput = true
+    //cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        if ( item.desc.includes('transfer') && item.desc.includes('to account ')) {
+            return true; //do not count transfers as income
+        }
+        if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
+            return true; //do not count transfers as income
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'Personal Loans through FCU to Rob'
+    cfg.it.desc = 'do not count loands to other accounts. Transfers to other people '
+    cfg.it.matchesDefault = []
+    //cfg.it.noOutput = true
+    //cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        /*if ( item.desc.includes('transfer') && item.desc.includes('to account ')) {
+            return true; //do not count transfers as income
+        }
+        if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
+            return true; //do not count transfers as income
+        }*/
+        if ( item.desc.includes('9688-3')  ) {
+            return true; //do not count transfers as income
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+    cfg.it.iteratorName = 'Transfers between my accounts'
+    cfg.it.desc = 'do not cound transfers as income'
+    cfg.it.matchesDefault = []
+    //cfg.it.noOutput = true
+    //cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        if ( item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
+            return true; //do not count transfers as income
+        }
+    }
+
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Deposits'
     cfg.it.desc = 'all income'
@@ -170,29 +279,65 @@ if (module.parent == null) {
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
+
+        if ( item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
+            //asdf.g
+            return false; //do not count transfers as income
+        }
         if ( item.description.includes('Deposit')  ){
+           // asdf.g
             return true;
         }
         if ( item.originalDescription.includes('Deposit')  ){
+           // asdf.g
             return true;
         }
 
+        //Flag tax refunds
         /*if ( item.transactionType == 'credit' ){
-            return true;
-        }*/
+         return true;
+         }*/
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+
+/*
 
     cfg.it.iteratorName = 'Income'
     cfg.it.matchesDefault =
         ['Deposit',
             '']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+*/
+
+    cfg.it.iteratorName = 'DblCount American Express'
+    cfg.it.matchesDefault = []
+    cfg.it.fxFilter = function fxFilter(item) {
+        if ( item.desc2.includes('Withdrawal-ACH-A-AMEX')) {
+            return true;
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = ' American Express'
+    cfg.it.matchesDefault = []
+    cfg.it.fxFilter = function fxFilter(item) {
+        if ( item.desc2.includes('AUTOPAY PAYMENT') && item.accountName == 'Gold Card') {
+            return true;
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+
+
 
 
     cfg.it.iteratorName = 'Cell Phone';
     cfg.it.matchesDefault = ['Sprint', 'Wireless'];
+    cfg.it.tagWhy = 'Wireless Business Utilities'
+    cfg.it.peachTreeAcct = 78000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -200,22 +345,24 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Air Travel'
     cfg.it.matchesDefault = ['Airlines', 'SW AIR', 'Southwest Airlines']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
+/*
     cfg.it.iteratorName = 'IRA'
     cfg.it.matchesDefault = ['Betterment']
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
 
     cfg.it.iteratorName = 'Retirement IRA Cont'
     cfg.it.matchesDefault =
         ['Betterment', ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
- 
+
 
     cfg.it.iteratorName = 'Rental Cars'
     cfg.it.matchesDefault = [
         'BUDGET RENT A CAR',
         'BUDGET.COM']
+    cfg.it.tagWhy = 'Rental Car/ Automobile'
+    cfg.it.peachTreeAcct = 61000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -238,9 +385,13 @@ if (module.parent == null) {
         'WATERWATCH ROCHESTER',
         'Roch Gas Elec'
     ]
+    cfg.it.tagWhy = 'Water/Internet/Electric'
+    cfg.it.peachTreeAcct = 7800
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Rent'
+    cfg.it.tagWhy = 'Rent'
+    cfg.it.peachTreeAcct = 74000
     cfg.it.matchesDefault =
         ["PRESERVE M - P"
 
@@ -255,29 +406,6 @@ if (module.parent == null) {
 
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
-    cfg.it.iteratorName = 'Amex Payments'
-    cfg.it.matchesDefault =
-        ['EPAYMENT AMEX EPayment'
-        ]
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
-    cfg.it.iteratorName = 'AUTOPAY Payments'
-    cfg.it.matchesDefault =
-        ['AUTOPAY'  ]
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
-
-
-
-    cfg.it.iteratorName = 'Transfers'
-    cfg.it.matchesDefault = ['Transfer']
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
 
 
 
@@ -326,6 +454,8 @@ if (module.parent == null) {
         ["Sallie Mae",
             'Slma Ed Serv'
         ]
+    cfg.it.tagWhy = 'Student Loans'
+    cfg.it.peachTreeAcct = '?????'
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -334,9 +464,9 @@ if (module.parent == null) {
         ["IRS (USATAXPYMT)",
         ]
     cfg.it.fxFilter = function fxFilter(item) {
-     /*   if ( item.description.includes('Deposit')  ){
-            return true;
-        }*/
+        /*   if ( item.description.includes('Deposit')  ){
+         return true;
+         }*/
         if ( item.originalDescription.includes('(USATAXPYMT)')  ){
             return true;
         }
@@ -357,6 +487,8 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Gas'
+    cfg.it.tagWhy = 'Gas Automobile'
+    cfg.it.peachTreeAcct = 74000
     cfg.it.matchesDefault = [
         'EXXONMOBIL',
         'SUNOCO',
@@ -373,6 +505,8 @@ if (module.parent == null) {
             'Rackspace',
             'IDrive', 'INMOTIONHOSTING', 'hover com'
         ]
+    cfg.it.tagWhy = 'Business Utitilize'
+    cfg.it.peachTreeAcct = 78000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -392,6 +526,8 @@ if (module.parent == null) {
             'Elance escrow',
             'WEBFREELANCER',
             'Fancy Hands']
+    cfg.it.tagWhy = 'Business Online Services/Freelancers'
+    cfg.it.peachTreeAcct = 78000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Junk Food'
@@ -403,22 +539,24 @@ if (module.parent == null) {
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
-/*
+    /*
 
-    cfg.it.iteratorName = 'Crypto currencies'
-    cfg.it.matchesDefault =
-        ['Coinbasebtc'
-            ,'WEBCOINBASE',
+     cfg.it.iteratorName = 'Crypto currencies'
+     cfg.it.matchesDefault =
+     ['Coinbasebtc'
+     ,'WEBCOINBASE',
 
-        ]
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-*/
+     ]
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+     */
 
     cfg.it.iteratorName = 'Insurance'
     cfg.it.matchesDefault =
         ['PREM CAR RENTAL PROTECTION',
             'Golden Rule Ins'
         ]
+    cfg.it.tagWhy = 'Personal Insurance'
+    cfg.it.peachTreeAcct = '?????'
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -439,12 +577,25 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-    cfg.it.iteratorName = 'Checks'
-    cfg.it.matchesDefault =
+    cfg.it.iteratorName = 'Checksz'
+    /*cfg.it.matchesDefault =
         ['Check'
 
-        ]
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+        ]*/
+    cfg.inputIsOutput_doesNotFilter = true
+    //cfg.it.noOutput = true
+    cfg.it.matchesDefault = []
+
+    cfg.it.fxFilter = function fxFilter(item) {
+        item.amount = parseFloat(item.amount);
+       // console.log('check', item)
+        if (item.description.startsWith('Check ') ) {
+           // asdf.g
+            return true; //skip check lines
+        }
+        //TODO: Tag checks 
+    }
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Paypal'
@@ -461,6 +612,8 @@ if (module.parent == null) {
             '@ WEBSTER MEDICAL GROUP'
 
         ]
+    cfg.it.tagWhy = 'Personal Medical Bills'
+    cfg.it.peachTreeAcct = '?????'
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -497,6 +650,8 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Total Deposits'
     cfg.it.matchesDefault = []
+    cfg.it.tagWhy = 'Income'
+    cfg.it.peachTreeAcct = 40000
     cfg.it.noOutput = true
     cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
@@ -546,6 +701,38 @@ if (module.parent == null) {
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+    cfg.it.iteratorName = 'Large Purchases Morethan Week'
+    cfg.it.matchesDefault = []
+    cfg.it.noOutput = true
+    cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        item.amount = parseFloat(item.amount);
+        if ( item.transactionType == 'credit' ){
+            return false; //skip income payments
+        }
+        //TODO: check if transfer
+        if ( Math.abs(item.amount) > 10000 ){
+            //console.error(item)
+            return true;
+        }
+
+        if ( Math.abs(item.amount) > JSONSetIterator_Generic.totalIncome/50 ){
+            //console.error(item)
+            return true;
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    cfg.it.iteratorName = 'OrganizePayments2'
+    cfg.it.matchesDefault = []
+    cfg.it.noOutput = true
+    cfg.includeAllItems = true
+    cfg.it.fxFilter = function fxFilter(item) {
+        item.amount = parseFloat(item.amount);
+
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     var count = 0;
@@ -565,8 +752,261 @@ if (module.parent == null) {
     cfg.it.matchesDefault = []
     cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
         runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
+        console.log('open comments_output.json')
+
+
+
+        var columns         = columnify(   JSONSetIterator_Generic.comments       );
+        // if ( self.settings. showAllItemsAtEnd)
+        console.log(columns)
+
+        runner.createAdditionalFlatFile('comments_output', columns)
+        console.log('open comments_output.txt')
+
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+
+    function doXCaliber() {
+
+        var dictItemByAmount = new sh.DictArray()
+        var dictItemByAmountRaw = new sh.DictArray()
+        var dictPaymentsSameDesc = new sh.DictArray()
+        var dictPaymentsSameDesc1stWord = new sh.DictArray()
+        var dictPayments_ReveredAmts = new sh.DictArray();
+        cfg.it.iteratorName = 'OrganizePayments'
+        cfg.it.matchesDefault = []
+        cfg.it.noOutput = true
+        //cfg.includeAllItems = true
+        cfg.it.fxFilter = function fxFilter(item) {
+            item.amount = parseFloat(item.amount);
+            item.amount = item.amount.toFixed(2)
+
+            // if ( item.rejected != true  ) {
+            //asdf.g
+            if (!item.description.toLowerCase().includes('amazon')) {
+                //ignore amazon b/c price can be anything
+                dictItemByAmount.add(item.amount, item)
+            }
+            dictItemByAmountRaw.add(item.amount, item)
+
+            dictPaymentsSameDesc.add(item.originalDescription, item)
+            var descWords = item.originalDescription.split(' ');//[0]
+            var firstWords = descWords[0]
+            if (firstWords.toLowerCase().includes('withdraw')) {
+                var firstTwoWords = descWords.slice(0, 3).join(' ');
+                //asdf.g
+                firstWords = firstTwoWords
+            }
+            dictPaymentsSameDesc1stWord.add(firstWords, item)
+            //  }
+
+            //TODO: do this with all items in other iterator ....
+            //wh: it is useful to see which transactions (loans, credit card balances) were
+            //reversed
+            dictPayments_ReveredAmts.add(Math.abs(item.amount), item)
+
+        }
+        cfg.convertPayments = function convertPayments(a, fxTestArray) {
+            var outputDict = {};
+
+            var cfg = {};
+            if (a.itemDict) {
+                cfg = a;
+                a = cfg.itemDict;
+            } else {
+                cfg.itemDict = a;
+            }
+
+            var listObj = [];
+            var totalAmount = 0;
+            var totalCount = 0;
+            var totalAmountNeg = 0;
+
+            sh.each(a, function (k, listItems) {
+
+                if (sh.isFunction(listItems)) {
+                    return;
+                }
+                if (cfg.allow1Only != true && listItems.length <= 1) {
+                    delete a[k]
+                    return;
+                }
+                if (listItems == null) {
+                    return;
+                }
+
+                /*
+                 */
+                sh.sortByDate(listItems, 'date')
+
+                if (fxTestArray) {
+                    var result = fxTestArray(listItems)
+                    if (result !== true)
+                        return;
+                }
+
+                if (cfg.fxFilterDictArrays) {
+                    var result = cfg.fxFilterDictArrays(listItems)
+                    if (result !== true)
+                        return;
+                }
+                //   if ( v.sort )
+                //     v.sort('date')
+                // sh.each.print(listItems, 'date')
+                // sh.x()
+                // console.log(k, listItems)
+
+                var firstLine = {};
+                firstLine.grouping = k;
+                listObj.push(firstLine)
+                var total = 0;
+                sh.each(listItems, function copyItemToOutputLines(kk, item) {
+                    var line = item;
+                    if (item == null) {
+                        console.log(k, v, kk, item)
+                    }
+                    // item.category = k
+                    item.amount = parseFloat(item.amount);
+                    //item.amount = item.amount.toFixed(2)
+
+                    total += item.amount
+                    if (item.amount > 0) {
+                        totalAmount += item.amount
+                    } else {
+                        totalAmountNeg += item.amount;
+                    }
+                    totalCount += 1;
+                    if (cfg.skipLines != true) {
+                        listObj.push(line)
+                    }
+                })
+
+
+                firstLine.total = total.toFixed(2);
+                firstLine.count = listItems.length;
+                firstLine.moneyPerc = sh.toPercent(firstLine.total / JSONSetIterator_Generic.totalIncome);
+                firstLine.avg$ = (total / listItems.length).toFixed(2)
+                firstLine.countPerc = listItems.length / JSONSetIterator_Generic.totalCount;
+                firstLine.countPerc = sh.toPercent(firstLine.countPerc);
+                //console.log('totalX', total, listItems.length, JSONSetIterator_Generic.totalIncome)
+                //asdf.g
+            })
+
+
+            if (cfg.sortItemsByVal) {
+                //asdf.g
+                //sh.sortByName(listObjs, 'total' )
+
+                var field = 'total'
+                listObj.sort(function (aObj, bObj) {
+                    var a = aObj[field];
+                    a = parseFloat(a)
+                    var b = bObj[field];
+                    b = parseFloat(b)
+                    //  console.error('date match',  b, a, bObj, aObj)
+                    var diff = b - a
+                    return diff;
+                });
+            }
+
+            var lineTotal = {};
+            lineTotal.grouping = 'maintotal'
+            lineTotal.count = totalCount;
+            lineTotal.countPerc = totalCount / JSONSetIterator_Generic.totalCount;
+            lineTotal.countPerc = sh.toPercent(lineTotal.countPerc);
+            lineTotal.moneyPerc = totalAmountNeg / JSONSetIterator_Generic.totalIncome;
+            lineTotal.moneyPerc = sh.toPercent(lineTotal.moneyPerc);
+            var avg$ = totalAmountNeg / totalCount;
+            lineTotal.avg$ = avg$
+            lineTotal.total = totalAmount;
+            lineTotal.totalNeg = totalAmountNeg;
+
+            sh.each(lineTotal, function fixPerc(k, v) {
+                if (v.toFixed != null && v.toString().includes('.'))
+                    lineTotal[k] = v.toFixed(2)
+            })
+
+            listObj.unshift(lineTotal)
+
+
+            return listObj
+        }
+        cfg.it.fxDone = function fxDone(runner, it) {
+
+
+            var y = cfg.convertPayments(dictItemByAmount);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('comments_output2', columns)
+
+            y = cfg.convertPayments(dictPaymentsSameDesc);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc', columns)
+
+
+            var csvLines = cfg.convertPayments({
+                itemDict: dictPaymentsSameDesc1stWord,
+                //skipLines: true,
+                allow1Only: true,
+                fxFilterDictArrays: function includeItemesWith1(arr) {
+                    // console.log('asdf', arr)
+                    if (arr.length == 1) {
+                        //asdf.g
+                        return true;
+                    }
+                    // asdf.g.f
+                },
+                //sortItemsByVal:true
+            });
+            var csvLines2 = columnify(csvLines);
+            runner.createAdditionalFlatFile('dictPayments_1OffPayments', csvLines2)
+
+
+            y = cfg.convertPayments(dictPaymentsSameDesc1stWord);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc1stWord', columns)
+
+
+            var csvLines = cfg.convertPayments({
+                itemDict: dictPaymentsSameDesc1stWord,
+                skipLines: true,
+                sortItemsByVal: true
+            });
+            var csvLines2 = columnify(csvLines);
+            runner.createAdditionalFlatFile('dictPayments_mostExpensiveCategories', csvLines2)
+
+
+            //find reversed payments
+
+            y = cfg.convertPayments(dictPayments_ReveredAmts, function onlyIfDirectionChanges(items) {
+                var h = {};
+                sh.each(items, function testDir(k, v) {
+                    if (v.amount > 0) {
+                        h.positive = true
+                    }
+                    if (v.amount < 0) {
+                        h.negative = true
+                    }
+                })
+                if (h.positive && h.negative) {
+                    return true;
+                }
+            });
+            var columns = columnify(y);
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc1stWord_revsed', columns)
+
+
+            // process.exit();
+
+        }
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    }
+    doXCaliber();
+
 
 }
 

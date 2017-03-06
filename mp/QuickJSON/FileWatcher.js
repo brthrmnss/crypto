@@ -36,6 +36,12 @@ function FileWatcher() {
 
         self.watchDirs();
         self.setupSocket();
+
+        if ( self.settings.runFirst != false &&
+            self.settings.action == 'runFile') {
+            self.proc('running', self.settings.file)
+            var y = sh.runAsync('node ' + self.settings.file)
+        }
     }
 
     p.watchDirs = function watchDirs(config) {
@@ -48,6 +54,14 @@ function FileWatcher() {
     }
 
     p.trigger = function trigger(file, changes) {
+        if ( changes.addedFiles && changes.addedFiles.length == 1 ) {
+            var fileFirst = changes.addedFiles[0];
+            if ( fileFirst.includes('_tmp__') ) {
+                if ( self.settings.debugChanges )
+                    console.log('skip temp file')
+                return;
+            }
+        }
         if ( self.settings.tellAboutFile ) {
             if ( changes ) {
                 var file = null;
@@ -70,11 +84,35 @@ function FileWatcher() {
                 return;
             }
         }
-        self.proc('hit file', file)
+        if ( self.settings.debugChanges )
+            self.proc('hit file', file)
         if ( self.settings.fxTransformFile ) {
             file = self.settings.fxTransformFile(file);
         }
         if ( self.settings.action == 'runFile') {
+            if ( self.settings.runAlways != true ) {
+                var leaf = sh.fs.leaf(file);
+                leaf = leaf.trim()
+                if ( self.settings.file.includes(leaf) == false ) {
+                    var skipFile = true;
+                    if ( self.settings.fxValidFileLike ) {
+
+                    }
+                    var otherValidFiles = self.settings.otherValidFiles;
+                    if ( otherValidFiles ) {
+                        console.log('otherValidFiles', otherValidFiles, leaf);
+                        if ( otherValidFiles.includes(leaf)) {
+                            skipFile = false;
+                            self.proc('other valid file');
+                        }
+                    }
+                    if (skipFile) {
+                        self.proc('not same file', leaf, sh.qq(self.settings.file), self.settings.file.indexOf(leaf))
+                        return
+                    }
+
+                }
+            }
             self.proc('running', self.settings.file)
             var  y= sh.runAsync('node '+ self.settings.file)
             //spit stdout to screen
@@ -220,7 +258,11 @@ function FileWatcher() {
 
             monitor.on('change', function (changes) {
                 var file = dirMonitored2 + '/ ' + changes.modifiedFiles[0]
-                console.log(file, changes);
+                if ( self.settings.debugChanges )
+                    console.log(file, changes);
+                if ( changes.modifiedFiles.length == 0 ) {
+                    file = changes.addedFiles[0]
+                }
                 self.trigger(file, changes);
                 // asdf.g
                 return;

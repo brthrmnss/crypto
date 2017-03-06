@@ -10,6 +10,8 @@ var scripts2 = [
     'tests.js',
     'dialogTransport.js',
     'dialogSearchTests.js',
+    'TestCSVConvertor.js',
+    'TestCSV.js',
 ]
 var loadScript2 = function loadScript2(_scripts2, fxDone) {
 
@@ -85,6 +87,8 @@ function loadTests() {
         //console.log('test framework loaded')
     })
 }
+
+window.loadTestingFramework = loadTests;
 
 var cookie =  localStorage.getItem('nextTest')
 cookie = JSON.parse(cookie);

@@ -115,7 +115,11 @@ window.fxInvoke = function (classToUpdate) {
         $.each(reloader.reloadWhensFxs, function onReloadWhenFxs(i, reloadWhenFxObj) {
             var match =  classToUpdate.toLowerCase().includes(reloadWhenFxObj.file.toLowerCase())
             if ( match ) {
-                reloadWhenFxObj.fx()
+                var result = reloadWhenFxObj.fx(classToUpdate)
+                if ( result == true ) {
+                    console.log('last match')
+                    return false; //break out of loop
+                }
             }
         })
     }
