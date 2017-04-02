@@ -1,0 +1,3307 @@
+Index: mp/testingFramework/testLL.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/testLL.js	(date 1491102272000)
++++ mp/testingFramework/testLL.js	(revision )
+@@ -16,7 +16,6 @@
+ var loadScript2 = function loadScript2(_scripts2, fxDone) {
+ 
+     if ( _scripts2.length == 0 ) {
+-        console.log('finished');
+         if ( fxDone ) fxDone();
+         return;
+     }
+@@ -25,8 +24,10 @@
+         window.preamble = window.location.origin + '/test3/'
+     }
+     //if ( url.includes(window.preamble) == false ) {
+-    //    debugger
++    //    debuggerf
++    if ( url.startsWith('http') == false ) {
+-    url = window.preamble + url;
++        url = window.preamble + url;
++    }
+     //}
+ 
+ 
+@@ -35,60 +36,144 @@
+     if ( debug ) {
+         console.log('downloading', url)
+     }
++
++
++    function loadJSViaScriptTag(src, fx) {
++        var script = document.createElement('script');
++        script.src = src;
++        script.onload = function onLoadedScript(a) {
++            //alert('got js ' + src)
++            if ( fx != null ) {
++                fx(a)
++            }
++        };
++
++        script.onerror = function onscriptLoadingFailed (a,b,c,d) {
++            console.error('failed to load', url, a==null,b,c,d)
++            console.error(c)
++        };
++        document.head.appendChild(script);
++    };
++
++    loadJSViaScriptTag(url, function onLoadNextScript() {
++        function loadNextScript(){
++            loadScript2(_scripts2, fxDone);
++        }
++        setTimeout(loadNextScript, 50)
++    });
++
++
++    return;
++
++    function loadJSVia_JQuery$getScript ( url, fxDone) {
+-    jQuery.getScript(url)
+-        .done(function onLoaded() {
+-        })
++        jQuery.getScript(url)
++            .done(function onLoaded() {
++            })
+-        .always(function doneLoadingFile () {
++            .always(function doneLoadingFile() {
+-            if ( debug ) {
++                if (debug) {
+-                console.error('what is window tests?', url, window.tests);
+-            }
++                    console.error('what is window tests?', url, window.tests);
++                }
+-            function loadNextScript(){
++                function loadNextScript() {
+-                loadScript2(_scripts2, fxDone);
+-            }
++                    loadScript2(_scripts2, fxDone);
++                }
++
+-            setTimeout(loadNextScript, 50)
++                setTimeout(loadNextScript, 50)
+ 
+-        })
++            })
+-        .fail(function (a,b,c,d) {
++            .fail(function (a, b, c, d) {
+-            console.error('failed to load', url, a==null,b,c,d)
++                console.error('failed to load', url, a == null, b, c, d)
+-            console.error(c.stack)
+-        });
+-}
++                console.error(c.stack)
++            });
++    }
++}
+ 
+ 
+-function loadTestFramework(fxDone, force) {
++function loadTestFrameworkFiles(fxDone, force) {
+     if ( force != true ) {
+         if (window.tH && window.tH.add) {
++            console.warn('test framework already loaded')
+             if ( fxDone ) { fxDone() }
+             return;
+         }
+     }
+-    loadScript2(scripts2.concat(), fxDone2)
+-    function fxDone2() {
++
++
++    var currentScript = document.currentScript //just in case user does not set pre-amble
++    if ( currentScript ) {
++        window.preamble = currentScript.src.replace('testLL.js', '')
++        console.info('guessed pre-amble to be', window.preamble)
++    }
++
++    /*
++    if ( window.uiUtils == null ) {
++        //why: load ui+utils if not already specified
++        scripts2.unshift('ui_utils.js')
++    }
++    */
++    scripts2.unshift('ui_utils.js')
++    if ( window.jQuery == null ) {
++        //why: load ui+utils if not already specified
++        scripts2.unshift('jquery.js.ignore_scan')
++        //debugger
++    }
++    loadScript2(scripts2.concat(), onFinishedLoadingTestFramework)
++
++    function onFinishedLoadingTestFramework() {
++        console.info('finished loading all scripts', scripts2.length);
+         window.tests.loaded = true;
++        window.testingFrameworkLoaded = true;
+         if ( fxDone ) { fxDone() }
+     }
+ }
+ 
++window.testFrameworkReload = function () {
++
++}
++
++
+ var runTest = window.location.href.indexOf('runTest=true') !=-1
+ var loadTestFrameworkInUrl =  window.location.href.indexOf('loadTestFramework=true') !=-1
+ 
+ 
+ if (  runTest || loadTestFrameworkInUrl ) {
+-    loadScript2(scripts2.concat());
++    loadTestingFramework()
++    //loadScript2(scripts2.concat());
+ }
+ 
+-function loadTests() {
+-    uiUtils.addToUrl('loadTestFramework', true)
+-    uiUtils.addToUrl('dialogSearchTests', true)
++function loadTestingFramework(fxDone, force) {
+ 
+     // uiUtils.addToUrl('testParam2', true)
+     //  return;
+-    loadTestFramework(function onDone(){
+-        //console.log('test framework loaded')
+-    })
++    loadTestFrameworkFiles(testFrameworkingLoaded, force)
++
++    function testFrameworkingLoaded() {
++        uiUtils.addToUrl('loadTestFramework', true); //
++        uiUtils.addToUrl('dialogSearchTests', true); //show test dialog for UX conv.
++        console.info('loadTestingFramework - test framework loaded')
++       // window.dialogTransport.init()
++        if ( window.fxTLLLoaded ) {
++            window.fxTLLLoaded();
+-}
++        }
++        callIfDefined(fxDone);
++        return;
++        uiUtils.repeatUntil(
++            function isDialogReady()  {
++                return window.dialogTransport != null
++            },
++            function initDialog() {
++                window.dialogTransport.init()
++            }
++        )
++    }
+ 
+-window.loadTestingFramework = loadTests;
++}
++
++window.loadTestingFramework = loadTestingFramework; //<-- Entry Point
++
++
++window.ltf = function loadTestingFrameworkForce(fxDone) {
++    loadTestingFramework(fxDone, true)
++}
+ 
+ var cookie =  localStorage.getItem('nextTest')
+ cookie = JSON.parse(cookie);
+Index: mp/testingFramework/PromiseHelperV3.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/PromiseHelperV3.js	(date 1491102272000)
++++ mp/testingFramework/PromiseHelperV3.js	(revision )
+@@ -51,6 +51,7 @@
+         self.startNextMethod = function () {
+             if ( self.isPlaying == false ) {
+                 self.proc('double end call...');
++                console.error('double end call')
+                 return;
+             }
+             self.data.methods.currentIndex++
+@@ -94,7 +95,13 @@
+ 
+                 //self.showProgress();
+                 //self.data.index = asdf
+-                //self.data.length = self.methods.length; 
++                //self.data.length = self.methods.length;
++                if ( self.token ==null ) {
++                    console.error(
++                        'what is self.token null?', self.token
++                    )
++                   // debugger;
++                }
+                 var continueTest = sh.callIfDefined(self.token.fxStep, self, fxResume)
+                 if( continueTest == false ) {
+                     self.currentMethod = null; //break the timer if a pause
+@@ -109,19 +116,32 @@
+             //REQ: support timeout delays
+ 
+             if ( self.token.timeout){
++                var timeoutMs = self.token.timeout*1000
++                if ( self.data.nextTimeoutSeconds ) {
++                    timeoutMs = self.data.nextTimeoutSeconds * 1000
++                    self.data.nextTimeoutSeconds = null;
++                }
+                 var _tokenForTimeout = self.token;
+                 var chainTimeoutHelper = {};
+                 chainTimeoutHelper.currentMethod = meth;
+                 setTimeout(function timeoutTimer() {
++                    if ( self.isPlaying == false ) {
++                       // console.warn('timeout on aborted stream')
++                        return;
++                    }
+                     if ( self.currentMethod == chainTimeoutHelper.currentMethod){
+                         //debugger;
+-                        var errorMsg = ['chain link timeout', self.currentMethod.name].join(', ');
++                        var errorMsg = [
++                            'chain link timeout', self.currentMethod.name,
++                        'time', timeoutMs
++                        ].join(', ');
+                         console.error(errorMsg);
+                         self.stop();
++                        sh.callIfDefined(self.fxStop, errorMsg)
+                         sh.callIfDefined(_tokenForTimeout.fxError, errorMsg, self);
+                         throw new Error(errorMsg)
+                     }
+-                },self.token.timeout*1000)
++                },timeoutMs)
+             }
+ 
+             /*
+@@ -160,6 +180,12 @@
+         self.startChain = function startChain(token, userSettings) {
+             self.processSettings(userSettings)
+             self.token = token;
++            if ( token == null ||
++                ( token.name && token.name.includes('waitfor') == false )
++            )
++            {
++               // debugger;
++            }
+             self.start(token);
+             self.methods = []
+             self.isPlaying = true;
+@@ -172,6 +198,7 @@
+             self.methods = [];
+             self.isPlaying = false;
+             self.token = null; //overkill
++            //debugger;
+         }
+     }
+     defineTransportControlMethods();
+@@ -205,6 +232,7 @@
+         self.methods.push({fx:fx, stack:sh.errors.storeError(6)})
+         //self.lastAddition
+         //self.lastPromise = self.lastPromise.then(self.w(fx))
++        self.data.lastMethodAdded = fx;
+         return self;
+     }
+     /**
+@@ -222,7 +250,9 @@
+         //self.data.offsetForAddNext++;
+         //Remember: we remove method, so to add it next,
+         //it goes to front of methods array
++        //console.error('adding', fx.name, offset)
+         self.methods.splice(offset, 0, method)
++        self.data.lastMethodAdded = fx;
+         return self;
+     }
+     //short for add Skip, stub does nothing
+Index: mp/testingFramework/test2.reloading.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/test2.reloading.html	(date 1491102272000)
++++ mp/testingFramework/test2.reloading.html	(revision )
+@@ -13,9 +13,27 @@
+     -->
+ 
+     <script>
++        setTimeout(function hideDiv() {
++            $('#showDiv').hide();
++        }, 500)
+         window.onRedButton = function onRedButton() {
+-            console.log('ddd')}
++            console.log('ddd')
++        }
++        window.onShowDiv = function onShowDiv() {
++            console.log('onShowDiv')
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').show();
++            }, 500)
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').hide();
++            }, 5000)
++        }
+        // window.preamble = '/test3/';
++        window.testCallFromEval = function () {
++            console.log('boom')
++        }
+     </script>
+     <script src="testLL.js"></script>
+ 
+@@ -24,7 +42,7 @@
+             loadTestFramework(function onReady(){
+                 testStackingDemo2B(true);
+             })
+-        } 
++        }
+         function autoloadTestFramework() {
+             window.location += '?loadTestFramework=true'
+         }
+@@ -53,6 +71,11 @@
+ <div>
+     <button class="redTest"
+             onclick="onRedButton()" >Go</button>
++
++    <button class="redTest2"
++            onclick="onShowDiv()" >Press for div</button>
++    <div id="showDiv" style="color:white;">
++        this the show div</div>
+ </div>
+ 
+ <script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+@@ -81,7 +104,24 @@
+ 
+             setTimeout(myAccount, 500)
+         })
+-        reloader.reloadWhenFx('test3/', function onTestOneJs(a, b, c) {
++
++
++        reloader.reloadWhenFx('test3/csvScripts/', function onTestOneJs(a, b, c) {
++            console.log('rerun last test',a,b,c)
++            tH.runTest('testCSV', a)
++            //debugger
++            return true
++            /*
++             loadTestFramework(function onFinishedRerunTest() {
++             // window.tests.loaded = true;
++             //window.whenReadyHasRunTesting = false; do not reload again
++             console.log('rerun last test',a,b,c,)
++             // tH.rerunLastTest()
++             }, true)
++             */
++        })
++
++        reloader.reloadWhenFx('testingFramework/', function onTestOneJs(a, b, c) {
+             loadTestFramework(function onFinishedRerunTest() {
+                 // window.tests.loaded = true;
+                 //window.whenReadyHasRunTesting = false; do not reload again
+\ No newline at end of file
+Index: mp/testingFramework/test2.verify.reloading.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/test2.verify.reloading.html	(revision )
++++ mp/testingFramework/test2.verify.reloading.html	(revision )
+@@ -0,0 +1,262 @@
++<!DOCTYPE html>
++<html>
++<head>
++    <title>Test Diff Location</title>
++
++    <!-- Prove can work in diff dir -->
++    <script>
++       /* var evalTxt = '34,fs.dfsjfsdfsdkksllll;;;;++++(){'
++        try {
++            eval(evalTxt);
++        } catch ( e ) {
++            console.error('error running eval', evalName)
++            console.error(e)
++            console.error(e.stack)
++            tH.logNow('error in fx', evalName)
++            tH.logNow(e)
++            tH.logNow(e.stack)
++            tH.fail('see above')
++        }*/
++
++        setTimeout(function hideDiv() {
++            if ( window.$ == null ) {
++                console.log('wait for jquery')
++                setTimeout(hideDiv, 1000);
++                return;
++            }
++            $('#showDiv').hide();
++
++            var nums = [];
++            for ( var i = 0; i < 10; i++ ) {
++                nums.push(i)
++            }
++            //console.log(nums, nums)
++            var c = $('#divContainerCounter')
++            var c2 =  $('#divContainerCounter2')
++            c2.css('opacity', '0')
++            $.each(nums, function onADdBtn(k,num) {
++                var btn = $('<button/>')
++                btn.text(num+1)
++                btn.click(function onClickX(){
++                    var count =  num+1
++                    // console.log('clicked', count)
++                     function click2(sz){
++                        console.log('clicked', sz, btn.text())
++                    }
++                    click2(count)
++                })
++                if ( k%2==0 ) {
++                    c2.append(btn.clone())
++                } else {
++                    var span = $('<div/>');
++                    span.css('width', '23'+'px');//uiUtils.make('span')
++                    span.css('display', 'inline-block')
++                    c2.append(span)
++                }
++                c.append(btn)
++
++
++            })
++
++        }, 500)
++        window.onRedButton = function onRedButton() {
++            console.log('ddd')
++        }
++        window.onShowDiv = function onShowDiv() {
++            console.log('onShowDiv')
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').show();
++            }, 500)
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').hide();
++            }, 5000)
++        }
++       // window.preamble = '/test3/';
++        window.testCallFromEval = function () {
++            console.log('boom')
++        }
++    </script>
++    <script>
++       // window.preamble = '../test7/'
++    </script>
++    <script src="../testingFramework/testLL.js"></script>
++
++    <script>
++        function lazyLoadAndRunTest() {
++            loadTestingFramework(function onReady(){
++                testStackingDemo2B(true);
++            })
++        }
++        function autoloadTestFramework() {
++            window.location += '?loadTestFramework=true'
++        }
++    </script>
++
++    <script>
++        setTimeout(function auto_startTestingFramework() {
++            console.info('auto - loading testing framework')
++            loadTestingFramework()
++        },500)
++    </script>
++
++    <style>
++        body {
++            font-weight: 400;
++            background-color: #CBD9E6;
++            font-family: 'Arial';
++        }
++    </style>
++
++    <!-- one of my script conflicts with ths main script ... plz fix -->
++    <script src="http://127.0.0.1:3000/socket.io-1.2.0.js" ></script>
++    <script>
++        function startReloading() {
++            if ( window.$ == null ) {
++                console.info('startReloading', 'wait for jquery')
++                setTimeout(startReloading, 1000);
++
++
++
++
++                return;
++            }
++
++
++
++            var scriptsForReloading = [
++                    'http://127.0.0.1:3000/socket.io-1.2.0.js',
++                    'http://localhost:3000/reloader.js'
++            ]
++
++            function loadReloadingFramework_ForTesting(fxDone, force) {
++
++                loadScript2(scriptsForReloading.concat(),
++                        onFinishedLoadingTestFramework)
++
++                function onFinishedLoadingTestFramework() {
++                    console.info('finished loading reloading framework',
++                            scriptsForReloading.length);
++                   // window.tests.loaded = true;
++                    if ( fxDone ) { fxDone() }
++                }
++            }
++
++            window.testDefs = 'csvScripts/defs.js.txt'
++
++            loadReloadingFramework_ForTesting(function onSetupReloadListeners() {
++
++
++                reloader.reloadWhenFx('/csvScripts/', function onTestOneJs(a, b, c) {
++                    b = a.split('/csvScripts/')[1]
++                    b = window.preamble + 'csvScripts/'+b;
++                    console.log('rerun last test',b,b,c)
++                    tH.runTest('testCSV', b)
++                    //debugger
++                    return true
++                })
++
++
++                reloader.reloadWhenFx('testingFramework/', function onTestOneJs(a, b, c) {
++
++
++
++                    setTimeout(function reRunTest() {
++                        tH.rerunLastTest()
++                    }, 800)
++
++                    return;
++                    loadTestFrameworkFiles(function onFinishedRerunTest() {
++                        console.log('rerun last test')
++                        tH.rerunLastTest()
++                    }, true)
++                })
++
++
++                reloader.reloadWhenFx('reloading.html', function onTestOneJs(a, b, c) {
++                     location.reload();
++                })
++               /* reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
++                    location.reload();
++                })*/
++            })
++        }
++        startReloading()
++    </script>
++
++<!--
++
++    <script src="http://127.0.0.1:3000/socket.io-1.2.0.js" ></script>
++    <script src="http://localhost:3000/reloader.js" ></script>
++-->
++
++</head>
++<body>
++<button>Test</button> <br />
++<button onclick="lazyLoadAndRunTest()">LL Test - Run Test</button>  <br />
++<button onclick="tH.clickTest2()">Run Test 2</button>  <br />
++<textarea id="txtArea" ></textarea>
++<button id="btnTest">Test</button>
++<!--
++<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
++    asdf
++</div>
++-->
++
++
++<div>
++    <button class="redTest"
++            onclick="onRedButton()" >Go</button>
++
++    <button class="redTest2"
++            onclick="onShowDiv()" >Press for div</button>
++    <div id="showDiv" style="color:white;">
++        this the show div</div>
++</div>
++
++<div id="divContainerCounter2">
++</div>
++<div id="divContainerCounter">
++    <span>skipTo8</span>
++    <br />
++</div>
++<style>
++    .layout-horizontal {
++        display: flex;
++        flex-direction: row;
++        flex-wrap: nowrap;
++        justify-content: center;
++        align-content: stretch;
++        align-items: stretch;
++    }
++    .fb-align-left {
++        justify-content: flex-start !important;
++    }
++    .layout-horizontal-left {
++        justify-content: flex-start !important;
++    }
++</style>
++
++
++<div class="x42-nav-body-container">
++    <div>Revenue</div>
++    <div>External Revenue</div>
++</div>
++<pt-table>
++    table
++</pt-table>
++
++<br />
++
++<div id="divContainerTest"
++     style="max-width:700px; overflow-y: auto;"
++     class="layout-horizontal layout-horizontal-left">
++    <div >span1</div>
++    <div >span1</div>
++    <div >span1</div>
++</div>
++
++
++</body>
++</html>
+\ No newline at end of file
+Index: mp/testingFramework/shelpers-mini.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/shelpers-mini.js	(date 1491102272000)
++++ mp/testingFramework/shelpers-mini.js	(revision )
+@@ -134,6 +134,13 @@
+ 
+ 
+ 
++        sh.clone = function clone(item) {
++            item = JSON.stringify(item)
++            item = JSON.parse(item)
++            return item
++        }
++
++
+         sh.copyProps = function copyProps(from, to) {
+             sh.each(from, function(k,v){
+                 to[k]=v;
+@@ -144,6 +151,8 @@
+             sh.each(arr, function on(k,v) {
+                 console.log(v)
+             })
++
++            console.table(arr)
+         }
+ 
+     }
+\ No newline at end of file
+Index: mp/testingFramework/testFramework.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/testFramework.js	(date 1491102272000)
++++ mp/testingFramework/testFramework.js	(revision )
+@@ -18,17 +18,30 @@
+     var testHelper = {};
+     window.testHelper = testHelper;
+     testHelper.data = {}
++    var tH = testHelper;
++    tH.settings = {};
++    tH.settings.clickAsRed = false;
++    tH.settings.onlyVisibleItems = true; //why click something that is invisible? we have a clickHidden
++    tH.settings.hoverOnClick = true;
++    tH.settings.pretendToType = true;
++    tH.settings.defaultTestDelay = 500;
+ 
+-    console.error('txtInvokeCount', window.testHelper.data.invokeCount);
++    testHelper.data.blueAreaClass = 'blueTransAnnotation'
++    testHelper.data.dictEvalFx = {};
++    testHelper.data.dictEvalFx2 = {};
++
++
++    //console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+     if (lastTestHelper) {
+         testHelper.data.invokeCount =
+             lastTestHelper.data.invokeCount;
+ 
+     }
+-    if ( testHelper.data.invokeCount == null ){
++    if ( testHelper.data.invokeCount == null ||
++        isNaN(testHelper.data.invokeCount)  ) {
+         testHelper.data.invokeCount = 0;
+     }
+-    console.error('txtInvokeCount', window.testHelper.data.invokeCount);
++    //console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+ 
+     if ( $.isObject == null ) {
+         $.isObject = function isObject(obj) {
+@@ -85,22 +98,65 @@
+ defineLoadParams();
+ 
+ function defineJQueryHelpers() {
+-    testHelper.findByContent = function (content, altRoot) {
++    testHelper.findByContent = function (content, altRoot, returnAllElements_ifHidden) {
+         if ($.isFunction(content)) {
+             return content = content();
+         }
+-        if ( content )
++
++
++
++        if ( $.isString(content) == false ) {
++            if ( $.isNumeric(content )) {
++                content = content.toString();
++            }
++        }
++        console.debug('what is input', content)
++
++        if ( content ) {
++            if ( content.startsWith('$2') ) {
++                // content = content.replace('$2 ', '')
++                content = content.replace('$2', '')
++            }
+             content = content.trim().toLowerCase();
++            if ( content.includes('|||')) {
++                var split = content.split('|||')
++                var typeOf = split[0]
++                content = split[1]
++            }
++        }
++
++
++
++
+         var root = $('body');
+         if ( altRoot ) {
++            if ( $.isString(altRoot) ) {
++                altRoot  = $(altRoot)
++            }
+             root = altRoot;
+         }
+-        return root.find('*')
++        var yyy = root.find('*')
+             .filter(
+                 function(){
++                    if ( typeOf ) {
++                        if ( $(this).is(typeOf) ==false ) {
++                            return false;
++                        }
++                    }
+                     return $(this).text().trim().toLowerCase() === content;
+                 })
++        if ( returnAllElements_ifHidden === true) {
++            return yyy;
+-    }
++        }
++        var visibleItems = $();
++        $.each(yyy, function isVisible(k,ui) {
++            if ( $(ui).is(':visible') ) {
++                visibleItems.push(ui)
++            }
++        })
++        //visibleItems = $(visibleItems)
++        return visibleItems
++    }
+     testHelper.findByContentLater = function findByContentLater (content) {
+ 
+         return function getContentLater() {
+@@ -162,6 +218,9 @@
+             return content = content();
+         }
+         if ( $.isString(content)) {
++            if ( content.startsWith('$2')) {
++                return null; //this is speical mode
++            }
+             content = $(content)
+             content.$orig = contentOrig;
+         }
+@@ -187,6 +246,10 @@
+ function defineTestTransportFxs() {
+     var panelAdded = false; //for repeat tests
+     tH.createNewTest = function createNewTest(){
++        if ( window.testStop ) {
++            window.testStop()
++        };
++
+         var work = new PromiseHelperV3();
+         window.testInProgress = true;
+         var t = work;
+@@ -200,17 +263,24 @@
+ 
+         token.name = tH.currentTestName;
+         work.wait = token.simulate==false;
++
++        work.fxStop = function onTestStop_TimeoutLikely(msg){
++            tH.fail('timeout', msg)
++        }
++
+         function startTestLater() {
+             work.startChain(token)
+         }
+ 
+         //debugger;
+         window.testHelper.data.invokeCount++;
+-        console.error('txtInvokeCount', window.testHelper.data.invokeCount);
++        //console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+ 
+         $('#testLogPanel').css({'background-color':tH.data.origTestLogPanelBgcolor});
+         $('#testLogPanel').css({'background-color':'#f2f2f2'});
+ 
++        $('.'+tH.data.blueAreaClass).remove()
++
+         // window.testHelper.fxStartNextTest = startTestLater;
+         startTestLater()
+         //setTimeout(startTestLater); //test can't run if defineTest fails ...
+@@ -226,7 +296,8 @@
+         tH.addTransportPanel();
+         tH.windowLocationHash = window.location.hash; //why: store hash so we can replay test easily
+ 
+-        tH.data = {};
++        //debugger
++        //tH.data = {};
+ 
+         defineAssertions(tH)
+         defineTestTransportTimeout(tH)
+@@ -234,11 +305,13 @@
+         var timer = new sh.EasyTimer()
+         timer.start()
+         tH.logNow('starting test', sh.q(tH.currentTestName) );
+-        t.fxDone3 = function finishedTest() {
++        t.fxDone3 = function on_finishedTest() {
+             tH.logNow('test ended', sh.q(tH.currentTestName), timer.secs() );
+             $('#testLogPanel').css({'background-color':'#C3E5C4'});
++            $('#testTransportPanel').css({'background-color':'#C3E5C4'});
+             window.testHelper.transport.finished();
+             $('#txtTotalStepsCount').text(t.data.methods.currentIndex);
++            $('#annotation').hide()
+         }
+ 
+         t.token.id = window.testHelper.currentTestId = Math.random();
+@@ -255,8 +328,29 @@
+             if ( t.token.id != window.testHelper.currentTestId ) {
+                 return false;
+             }
+-            $('#txtCurrentStepIndex').text(tx.data.methods.currentIndex);
++            $('#txtCurrentStepIndex').text(tx.data.methods.currentIndex+1);
+             $('#txtTotalStepsCount').text(tx.data.methods.count);
++
++
++            var currentStep = (tx.data.methods.currentIndex+1)
++            var totalSteps = tx.data.methods.count
++
++            var percent = (currentStep/totalSteps) //*100 //.toFixed(0)
++            percent = percent * 100
++            percent = percent.toFixed(0)
++            //console.error('lll', percent, currentStep, totalSteps)
++            var strPercentPaddingText = '    '
++            var keep = 2 - percent.toString().length
++            strPercentPaddingText = strPercentPaddingText.slice(0,keep)
++            $('#txtPercentPadding').text(strPercentPaddingText);
++            $('#txtPercent').text(percent+'%');
++
++            $('#testTransportPanelProgress').css('width', percent+'%')
++
++
++
++            /*console.debug('what is x?', tx.data.methods.currentIndex,
++             tx.data.methods.count);*/
+             return;
+             /*    console.log('what is x?', tx.data.methods.currentIndex,
+              tx.data.methods.count);*/
+@@ -295,51 +389,165 @@
+         }
+     }
+ 
+-    tH.setDefaultAddNext = function resetDefaultAddNext() {
++    tH.data.level = 0
++    tH.data.levels = []
++    tH.defaultAddNextOffset = 0
++    tH.setDefaultAddNext = function setDefaultAddNext() {
++        // console.error('adding', ' +', tH.data.level, tH.defaultAddNextOffset, tH.data.levels)
++        tH.data.level++
++        if ( tH.defaultAddNextOffset> 0 ) {
++            //tH.data.level++
++            // debugger
++            // tH.defaultAddNextOffset = 0;
++        }
++        //var lblInfo = {};
++        tH.data.levels.push(tH.defaultAddNextOffset)
++        if (tH.data.levels.length == 0 ) {
++            //tH.data.level++
++            // tH.defaultAddNextOffset = 0;
++        } else {
++            // debugger
++        }
+         tH.defaultAddNextOffset = 0;
++
+         tH.defaultAddNext = true;
+     }
+     tH.resetDefaultAddNext = function resetDefaultAddNext() {
+-        tH.defaultAddNextOffset = 0;
++        //  console.error('adding', ' -', tH.data.level, tH.defaultAddNextOffset, tH.data.levels)
++        // tH.defaultAddNextOffset = 0;
++        var level = tH.data.levels.pop();
++        tH.defaultAddNextOffset = level;
+         tH.defaultAddNext = false;
++        //set last vazlue
++        tH.data.level--
++
++
+     }
+-    tH.addTestStep = function addTestStep(fx_testLink, offset) {
++
++    tH.nextTimeoutTime = function nextTimeoutTime(time) {
++        tH.test.data.nextTimeoutSeconds = time;
++    }
++
++    tH.addTestStep = function addTestStep(fx_testLink, offset, sync) {
+         var addFx = tH.test.add;
+         if ( offset ) {
+             addFx = tH.test.addNext;
+         }
++        if ( sync ) {
++            var oldFx = fx_testLink;
++            fx_testLink = function fx_testLinkSync() {
++                oldFx()
++                tH.test.cb()
++            }
++        }
+         if ( tH.defaultAddNext ) {
+             addFx = tH.test.addNext;
+             //console.error('default add next')
+             // if ( offset == null ) { //add as if live
+ 
+             if ( tH.defaultAddNextOffset == null ) {
++                debugger
++                asdf.stop.this.is.wrong.set.the.val
+                 tH.defaultAddNextOffset = 0
+             }
+ 
+             offset =  tH.defaultAddNextOffset
+-
++            //how would someone knwo where to offset it? this is unnecsary
+             tH.defaultAddNextOffset++
+             //  }
+         }
+         addFx(fx_testLink, offset);
+-        if ( tH.defaultAddNextOffset ) { offset += 1}
++        if ( tH.defaultAddNext ) {offset += 1; tH.defaultAddNextOffset++ }
+         addFx(function reportToServer() {
++            // reportToServer.defaultFx = true
+             var delayTime = sh.dv(tH.test.delayTime, 10)
+             setTimeout(tH.test.cb, delayTime)
+         },offset)
+-        if ( tH.defaultAddNextOffset ) { offset += 1}
++        tH.test.data.lastMethodAdded.defaultFx = true;
++        if ( tH.defaultAddNext ) { offset += 1;  tH.defaultAddNextOffset++}
+         addFx(function addStandardDelayTime() {
++            // addStandardDelayTime.defaultFx = true
+             var delayTime = sh.dv(tH.test.delayTime, 10)
+             setTimeout(tH.test.cb, delayTime)
+         },offset)
++        tH.test.data.lastMethodAdded.defaultFx = true;
++
++
++        //console.error('defaultAddNext', 'tH.defaultAddNextOffset', tH.defaultAddNextOffset)
++
++        var ui = $('#divContainerTest');
++        var div = $('<div/>');
++        var t = uiUtils.tag('table')
++        //ui.append(div)
++
++        tH.data.stepCount ++
++        div.append('step ' + tH.data.stepCount)
++        div.append(t)
++        $.each(tH.test.methods, function addEachStep(k,m) {
++            if ( m.fx.defaultFx == true ) {
++                return;
+-    }
++            }
++            var tr = uiUtils.tag('tr')
++            var td = uiUtils.tag('td')
++            tr.append(td);
++            t.append(tr)
++            td.append(m.fx.name  )
++
++            var td = uiUtils.tag('td')
++            tr.append(td);
++            td.append(  m.fx.yData)
++            // debugger
++        })
++        ui.append(div)
++
++        //lastFx.fxDesc = 'standardDelayTime'
++    }
+     tH.add = tH.addTestStep;
+ 
+-    tH.addSync = function addSyncFunction(fx, error) {
++    tH.addStep = function addStep(fx) {
++
++        if ( fx.name == null || fx.name == '' ) {
++            throw new Error ('name this')
++        }
++        //console.error('what is nane', fx.name)
++        function tH_addStep_fx2() {
++            tH.setDefaultAddNext()
++
++            fx()
++            tH.resetDefaultAddNext();
++        }
++
++        tH.addTestStep(tH_addStep_fx2)
++
++    }
++
++    if ( tH.data.stepCount == null ) {
++        tH.data.stepCount = 0;
++    }
++    $('#divContainerTest').html('')
++
++    tH.addSync = function addSyncFunction(fx, setupDefault, error) {
+         var addFx = tH.test.addSync;
+-        addFx(fx, null);
++
++        if ( setupDefault != false ) {
++            var oldFx = fx;
++            function outerWrapper() {
++                tH.setDefaultAddNext();
++                oldFx();
++                tH.resetDefaultAddNext()
+-    }
++            }
++            fx = outerWrapper;
++        }
++        //if ( tH.defaultAddNext ) {
++        /* tH.test.addNext(function syncNext(){
++         fx()
++         tH.test.cb();
++         })
++         return;*/
++        //}
++        tH.addTestStep(fx, null, true)
++        //addFx(fx, null);
++    }
+     tH.addPlainFx = tH.addSync;
+ 
+     tH.addAttrTest = function addAttrTest(jquery, attr, val, error) {
+@@ -357,7 +565,19 @@
+ 
+ 
+ 
++    var urlBase = 'test3/'
++    if ( window.preamble ) {
++        urlBase = window.preamble;
++    }
+ 
++    if ( window.location.pathname ) {
++        if ( window.location.pathname.includes('test3/')) {
++            urlBase = '';
++        }
++    }
++
++
++
+     tH.addLogPanel = function addLogPanel() {
+         /*
+          var divId = '#testSearchTest';
+@@ -372,10 +592,10 @@
+         }
+         clearLogPanel();
+ 
++        console.log('addLogPanel')
+ 
+-
+         $('#txtInvokeCount').text(' ('+window.testHelper.data.invokeCount+')');
+-        console.error('txtInvokeCount', window.testHelper.data.invokeCount);
++        //console.error('txtInvokeCount', window.testHelper.data.invokeCount);
+ 
+         tH.data.origTestLogPanelBgcolor = '#f2f2f2';
+ 
+@@ -385,21 +605,21 @@
+ 
+         } else {
+             var annotation = $('<img/>')
+-            annotation.attr('src', 'test3/images/cursor-png.png')
++            annotation.attr('src', urlBase+'images/cursor-png.png')
+             $('body').append(annotation)
+             annotation.attr('id','annotation')
+             uiUtils.makeAbs(annotation, 100)
+             annotation.addClass('transitionAll');
+             annotation.css('z-index',  10002)
++            annotation.css('transition','all 0.1s ease-out')
+             annotation.hide();
+         }
+ 
++        $('#annotation').hide(); //if already on page
+         if ( $('#testLogPanel').length > 0 ) {
+             return;
+         }
+ 
+-
+-
+         var panel = $('<div style="background-color: #f2f2f2; padding:10px;' +
+             ' border: solid 1px #666666; position: fixed; ' +
+             'bottom: 260px; right: 10px; ' +
+@@ -410,8 +630,12 @@
+             '<span id="txtInvokeCount"></span>' +
+             '<div id="logPrevious"></div> ' +
+             '<div id="logCurrent"></div> ' +
++            '<div id="logMsgNow"></div> ' +
+             '  </div>');
+         $('body').append(panel)
++        panel.find('#logMsgNow').css('border-top', 'solid 1px #666666');
++        panel.css('max-width', '250px')
++        panel.css('min-width', '250px')
+         $('#testLogPanel').css('opacity', 0.7);
+         panel.css('z-index',  10002)
+ 
+@@ -438,18 +662,28 @@
+         if ( window.uiUtils.makePanel(cfg) ) {
+             return; //already made
+         }
++        uiUtils.centerVertically()
+         uiUtils.flagCfg = {};
+-        uiUtils.flagCfg.id = cfg.id;
++        uiUtils.lastUI.addClass('unselectable')
++        uiUtils.lastUI.css('z-index', 500000)
++        //uiUtils.flagCfg.id = cfg.id;
+         uiUtils.flagCfg.addTo = $(cfg.id);
+ 
+-        var urlBase = 'test3/'
+ 
+-        if ( window.location.pathname ) {
+-            if ( window.location.pathname.includes('test3/')) {
+-                urlBase = '';
+-            }
+-        }
++        uiUtils.flagCfg.addTo.css('transition','all 0.1s ease-out')
+ 
++        var div = $('<div></div>')
++        div.css('width', '100%')
++        div.css('height', '10%')
++        window.uiUtils.flagCfg.addTo.append(div)
++        div.css('background', 'black');
++        div.css('opacity', 0.3);
++        div.css('position', 'absolute');
++        div.css('left', '0px');
++        div.css('bottom', '0px');
++        div.attr('id', 'testTransportPanelProgress')
++        div.css('transition','all 0.1s ease-out')
++        //uiUtils.copySize(div);
+ 
+         //window.uiUtils.addTitle('Transport Panel');
+         window.uiUtils.addImage( urlBase+'images/play-button.png', 'btnPlay');
+@@ -474,6 +708,7 @@
+         });
+ 
+         window.uiUtils.addImage( urlBase+'images/pause.png', 'btnPause')
++        window.uiUtils.addTooltip('Pause Test')
+         window.uiUtils.addClick(function onPause(){
+             uiUtils.enable('#btnPlay')
+             uiUtils.disable('#btnPause')
+@@ -486,21 +721,40 @@
+         window.uiUtils.addClick(function onStop(){
+             window.testHelper.transport.playing = false;
+             window.testHelper.transport.pause = false;
+-            window.testHelper.transport.status = 'stopped'
+-            uiUtils.disable('#btnPause')
+-            uiUtils.disable('#btnStop')
++            window.testHelper.transport.status = 'stopped';
++            uiUtils.disable('#btnPause');
++            uiUtils.disable('#btnStop');
++            tH.fail('Tested Ended...')
+         });
+ 
+         window.uiUtils.addImage( urlBase+'images/rewind.png', 'btnRewind')
++        window.uiUtils.addTooltip('Rewind/Retry')
+         window.uiUtils.addClick(function onRewind(){
+             window.testHelper.rerunLastTest();
+         });
+ 
+ 
+         window.uiUtils.ws()
++        uiUtils.wH(10)
++
++//        debugger;
++
++        uiUtils.addSpan();
++
++        //window.uiUtils.pad(0,0,0,10)
++        //uiUtils.bg('red')
++        uiUtils.changeContainer();
++
+         window.uiUtils.addLabel( '0', 'txtCurrentStepIndex');
++        var txtCurrentStepIndex = uiUtils.getLast();
++        uiUtils.color('black')
++        uiUtils.tooltip('Current Index')
+         window.uiUtils.addLabel( '/' );
+         window.uiUtils.addLabel( '0', 'txtTotalStepsCount');
++        window.uiUtils.addLabel( ' ', '');
++        window.uiUtils.addLabel( '0', 'txtPercentPadding');
++        window.uiUtils.addLabel( '0', 'txtPercent');
++        uiUtils.popContainer()
+ 
+         uiUtils.disable('#btnPlay')
+         uiUtils.disable('#btnPause')
+@@ -517,11 +771,21 @@
+ 
+         window.testHelper.transport.finished = function finished() {
+             window.testHelper.transport.status = 'stopped'
++            uiUtils.enable('#btnPlay');
+             uiUtils.disable('#btnPause');
+             uiUtils.disable('#btnStop');
+             uiUtils.disable('#btnRewind');
+         }
+ 
++        window.testHelper.transport.finishFailed = function finishedFailed() {
++            window.testHelper.transport.status = 'stopped'
++            uiUtils.disable('#btnPlay');
++            uiUtils.disable('#btnPause');
++            uiUtils.disable('#btnStop');
++            uiUtils.color(txtCurrentStepIndex, '#CB0300')
++            //  uiUtils.disable('#btnRewind');
++        }
++
+         // debugger;
+         return;
+         window.uiUtils.br();
+@@ -566,8 +830,8 @@
+ }
+ 
+ function defineTestMethods() {
+-    function click(strOrJ) {
+-        tH.add(function clickAction() {
++    function click(strOrJ, parentJ) {
++        function clickAction() {
+ 
+             if ($.isArray(strOrJ)) {
+                 //array of items
+@@ -588,7 +852,7 @@
+             else if ($.isFunction(strOrJ)) {
+                 element = strOrJ() ;
+             } else {
+-                var element = tH.findByContent(strOrJ);
++                var element = tH.findByContent(strOrJ, parentJ);
+             }
+ 
+             if ( element != null &&
+@@ -598,7 +862,7 @@
+                 element = $(strOrJ)
+             }
+ 
+-            if ( element == null ) {
++            if ( element == null ||element.length == 0  ) {
+                 //
+                 element = {length:'null'};
+                 console.info('Element is null', strOrJ )
+@@ -608,19 +872,137 @@
+                 //TODO: fail if do not find object?
+                 //Optional ? ... never used too much cognitive load ..
+                 //if need to verify if exists, then verify
+-                element.css('color', 'red');
++                element = tH.utils.filterVisible(element)
++
++
++
++                if ( tH.settings.clickAsRed ) {
++                    var firstElement = element[0]
++                    var firstElementUI = $(firstElement);
++                    firstElementUI.css('color', 'red');
++                    var originalColor =  firstElementUI.css('color');
++                }
++                if ( element.length > 1 ) {
++                    console.error('ele', element, 'moving', strOrJ, parentJ )
++                }
++
++
++                var timeMouseClickAnimation = 500
++                if ( tH.settings.hoverOnClick == true ) {
++                    element.mouseover();
++
++                    element.hover();
++                    element.mouseenter();
++
++                    var origBackground = element.css('background-color');
++                    //element.css('background-color', '#013461')
++
++                    if ( origBackground ){
++                        origBackground = null;
++                    }
++
++                    tH.moveCursorTo(element) ; //move to cursor
++
++                    var annotation = $('#annotation')
++                    annotation.css('opacity', 0.4)
++                    annotation.css('border-bottom', 'solid 10px #013461' )
++
++                    setTimeout(function animateClickAction() {
++                        annotation.css('border-bottom', '' )
++                        annotation.css('opacity', 1)
++                    }, 200)
++
++                    setTimeout(function () {
+-                element.click();
++                        element.click();
++                        element.mouseout()
++                        element.mouseleave();
++
++                        element.css('background-color',origBackground);
++
++                        var m = $('.' + tH.data.blueAreaClass)
++                        m.remove();
++
++                    }, timeMouseClickAnimation)
+-            }
++                }
+-            console.log('click', strOrJ, element.length)
++                else {
++                    tH.moveCursorTo(element) ;
++                    element.click();
++                }
++
++
++            }
++            console.debug('clickAction', strOrJ, 'el',  element.length)
++            if ( element.length == 0 || element.length == null ) {
++                console.warn('\t','clickActionDidNotfind', strOrJ, parentJ, 'not found')
++            }
++            if ( element.length > 1) {
++                console.warn('clickAction', strOrJ, 'el', 'has more than 1 result', element.length)
++                tH.logNow('too many items', strOrJ, 'has more than 1')
++            }
++            tH.logNow('---', 'clickAction', strOrJ, parentJ, element.length)
++
++            if ( tH.settings.hoverOnClick == true ) {
++                setTimeout(function () {
+-            tH.test.cb();
++                    tH.test.cb();
+-        })
++                }, timeMouseClickAnimation)
++            } else {
++                tH.test.cb();
+-    }
++            }
++        }
++        clickAction.fxDesc = uiUtils.args(arguments).join(' ')
++
++        tH.add(clickAction)
++    }
+     tH.click = click;
++    tH.clickNext = function clickNext() {
++        tH.setDefaultAddNext();
++        var args = uiUtils.args(arguments)
++        tH.click.apply(this, args)
++        tH.resetDefaultAddNext();
++    }
+ 
+-    tH.clickNow = function clickNow(strOrJ) {
++    tH.utils = {}
++    tH.utils.filterVisible = function filtervisible(element) {
++        var elementFiltered = elementFiltered;
++        if ( tH.settings.onlyVisibleItems ) {
++            elementFiltered = element.filter(':visible')
++            elementFiltered = elementFiltered.filter(function() {
++                var opacity = $(this).css('opacity')
++                if ( opacity == false ) { return false; }
++
++                var ui = $(this)
++                var parents = ui.parents();
++                elementFiltered = parents.filter(function() {
++                    return $(this).css('opacity') == '0';
++                });
++
++                if ( elementFiltered.length > 0 ) {
++                    return false;
++                }
++                return true;
++            });
++        }
++        return elementFiltered
++    }
++    tH.utils.remove = function remove() {
++        var m = $('.' + tH.data.blueAreaClass)
++        m.remove();
++    }
++    tH.clickNow = function clickNow(strOrJ, parentJ, tryText ) {
+         //why: click but do not navigte
+         var element = $(strOrJ);
+-        element.css('color', 'red');
++        if ( element.length == 0 && tryText != false ) {
++            var element = tH.findByContent(strOrJ, parentJ);
++        }
++
++        element = tH.utils.filterVisible(element)
++
++
++        if ( tH.settings.clickAsRed ) {
++            var firstElement = element[0]
++            var firstElementUI = $(firstElement);
++            firstElementUI.css('color', 'red');
++        }
+         element[0].click();
+         // element[0].click();
+         element.click();
+@@ -632,10 +1014,18 @@
+         tH.add(function clickAction() {
+             // console.error('endhash-W', 1, window.location.href );
+             var element = $(strOrJ);
+-            element.css('color', 'red');
++            element = tH.utils.filterVisible(element)
+             if ( element[0] == null || element[0].click == null ) {
+                 console.error('no match for', strOrJ)
+             }
++
++
++
++            if ( tH.settings.clickAsRed ) {
++                var firstElement = element[0]
++                var firstElementUI = $(firstElement);
++                firstElementUI.css('color', 'red');
++            }
+             element[0].click();
+             // element[0].click();
+             element.click();
+@@ -650,7 +1040,6 @@
+         })
+     }
+ 
+-
+     tH.clickTest2 = function clickTest2() {
+         setTimeout(setYValue, 1500)
+         function setYValue() {
+@@ -670,8 +1059,13 @@
+     function pressEnter(strOrJ) { //find based on jquery
+         tH.add(function pressEnterAction() {
+             var element = $(strOrJ);
+-            element.css('color', 'red');
+ 
++            element = tH.utils.filterVisible(element)
++            if ( tH.settings.clickAsRed ) {
++                var firstElement = element[0]
++                var firstElementUI = $(firstElement);
++                firstElementUI.css('color', 'red');
++            }
+ 
+             var e = jQuery.Event("keydown");
+             e.which = 13; //choose the one you want
+@@ -748,8 +1142,18 @@
+             //  console.error('endhash-Z',91, window.location.href );
+         })
+     };
+-    tH.trace = tH.log3 = tH.logNext = tH.logNextLink;
++    tH.dbg = tH.l = tH.trace = tH.log3 = tH.logNext = tH.logNextLink;
+ 
++    tH.msgStatus = function msgStatus(str) {
++        var args = sh.convertArgumentsToArray(arguments)
++        if ( args.length > 0 )
++            str = args.join(' ');
++        $('#testLogPanel').show()
++        uiUtils.scrollToBottom('#testLogPanel')
++        //debugger
++        $('#logMsgNow').html(str)
++    }
++
+     tH.logNow = function logCurrently(str) {
+         var args = sh.convertArgumentsToArray(arguments)
+         if ( args.length > 0 )
+@@ -778,6 +1182,181 @@
+         //   }
+     }
+     tH.log2 = tH.log = tH.logNow;
++
++    if ( tH.settings.logIsLowNow) {
++        tH.log2 = tH.log = tH.logNow;
++    } else {
++        tH.log = tH.logNextLink;
++    }
++
++
++    tH.callFxX = function callFx(evalName, rest_args) {
++        if ( evalName == null ) {
++            console.error('need a name for')
++        }
++        var evalTxt =  window.testHelper.data.dictEvalFx[evalName];
++        if ( evalTxt == null ) {
++            console.error('could not find evalFx in stored', evalName)
++            return;
++        }
++
++        var args = uiUtils.args(arguments)
++        // args.shift();
++
++
++        tH.add(function callFx() {
++
++            //  tH.add(function runEval_Later() {
++            tH.logNow('running stored fx', evalName)
++
++            //console.debug('running stored fx', evalName, evalTxt.trim(), v.args)
++
++            var strs = [];
++            $.each(args, function copyArg(k,v) {
++                if ( k == 0 ) { return } //skip evalName
++                var str = 'var arg'+(k) + ' = ' + '"'+v+'"'
++                //  console.debug('str', k, str)
++                strs.push(str)
++            })
++            console.debug('||running stored fx', evalName, strs )
++
++            var codeStr_CreateArgs = strs.join('\n')
++            //console.debug('code',codeStr_CreateArgs)
++            eval(codeStr_CreateArgs)
++            // console.log('arg1', arg1, 'arg2', arg2 )
++            tH.setDefaultAddNext()
++            eval(evalTxt);
++            tH.resetDefaultAddNext()
++            tH.test.cb();
++            // })
++
++        })
++
++    }
++
++    tH.fx = function fx(fxName, restargs) { //find based on jquery
++        // if ( v.fx == 'fx' || v.fx == 'fxasync') {
++        var evalName = fxName
++        if ( evalName == null ) {
++            console.error('need a name for', v)
++            tH.fail('Cannot start test. failed to find fx named',
++                JSON.stringify(v)
++            )
++            return;
++        }
++        var evalTxt =  window.testHelper.data.dictEvalFx[evalName];
++        var fxInfo =  window.testHelper.data.dictEvalFx2[evalName];
++        if ( evalTxt == null ) {
++            console.error('could not find evalFx in stored', evalName)
++            tH.fail('Cannot start test. failed to find fx named', sh.qq(evalName))
++            throw new Error('cant find')
++            return;
++        }
++
++        var v = fxInfo;
++        v = sh.clone(fxInfo); //clone so areguments are different ecah time
++        v.args = uiUtils.args(arguments)
++
++        console.error('what mode', evalName, tH.defaultAddNext,
++            tH.defaultAddNextOffset, v.args)
++        function dAddNextOffsetnEval_Later() {
++            tH.logNow(v.line+'.', '||running stored fx d', evalName, tH.defaultAddNextOffset, v.args.join(' '))
++
++
++            //console.debug('running stored fx', evalName, evalTxt.trim(), v.args)
++            console.debug('running stored fx', evalName, v.args)
++
++            var strs = [];
++
++            var argumentsToDef = v.args;
++            if  ( v.args.args ) {
++                argumentsToDef = v.args.args;
++                argumentsToDef.unshift(evalName) ; //inputs are consistent
++            }
++            //debugger
++
++
++            var argVals = [];
++            $.each(argumentsToDef, function copyArg(k,v) {
++                if ( k == 0 ) { return } //skip evalName
++                var str = 'var arg'+(k) + ' = ' + '"'+v+'"'
++                var origArg = v;
++                //  console.debug('str', k, str)
++                strs.push(str)
++                //debugger
++                if ( $.isNumeric(v) == false ) {
++                    v = sh.qq(v)
++                }
++                if ( origArg === "true" || origArg === true ) {
++                    v = true
++                }
++                if ( origArg === "false" || origArg === false ) {
++                    v = false
++                }
++                //
++                argVals.push(v)
++            })
++
++            var codeStr_CreateArgs = strs.join('\n')
++            //console.debug('code',codeStr_CreateArgs)
++            eval(codeStr_CreateArgs)
++
++            if ( fxInfo && fxInfo.needSignatureCalled ) {
++                //asdf.g
++                evalTxt += '\n'
++                var runFxEvalStr = evalName + '('+argVals.join(',') +')';
++                evalTxt += '\n'+runFxEvalStr;
++            }
++
++            // console.log('arg1', arg1, 'arg2', arg2 )
++            try {
++                tH.setDefaultAddNext()
++                eval(evalTxt);
++                tH.resetDefaultAddNext()
++            } catch ( e ) {
++                //debugger
++                console.error('error running eval', evalName)
++                console.error(e)
++
++                window.e = e;
++                console.error('full listing', '\n\t',
++                    evalTxt.trim())
++
++                // console.error(e.stack)
++                tH.logNow('error in fx', sh.qq(evalName))
++                tH.logNow(e)
++                tH.logNow(e.stack)
++                try {
++                    tH.fail('see above')
++                } catch ( e ) {
++                }
++
++
++                eval(evalTxt);
++            }
++
++            if ( v.fx != 'fxasync') { //how to set? ...have different callback
++                tH.test.cb();
++            }
++        }
++
++        if ( tH.data.nextIsNow ) {
++            dAddNextOffsetnEval_Later()
++            return;
++        }
++        tH.add(dAddNextOffsetnEval_Later)
++
++        dAddNextOffsetnEval_Later.yData = evalName;
++        //dAddNextOffsetnEval_Later.yData = '4444'
++        return;
++        //  }
++    }
++    tH.fxNow = function fxNow(fxName, restargs) {
++        tH.data.nextIsNow = true;
++        var args = uiUtils.args(arguments)
++        tH.fx.apply(this, args)
++    }
++
+     function wait(waitTime) {
+         tH.add(function waitLinkTime() {
+             setTimeout(function resumeTest(){
+@@ -788,20 +1367,28 @@
+     wait.desc = 'Wait x seconds'
+     tH.wait = wait;
+     function waitFor(fx, maxTimes, delay, failWhenDone) {
++        if (  tH.data.maxTimesNext ) {
++            maxTimes = sh.dv(maxTimes,
++                tH.data.maxTimesNext)
++            tH.data.maxTimesNext = null;
++        }
+         maxTimes = sh.dv(maxTimes, 10)
+         delay = sh.dv(delay, 250)
+         failWhenDone = sh.dv(failWhenDone, true);
+ 
+ 
+         var dbgWait = false;
++        dbgWait = true
+ 
+         if ( tH.waitForError ) {
+             //console.error('waitFor', tH.waitForError);
+             var waitForError = tH.waitForError;
+         }
+ //debugger
++        //console.error('what is the thtoken','1', tH.test.token)
+         tH.add(function waitFor_Action() {
+ //debugger
++
+             var innerT  = new PromiseHelperV3();
+             var token = {};
+             innerT.silentToken = true
+@@ -811,8 +1398,6 @@
+             innerT.maxIterations = maxTimes;
+             innerT.iteration = 0;
+ 
+-            innerT.addNext(testWaitForCondition)
+-            innerT.addNext(addWaitForDelay)
+             function testWaitForCondition() {
+                 try {
+                     var lastAttempt = innerT.iteration > innerT.maxIterations;
+@@ -829,6 +1414,13 @@
+                     console.log('waitfor-result', result,
+                         innerT.iteration, innerT.maxIterations, fx.name)
+                 }
++
++                if ( innerT.iteration % 10 == 0 ) {
++                    tH.logNow('____','still waiting for', waitForError)
++                }
++
++                console.log(innerT.iteration, result, waitForError)
++
+                 if ( result != true ){
+                     if (lastAttempt) {
+                         if ( failWhenDone ) {
+@@ -838,14 +1430,14 @@
+                             }
+ 
+                             window.fxFailed = fx;
+-                            tH.fail(['failed on thing ',
+-                                fx.name,
++                            var msg =  ['failed on thing ',fx.name,
++                                waitForError,
+                                 innerT.iteration ,
+-                                innerT.maxIterations])
++                                innerT.maxIterations].join(' ');
++
++                            tH.fail(msg)
+                             throw new Error(
+-                                ['failed on thing ',fx.name,
+-                                    innerT.iteration ,
+-                                    innerT.maxIterations].join(' ')
++                                msg
+                             )
+ 
+                         } else {
+@@ -859,6 +1451,7 @@
+                     }
+                 } else {
+                     tH.waitForError = null;
++                    // console.error('what is the thtoken', tH.test.token)
+                     tH.test.cb();
+                 }
+             }
+@@ -866,6 +1459,8 @@
+                 setTimeout(innerT.cb, delay)
+             }
+ 
++            innerT.addNext(testWaitForCondition)
++            innerT.addNext(addWaitForDelay)
+         })
+     }
+     tH.waitFor = waitFor;
+@@ -878,6 +1473,7 @@
+     }
+     changeLocation.desc = 'change url, can ad test into url'
+     tH.changeLocation = changeLocation;
++
+     function runFx(fx) {
+         tH.add(function runFx() {
+             fx();
+@@ -887,6 +1483,7 @@
+     runFx.desc = 'run arbitrary method (fx)'
+     tH.runFx = runFx;
+     tH.run = runFx;
++
+     function runFxNext(fx) {
+         /*debugger;
+          tH.add(function runFx() {
+@@ -919,13 +1516,23 @@
+ 
+     tH.fail = function failTest(errorArr, asdf) {
+         //alert('test failed')
++        if ( errorArr.join ) {
++            errorArr = errorArr.join(' ')
++        }
++        var args = uiUtils.args(arguments)
++        errorArr = args.join(' ')
+         tH.logNow('  ')
+         tH.logNow(' ');
+         tH.logNow('_________');
+-        tH.logNow('Test Failed')
++        tH.logNow('Test Failed', errorArr, asdf, tH.waitForError, tH.stepError)
+         $('#testLogPanel').css({'background-color':'#F9C09D'});
++        $('#testTransportPanel').css({'background-color':'#F9C09D'});
++        window.testHelper.transport.finishFailed();
++        tH.test.isPlaying = false;
++        var annotation = $('#annotation')
++        annotation.hide();
+ 
+-        throw new Error(errorArr.join(' '))
++        throw new Error(errorArr)
+ 
+     }
+ 
+@@ -995,13 +1602,16 @@
+ 
+ 
+ function defineCompoundMethods() {
+-    tH.waitForHide = function waitForHide(jquery, waitForFailureReason) {
++    tH.waitForHide = function waitForHide(jquery, waitForFailureReason, parentJq) {
+         var dbgWait = false;
+         if ( waitForFailureReason )
+             tH.waitForError = waitForFailureReason + ' (waitForHide) ' + jquery
+         tH.waitFor(function isUIHidden(){ //waitForHide
+             //var jquery = tH.convertJquery(jquery)
+             var jq = tH.convertJquery2(jquery)
++            if ( jq.length == 0 || parentJq !=  null ) {
++                jq = testHelper.findByContent(jquery, parentJq, true )//try to search for name)
++            }
+             if ( jq.length == 0 ) {
+                 console.warn('jqueryIs 0 length', jquery, 'isUIHidden')
+                 return false;
+@@ -1017,11 +1627,59 @@
+             return false==isVislbe
+         });
+     };
+-    tH.waitForShow = function waitForShow(jquery, waitForFailureReason) {
++
++
++    tH.waitForNone = function waitForNone(jquery, waitForFailureReason, parentJq) {
++        var dbgWait = false;
+         if ( waitForFailureReason )
+-            tH.waitForError = waitForFailureReason + ' (waitForShow) ' + jquery
+-        tH.waitFor(function isDialogVisible(){ //waitForHide
++            tH.waitForError = waitForFailureReason + ' (waitForHide) ' + jquery
++        tH.waitFor(function isUIHidden(){ //waitForHide
++            //var jquery = tH.convertJquery(jquery)
+             var jq = tH.convertJquery2(jquery)
++            if ( jq.length == 0 || parentJq !=  null ) {
++                jq = testHelper.findByContent(jquery, parentJq, true )//try to search for name)
++            }
++            if ( jq.length == 0 ) {
++                if ( dbgWait ) {
++                    console.log('none found, so all good', jq, opacity, isVislbe)
++                }
++                return true
++            }
++            var opacity = $(jquery).css("opacity");
++            var isVislbe= $(jquery).is(":visible");
++            if ( dbgWait ) {
++                console.log('opacit', jq, opacity, isVislbe)
++            }
++            if ( opacity == "0") {
++                return true
++            }
++            return false==isVislbe
++        });
++    };
++
++
++    tH.waitForShow = function waitForShow(jquery, waitForFailureReason, parentJq, times ) {
++
++        var s = new Error().stack
++        var stepMsg = [waitForFailureReason,'(waitForShow) ',
++            jquery, parentJq, s].join(' ')
++
++        /* if ( waitForFailureReason ) {
++         tH.waitForError = [waitForFailureReason,'(waitForShow) ',jquery, parentJq].join(' ')
++         }
++         else {
++         tH.waitForError = '' + ' (waitForShow) ' + jquery
++         }*/
++        tH.waitForError = stepMsg;
++        tH.waitFor(function isDialogVisible_waitForShow(){ //waitForHide
++            try {
++                var jq = tH.convertJquery2(jquery)
++            } catch (e) {
++                console.error('could not convert', e, 'is bad name?')
++            }
++            if ( jq.length == 0 || parentJq != null ) {
++                jq = testHelper.findByContent(jquery, parentJq)//try to search for name)
++            }
+             tH.moveCursorTo(jq)
+             if ( jq.length == 0 ) {
+                 console.warn('jqueryIs 0 length', jquery)
+@@ -1033,7 +1691,7 @@
+             if ($(jq).css("opacity") == "0") {
+                 return false
+             }
+-            return true==$(jq).is(":visible")
++            return true==$(jq).is(":visible");
+         });
+     };
+     tH.verifyHidden = function verifyHidden(jquery) {
+@@ -1074,43 +1732,107 @@
+     }
+ 
+ 
+-    tH.set = function setTextField(jquery, text) {
++    tH.set = function setTextField(jquery, text, _pretendToType) {
++        var pretendToType = tH.settings.pretendToType;
++        if ( _pretendToType ){
++            pretendToType = false
++            if ( _pretendToType == true || _pretendToType == 'true') {
++                pretendToType = true
++            }
++        }
+         tH.runAsync(function settext() { //verify more than 6
++
++            // debugger;
++            var element = $(jquery)
++            element = tH.utils.filterVisible(element)
++            if ( element.length == 0 ) {
++                tH.fail('did not find items for',sh.qq( jquery), 'set to',sh.qq( text) )
++            }
++
++            var setHelper = sH = {};
++            sH.data = {};
++            sH.focusIn = function focusIn() {
+-            $(jquery).focus();
+-            // $(jquery).keydown();
+-            var e = new Event("keydown");
+-            e.key="a";    // just enter the char you want to send
+-            e.keyCode=e.key.charCodeAt(0);
+-            e.which=e.keyCode;
+-            e.altKey=false;
+-            e.ctrlKey=true;
+-            e.shiftKey=false;
+-            e.metaKey=false;
+-            e.bubbles=true;
+-            $(jquery)[0].dispatchEvent(e)
++                $(jquery).focus();
++                // $(jquery).keydown();
++                var e = new Event("keydown");
++                e.key="a";    // just enter the char you want to send
++                e.keyCode=e.key.charCodeAt(0);
++                e.which=e.keyCode;
++                e.altKey=false;
++                e.ctrlKey=true;
++                e.shiftKey=false;
++                e.metaKey=false;
++                e.bubbles=true;
++                $(jquery)[0].dispatchEvent(e)
+ 
++                sH.setValue();
+ 
++                sH.data.originalBoxShadow = element.css('box-shadow')
++                element.css('box-shadow','0px 0px 4px #666666');
++
++            }
++            sH.setValue = function setValue() {
++
++                //$(jquery).keyup();
++                tH.moveCursorTo(element);
++                console.log('setting ', jquery, 'to text()')
++                if ( pretendToType != true ) {
+-            $(jquery).val(text)
+-            $(jquery).change();
++                    $(jquery).val(text)
++                    $(jquery).change();
+-            //$(jquery).keyup();
++                    sH.focusOut();
++                } else {
++                    var chars = [];
++                    for ( var i = 0; i < text.length; i++ ) {
++                        chars.push(text.charAt(i))
++                    }
++                    $(jquery).val('')
++                    $.each(chars, function onEachChar(i, char ) {
++                        setTimeout(function typeChar() {
++                            var textSt = text.slice(0,i+1)
++                            console.log('textSt', i, text.length, textSt)
++                            $(jquery).val(textSt)
++                            $(jquery).keydown();
++                            $(jquery).keypress();
++                            $(jquery).keyup();
++                            //$(jquery).blur();
++                            $(jquery).change();
++                            if ( i == text.length -1 ) {
++                                sH.focusOut();
++                            }
++                        }, 140*i);
++                    })
++                }
+ 
++            }
++            sH.focusOut = function focusOut() {
++
+-            var e = new Event("keyup");
+-            e.key="a";    // just enter the char you want to send
+-            e.keyCode=e.key.charCodeAt(0);
+-            e.which=e.keyCode;
+-            e.altKey=false;
+-            e.ctrlKey=true;
+-            e.shiftKey=false;
+-            e.metaKey=false;
+-            e.bubbles=true;
+-            $(jquery)[0].dispatchEvent(e)
++                var e = new Event("keyup");
++                e.key="a";    // just enter the char you want to send
++                e.keyCode=e.key.charCodeAt(0);
++                e.which=e.keyCode;
++                e.altKey=false;
++                e.ctrlKey=true;
++                e.shiftKey=false;
++                e.metaKey=false;
++                e.bubbles=true;
++                $(jquery)[0].dispatchEvent(e)
+ 
+-            $(jquery).focusout();
+-            $(jquery).blur();
++                $(jquery).focusout();
++                $(jquery).blur();
+-            console.log('setting ', jquery, 'to text()')
++                element.css('box-shadow',sH.data.originalBoxShadow);
++                sH.nextLinkInChain();
++            }
++
++            sH.nextLinkInChain = function nextLinkInChain() {
+-            setTimeout(function waitToContinue(){
+-                tH.test.cb();
+-            }, 500)
++                setTimeout(function waitToContinue(){
++                    tH.test.cb();
++                }, 500)
++            }
++
++            sH.focusIn()
++
++
++
+         });
+     }
+     tH.setItem = tH.set;
+@@ -1123,13 +1845,29 @@
+         });
+     }
+     tH.makeGreen = function highlightGreen() {
++        //on_finishedTest
+         tH.run(function makeGreen() { //verify more than 6
+             $('#testLogPanel').css({'background-color':'#C3E5C4'});
+             debugger;
+             window.location.hash =tH.windowLocationHash;
+         });
+     }
++
++
++
++    /* tH.evalFx = function evalFx() {
++     tH.run(function makeGreen() { //verify more than 6
++     $('#testLogPanel').css({'background-color':'#C3E5C4'});
++     debugger;
++     window.location.hash =tH.windowLocationHash;
++     });
++     }*/
++
++
+     tH.moveCursorTo = function moveCursorTo(jquery) {
++        var jqueryOrig = jquery;
++        //todo have another annotation ... that is blue area to show click spot
++        //prob move cursor to far right
+         var annotation = $('#annotation')
+         annotation.show();
+ 
+@@ -1157,7 +1895,7 @@
+         }
+ 
+         if ( position == null ){
+-            console.warn('failed to curosr to ', jquery)
++            console.warn('failed to cursor to ', jquery, 'position was null')
+             return;
+         }
+         //var dbg = [position.left , $('body').width()]
+@@ -1168,12 +1906,98 @@
+             console.log('move on left size')
+             //positon.left = $('body').width - 250;
+         }
+-        if ( position.left )
+-            position.left += 10;
++
++        if ( position.left ) {
++            position.left += element.width();
++            position.left -= 0.1*element.width(); //nudge over so inside component
++            // position.left -= 10;
++        }
++
++
++
+         position.top += 10;
+-        console.log('where is', jquery, position)
++
++        // console.log('where is', jquery, position)
+         annotation.css(position)
++
++
++
++
++        if ( position.top < 11 || position.left < 11 ) {
++            //console.error('moving to','odd position',
++            //jquery, position, element)
+-    }
++        }
++
++
++        //element.find('.'+tH.data.blueAreaClass).remove();
++        if ( tH.data.dictBlueAnnotations == null ) {
++            tH.data.dictBlueAnnotations = {};
++        }
++
++        var annotationHelper = aH = {};
++        aH.clerAnnotations = function clerAnnotations() {
++            var m = $('.' + tH.data.blueAreaClass)
++            m.remove();
++        }
++        aH.addAnnotations = function addAnnotations() {
++            var prevAnnoations = tH.data.dictBlueAnnotations[jqueryOrig]
++            prevAnnoations = jquery[0].prevAnnoations;
++            $.each(jquery, function removePrevAnno(k, ui) {
++                // console.debug(k, ui)
++                var prevAnnoations = ui.prevAnnoations;
++                if (prevAnnoations) {
++                    //   console.debug('oooo')
++                    prevAnnoations[0].remove();
++                }
++                if ($(ui).hasClass(tH.data.blueAreaClass)) {
++                    // console.debug('has a thing', ui)
++                    $(ui).text('asdfasdf')
++                    //  $(ui).remove();
++                    // $(ui).empty()
++                    ui.remove()
++                }
++            })
++
++            var m = jquery.find('.' + tH.data.blueAreaClass)
++            m.remove();
++            m.empty()
++            //console.debug('first arr', prevAnnoations, jquery.length, jquery[0].prevAnnoations, m)
++            if (prevAnnoations) {
++                //prevAnnoations.remove();
++                //asdf.g
++                prevAnnoations[0].remove()
++                prevAnnoations.empty()
++            }
++
++            //  debugger;
++
++            var firstElement = $(element[0]) //important or we will duplicae extra items
++            firstElement.css('color', 'orange');
++            uiUtils.reset();
++            var blueArea = uiUtils.addFloatingDiv()
++            blueArea.css('z-index', 100000)
++            //var blueArea = uiUtils.getLast();
++            blueArea.addClass(tH.data.blueAreaClass)
++            uiUtils.opac(0.3)
++            uiUtils.bg('#002F64')
++            uiUtils.copySize(firstElement, blueArea)
++            uiUtils.copyPosition(firstElement, blueArea)
++            var firstElementClone = firstElement.clone();
++            firstElementClone.css('color', 'orange');
++            blueArea.append(firstElementClone)
++            //return
++            uiUtils.addOverlay(blueArea, '#002F64');
++            uiUtils.bg('#002F64')
++
++            jquery[0].prevAnnoations = blueArea;
++            tH.data.dictBlueAnnotations[jqueryOrig] = blueArea;
++            uiUtils.reset();
++        }
++        aH.clerAnnotations();
++        aH.addAnnotations();
++
++        setTimeout(aH.clerAnnotations, 100)
++    }
+     tH.pointTo = function pointTo(jquery, msg ) {
+         tH.run(function add(){
+             tH.pointToNow(jquery,msg)
+@@ -1488,16 +2312,50 @@
+ }
+ 
+ 
+-tH.runTest = function runTest(testName) {
++tH.runTest = function runTest(testName, arg1, arg2, arg3) {
++    if ( tH.test ) {
++        tH.test.stop();
++        console.debug('stopped old test', tH.test)
++    }
+     tH.currentTestName = testName;
+     window.lastRunTestName = testName;
+-    window.tests[testName](tH);
++
++
++    if ( tH.settings.doNotUpdateArgsOnNextTest_changeOnNext ) {
++        tH.settings.doNotUpdateArgsOnNextTest = false;
++    }
++    var definitionTest = 'defs.js.txt'
++
++    if ( arg1 && arg1.includes(definitionTest)) {
++        tH.settings.doNotUpdateArgsOnNextTest = true; //reload rela test when defs changed
++        setTimeout(function onReload(){
++            if ( window.lastRunTestName && window.lastRunTestName.includes(definitionTest)) {
++                return;
++            }
++            console.info('got a def, so rerunning last test')
++            tH.rerunLastTest()
++        }, 1000)
++    }
++
++    if ( tH.settings.doNotUpdateArgsOnNextTest == true  ) {
++        tH.settings.doNotUpdateArgsOnNextTest_changeOnNext = true;
++    } else {
++        window.lastRunArg1 = arg1;
++        window.lastRunArgs = uiUtils.args(arguments)
++        uiUtils.addToUrl('testName', testName)
++        uiUtils.addToUrl('arg1', arg1, true)
++    }
++
++    window.tests[testName](tH, arg1, arg2, arg3);
++
++
++    // tH.settings.doNotUpdateArgsOnNextTest = false;
+     //debugger;
+     // window.testHelper.fxStartNextTest();
+ }
+ 
+ tH.rerunLastTest = function reRunLastTest() {
+-    tH.runTest(window.lastRunTestName);
++    tH.runTest(window.lastRunTestName, window.lastRunArg1);
+ }
+ 
+ function whenReady(){
+@@ -1511,7 +2369,7 @@
+         var testDelay = parseInt(tH.params.testDelay);
+         testDelay= sh.dv(testDelay, 0);
+         if ( isNaN(testDelay)) {
+-            testDelay = 500;
++            testDelay = tH.settings.defaultTestDelay;
+         }
+         if ( testName ){
+             //debugger
+@@ -1642,26 +2500,359 @@
+ //http://localhost:10050/test2/test2.html?runTest=true&testName=testA
+ function testCSVTest(runIt) {
+ // return
+-    window.tests.testCSV = function define_testCSV(tH) {
++
++    window.tests.testCSV = function define_testCSV(tH, urlX, urlConst, skipRun) {
+         //var i = new TestCSV()
+-        var i = new TestCSVConvertor(); 
+-       // i.getTestScript('csvScripts/testCSVScript.txt', onGot)
++        var i = new TestCSVConvertor();
++        // i.getTestScript('csvScripts/testCSVScript.txt', onGot)
+         //var url = 'csvScripts/testCSVScript.txt';
++        var lastArg1 = uiUtils.getUrlVal('arg1')
++
++        if ( urlX == null && lastArg1 ){
++            console.debug('using last var', lastArg1)
++            urlX = lastArg1;
++        }
+         var url = 'csvScripts/test.txt';
+-        i.loadScript2(url, onGotItems)
+-        function onGotItems(objs, str,txt) {
++        if ( urlX && urlX.startsWith('http') == false ) {
++            url = urlX;
++            url = urlBase=urlX.split('test3/')[1]
++        }
++
++        if ( window.preamble ) {
++            url = window.preamble + url
++        }
++        if ( urlX ) {
++            if ( urlX.startsWith('http') == true) {
++                url = urlX;
++            } else {
++                if ( window.preamble) {
++                    url = window.preamble + urlX;
++                }
++            }
++            if ( window.preamble
++                && window.preamble.length > 0 &&
++                urlX.startsWith(window.preamble) == true) {
++                url = urlX; //why: ok b/c proper starting char
++            }
++        }
++
++
++        if (urlConst) {
++            url = urlConst;
++        }
++
++        lastArg = url;
++        if (url && url.startsWith(window.preamble)) {
++
++            lastArg = url.replace(window.preamble, '')
++
++        }
++        //  debugger
++        if ( skipRun != true && tH.settings.doNotUpdateArgsOnNextTest != true)
++            uiUtils.addToUrl('arg1', lastArg)
++
++
++        var fileUrl = '';
++        if ( url ) {
++            var fileUrl = url.split('/')
++                .slice(-1)
++                .join('/')
++        }
++        tH.logNow('url:', fileUrl)
++
++        console.log('url:', url)
++
++        if ( window.testStop ) {
++            window.testStop()
++        }
++        //end the current test
++        //tH.
++
++        // debugger
++        i.loadScript2(url, onGotItem2_Redirect, fxFail)
++        function onGotItem2_Redirect(objs, str, txt) {
++            try {
++                onParseTestItems(objs, str, txt)
++            } catch ( e ) {
++                console.error('Error', 'issue parsing test')
++                console.error(e)
++            }
++        }
++
++        function fxFail() {
++            tH.fail('could not load the url', url)
++        }
++
++        function onParseTestItems(objs, str,txt) {
+             var t = tH.createNewTest();
+             //convertor(contents)
+-//debugger
++            // debugger
+             console.log('objs', objs)
+-            $.each(objs, function onADdObj(k,v) {
++            $.each(objs, function onAddConvertedTestStep(k,v) {
+                 var fx = v[v.fx]
+                 var fx = tH[v.fx]
++                if ( v.fx =='evalFx') {
++
++
++                    var evalName = v.args[0];
++                    var runEval = v.args[1]==true;
++
++                    var evalOffset = 2;
++                    if ( v.args.defName ) {
++                        evalName = v.args.defName;
++                        runEval = v.args.runDefOnInit
++                        evalOffset = 1;
++                        v.lines.unshift('function ' + v.args.fxSignature+'{')
++                        v.lines.push('}')
++                    }
++
++                    var str = '\n';
++                    for ( var i = 0; i < v.line+evalOffset; i++ ) {
++                        str += '\n'
++                    }
++
++                    var evalTxt = str+v.lines.join('\n')
++
++                    if ( runEval ) {
++                        tH.add(function runEval_AtDef() {
++                            console.debug('storing fx', evalName)
++                            tH.logNow('storing fx', evalName)
++                            console.debug('running stored fx', evalName, evalTxt.trim())
++                            tH.logNow('running stored fx', evalName, tH.defaultAddNextOffset)
++                            //eval(evalTxt);
++
++                            try {
++                                tH.setDefaultAddNext()
++                                eval(evalTxt);
++                                tH.resetDefaultAddNext()
++                            } catch ( e ) {
++                                console.error('error running eval', evalName)
++                                console.error(e)
++                                console.error(e.stack)
++                                tH.logNow('error in fx', evalName)
++                                tH.logNow(e)
++                                tH.logNow(e.stack)
++                                tH.fail('see above')
++                            }
++
++                            tH.test.cb();
++                        })
++                    }
++                    if ( evalName != null ) {
++                        window.testHelper.data.dictEvalFx[evalName] = evalTxt;
++
++                        var info = v;
++                        info.needSignatureCalled = v.args.defName != null
++                        window.testHelper.data.dictEvalFx2[evalName] = info;
++
++                    }
++                    return;
++                }
++                if ( v.fx == 'fx' || v.fx == 'fxasync') {
++                    var evalName = v.args[0];
++                    if ( v.args.defName ) {
++                        evalName = v.args.defName;
++                    }
++                    if ( evalName == null ) {
++                        console.error('need a name for', v)
++                        tH.fail('Cannot start test. failed to find fx named',
++                            JSON.stringify(v)
++                        )
++                        return;
++                    }
++                    var evalTxt =  window.testHelper.data.dictEvalFx[evalName];
++                    var fxInfo =  window.testHelper.data.dictEvalFx2[evalName];
++                    if ( evalTxt == null ) {
++                        console.error('could not find evalFx in stored', evalName)
++                        tH.fail('Cannot start test. failed to find fx named', sh.qq(evalName))
++                        throw new Error('cant find')
++                        return;
++                    }
++
++                    function runEval_Later_L() {
++
++                        //console.debug('running stored fx', evalName, evalTxt.trim(), v.args)
++                        console.debug('running stored fx', evalName, v.args)
++
++                        var strs = [];
++
++                        var argumentsToDef = v.args;
++                        if  ( v.args.args ) {
++                            argumentsToDef = v.args.args;
++                            argumentsToDef.unshift(evalName) ; //inputs are consistent
++                        }
++                        // debugger
++
++
++                        var argVals = [];
++                        /*$.each(argumentsToDef, function copyArg(k,v) {
++                         if ( k == 0 ) { return } //skip evalName
++                         var str = 'var arg'+(k) + ' = ' + '"'+v+'"'
++                         //  console.debug('str', k, str)
++                         strs.push(str)
++                         if ( $.isNumeric(v) == false ) {
++                         v = sh.qq(v)
++                         }
++
++                         argVals.push(v)
++                         })*/
++
++                        $.each(argumentsToDef, function copyArg(k,v) {
++                            if ( k == 0 ) { return } //skip evalName
++                            var str = 'var arg'+(k) + ' = ' + '"'+v+'"'
++                            var origArg = v;
++                            //  console.debug('str', k, str)
++                            strs.push(str)
++                            //debugger
++                            if ( $.isNumeric(v) == false ) {
++                                v = sh.qq(v)
++                            }
++                            if ( origArg === "true" || origArg === true ) {
++                                v = true
++                            }
++                            if ( origArg === "false" || origArg === false ) {
++                                v = false
++                            }
++                            //
++                            argVals.push(v)
++                        })
++
++                        tH.logNow(v.line+'.', '//running stored fx _L', evalName, tH.defaultAddNextOffset, strs)
++
++
++                        var codeStr_CreateArgs = strs.join('\n')
++                        //console.debug('code',codeStr_CreateArgs)
++                        eval(codeStr_CreateArgs)
++
++                        if ( fxInfo && fxInfo.needSignatureCalled ) {
++                            //asdf.g
++                            evalTxt += '\n'
++                            var runFxEvalStr = evalName + '('+argVals.join(',') +')';
++                            evalTxt += '\n'+runFxEvalStr;
++                        }
++
++                        // console.log('arg1', arg1, 'arg2', arg2 )
++                        try {
++                            tH.setDefaultAddNext()
++                            eval(evalTxt);
++                            tH.resetDefaultAddNext()
++                        } catch ( e ) {
++
++
++                            try {
++                                tH.fail('see above')
++                            } catch ( e ) {
++                            }
++                            //debugger
++                            console.error('error running eval', evalName)
++                            //console.error(e)
++
++                            console.error('full listing', '\n\t',
++                                evalTxt.trim())
++
++                            // console.error(e.stack)
++                            tH.logNow('error in fx', sh.qq(evalName))
++                            tH.logNow(e)
++                            tH.logNow(e.stack)
++
++                            eval(evalTxt);
++
++                        }
++
++                        if ( v.fx != 'fxasync') {
++                            tH.test.cb();
++                        }
++                    }
++                    tH.add(runEval_Later_L)
++                    runEval_Later_L.yData = evalName;
++                    return;
++                }
++                if ( v.fx == 'bookmark') {
++                    var bookmarkName = v.args.join(' ');
++                    var fxBookmark = function bookmark() {
++                        tH.logNow(v.line+'.', 'bookmark', bookmarkName)
++                        tH.test.cb();
++                    }
++                    fxBookmark.bookmarkName = bookmarkName
++                    fxBookmark.fxDesc = 'bookmark: '+bookmarkName
++                    tH.add(fxBookmark)
++                    return;
++                }
++
++                if ( v.fx == 'if') {
++                    //var bookmarkName = v.args.join(' ');
++                    var fxIf = function fxIf() {
++                        tH.logNow('if condition', JSON.stringify(v.args[0]).toString().slice(0,12))
++                        console.log('v', v)
++                        // return;
++                        var firstArg = v.args[0]
++                        var cfg = v.args[0]
++                        // debugger;
++                        var ui = [];
++                        if ( cfg.find ) {
++                            var ui = tH.findByContent(cfg.find, cfg.parent )
++                        }
++                        console.debug('ui', ui)
++                        if ( ui.length > 0 ){
++                            if ( cfg.goto ) {
++                                tH.logNow('   >', 'if condition matched',
++                                    'jump forward to', cfg.goto)
++                                var t = tH.test;
++                                var foundFx = null;
++
++
++                                var fxName = 'remove---'
++
++                                $.each(t.methods, function findBookmark(k,v) {
++                                    console.log('remove', 'pre',k,
++                                        v.fx.fxDesc, v.fx.name)
++                                })
++
++                                console.log(fxName, '...')
++
++                                $.each(t.methods.concat(), function findBookmark(k,v) {
++                                    if ( cfg.goto &&  v && v.fx &&
++                                        v.fx.bookmarkName == cfg.goto) {
++                                        //debugger
++                                        console.error('remove', 'matched', cfg.goto, v.fx.bookmarkName)
++                                        foundFx = true;
++                                        return false;
++                                    }
++                                    console.log('remove', 'rex', k, v.fx.fxDesc, v.fx.name)
++                                    var index = t.methods.indexOf(v);
++                                    t.methods.splice(index, 1)
++                                    t.data.methods.count--;
++                                    /* tH.logNow('removing step ', v.name)
++                                     console.log('removing step ',
++                                     'new size', t.methods.length, v)*/
++                                })
++
++                                console.log('...')
++                                //  console.log('remove', t.methods)
++                                // console.table(t.methods)
++                                //  console.log(JSON.stringify(t.methods))
++                                //debugger
++                                $.each(t.methods, function findBookmark(k,v) {
++                                    console.log('remove', 'list',
++                                        v.fx.fxDesc, v.fx.name)
++                                })
++                            }
++                        } else {
++                            tH.logNow('   >', 'if condition failed')
++                        }
++
++
++                        tH.test.cb();
++                    }
++                    tH.add(fxIf)
++                    return;
++                }
++
+                 if ( fx == null ) {
+                     console.error('did not find', v.fx)
+                     return;
+                 }
+-                console.log('go to', fx, v.args)
++                console.log('go to', v.fx, fx.name, v.args)
+                 //sh.callIfDefined(fx, v.args)
+                 fx.apply(this, v.args)
+             })
+@@ -1688,3 +2879,72 @@
+ }
+ testCSVTest();
+ 
++
++
++
++
++
++//http://localhost:10050/test2/test2.html?runTest=true&testName=testA
++function testCSVTestP(runIt) {
++// return
++    window.tests.testCSV2 = function define_testCSV2(tH) {
++        //var i = new TestCSV()
++        var i = new TestCSVConvertor();
++        // i.getTestScript('csvScripts/testCSVScript.txt', onGot)
++        //var url = 'csvScripts/testCSVScript.txt';
++        var url = '../test3/csvScripts/testWorkflow1.txt';
++
++        //debugger
++        window.tests.testCSV(tH, url, url)
++    }
++    window.tests.testCSV2.desc = 'load from csv 2'
++    /*if ( runIt ) {
++     window.tests.testA(tH);
++     }*/
++}
++testCSVTestP();
++
++
++
++
++
++function defineTestLoaders() {
++    window.autoTestFrameworko = function autoloadTestFramework() {
++        window.location += '?loadTestFramework=true'
++    }
++}
++defineTestLoaders();
++
++
++/*
++
++ var div = uiUtils.addDialog({
++ id:"ssErrorDialog",
++
++ })
++
++ var ui = uiUtils.getLast();
++ ui.append('sdfsdf')
++ uiUtils.pos.br(ui)
++
++ ///debugger
++ */
++
++
++
++tH.utils.loadDefsOnInit = function loadDefsOnInit() {
++    if ( window.testingFrameworkLoaded !== true ) {
++        console.info('waiting for load to finished')
++        setTimeout(tH.utils.loadDefsOnInit, 300);
++        return;
++    }
++    window.testDefs = 'csvScripts/defs.js.txt';
++    if ( window.testDefs == null ) {
++        return;
++    }
++    var urlDefs = 'csvScripts/defs.js.txt';
++    tH.settings.doNotUpdateArgsOnNextTest = true;
++    tH.runTest('testCSV', urlDefs, null, true)
++}
++
++tH.utils.loadDefsOnInit();
+\ No newline at end of file
+Index: mp/testingFramework/test2.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/test2.html	(date 1491102272000)
++++ mp/testingFramework/test2.html	(revision )
+@@ -13,7 +13,27 @@
+     -->
+ 
+     <script>
++        setTimeout(function hideDiv() {
++            $('#showDiv').hide();
++        }, 500)
++        window.onRedButton = function onRedButton() {
++            console.log('ddd')
++        }
++        window.onShowDiv = function onShowDiv() {
++            console.log('onShowDiv')
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').show();
++            }, 500)
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').hide();
++            }, 5000)
++        }
+        // window.preamble = '/test3/';
++        window.testCallFromEval = function () {
++            console.log('boom')
++        }
+     </script>
+     <script src="testLL.js"></script>
+ 
+@@ -27,6 +47,13 @@
+             window.location += '?loadTestFramework=true'
+         }
+     </script>
++    <style>
++        body {
++            font-weight: 400;
++            background-color: #CBD9E6;
++            font-family: 'Arial';
++        }
++    </style>
+ </head>
+ <body>
+ <button>Test</button> <br />
+@@ -34,9 +61,24 @@
+ <button onclick="tH.clickTest2()">Run Test 2</button>  <br />
+ <textarea id="txtArea" ></textarea>
+ <button id="btnTest">Test</button>
+-
++<!--
+ <div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+     asdf
+ </div>
++-->
++
++
++
++<div>
++    <button class="redTest"
++            onclick="onRedButton()" >Go</button>
++
++    <button class="redTest2"
++            onclick="onShowDiv()" >Press for div</button>
++    <div id="showDiv" style="color:white;">
++        this the show div</div>
++</div>
++
++
+ </body>
+ </html>
+\ No newline at end of file
+Index: mp/testingFramework/TestCSVConvertor.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/TestCSVConvertor.js	(date 1491102272000)
++++ mp/testingFramework/TestCSVConvertor.js	(revision )
+@@ -11,8 +11,8 @@
+     self.settings = {};
+     self.data = {}
+ 
+-    var h = {};
+ 
++
+     p.init = function init(config) {
+         self.settings = sh.dv(config, {});
+         config = self.settings;
+@@ -24,7 +24,7 @@
+     }
+     p.processTestCSV = function processTestCSV(contents) {
+ 
+-
++        var h = {};
+         var config = {}
+         config.ignore = ['data: WARNING: Skip: ',
+             'WARNING: Skipping FS',
+@@ -35,7 +35,33 @@
+         config.fxProc = function parseCmd(item, i, len){
+ 
+ 
++
++            i  += 1
++
+             var line = item.trim();
++
++
++            if ( h.inMultiLineComment ) {
++
++                if ( line.includes('*/') ) {
++                    var ousideOfComment = line.split('*/')[1]
++                    h.inMultiLineComment = false;
++                    line = ousideOfComment; //overkill
++                } else {
++                    //still indie multi line comment mode
++                    return;
++                }
++            }
++
++            if ( h.endTest == true ) {
++                return;
++            }
++
++            if ( line == 'endtest') {
++                h.endTest = true;
++                console.log('end test early', 'line', i)
++                return;
++            }
+             if ( line.startsWith('#')) {
+                 return;
+             }
+@@ -46,25 +72,31 @@
+                 return;
+             }
+ 
++            var showItemInput = false;
++            if ( showItemInput )
+             console.error(i, item)
+             item = item.trim();
+             var words = item.split(' ');
+ 
+             var firstWord = words[0];
+             firstWord = firstWord.trim();
++            var lineContent = words.slice(1).join(' ').trim();
+ 
+-            console.error(sh.t, i, firstWord=='endeval')
++            sh.t = '\t'
++            //console.error(sh.t, i, firstWord=='endeval')
+             var valid = false;
+ 
+             var item = {};
+ 
+             var comment = null;
+             /*if ( line.includes('#') ) {
+-                var split = line.split('#')
+-                line = split[0]
+-                comment = split[1]
+-            }*/ //jquery ids
++             var split = line.split('#')
++             line = split[0]
++             comment = split[1]
++             }*/ //jquery ids
+-
++            if ( line.startsWith('#') ) {
++                return;
++            }
+             if ( line.startsWith('~')  == false
+                 && line.includes('~') ) {
+                 var split = line.split('~')
+@@ -79,10 +111,40 @@
+             }
+             line = line.trim()
+ 
++
++            //mulite line comments
++            //comments
++            if ( line.includes('/*')) {
++                h.inMultiLineComment = true;
++                var afterComment = line.split('/*')[1];
++                var ousideOfComment = afterComment.split('*/')[1]
++                if ( afterComment.includes('*/')) {
++                    h.inMultiLineComment = false;
++                    line = ousideOfComment; //overkill
++                } else {
++                    //in comment mode
++                    return;
++                }
++            }
++          /*  if ( h.inMultiLineComment ) {
++
++                if ( line.includes('*!/') ) {
++                    var ousideOfComment = line.split('*!/')[1]
++                    h.inMultiLineComment = false;
++                    line = ousideOfComment; //overkill
++                } else {
++                    //still indie multi line comment mode
++                    return;
++                }
++            }
++*/
++
+             var itemCopyAtEnd = {};
+ 
+             var words = line.split(' ');
+             var args = words.slice(1)
++            var userDenotedArgs = false;
++
+             if ( line.includes('; ')) {
+                 var wordsC = args.join(' ')
+                 if ( wordsC ) {
+@@ -90,6 +152,7 @@
+                 }
+                 words = wordsC.split('; ')
+                 args = words;
++                userDenotedArgs = true;
+ 
+             }
+             if ( line.includes(' |')) {
+@@ -99,7 +162,7 @@
+                 }
+                 words = wordsC.split(' |')
+                 args = words;
+-
++                userDenotedArgs = true;
+             }
+ 
+ 
+@@ -117,20 +180,107 @@
+             item.lines = [];
+ 
+             var validCmds = [
++                'click',
+                 'waitForShow',
+                 'waitForHide',
+                 'verifyHidden',
++                'pressEnter',
+                 'moreThanX',
+                 'clickOne','setItem','makeGreen',
+-                'scrollTo','verifyExists'
++                'scrollTo','verifyExists',
++                'fxasync',
++                'fx', 'bookmark'
+             ];
+-              if ( validCmds.includes(firstWord)) {
+-             valid  = true;
++            if ( validCmds.includes(firstWord)) {
++                valid  = true;
+-             item.fx = 'wait'
++                item.fx = firstWord
++                itemCopyAtEnd.args = [args.join(' ')]
++                if ( userDenotedArgs ) { //do not combine args
++                    //debugger
++                    itemCopyAtEnd.args = args;
+-             }
++                }
+ 
++                if ( firstWord == 'fx') {
++                    //hanlde case where user has function fx fx1 a; b; c
++                    //should fx fx1; a; b; c, be gracefulw ith user
++                    var argsTest = itemCopyAtEnd.args
++                    var firstArg = argsTest[0].trim()
++                    if ( firstArg.includes(' ')) {
++                        //debugger
++                        var firstArgSplit =  firstArg.split(' ')
++                        argsTest.shift(); //remove first split item
++                        //firstArgSplit.shift(); //remove fx name
++                        var argsFixed = firstArgSplit.concat(argsTest)
++                        itemCopyAtEnd.args = argsFixed;
+ 
++                    };
++                     if ( firstArg.includes('(') && firstArg.includes(')')) {
+ 
++                        if ( firstArg.endsWith(';') ) {
++                            firstArg = firstArg.slice(0,-1)
++                        }
++                        if ( firstArg.endsWith(')')) {
++                            //asdf.g
++                            var cfg = {}
++                            var fxName = firstArg.split('(')[0]
++                            cfg.defName = fxName;
++                            cfg.eval = firstArg;
++
++
++
++                            try {
++                                var evalToGet_getArgsStr =
++                                    ['function ' + fxName + '() {',
++                                        'var args = uiUtils.args(arguments);',
++                                       // ' debugger;',
++                                        'return args',
++                                        '}',
++                                        cfg.eval,
++                                    ].join('\n')
++                            }
++                            catch (e ) {
++                                console.error('arsing error on fx input')
++                                console.error(e)
++                                //can't process fx eval
++                            }
++                            cfg.args = eval(evalToGet_getArgsStr)
++
++                            //debugger
++                            itemCopyAtEnd.args = cfg;
++
++                        }else {
++                            //strange input
++                        }
++
++                    }
++
++                }
++            }
++
++            if ( firstWord == 'if' ) {
++                valid = true;
++                item.fx = 'if'
++              //  console.clear();
++                console.debug('line', lineContent)
++                itemCopyAtEnd.args = args;
++
++                if ( lineContent.startsWith('{') &&
++                    lineContent.endsWith('}') ) {
++                    //var cfg = eval(lineContent)
++                    eval('var cfg =' +lineContent)
++                    console.log('cfg', cfg)
++                   // debugger
++                    itemCopyAtEnd.args = [cfg];
++                }
++
++            }
++
++/*
++            if ( firstWord == 'click') {
++                valid  = true;
++                item.fx = 'click'
++                itemCopyAtEnd.args = [args.join(' ')]
++            }*/
+             if ( firstWord == 'clickJ') {
+                 valid  = true;
+                 item.fx = 'clickJ'
+@@ -143,6 +293,11 @@
+                 valid  = true;
+                 item.fx = 'log'
+             }
++            if ( firstWord == 'status') {
++                valid  = true;
++                item.fx = 'msgStatus'
++            }
++
+             if ( firstWord == 'alert') {
+                 valid  = true;
+                 item.fx = 'alert'
+@@ -162,7 +317,8 @@
+                 item.args = [line.slice(1)]
+             }
+ 
+-            if ( firstWord == 'eval') {
++            if ( firstWord == 'eval' || firstWord == 'def') {
++                //debugger
+                 if ( h.evalMode == true ) {
+                     throw new Error('doublel eval mode')
+                 }
+@@ -172,10 +328,65 @@
+                 h.hold = item;
+                 var firstLine = true
+                 item.lines = [];
++               // console.log('words', words.slice(-1))
++                itemCopyAtEnd.args=[words.slice(-1)]
++                var cfg = {};
++                //hanlde case where user has function fx fx1 a; b; c
++                //should fx fx1; a; b; c, be gracefulw ith user
++                var argsTest = [words.slice(-1)]
++                cfg.defName = words.slice(-1) //last word
++
++                var lineCombined = words.join(' ')
++                //lineCombined.split('#')[0]
++
++                console.log('parse def', argsTest, words)
++
++
++                if ( argsTest.includes(' ')) {
++                    asdf.g
++                }
++                var runDefOnInit = false;
++                if ( firstWord != 'def' ) { //run if not def
++                    itemCopyAtEnd.args.push(true)
++                    runDefOnInit
++                }
++
++               // var argsTest = itemCopyAtEnd.args
++                var firstArg = words[1]
++
++                //support spaces
++                //["def", "deleteTab(tabName_,", "userTabType)"]
++                if ( words[0] == 'def' && words.length > 2) {
++                    console.warn('space in args');
++                    var lastWord = words.slice(-1)[0]
++                    if ( lastWord.endsWith(')') ) {
++                       // debugger
++                        firstArg = words.slice(1).join('')
++                    }
++
++                }
++
++                if ( firstArg.includes('(') && firstArg.endsWith(')')) {
++
++                    //ensure indexes in porpe rpalce ...) (
++                    if ( firstArg.endsWith(')')) {
++                        //asdf.g
++                        var cfg = {}
++                        cfg.runDefOnInit = runDefOnInit;
++                        var fxName = firstArg.split('(')[0]
++                        cfg.defName = fxName;
++                        cfg.fxSignature = firstArg;
++                        itemCopyAtEnd.args = cfg;
++                       // debugger
++                    }else {
++                        //strange input
++                    }
++
++                }
+                 //return;
+             }
+ 
+-            if ( firstWord == 'endeval') {
++            if ( firstWord == 'endeval' || firstWord == 'end' ) {
+                 if ( h.evalMode == false ) {
+                     throw new Error('was not in eval mode')
+                 }
+@@ -185,16 +396,17 @@
+                 h.evalMode = false;
+             }
+ 
++
+             if ( h.evalMode && firstLine != true) {
+                 h.hold.lines.push(line)
+                 //h.hold.lines.push('5')
+-                //return;
++                return;
+             }
+ 
+ 
+             if ( valid == false ) {
+                 return null
+-            } 
++            }
+ 
+             sh.copyProps(itemCopyAtEnd, item)
+ 
+@@ -213,7 +425,7 @@
+ 
+         sh.printCol(lines)
+ 
+-      //  debugger;
++        //  debugger;
+         return lines;
+ 
+     }
+@@ -227,13 +439,16 @@
+         sh.callIfDefined(fxItems, items)
+     }
+ 
+-    p.loadScript2 = function loadScript2(file, fxItems) {
++    p.loadScript2 = function loadScript2(file, fxItems, fxFail) {
+         uiUtils.getUrl(file, function onGotContnet(content) {
+ 
+-            console.log('content', content)
++            //console.log('content', content)
+             //return;
+             var items =  p.processTestCSV(content)
+             sh.callIfDefined(fxItems, items)
++        }, null, function onFail() {
++            console.error('failed to load')
++            if ( fxFail ) fxFail('failed')
+         })
+ 
+         return;
+@@ -278,11 +493,22 @@
+         instance.test();
+     }
+ } else {
++    function testConvertoer() {
++        //return
+-    var instance = new TestCSVConvertor();
+-    var config = {};
+-    instance.init(config)
++        var instance = new TestCSVConvertor();
++        var config = {};
++        instance.init(config)
+-    instance.loadScript2('csvScripts/test.txt')
++
++        var currentScript = document.currentScript //just in case user does not set pre-amble
++        if ( currentScript ) {
++            urlPremable = currentScript.src.split('/').slice(0,-1).join('/')+'/';
++            console.info('guessed pre-amble to be', window.preamble)
++        }
++
++        instance.loadScript2(urlPremable+'csvScripts/test.txt')
+-    instance.test();
++        instance.test();
++    }
++     testConvertoer();
+ }
+ 
+ 
+Index: mp/testingFramework/test2.verify.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- mp/testingFramework/test2.verify.html	(revision )
++++ mp/testingFramework/test2.verify.html	(revision )
+@@ -0,0 +1,95 @@
++<!DOCTYPE html>
++<html>
++<head>
++    <title>Test Diff Location</title>
++
++    <!-- Prove can work in diff dir -->
++    <script>
++        setTimeout(function hideDiv() {
++            if ( window.$ == null ) {
++                console.log('wait for jquery')
++                setTimeout(hideDiv, 1000);
++                return;
++            }
++            $('#showDiv').hide();
++        }, 500)
++        window.onRedButton = function onRedButton() {
++            console.log('ddd')
++        }
++        window.onShowDiv = function onShowDiv() {
++            console.log('onShowDiv')
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').show();
++            }, 500)
++
++            setTimeout(function hideDiv() {
++                $('#showDiv').hide();
++            }, 5000)
++        }
++       // window.preamble = '/test3/';
++        window.testCallFromEval = function () {
++            console.log('boom')
++        }
++    </script>
++    <script>
++       // window.preamble = '../test7/'
++    </script>
++    <script src="../testingFramework/testLL.js"></script>
++
++    <script>
++        function lazyLoadAndRunTest() {
++            loadTestingFramework(function onReady(){
++                testStackingDemo2B(true);
++            })
++        }
++        function autoloadTestFramework() {
++            window.location += '?loadTestFramework=true'
++        }
++    </script>
++
++    <script>
++        setTimeout(function auto_startTestingFramework() {
++            console.info('auto - loading testing framework')
++            loadTestingFramework()
++        },500)
++    </script>
++
++    <style>
++        body {
++            font-weight: 400;
++            background-color: #CBD9E6;
++            font-family: 'Arial';
++        }
++    </style>
++
++
++
++</head>
++<body>
++<button>Test</button> <br />
++<button onclick="lazyLoadAndRunTest()">LL Test - Run Test</button>  <br />
++<button onclick="tH.clickTest2()">Run Test 2</button>  <br />
++<textarea id="txtArea" ></textarea>
++<button id="btnTest">Test</button>
++<!--
++<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
++    asdf
++</div>
++-->
++
++
++
++<div>
++    <button class="redTest"
++            onclick="onRedButton()" >Go</button>
++
++    <button class="redTest2"
++            onclick="onShowDiv()" >Press for div</button>
++    <div id="showDiv" style="color:white;">
++        this the show div</div>
++</div>
++
++
++</body>
++</html>
+\ No newline at end of file
