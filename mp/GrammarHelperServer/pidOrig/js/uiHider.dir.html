@@ -1,0 +1,35 @@
+<div >
+    <button class="btn" ng-click="vm.onShow()" >{{vm.btnMsg}}</button>
+
+    <br />
+    <div id="debugStuff" class="hide" >
+        {{config}} <br />
+        {{refresh}} <br />
+        {{vm.config}} <br />
+        ... <br />
+    </div>
+
+    <div id="content" ng-show="vm.showing" >
+    </div>
+
+    <div id="holderDebug2" ng-show="showDebug" >
+        asdfs
+    </div>
+    <!--
+    q: how to get into parent scope: A: see 5.
+            sdf
+            <div id="holderDebug" >
+            asdfs
+        </div>
+        <div id="holderDebug2" >
+            asdfs
+        </div>
+
+        1. {{configList}} <br />
+        2. {{vm}} <br />
+        3. {{vm.$scope.$parent}} <br />
+        5. {{vm.$scope.$parent.configList}} <br />
+        4. {{$scope}}
+    -->
+
+</div>

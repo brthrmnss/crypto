@@ -202,7 +202,7 @@ if (module.parent == null) {
         cfg.it.fxFilter = function fxFilter(item) {
             // console.log(item.date2.getFullYear())
             if ( item.date2.getFullYear() != 2014 ) {
-             //asdf.g
+                //asdf.g
                 return true
             }
 
@@ -211,10 +211,10 @@ if (module.parent == null) {
         }
         cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
 
-           // console.log(runner)
+            // console.log(runner)
             sh.sortByNumber(runner.data.listFiltered, 'amount' )
             var columns         = columnify(   runner.data.listFiltered      );
-          //  console.log(columns)
+            //  console.log(columns)
             runner.createAdditionalFlatFile('all_valid_sorted_amount', columns)
 
         }
@@ -249,11 +249,11 @@ if (module.parent == null) {
     //cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
         /*if ( item.desc.includes('transfer') && item.desc.includes('to account ')) {
-            return true; //do not count transfers as income
-        }
-        if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
-            return true; //do not count transfers as income
-        }*/
+         return true; //do not count transfers as income
+         }
+         if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
+         return true; //do not count transfers as income
+         }*/
         if ( item.desc.includes('9688-3')  ) {
             return true; //do not count transfers as income
         }
@@ -285,11 +285,11 @@ if (module.parent == null) {
             return false; //do not count transfers as income
         }
         if ( item.description.includes('Deposit')  ){
-           // asdf.g
+            // asdf.g
             return true;
         }
         if ( item.originalDescription.includes('Deposit')  ){
-           // asdf.g
+            // asdf.g
             return true;
         }
 
@@ -301,14 +301,14 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-/*
+    /*
 
-    cfg.it.iteratorName = 'Income'
-    cfg.it.matchesDefault =
-        ['Deposit',
-            '']
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-*/
+     cfg.it.iteratorName = 'Income'
+     cfg.it.matchesDefault =
+     ['Deposit',
+     '']
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+     */
 
     cfg.it.iteratorName = 'DblCount American Express'
     cfg.it.matchesDefault = []
@@ -318,6 +318,75 @@ if (module.parent == null) {
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+
+
+
+    cfg.it.iteratorName = 'Checks-Tagger'
+    //cfg.inputIsOutput_doesNotFilter = true //if doesn't filter, will use original list
+    cfg.it.matchesDefault = []
+
+    cfg.it.fxFilter = function fxFilter(item) {
+        item.amount = parseFloat(item.amount);
+        if (item.description.startsWith('Check ') ) {
+
+            item.description += ' ctt'
+
+            var fedTax = '(US-Fed-Tax)'
+            var dict = {};
+
+            dict[1127] = fedTax
+            dict[1128] = fedTax
+
+            dict[1129] = fedTax
+            dict[1130] = fedTax + " - Q3 2012"
+            dict[1131] = "Loan to Sylvia"
+            dict[1132] = "Not found"
+            dict[1140] = "Accountant Neats"
+            dict[1141] = "Accountant Neats"
+            dict[1143] = "State Taxes"
+
+
+
+            var words = item.description.split(' ')
+            sh.each(words, function on(k, word) {
+                if ( sh.isNumber(word) == false ) {
+                    return
+                }
+
+                var checkMapping = dict[word]
+                if ( checkMapping ) {
+                    item.description += ' ' + checkMapping
+                    item.originalDescription += ' |' + checkMapping
+                    console.log(item.description)
+                      //  asdf.g
+                }
+            })
+
+            //return true; //skip check lines
+        }
+    }
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+    function test_haveChecksBeenTagged() {
+        cfg.it.iteratorName = 'Checks-Tagger-Test'
+        //cfg.inputIsOutput_doesNotFilter = false
+        cfg.it.matchesDefault = []
+
+        cfg.it.fxFilter = function fxFilter(item) {
+            item.amount = parseFloat(item.amount);
+            // asd.fg
+            if (item.description.includes('ctt')) {
+                // return true; //skip check lines
+            }
+        }
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    }
+    //test_haveChecksBeenTagged();
+
+   // JSONSetRunner.runSet_Block = true;
 
 
     cfg.it.iteratorName = ' American Express'
@@ -331,6 +400,11 @@ if (module.parent == null) {
 
 
 
+    cfg.it.iteratorName = 'Accountant';
+    cfg.it.matchesDefault = ['Neats' ];
+    cfg.it.tagWhy = 'Russell Price'
+    cfg.it.peachTreeAcct = 68500
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
 
@@ -345,10 +419,12 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Air Travel'
     cfg.it.matchesDefault = ['Airlines', 'SW AIR', 'Southwest Airlines']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-/*
-    cfg.it.iteratorName = 'IRA'
-    cfg.it.matchesDefault = ['Betterment']
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
+
+    //JSONSetRunner.runSet_Block = true;
+    /*
+     cfg.it.iteratorName = 'IRA'
+     cfg.it.matchesDefault = ['Betterment']
+     JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
 
     cfg.it.iteratorName = 'Retirement IRA Cont'
     cfg.it.matchesDefault =
@@ -363,6 +439,8 @@ if (module.parent == null) {
         'BUDGET.COM']
     cfg.it.tagWhy = 'Rental Car/ Automobile'
     cfg.it.peachTreeAcct = 61000
+    cfg.it.peachTreeAcct = 74000
+
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -460,6 +538,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Federal Taxes'
+    cfg.it.peachTreeAcct = '73000'
     cfg.it.matchesDefault =
         ["IRS (USATAXPYMT)",
         ]
@@ -470,6 +549,11 @@ if (module.parent == null) {
         if ( item.originalDescription.includes('(USATAXPYMT)')  ){
             return true;
         }
+
+        if ( item.originalDescription.includes('(US-Fed-Tax)')  ){
+            return true;
+        }
+
 
         /*if ( item.transactionType == 'credit' ){
          return true;
@@ -482,6 +566,7 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'State Taxes'
     cfg.it.matchesDefault =
         ["COMP OF MARYLAND",
+            'State Taxes'
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
@@ -579,23 +664,23 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Checksz'
     /*cfg.it.matchesDefault =
-        ['Check'
+     ['Check'
 
-        ]*/
+     ]*/
     cfg.inputIsOutput_doesNotFilter = true
     //cfg.it.noOutput = true
     cfg.it.matchesDefault = []
 
     cfg.it.fxFilter = function fxFilter(item) {
         item.amount = parseFloat(item.amount);
-       // console.log('check', item)
+        // console.log('check', item)
         if (item.description.startsWith('Check ') ) {
-           // asdf.g
+            // asdf.g
             return true; //skip check lines
         }
         //TODO: Tag checks 
     }
-     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Paypal'
@@ -752,7 +837,7 @@ if (module.parent == null) {
     cfg.it.matchesDefault = []
     cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
         runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
-        console.log('open comments_output.json')
+        console.log('|open comments_output.json')
 
 
 
@@ -761,7 +846,14 @@ if (module.parent == null) {
         console.log(columns)
 
         runner.createAdditionalFlatFile('comments_output', columns)
-        console.log('open comments_output.txt')
+
+
+        var cfg = {}
+        cfg.columnSplitter = ',';
+
+        var columns = columnify(   JSONSetIterator_Generic.allLines  , cfg     );
+        runner.createAdditionalFlatFile('final_output', columns, 'csv')
+        console.log('<|open comments_output.txt')
 
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)

@@ -31,6 +31,8 @@ function AutoItServer() {
         config = self.settings;
         self.settings.port = sh.dv(self.settings.port, 11200)
 
+        self.settings.waitMode = sh.dv(self.settings.waitMode, true)
+
         sh.catchErrors();
 
         self.method();
@@ -58,6 +60,14 @@ function AutoItServer() {
         settings.cmd = 'cmd';
         settings.doNotAddCr  = true
         settings.skipSameLine  = true
+
+        settings.fxEcho = function fxEcho(echoContent) {
+            console.error('what is echo', echoContent.trim())
+            if (self.settings.waitMode ) {
+                if ( self.data.fxReturn )
+                self.data.fxReturn(echoContent)
+            }
+        }
         var args = []
         settings.args = args;
         // settings.cwd = cd;
@@ -237,16 +247,45 @@ function AutoItServer() {
 
             app.get('/runAISCmd', function runAISCmd(req, res) {
                 var cmd = req.query.text;
+
+                if ( cmd.includes(';')) {
+                    console.log('becreare fo ; input')
+                }
+               // cmd += '\n\r'
+              //  cmd += ' \r\n'
                 // self.proc('cmd', cmd)
                 //  console.error('cmd', cmd, req.query)
                 self.cmd.write(cmd)
+              //  self.cmd.write('')
                 var cmdOutput = self.cmd.flush()
                 //self.proc(cmdOutput)
                 self.proc('!!!---!!!')
                 console.log('cmdOutput', cmdOutput)
                 var json = sh.json.good('all good')
+
                 json.cmdOutput = cmdOutput;
-                res.json(json);
+
+
+                if ( false ==  self.settings.waitMode ) {
+                    res.json(json);
+                } else {
+                    self.data.fxReturn = function fxReturn(output) {
+                        json.cmd = cmd;
+                        if ( output.trim() == '' ) {
+                            return;
+                        }
+                        if ( cmd.trim() == output.trim() ) {
+                            console.error('skipping this line')
+                           return;
+                        }
+                       // econsole.log(sh.t, sh.t, '|', cmd)
+                       // console.log(sh.t, sh.t, '|', output)
+                        json.cmdOutput = output.trim();
+                        res.json(json);
+                    }
+                }
+
+
             });
 
 
@@ -258,6 +297,7 @@ function AutoItServer() {
                 console.log('go to 2', url)
                 console.log(url)
             });
+
 
 
             console.log('createHostServer2',self.createHoistServer2 )
@@ -437,12 +477,29 @@ function AutoItServer() {
 
 
 
-            t2.getR(urls.runAISCmd).with({text:'lsdf;', rate:20})
+            t2.getR(urls.runAISCmd).with({text:'lsdf', rate:20}) //
                 .bodyHas('status').notEmpty()
                 .fxDone(function onDne(a,b,c) {
                     console.log('y', a,b,c)
                 });
 
+           //return ;
+            t2.getR(urls.runAISCmd).with({text:"winExists('calibre')", rate:20})
+                .bodyHas('status').notEmpty()
+                .fxDone(function onDne(a,b,c) {
+                    console.log('-', a,b,c)
+                });
+            t2.getR(urls.runAISCmd).with({text:"winExists('calibre')", rate:20})
+                .bodyHas('status').notEmpty()
+                .fxDone(function onDne(a,b,c) {
+                    console.log('-', a,b,c)
+                });
+
+            t2.getR(urls.runAISCmd).with({text:"beep 400, 400", rate:20})
+                .bodyHas('status').notEmpty()
+                .fxDone(function onDne(a,b,c) {
+                    console.log('y', a,b,c)
+                });
 
             return;
             t2.getR(urls.stop).with({text:'play', rate:20}).bodyHas('status').notEmpty();

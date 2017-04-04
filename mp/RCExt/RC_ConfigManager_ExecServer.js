@@ -43,7 +43,7 @@ function RCConfigExecServer() {
         var app = express()
         self.app = app;
 
-        app.use(sh.blockIndexPage(indexPageSecurityEnding));
+        app.use(sh.blockIndexPage(indexPageSecurityEnding, __dirname));
 
         app.use(function addCrossDomainMiddlware(req, res, next) {
             //asdf.g
@@ -56,7 +56,7 @@ function RCConfigExecServer() {
             res.header("Access-Control-Allow-Credentials", "true");
             res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
             next();
-        });
+        }); 
 
         var bodyParser  = require("body-parser");
         //var multer = require('multer');

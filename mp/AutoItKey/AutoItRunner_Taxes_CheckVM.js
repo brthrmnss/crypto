@@ -26,10 +26,9 @@ function BasicClass3() {
         self.settings = sh.dv(config, {});
         config = self.settings;
 
-       self.settings.baseUrl = sh.dv(self.settings.port, 11200)
-
-        self.loop(); 
-       return;
+        self.settings.baseUrl = sh.dv(self.settings.port, 11200)
+        self.loop();
+        return;
         var instance = new AutoItRunner();
         var config = {};
         instance.init(self.settings)
@@ -37,16 +36,134 @@ function BasicClass3() {
 
         self.method();
         return;
-        instance.test(); 
+        instance.test();
 //AutoItRunner_Taxes_CheckVM.js "g:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_Taxes_CheckVM.js"
     }
 
-    p.method = function method(config)  {
+    p.loop = function loop(){
+        var items = [1,2,3]
+        var items = sh.each.times(2 ,null,1128)
+        //items = [1128]
+        var items = sh.each.times(20 ,null,1128)
+        var items = sh.each.times(35 ,null,1143)
+        var items = sh.each.times(50 ,null,1177)
+        var items = sh.each.times(50 ,null,1226)
+        sh.async(items, function onItems(item, fxIterationEnd) {
+            self.proc('item', item)
+
+           // return;
+            /*
+            fxIterationEnd()
+            return;
+            */
+            var instance = new AutoItRunner();
+            var config = sh.clone(self.settings);
+            instance.init(config)
+            self.c = instance;
+
+            var oldSelf = self;
+            self.method(item)
+            instance.test();
+            self = oldSelf;
+
+            setTimeout(function onTest() {
+                config.fxDone = function onFx() {
+                    self.proc('done with', item)
+                    fxIterationEnd();
+                }
+            },300);
+
+
+            /* setTimeout(function onwhatThis() {
+             fx()
+             }, 150)*/
+        }, function onDone() {
+            self.proc('all done')
+        })
+    }
+
+    p.method = function method( _number)  {
 
         var _self = self;
         self = self.c;
+
+        //console.log(self)
+
+
+        var number = 1128
+        number = sh.dv(_number, 1128)
+
+        self.beep()
+
+        self.proc('n', number)
+       // self.wait(3)
+      //  return;
+        //self.puts('sdf' )
+
+        function goToThing() {
+            self.winWait('eDocumentsList', 3)
+            self.winActivate('eDocumentsList')
+            self.mouse.click(121, 280)
+            self.wait(0.2)
+            self.mouse.click(371, 332)
+            self.wait(0.2)
+            self.keyboard.sendControlAnd("{a}")
+            self.keyboard.sendKeys(number)
+            self.wait(0.2)
+            self.mouse.click(483, 359)
+
+            self.winWait('eChecks View', 6)
+          //  self.wait(6)
+        }
+        goToThing()
+
+
+        self.beep();
+       // self.beep()
+       // return
+        function step2GetImage() {
+            self.winWait('eChecks View', 6)
+            self.keyboard.escape()
+            self.keyboard.sendControlAnd("{PRINTSCREEN}")
+            self.mouse.move(16, 346)
+            self.mouse.click()
+            var initX = 16
+            var initY = 346
+            self.mouse.move(650+initX, 295+initY)
+            self.mouse.click()
+            self.wait(2)
+            self.keyboard.sendControlAnd("{s}")
+            self.keyboard.sendKeys(number)
+            self.accept()
+            //if confirm
+            self.accept()
+            self.keyboard.escape()
+            self.keyboard.escape()
+        }
+        step2GetImage()
+
+
+        //go back
+        self.keyboard.sendAltAnd('{LEFT}')
+        self.winWait('eDocumentsList', 3)
+        //self.wait(10)
+
+
+        return;
+
+        self.winActivate('booty')
+
+        self.wait(2)
+        self.winActivate('Calculator')
+
+        return;
+        // 16 346
+        //650 295
+
         function goToSpace() {
             //self.winActivate('New Text Document - Copy')
+            self.winActivate('booty')
+
             self.mouse.click(212, 103)
             //   return;
             self.keyboard.selectAll()
@@ -54,6 +171,7 @@ function BasicClass3() {
             self.accept('booty')
         }
 
+        goToSpace()
 
         self.keyboard.escape()
         self.keyboard.sendControlAnd("{PRINTSCREEN}")
@@ -65,32 +183,32 @@ function BasicClass3() {
         self.keyboard.sendControlAnd("{s}")
         self.keyboard.sendKeys('1234')
         self.accept()
-       // self.keyboard.escape()
+        // self.keyboard.escape()
         /*
-        click place
-        enter text
-        click lace
-        wait 2 seconds
-        verity title of window?
-        send faststone command stroke
-        click
-        move to x
-        click
-        take size
-        press save
-        type name number
-        press enter
-        press back
+         click place
+         enter text
+         click lace
+         wait 2 seconds
+         verity title of window?
+         send faststone command stroke
+         click
+         move to x
+         click
+         take size
+         press save
+         type name number
+         press enter
+         press back
 
-        so this can go off of cgoogle
+         so this can go off of cgoogle
 
-        installf ast stone
+         installf ast stone
          */
         return;
         self = self.c
         console.log('one2')
-     //   return
-     // self.loadAutoIt();
+        //   return
+        // self.loadAutoIt();
         //self.winActivate('TTS-Reader')
 
         self.sendKeys('MoneyIsHere4Eve')
@@ -118,7 +236,7 @@ function BasicClass3() {
         urls.playCustom = t.utils.createTestingUrl('playCustom')
         urls.getJSONPath = t.utils.createTestingUrl('getJSONPath')
         urls.uploadConfig = t.utils.createTestingUrl('uploadConfig')
-       // self.tests.t = t;
+        // self.tests.t = t;
 
         //self.tests.urls = urls;
 

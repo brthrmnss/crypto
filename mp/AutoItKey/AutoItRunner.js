@@ -25,8 +25,9 @@ function AutoItRunner() {
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
         config = self.settings;
-        self.settings.port = sh.dv(self.settings.port, 11200)
-        self.settings.ip = sh.dv(self.settings.ip, '127.0.0.1')
+        self.settings.port = sh.dv(self.settings.port, 11200);
+        self.settings.ip = sh.dv(self.settings.ip, '127.0.0.1');
+        //console.log('what is ip', self.settings.ip)
         self.runAutoItCommands();
     }
 
@@ -53,6 +54,15 @@ function AutoItRunner() {
             self.push(str)
             return;
         }
+        p.winWait = function winWait(window_title, time) {
+            time = sh.dv(time, 5)
+            var str = 'WinWait('+sh.qq("[Title:"+window_title+"]")+', "", '+time+')'
+            self.push(str)
+            return;
+        }
+
+        
+        
         p.sendKeys = function sendKeys(txtStr) {
             var str = 'Send(txtStr)'
             var cmd = self.utils.replace(str, 'txtStr', txtStr, true)
@@ -61,6 +71,19 @@ function AutoItRunner() {
         }
 
         p.type = p.sendKeys;
+
+        p.beep = function beep() {
+            var cmd = 'beep 600, 400'
+            self.push(cmd)
+            return;
+        }
+
+        p.puts = function puts(x) {
+
+            var cmd = 'puts ' + sh.qq(x)
+            self.push(cmd)
+            return;
+        }
 
         p.accept = function accept() {
             var keys = '{ENTER}'
@@ -106,6 +129,18 @@ function AutoItRunner() {
             return;
         }
 
+        k.sendAltAnd = function sendAltAnd(asdf) {
+            var cmds = [
+            'Send(ALTDOWN)',
+            'Send(keys)',
+            'Send(ALTUP)'
+            ]
+            var str = cmds.join('\n');
+            var cmd = self.utils.replace(str, 'keys', asdf, true)
+            self.push(cmd)
+            return;
+        }
+        
         k.sendKeys = function sendKeys(asdf) {
             var str = 'send_keys(keysToSend)'
             var cmd = self.utils.replace(str, 'keysToSend', asdf, true)
@@ -119,20 +154,29 @@ function AutoItRunner() {
         }
 
 
+        k.backspace = function backspace() {
+            k.sendKeys("{BACKSPACE}")
+        }
+
+
         p.wait = function wait(time) {
             time = sh.dv(time, 1);
             self.t.wait(time)
         }
 
         p.push = function push(cmd) {
+            // asdf.g
             if (self.t == null) {
                 var EasyRemoteTester = shelpers.EasyRemoteTester;
                 var baseUrl = 'http://'+self.settings.ip+':'+self.settings.port;
-                var t = EasyRemoteTester.create('Test say basics',{showBody:false, silent:true});
+                var cfg = {};
+                 cfg = {showBody:false, silent:true}
+                var t = EasyRemoteTester.create('Test say basics',cfg);
                 var data = {};
                 t.settings.baseUrl = baseUrl
                 t.settings.fxDone = function onDone_SendingCmds() {
                     //  console.log('booo')
+                    sh.callIfDefined(self.settings.fxDone)
                     self.t = null;
                 }
                 var urls = {};
@@ -145,11 +189,11 @@ function AutoItRunner() {
             }
 
 
-           // console.log('add cmd', cmd)
+            // console.log('add cmd', cmd)
             var t= self.t
             t.getR(t.urls.runAISCmd).with({text:cmd, rate:20}).bodyHas('status').notEmpty()
                 .fxDone(function onDne(a,b,c) {
-                    //   console.log('....')
+                    console.log('....')
                     console.log('')
                     console.log(cmd)
                     var cmdOutput = a.cmdOutput
@@ -157,20 +201,20 @@ function AutoItRunner() {
                     var firstLine = split[1]
                     firstLine = sh.dv(firstLine, '')
                     var isError = firstLine.includes('Error: ');
-                   // console.error('firstline', firstLine, isError)
-                  //  console.error(cmdOutput)
+                    // console.error('firstline', firstLine, isError)
+                    //  console.error(cmdOutput)
                     if ( isError ) {
                         console.error(sh.t, cmdOutput)
                         return '>>>>>>>>>>>>>>aborting b/c of error'
                     }
                     console.log(sh.t, a.cmdOutput) //,b,c)
                 })
-            /*  .fxFault(function onDne(a,b,c) {
-             //   console.log('....')
-             console.log('')
-             console.log(cmd)
-             console.log(sh.t, a.cmdOutput) //,b,c)
-             })*/
+                .fxFail(function onDne(a,b,c) {
+                    //   console.log('....')
+                    console.log('')
+                    console.log(cmd)
+                    console.log(sh.t, a.cmdOutput) //,b,c)
+                })
 
             t.wait(0.4)
             return;

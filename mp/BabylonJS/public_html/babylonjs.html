@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <title>Bab Lab 1</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 13px Helvetica, Arial; }
+
+  </style>
+
+  <style>
+    html, body {
+      overflow: hidden;
+      width   : 100%;
+      height  : 100%;
+      margin  : 0;
+      padding : 0;
+    }
+
+    #renderCanvas {
+      width   : 100%;
+      height  : 100%;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+
+
+
+<xscript src="js/lib/socket.io-1.2.0.js.ignore"></xscript>
+<script src="js/lib/jquery-1.11.1.js.ignore"></script>
+
+
+<script src="js/lib/babylon.custom.js" ></script>
+
+<script src="js/lib/ui_utils.js" ></script>
+<script src="js/baby_rend.js" ></script>
+<script src="js/baby_lib.js" ></script>
+<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>
+<script>
+  function onReloader() {
+    reloader.reloadWhen('index.html');
+
+    reloader.reloadWhenFx('baby_rend.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      //window.drawPBJS.go();
+      //window.br.createScene();
+     // window.br.dispose();
+      //window.br.reloadSimpleMode(window.BabyRend);
+
+    })
+    reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      window.bendIt()
+    })
+
+    //C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/test3/testFramework.js
+    reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/', '')
+    reloader.filter = '/BabylonJS/';
+    reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/crypto/mp/RCExt/public_html/', '')
+    //reloader
+  }
+  try {
+    onReloader()
+  } catch ( e) {
+    console.log('e', e)
+  }
+</script>
+
+
+
+
+
+
+<canvas id="renderCanvas"></canvas>
+<script>
+
+  //why?
+
+  window.addEventListener('DOMContentLoaded', createB )
+  function createB(){
+
+    var br = new BabyRend();
+    br.init();
+    br.setupStage()
+    window.br = br;
+  };
+</script>
+</body>
+</html>

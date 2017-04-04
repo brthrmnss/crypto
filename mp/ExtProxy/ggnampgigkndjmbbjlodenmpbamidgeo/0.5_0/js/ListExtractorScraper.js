@@ -44,10 +44,25 @@ function ListExtractorScraper() {
     }
 
 
+    p.parseContents = function parseContents(body) {
+
+        if ( body == null ) {
+            body = self.settings.body;
+        }
+
+        self.contents = body;
+        $ = cheerio.load(self.contents);
+        self.$ = $;
+
+        self.processJqueryToGetList();
+    }
+
+
     p.processJqueryToGetList  = function processJqueryToGetList(mainList, listItem) {
         var listContainer = self.$(self.settings.list)
         if ( listContainer.length == 0 ) {
             self.proc('coudl not find list', self.settings.list)
+            sh.callIfDefined(self.settings.fxDone, [])
             return
         }
         var items = listContainer.find(self.settings.listItem)
@@ -60,14 +75,29 @@ function ListExtractorScraper() {
             sh.each(self.settings.fields, function getfield(k,v) {
 
                 var item = ui.find(v.query)
-                listItem[v.prop] = item.text()
+                var val = item.text()
+                if ( v.fxText ) {
+                    val = v.fxText(val)
+                }
+                if ( v.parent) {
+                    item = $(item.parent())
+                }
+                if ( v.keepAttr) {
+                    val = item.attr(v.keepAttr);
+                }
+
+                listItem[v.prop] = val
             })
 
             listItems.push(listItem)
         })
 
         self.proc('export')
-        console.log(listItems)
+        if ( self.settings.showOutput != false ) {
+            console.log(listItems)
+        }
+
+        sh.callIfDefined(self.settings.fxDone, listItems)
     }
 
     p.setupAreas  = function setupAreas(mainList, listItem) {
@@ -82,6 +112,7 @@ function ListExtractorScraper() {
         t.prop = prop
         t.query= jq
         fields.push(t)
+        return t;
     }
 
 
@@ -114,8 +145,10 @@ if (module.parent == null) {
     instance.setupAreas('#searchResultBox', '.resItemBox')
     instance.setupLiField('name', instance.utils.prop('itemprop', 'name'))
     instance.setupLiField('author', instance.utils.prop('itemprop', 'author'))
+
     instance.test();
 }
 
 
 
+ 

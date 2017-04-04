@@ -86,6 +86,28 @@ function GrammarHelperServer() {
         });
 
 
+        app.get('/searchBookzz', function onDownloadMagnet(req, res){
+            var SearchBookzz = sh.require('mp/GrammarHelperServer/SearchBookzz.js').SearchBookzz
+
+            var i = new SearchBookzz();
+            var config = {}
+            config.fxDone = function onTestComplete(list, data) {
+                var json = data
+                json.list = list;
+                res.json(json)
+                console.log('SearchBookzz complete:', data.url)
+            }
+            i.init(config)
+
+            var query = req.query.query
+            //i.searchBookzz('crimson moon')
+            //i.searchBookzz('ddddBeneath A Crimson Moon Michels Christine')
+            i.searchBookzz(query)
+
+
+            return;
+
+        });
 
         app.get('/searchpb', function onDownloadMagnet(req, res){
 
@@ -232,6 +254,40 @@ function GrammarHelperServer() {
 
 
         })
+
+        self.app.get('/file/:id*?', function onGetFileFromReloader(req, res) {
+            console.log('output', JSON.stringify([req.params, req.query]))
+
+            var y = req.originalUrl;
+            if ( sh.isWin() ) {
+                console.error('orig url', y)
+            }
+            var split = y.split('/')
+            var fileSections = split
+            split = split.slice(2)
+            var dir = split.shift();
+
+
+            var file = y.replace('/file/', '')
+
+
+            if ( file.includes('Dropbox/') == false ) {
+                console.error('no dropbox in name')
+                res.send('hint ' )
+                return;
+            }
+
+
+
+            if ( sh.fs.exists(file)) {
+                res.sendfile(file);
+                return;
+            }
+
+            res.send('not found ' + file + ' ' + sh.fs.exists(file))
+
+        })
+
         self.app.get('/g/:id*?', function (req, res) {
             console.log('output', JSON.stringify([req.params, req.query]))
             var y = req.originalUrl;
@@ -605,8 +661,8 @@ function GrammarHelperServer() {
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
         urls.localfileWildroute = t.utils.createTestingUrl('***/js/quickreloadable2.dir.html');
 
-
-
+        var file = 'C:/Users/user1/Dropbox/projects/crypto/mp/ExtProxy/bookzzext/0.5_0/js/script.js'
+        urls.localFileGlobalPath = t.utils.createTestingUrl('/file/'+file);
         // http://localhost:10110/***/js/quickreloadable2.dir.html
 
         /*    t.add(function doSearchAfterLogin() {
@@ -620,6 +676,16 @@ function GrammarHelperServer() {
          }
          );
          */
+
+
+        t.getR( urls.localFileGlobalPath)
+            .why('test with global file to file path')
+            .fxDone(function onUrl(result) {
+            });
+
+
+
+        //return;
 
         //t.testsDisable()
         t.getR(urls.urlgenindex_userTemplate)

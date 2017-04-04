@@ -281,8 +281,9 @@ function JSONSet() {
         //self.proc('...', 'finished')
         sh.fs.writeJSONFile(fileStore, data);
     }
-    p.createAdditionalFlatFile = function createAdditionalFlatFile(name, data) {
-        var fileStore = self.data.fileOutputTemplate+'.'+name+''+'.txt';
+    p.createAdditionalFlatFile = function createAdditionalFlatFile(name, data, fileType) {
+        fileType = sh.dv(fileType, 'txt')
+        var fileStore = self.data.fileOutputTemplate+'.'+name+''+'.' + fileType;
         //self.proc('...', 'finished')
         if ( sh.isArray(data)) {data = data.join("\n")};
         sh.writeFile(fileStore, data);

@@ -49,6 +49,14 @@
 
     p.process = function process(elStart, dictTypes, dictAttrs) {
       console.info('process quick inf', dictAttrs)
+
+      $.each(dictAttrs, function checkAttrForInvalidName(name, attr) {
+        if ( name.toLowerCase() != name ) {
+          console.error('Invalid .... bad name', name, attr, 'angular will dash case names',
+          'contentArea must be content-area')
+          throw new Error('invalid name '+ name)
+        }
+      })
       //console.error('loading version', QuickUIConvertor.version, window.QuickUIConvertor.version)
       var children = elStart.find('*');
       var ifx = function ifXHasPropCallFxWithVal(x, prop, fx) {

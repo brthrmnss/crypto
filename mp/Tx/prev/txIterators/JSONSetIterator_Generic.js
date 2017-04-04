@@ -118,13 +118,44 @@ function JSONSetIterator_Generic() {
                 dictPaymentsSameDesc.add(item.description, item);
             })
             sortedList.push({})
-            dictPaymentsSameDesc.each(function or(kDesc,items2) {
+            /*dictPaymentsSameDesc.each(function or(kDesc,items2) {
                 //console.log(items)
                 sh.sortByDate(items2)
                 sh.each(items2, function or(kDesc,item) {
                     sortedList.push(item)
                 })
+            })*/
+
+            var allDescs=[];
+            var dictDescToItems = {};
+            dictPaymentsSameDesc.each(function or(i,items2, kDesc) {
+                //console.log(items)
+                sh.sortByDate(items2)
+                //sh.each(items2, function or(kDesc,item) {
+                 //   sortedList.push(item)
+                //})
+               // console.log('k', i, k)
+                dictDescToItems[kDesc] = items2;
+                allDescs.push(kDesc)
             })
+
+            /*
+            dictPaymentsSameDesc.each(function or(kDesc,items2) {
+                console.log(kDesc, items2)
+                allDescs.push(kDesc)
+            })
+*/
+            var sortedDecs = allDescs.sort();
+            //console.log('sorted', sortedDecs)
+            sh.each(sortedDecs, function or(i, kDesc) {
+                var items2 = dictDescToItems[kDesc]
+               // console.log('k', i, kDesc)
+                sh.sortByDate(items2)
+                sh.each(items2, function or(kDesc,item) {
+                    sortedList.push(item)
+                })
+            })
+
             return sortedList;
         }
 
@@ -132,10 +163,14 @@ function JSONSetIterator_Generic() {
         var groupedByDescription = self.utils.groupByDescription( self.data.matches)
         var columns =  columnify(  groupedByDescription );
 
+        
+        //asdf.g
+        
         self.runner.createAdditionalFlatFile(self.name, columns)
 
 
         JSONSetIterator_Generic.comments = sh.dv(JSONSetIterator_Generic.comments, [])
+        JSONSetIterator_Generic.allLines = sh.dv(JSONSetIterator_Generic.allLines, [])
         //console.error('whole config', self.settings)
         //  process.exit()
 
@@ -231,12 +266,27 @@ function JSONSetIterator_Generic() {
         }
 
 
+        //exportObj.listY = [1,2,3]
+     //  asdf.g
+
         /*  JSONSetIterator_Generic.comments.push(
          logLine
          )*/
         JSONSetIterator_Generic.comments.push(
             exportObj
         )
+
+        JSONSetIterator_Generic.allLines.push(
+            exportObj
+        )
+        sh.each(groupedByDescription, function onADd(k,lineItem) {
+            JSONSetIterator_Generic.allLines.push(
+                lineItem
+            )
+        })
+
+
+
 
         var output = sh.callIfDefined(self.settings.it.fxDone,self.runner,self.item);
         var output = sh.callIfDefined(self.settings.it.fxDone2,self.runner,self.item);

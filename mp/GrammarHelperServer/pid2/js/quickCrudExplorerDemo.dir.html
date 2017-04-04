@@ -1,0 +1,42 @@
+<div    id="listTester2"  >
+    <h1>Quick CRUD Explorer</h1>
+    <span>This is a quick test of this</span>
+    <!--
+
+        <quicklist2 config="configList" />
+    -->
+
+    <quickform2 config="configForm" />
+
+    <ui-hider title="config for form" >
+        {{configForm}}
+    </ui-hider>
+
+    <br />
+
+    <ui-hider title="config for configList"  >
+        {{configList}}
+    </ui-hider>
+    <br />
+
+    <ui-hider title="config for configCrud"  >
+
+<!-- <pre>
+    {{configCrud | prettyJSON}}
+  </pre>-->
+    </ui-hider>
+    <br />
+<!--          <pre>
+            {{configCrud | json}}
+        </pre>-->
+<!--
+ <pre>
+    {{data | prettyJSON}}
+  </pre>
+-->
+
+    <quickcrud2 config="configCrud" />
+
+    <br />
+    <br />
+</div>
