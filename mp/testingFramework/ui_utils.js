@@ -112,17 +112,62 @@ function defineUtils() {
 
 	uiUtils.dictCfg = {};
 
-	$.isString = function isString(objectOrString) {
+    u.dv = dv;
+   uiUtils.qq = function qq(txt) {
+                            return '"' + txt + '"'
+                        }
+
+    $.isString = function isString(objectOrString) {
 		//return (objectOrString instanceof String)
 		return typeof objectOrString == 'string'
 	}
 
+
+	self.args =  function convertArgumentsToArray_(_arguments) {
+		var args = Array.prototype.slice.call(_arguments, 0);
+		return args
+	}
 
 	self.clone = function clone(e) {
 		var eee = JSON.stringify(e)
 		return JSON.parse(eee)
 	}
 
+                uiUtils.makeHiderBtn = function makeHiderBtn(jqBtn, jqContainer, parentUI, hideOnInit) {
+                    var btnHide = $(jqBtn)
+                    if (parentUI) {
+                        btnHide = parentUI.find(jqBtn)
+                    }
+
+                    btnHide.attr('title', 'Hide this element')
+                    btnHide.addClass('unselectable2')
+                    btnHide.addClass('useFingerPointerCursor')
+
+                    var hideContainer = $(jqContainer)
+                    if (parentUI) {
+                        hideContainer = parentUI.find(jqContainer)
+                    }
+
+                    function onToggleVisibility() {
+                        btnHide.hidden = !btnHide.hidden;
+                        if (btnHide.hidden) {
+                            hideContainer.hide()
+                        } else {
+                            hideContainer.show();
+                        }
+                    }
+
+
+                    btnHide.click(onToggleVisibility)
+
+                    if (hideOnInit) {
+                        setTimeout(function () {
+                            onToggleVisibility()
+                        }, 150)
+                    }
+                }
+		
+		
 	uiUtils.makePanel = function makePanel(cfg) {
 		throwIfNull(cfg.id, 'need an id')
 		u.cfg.fixId(cfg)
@@ -150,11 +195,8 @@ function defineUtils() {
 			}
 		}
 
-
-
 		cfg = dv(cfg,{});
 		uiUtils.dictCfg[cfg.id] = cfg;
-
 
 		var panel = $('<div />')//
 		// style="position: fixed; bottom: 10px; right: 10px;display: none; color:red; " id="testLogPanel">asdf  </div>')
@@ -180,6 +222,8 @@ function defineUtils() {
 		//panel.html('sdfsdf');
 		$('body').append(panel);
 		cfg.ui = cfg.panel = panel;
+		uiUtils.lastUI = panel;
+
 	};
 
 	uiUtils.panel = uiUtils.makePanel;
@@ -199,6 +243,9 @@ function defineUtils() {
 		ui.css('top', '');
 	}
 	uiUtils.panel.br =function makeBrPanel(cfg) {
+		/*if ( cfg.length ) {
+			var cfg = {ui:cfg}
+		}*/
 		cfg = u.cfg.str(cfg, 'id')
 		p.panel(cfg);
 		u.clearPositions(cfg.ui)
@@ -213,11 +260,85 @@ function defineUtils() {
 		cfg.ui.css('bottom', '10px');
 		cfg.ui.css('left', '10px');
 	}
+
+
+
+	uiUtils.position =function position(lOrUI, t, r, b, bz) {
+		var ui = uiUtils.lastUI;
+
+		var l = lOrUI
+		if ( lOrUI.length ) {
+			ui = lOrUI
+			l = t;
+			t = r
+			r = b
+			b = bz
+		}
+		if (  l != null ) {
+			ui.css('left', l + 'px')
+		} else {
+			if (  l === null ) {
+				ui.css('left', '')
+			}
+		}
+
+		if (  t != null ) {
+			ui.css('top', t + 'px')
+		} else {
+			if (  t === null ) {
+				ui.css('top', '')
+			}
+		}
+
+		if (  r != null ) {
+			ui.css('right', r + 'px')
+		} else {
+			if (  r === null ) {
+				ui.css('right', '')
+			}
+		}
+
+		if (  b != null ) {
+			ui.css('bottom', b + 'px')
+		} else {
+			if ( b === null ) {
+				ui.css('bottom', '')
+			}
+		}
+		/*console.log(
+			ui,
+			ui.css('left'),
+			ui.css('top'),
+			ui.css('right'),
+			ui.css('bottom')
+		)*/
+		//debugger
+
+		/*
+		if (  t != null )
+			ui.css('top', t + 'px')
+		if (  r != null )
+			ui.css('right', r + 'px')
+		if (  b != null )
+			ui.css('bottom', b + 'px')
+		*/
+	}
+
+	u.pos = u.position;
+	u.pos.br = function movetoButtonRight(ui, b, r) {
+		b = dv(b, 10)
+		r = dv(r, 10)
+		u.position(ui, null, null, b, r)
+	}
+
 	uiUtils.makeAbs =function makeAbs(jquery, highPosition) {
 		jquery.css('position', 'absolute');
 		if ( highPosition ){
 			jquery.css('z-index', highPosition+200);
 		}
+
+		uiUtils.position(jquery, 0,0)
+
 	}
 
 	uiUtils.ifFound = function ifFound(id) {
@@ -294,7 +415,7 @@ function defineUtils() {
 
 		return cfg;
 	}
-	
+
 	uiUtils.addDropdown = function addLabel(cfg) {
 		cfg = u.cfg.str(cfg, 'text')
 		cfg.tag = dv(cfg.tag, 'select');
@@ -312,25 +433,25 @@ function defineUtils() {
 				}
 				console.log('k', v)
 				ui.append($('<option>', /*{
-					value: item.value,
-					text: item.text
-				}*/v ));
+				 value: item.value,
+				 text: item.text
+				 }*/v ));
 
 			})
 		}
 		//$('<span/>')
 		/*if (cfg.width){
-			if ( $.isNumeric(cfg.width) ) {
-				cfg.width = cfg.width+'px';
-			}
-			lbl.css('width', cfg.width);
-			lbl.css('display', 'inline-block');
-		}
-		lbl.css('user-select', 'none');*/
+		 if ( $.isNumeric(cfg.width) ) {
+		 cfg.width = cfg.width+'px';
+		 }
+		 lbl.css('width', cfg.width);
+		 lbl.css('display', 'inline-block');
+		 }
+		 lbl.css('user-select', 'none');*/
 		u.addUI(cfg, ui);
 		return cfg;
 	}
-	
+
 	uiUtils.addDD = uiUtils.addDropdown
 
 	uiUtils.addNumber = function addNumber(cfg) {
@@ -380,6 +501,7 @@ function defineUtils() {
 		uiUtils.addLabel(cfg)
 		return cfg;
 	}
+
 	uiUtils.addDiv = function addDiv(cfg) {
 		cfg = u.cfg.str(cfg, 'id')
 		cfg.tag = dv(cfg.tag, 'div');
@@ -392,6 +514,59 @@ function defineUtils() {
 			cfg.lastAddTo = cfg.addTo
 			cfg.addTo = ui;
 		}
+		return cfg;
+	}
+
+	uiUtils.addFloatingDiv = function addFloatingDiv(cfg) {
+		//var cfg = uiUtils.addDiv(cfg)
+		//var div = uiUtils.getLast()
+		var div = $('<div/>')
+		$('body').append(div)
+		uiUtils.lastUI = div;
+		uiUtils.makeAbs(div);
+		return div;
+	}
+
+
+
+	uiUtils.addDialog = function addFloatingDiv(cfg) {
+		var fxRevenrt = u.addRootTemp()
+		var cfg = uiUtils.addDiv(cfg)
+		fxRevenrt();
+
+		var ui = div = cfg.ui;
+		//var div = $('<div/>')
+		$('body').append(div)
+		uiUtils.lastUI = div;
+		uiUtils.makeAbs(div);
+		uiUtils.position(10,10)
+		if ( cfg.addDefaultStyles != false ) {
+			//panel.attr('id', u.cfg.getId(cfg.id));
+
+			ui.css('position', 'absolute');
+			ui.css('z-index', '1001');
+			ui.css('background-color', '#f2f2f2');
+			ui.css('padding', '10px');
+			ui.css('border', '1px #666666 solid');
+		}
+		if ( cfg.class ) {
+			ui.addClass(cfg.class)
+		}
+		if ( cfg.addPadding != false ) {
+			ui.css('padding', '10px');
+		}
+
+
+		return div;
+	}
+
+
+
+
+	uiUtils.addSpan = function addSpan(cfg) {
+		cfg = u.cfg.str(cfg, 'id')
+		cfg.tag = dv(cfg.tag, 'span');
+		cfg = uiUtils.addDiv(cfg)
 		return cfg;
 	}
 	uiUtils.changeContainer = function focusOnContainer() {
@@ -430,12 +605,20 @@ function defineUtils() {
 		uiUtils.lastCfg.ui.css('display', 'inline-block')
 	}
 
- 
+
 	uiUtils.scrollToBottom = function scrollToBottom(jq){
 		//$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
 		$(jq).clearQueue();
 		$(jq).stop(true, true);
 		$(jq).animate({ scrollTop: $(jq).prop("scrollHeight")}, 10);
+	}
+
+
+	uiUtils.scrollToTop = function scrollToTop(jq){
+		//$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
+		$(jq).clearQueue();
+		$(jq).stop(true, true);
+		$(jq).animate({ scrollTop: 0}, 10);
 	}
 
 	uiUtils.addBtn = function addBtn(cfg, fxD) {
@@ -449,11 +632,11 @@ function defineUtils() {
 
 		//debugger;
 		/*
-		if ( cfg.addTo ) {
-			//debugger;
-			cfg.addTo.append(btn)
-		}
-		*/
+		 if ( cfg.addTo ) {
+		 //debugger;
+		 cfg.addTo.append(btn)
+		 }
+		 */
 
 		u.addUI(cfg, btn)
 
@@ -544,7 +727,117 @@ function defineUtils() {
 	}
 
 
+	function defineStyles() {
+		uiUtils.pad = function addPadding(l, t, r, b) {
+			if (b) {
+				uiUtils.lastUI.css('padding-bottom', b + 'px')
+			}
+		}
+		uiUtils.wH = function setWidthAndHeight(w, h) {
+			if (w) {
+				uiUtils.lastUI.css('width', w + 'px')
+			}
+		}
+		uiUtils.color = function color(ui, color) {
+			if ( color == null ) {
+				color = ui
+				ui = uiUtils.lastUI;
+			}
 
+			ui.css('color', color)
+		}
+
+		uiUtils.title = function title(title) {
+			uiUtils.lastUI.attr('title', title)
+		}
+		uiUtils.tooltip = uiUtils.title;
+
+
+
+
+		uiUtils.centerVertically = function centerVertically(l, t, r, b) {
+			var css = {'display': 'flex',
+				'flex-direction': 'row',
+				'flex-wrap': 'nowrap',
+				'justify-content': 'center',
+				'align-content': 'center',
+				'align-items': 'center'}
+			uiUtils.lastUI.css(css)
+		}
+		uiUtils.bg = function setBgColor(l, ui) {
+			var ui = uiUtils.lastUI;
+			ui.css('background-color', l)
+		}
+
+		uiUtils.opacity = function setOpacity(opacity, _ui) {
+			var ui = uiUtils.lastUI;
+			if ( _ui ) {
+				ui = _ui;
+			}
+			opacity = opacity.toString();
+			if ( opacity.startsWith('.') ) {
+				opaicty = '0'+opacity;
+			}
+			ui.css('opacity', opacity)
+		}
+
+		uiUtils.opac = uiUtils.opacity
+
+
+		uiUtils.copySize = function copySize(ui1, ui2) {
+			ui2.css('width', ui1.css('width'))
+			ui2.css('height', ui1.css('height'))
+		}
+		uiUtils.copyWH = uiUtils.copySize;
+
+		uiUtils.copyXY = function copyXY(ui1, ui2) {
+			var position = $(ui1).offset();
+			ui2 = $(ui2)
+			console.log('position---', position)
+			ui2.css(position)
+		}
+
+		uiUtils.copyPosition = uiUtils.copyPos
+			= uiUtils.copyXY;
+
+
+		uiUtils.reset = function reset() {
+			if ( uiUtils.flagCfg ) {
+				uiUtils.flagCfg.addTo = $('body')
+			}
+		}
+		uiUtils.addRootTemp = function addRootTemp() {
+			if ( uiUtils.flagCfg ) {
+				var addTo = uiUtils.flagCfg.addTo;
+				uiUtils.flagCfg.addTo = $('body')
+			}
+			function fxRevert() {
+				if ( addTo && uiUtils.flagCfg ) {
+					uiUtils.flagCfg.addTo = addTo;
+				}
+
+			}
+			return fxRevert
+		}
+
+		uiUtils.addOverlay = function addOverlay(ui, bgColor) {
+			var overlay = $('<div/>');
+			uiUtils.makeAbs(overlay, true)
+			if ( bgColor ) {
+				overlay.css('background', bgColor)
+			}
+
+			/*	overlay.css('height', '100%');
+			 overlay.css('width', '100%');*/
+			uiUtils.copyWH(ui, overlay)
+			uiUtils.position(overlay, 0,0)
+			//u.opacity(overlay, 0.3)
+			overlay.css('opacity', 0.7)
+			ui.append(overlay);
+		}
+
+	}
+	defineStyles();
 
 	uiUtils.br = function addBr(cfg, fxD) {
 		cfg = dv(cfg, {})
@@ -554,7 +847,7 @@ function defineUtils() {
 		u.addUI(cfg, btn)
 	}
 
-	uiUtils.ws = function ws(cfg, fxD) {
+	uiUtils.addWhitespace = function addWhitespace(cfg, fxD) {
 		cfg = dv(cfg, {})
 		cfg = u.cfg.str(cfg, 'text')
 		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
@@ -562,7 +855,8 @@ function defineUtils() {
 		ui.html(' ')
 		u.addUI(cfg, ui)
 	}
-	
+	uiUtils.ws = uiUtils.addWhitespace;
+
 	uiUtils.hr = function addBr(cfg, fxD) {
 		cfg = dv(cfg, {})
 		cfg = u.cfg.str(cfg, 'text')
@@ -582,11 +876,16 @@ function defineUtils() {
 	}
 	uiUtils.addSpace = uiUtils.spacer;
 
-	uiUtils.disable = function disable(id, fxD) {
+	uiUtils.styles = {}
+	uiUtils.s = uiUtils.styles;
+
+	uiUtils.s.disable = function disable(id, fxD) {
+		console.error('disable', id)
 		$(id).css('opacity', 0.3);
 	}
 
-	uiUtils.enable = function enable(id, fxD) {
+	uiUtils.s.enable = function enable(id, fxD) {
+		console.error('enable', id)
 		$(id).css('opacity', 1);
 	}
 
@@ -612,6 +911,9 @@ function defineUtils() {
 			var _cfg = {};
 			_cfg[prop] = cfg;
 			cfg = _cfg;
+		}
+		if ( cfg == null ) {
+			cfg = {};
 		}
 		return cfg;
 	};
@@ -690,6 +992,7 @@ function defineUtils() {
 		}
 		cfg.ui = ui;
 		u.lastCfg = cfg;
+		u.lastUI = ui;
 	}
 	p.tag = function createTag(type) {
 		return $('<'+type+'/>');
@@ -699,16 +1002,22 @@ function defineUtils() {
 	p.lastId = function lastId(type) {
 		return u.lastCfg.id;
 	}
+	p.getLast = function getLast() {
+		return u.lastUI;
+	}
 
 	function defineBasicMethods() {
 		p.enable = function enabled(id) {
 			var ui = $(id)
 			ui.prop('disabled', false);
+			ui.css('opacity', 1);
+
 		}
 
 		p.disable = function disable(id) {
 			var ui = $(id)
 			ui.prop('disabled', true);
+			ui.css('opacity', 0.3);
 		}
 		p.ifEmpty =function ifEmpty(id, fx) {
 			throwIfNull(fx, 'need a function for ' +  id)
@@ -756,7 +1065,7 @@ function defineUtils() {
 		p.glyph = function addGlyphIcon(iconName, val) {
 			var  iconHTML = '<span class="glyphicon glyphicon-'+iconName+'" aria-hidden="true"></span>'
 			var icon = $(iconHTML);
-			return icon; 
+			return icon;
 		}
 
 		p.setSelect = function setSelect(jq, vals, keyProp, valProp) {
@@ -867,6 +1176,32 @@ function defineUtils() {
 			return cfg;
 		}
 
+
+
+
+		uiUtils.repeatUntil  = function repeatUntil(fxCond, fx2, maxRetry, attemptIndex) {
+			//why: use to repeated call fx, until fxCond is true
+			//why:for ui elements that are lazily loaded
+			var result = fxCond();
+			if (result) {
+				fx2()
+				return;
+			}
+			if (maxRetry == null) {
+				maxRetry = 10;
+			}
+			if (attemptIndex > maxRetry) {
+				console.error('gave up ', 'tried', maxRetry, 'times', attemptIndex)
+				return
+			}
+			if (attemptIndex == null) {
+				attemptIndex = 0
+			}
+			attemptIndex++
+			setTimeout(uiUtils.repeatUntil, 500, fxCond, fx2, maxRetry, attemptIndex)
+		}
+
+		uiUtils.repeatFxUtils = uiUtils.repeatUntil;
 
 	}
 	defineSetValues();
@@ -998,6 +1333,95 @@ function defineUtils() {
 		return params;
 	}
 
+  uiUtils.isSimiliarInArray = function isSimiliarInArray(prop, obj, items) {
+                        var found = null;
+                        var foundItem = null;
+                        var likeVal = obj[prop];
+                        $.each(items, function findSimiliar(k, v) {
+                            var val = v[prop];
+                            if (val == likeVal) {
+                                foundItem = v;
+                                found = true;
+                                return false;
+                            }
+                        })
+
+                        return found;
+    }
+
+    function defineEffects() {
+        uiUtils.fadeIn = function fadeIn(_ui, duration) {
+            var cfg = {ui:_ui, duration:duration}
+            if ( _ui.length == null )  {
+                var cfg = _ui;
+            }
+            cfg.ui.show();
+            cfg.ui.css('opacity', 0.0)
+            cfg.duration = u.dv(cfg.duration, 600);
+            cfg.opacity = u.dv(cfg.opacity, 1.0);
+
+            $(cfg.ui).animate({
+                    opacity: cfg.opacity
+                },
+                {
+                    duration:duration,
+                    complete:function onEnd() {
+                        // _ui.hide();
+                    }
+                });
+            //}
+            console.error('fade in')
+        }
+
+
+        uiUtils.fadeOut = function fadeOut(_ui) {
+            //function onHoverOut() {
+            // debugger
+
+            $(_ui).clearQueue();
+            $(_ui).stop(true, true);
+            $(_ui).animate({
+                    opacity: 0.0
+                },
+                {
+                    duration: 300,
+                    complete: function onEnd() {
+                        _ui.hide();
+                    }
+                }
+            );
+            console.error('fadeOut', _ui)
+            //}
+        }
+
+
+        uiUtils.beatFade = function beatFade(_ui) {
+                    var startingOpacity = _ui.css('opacity');
+                    if (startingOpacity == null || startingOpacity == '') {
+                        startingOpacity = 1;
+                    }
+                    startingOpacity = 1;
+                    // console.error('starting', startingOpacity)
+                    $(_ui).clearQueue();
+                    $(_ui).stop(true, true);
+                    setTimeout(function out() {
+                        console.error('go to ', 0.7)
+                        $(_ui).animate({
+                            opacity: 0.7
+                        }, 500);
+                    }, 0)
+
+                    setTimeout(function beatIn() {
+                        console.error('go to ', 1)
+                        $(_ui).animate({
+                            opacity: startingOpacity
+                        }, 500);
+                    }, 500)
+                }
+	
+	}
+	
+	defineEffects(); 
 
 	function defineUrlMethods() {
 		p.inUrl = function inUrl(dlg) {
@@ -1015,7 +1439,7 @@ function defineUtils() {
 			window.location.reload();
 		}
 
-		p.addToUrl = function addToUrl(key, val) {
+		p.addToUrl = function addToUrl(key, val, doNotSetIfValIsNull ) {
 			/*
 			 1: hash is present
 			 2: ? is present ... so parse vars
@@ -1025,13 +1449,26 @@ function defineUtils() {
 			var params = uiUtils.utils.getParams();
 
 			var dbg = false;
+			//dbg = true
 			if ( dbg )
 				console.debug('addToUrl','params', window.location.hash,
 					window.location.search, params)
-			if ( params[key] == val.toString() ) {
+			if (val) {
+				val = val.toString()
+			}
+			if ( params[key] == val ) {
 				return;
 			}
+			if ( doNotSetIfValIsNull && val == null ) {
+				console.debug('did not set val', key, 'val is null')
+				return;
+			}
+
 			params[key]=val;
+			if ( val == null ) {
+				delete params[key]
+			};
+
 			var str = jQuery.param( params );
 
 			var hash = window.location.hash;
@@ -1049,7 +1486,8 @@ function defineUtils() {
 			if ( dbg )
 				console.debug('addToUrl','hash', hash)
 			if ( isEmptyHash ) {
-				urlFinal +=  ''
+				//urlFinal +=  ''
+				urlFinal +=  '#'
 			} else if ( hash != ''  ) {
 				var hashOnly = hash;
 				if ( hashOnly.includes('?')) {
@@ -1061,7 +1499,20 @@ function defineUtils() {
 			}
 			urlFinal += '?'+str;
 			document.location = urlFinal
-			console.debug('addToUrl', urlFinal, document.location, window.location.search)
+			if ( dbg ) {
+				console.debug('addToUrl', urlFinal, document.location, window.location.search)
+			}
+			if ( dbg ) {
+				console.debug('addToUrl', 'endwith', urlFinal)
+			}
+		}
+
+		p.setUrlVal = p.addToUrl ;
+
+		p.getUrlVal = function getUrlVal(val) {
+			var params = uiUtils.utils.getParams();
+			var val = params[val]
+			return val;
 		}
 
 
@@ -1083,7 +1534,7 @@ function defineUtils() {
 
 
 		p.getHash = function getHash() {
-			//why: get has only, not the search 
+			//why: get has only, not the search
 			var urlFinal = location.href;
 			if ( urlFinal.includes('#') == false ) {
 				return null;
@@ -1287,7 +1738,7 @@ function defineUtils() {
 				fxDone = data;
 			}
 
-			console.log('data', data)
+			//console.log('data', data)
 
 			$.ajax({
 				url: url,
@@ -1379,7 +1830,8 @@ function defineUtils() {
 			});
 		}
 
-
+    }
+    defineFX();
 		u.debouncer = function debouncer(fx, name, time) {
 			//if ( time )
 			var d = {}
@@ -1400,13 +1852,59 @@ function defineUtils() {
 			return d;
 		}
 
-	}
 
-	defineFX();
+    function defineDebounce() {
+        uiUtils.debounce = null;
+        uiUtils.debouncers = null;
 
+        uiUtils.debounce = function onDeb(cfg) {
+            if (uiUtils.debouncers == null) {
+                uiUtils.debouncers = {};
+            }
 
-	function ifHelpers() {
-		u.ifFxReplace = function ifFxReplace(potFx, fxShoudlBeNull) {
+            var dbg = false;
+            var d = uiUtils.debouncers[cfg.name];
+
+            if (cfg.time == null) {
+                cfg.time = 1500
+            }
+
+            if (d == null) {
+                d = {};
+                d.waitCount = 0;
+                if (dbg)
+                    console.info('defined a new one')
+                d.debounce = function debounceHandler() {
+                    d.waitCount++;
+                    var waitCountTmp = d.waitCount;
+                    cfg.waiting = d.waitCount + '_' + Math.random();
+                    if (dbg)
+                        console.log('waiting', cfg.fx.name, d.waitCount)
+                    //d.waiting = true;
+                    setTimeout(function onDebounced() {
+                        if (d.waitCount == waitCountTmp) {
+                        } else {
+                            if (dbg)
+                                console.warn('missed it', waitCountTmp, d.waitCount, d.waiting)
+                            return;
+                        }
+                        d.waiting = null;
+                        cfg.fx(cfg.args)
+                    }, cfg.time)
+
+                }
+            }
+
+            uiUtils.debouncers[cfg.name] = d;
+
+            d.debounce()
+        }
+
+    }
+    defineDebounce();
+
+    function ifHelpers() {
+        u.ifFxReplace = function ifFxReplace(potFx, fxShoudlBeNull) {
 			if ( $.isFunction(potFx) && fxShoudlBeNull ) {
 				return potFx;
 			}
@@ -1511,6 +2009,145 @@ function defineUtils() {
 			$(jquery).attr('title', tooltip);
 			$(jquery).css('cursor', 'pointer')
 		}
+		gUtils.makeRolloverPopup = function makeRolloverPopup(
+			yyy, yy, btnHoverClass) {
+			var h = {}
+			h.dialog = yy;
+			h.dropdown = h.dd = yy;
+			h.btnTrigger= yyy;
+			yyy.on('mouseenter', function onMouseOver(){
+				h.mouseOverBtn = true;
+				if ( btnHoverClass )
+					h.btnTrigger.addClass(btnHoverClass);
+				yy.show();
+			})
+
+			yyy.on('mouseleave', function onMouseOut(delayed){
+				h.mouseOverBtn = false;
+				if ( delayed != true ) {
+					setTimeout(onMouseOut, 500, true)
+					return;
+				}
+				if (  h.mouseOverDialog == true) {
+					return;
+				}
+				if ( btnHoverClass )
+					h.btnTrigger.removeClass(btnHoverClass);
+				yy.hide();
+			})
+
+			yy.on('mouseenter', function onMouseOverDropDown(){
+				h.mouseOverDialog = true;
+			})
+
+			yy.on('mouseleave', function onMouseOverDropDown(){
+				h.mouseOverDialog = false;
+				if ( h.mouseOverBtn == false ) {
+					h.dropdown.hide();
+					if ( btnHoverClass )
+						h.btnTrigger.removeClass(btnHoverClass);
+				}
+			})
+
+
+			yy.hide();
+		}
+
+
+		gUtils.makeRolloverPopup2 = function makeRolloverPopup2(
+			uiHoverInit, yy, btnHoverClass) {
+			var h = {}
+			h.dialog = yy;
+			h.dropdown = h.dd = yy;
+			h.btnTrigger= uiHoverInit;
+			var closeOrig = false;
+			uiHoverInit.on('mouseenter', function onMouseOver(){
+				h.mouseOverBtn = true;
+				if ( btnHoverClass )
+					h.btnTrigger.addClass(btnHoverClass);
+				if ( closeOrig ) {
+					yy.show();
+				}
+			})
+
+			uiHoverInit.on('mouseleave', function onMouseOut(delayed){
+				h.mouseOverBtn = false;
+				if ( delayed != true ) {
+					setTimeout(onMouseOut, 500, true)
+					return;
+				}
+				if (  h.mouseOverDialog == true) {
+					return;
+				}
+				if ( closeOrig ) {
+					if (btnHoverClass)
+						h.btnTrigger.removeClass(btnHoverClass);
+					yy.hide();
+				}
+			})
+
+			yy.on('mouseenter', function onMouseOverDropDown(){
+				h.mouseOverDialog = true;
+			})
+
+			yy.on('mouseleave', function onMouseOverDropDown(){
+				h.mouseOverDialog = false;
+				if ( h.mouseOverBtn == false ) {
+					h.dropdown.hide();
+					if ( btnHoverClass )
+						h.btnTrigger.removeClass(btnHoverClass);
+				}
+			})
+
+
+			yy.hide();
+		}
+
+
+		uiUtils.toggleContainer = function toggleContainer(jq) {
+			var ui = $(jq)
+			if ( ui.hasClass('hide')) {
+				ui.removeClass('hide')
+			}else {
+				ui.addClass('hide')
+			}
+		}
+
+
+		uiUtils.putToLeftOfLastDialog = function putToLeftOfLastDialog(ui, ui2) {
+			if ( ui == null ) {
+				var overrideOffset = {top:60, left:20 };
+				ui = $('<div />');
+			}
+			if (ui2 == null)
+				return;
+			if ( uiUtils.putToLeftOfLastDialog.rowMaxHeight == null ) {
+				uiUtils.putToLeftOfLastDialog.rowMaxHeight = 0;
+			}
+
+			var position = $(ui).offset();
+			if ( overrideOffset ){
+				position = overrideOffset;
+			}
+			position.left += 10;
+			// position.top += 6
+			//   debugger;
+			position.left += ui.width();
+			if ( position.left + ui2.width() > $('body').width() - 50 ) {
+
+				position.top += uiUtils.putToLeftOfLastDialog.rowMaxHeight
+				uiUtils.putToLeftOfLastDialog.rowMaxHeight = 0
+				console.log('\t', 'put new row',   position.top, uiUtils.putToLeftOfLastDialog.rowMaxHeight)
+				position.left = 0 ;
+			}
+
+			if ( ui2.height() > uiUtils.putToLeftOfLastDialog.rowMaxHeight ) {
+				uiUtils.putToLeftOfLastDialog.rowMaxHeight = ui2.height();
+			}
+
+			console.log('put', ui.attr('id'),'--',   ui2.attr('id'), position,   uiUtils.putToLeftOfLastDialog.rowMaxHeight)
+			ui2.css(position)
+		}
 	}
 	defineLookAt();
 
@@ -1532,7 +2169,7 @@ function defineUtils() {
 			}
 			var existingListener = uiUtils.socket.dict[key];
 			if (existingListener != null) {
-				 console.warn('u already set this ...')
+				console.warn('u already set this ...')
 				return; //skip ...
 			}
 			uiUtils.socket.dict[key] = fxDone;
@@ -1566,6 +2203,16 @@ function defineUtils() {
 
 	defineSockets();
 
+
+
+	uiUtils.makeDict = function makeDict(arr, prop) {
+		var dict = {};
+		$.each(arr, function n(k,v) {
+			var val = v[prop]
+			dict[val]=v;
+		})
+		return dict;
+	}
 }
 
 defineUtils();
