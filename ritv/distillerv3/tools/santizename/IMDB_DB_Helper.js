@@ -459,9 +459,12 @@ function IMDB_DB_Helper() {
                 fxStart: testBreadCrumbsUserId,
                 //port:self.settings.port,
                 cfg: {db: self.cfg},
-                settings:self.settings
+                settings:self.settings,
+                logging:false
             }
         );
+        //sh.exit('what is logging', self.breadcrumbs.logging)
+        self.breadcrumbs.logging = false;
 
         self.sequelize = self.breadcrumbs.sequelize;
         self.Table = self.breadcrumbs.Table;
@@ -536,6 +539,7 @@ function IMDB_DB_Helper() {
                 req.query.upsertQuery = {imdb_id: content.imdb_id}
                 //sh.exit('sdf')
             }
+            req.silentNoDbg = true
             //asdf.g
             var rest = {};
             rest.created = sh.noOp;

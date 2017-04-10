@@ -19,7 +19,13 @@ var imdb_api_get_content = require('./imdb_api_get_content').imdb_api_get_conten
 var Step2 = require('./../distillerv3/Step2_BulkTDownloader.js').BulkerScript;
 
 
-var SanitizeNamesFromDB = require('./../distillerv3/tools/santizename/SanitizeNamesFromDB.js').SanitizeNamesFromDB
+var SanitizeNamesFromDB = sh.fs.resolve(__dirname + '/'+
+    '../distillerv3/tools/santizename/wrappers/SanitizeNamesFromDB.js', true)
+
+var SanitizeNamesFromDB = require(SanitizeNamesFromDB).SanitizeNamesFromDB
+
+
+
 
 function imdb_dl_app() {
     var self = this;
@@ -139,6 +145,7 @@ function imdb_dl_app() {
 
         var imdb = new IMDB_Scraper();
         //get top 250 tvshows
+
 
         if (type == 'tv') {
             ss.tv = true
@@ -322,6 +329,8 @@ function imdb_dl_app() {
         if (self.settings.configRipper ) {
             sh.copyProps(self.settings.configRipper, ss);
         }
+
+
         imdb.loadSettings(ss);
         return ss;
     };
@@ -379,17 +388,22 @@ function imdb_dl_app() {
             list = list.slice(0, 4);
         }
 
+        sh.writeFile(fileOutput + '.b4.episodes.json', sh.toJSONString(list));
+
+
         if ( self.settings.maxImdbListSize) {
             list = list.slice(0, self.settings.maxImdbListSize);
+            self.proc('maxImdbListSize', 'clipping size', self.settings.maxImdbListSize)
         }
 
-        sh.writeFile(fileOutput + '.b4.episodes.json', sh.toJSONString(list));
+
         //sh.writeFile(fileOutput + '.b4.episodes.json', sh.toJSONString(list));
         var options = {};
         options.unique = true;
         options.skipBadIds = true
+        optionsClone = sh.clone(options);
         imdb_api_get_content.get_episodes(list, function done(o) {
-            self.proc('done....', options)
+            self.proc('done....', optionsClone)
             function saveEachFile() {
                 sh.each(o, function saveEachFileEpisode(imdb, showJSON) {
                     if ( showJSON.series === false ) {

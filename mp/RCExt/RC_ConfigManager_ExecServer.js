@@ -314,6 +314,9 @@ function RCConfigExecServer() {
             if ( data.cmd == 'dlFileList'){
                 self.cmds.dlFileList(data, fx)
             }
+            if ( data.cmd == 'dlListTypeConfig'){
+                self.cmds.dlListTypeConfig(data, fx)
+            }
             if ( data.cmd == 'sanitizeFileList'){
                 self.cmds.sanitizeFileList(data, fx)
             }
@@ -462,12 +465,16 @@ function RCConfigExecServer() {
 
                 }
                 if (cmd.wrapType == 'idList') {
-                    ConvertXToIMDB_PB_List.downloadIdList(fx.data.listIds, true, fx.data.taskName, onSavedFile);
+                    ConvertXToIMDB_PB_List.downloadLists(fx.data.listIds, true, fx.data.taskName, onSavedFile);
                     return;
                 }
-                
-                
-                
+
+                if (cmd.wrapType == 'imdbSearch') {
+                    ConvertXToIMDB_PB_List.createIMDBList_fromSearch(cmd, true, fx.data.taskName, onSavedFile);
+                    return;
+                }
+
+
                 // if (cmd.wrapType == 'lsList') {
                 ConvertXToIMDB_PB_List.downloadLists(fx.data.listIds, true, fx.data.taskName, onSavedFile);
 
@@ -572,6 +579,46 @@ function RCConfigExecServer() {
             go.go(options);
         }
         p.cmds.dlFileList = function dlFileList(cmd, fx) {
+
+
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+
+            //dl file
+            //put in fileOutput dir
+
+            var t = EasyRemoteTester.create('Dl List',{});
+            var data = {};
+            var urls = {};
+            urls.notes = {};
+            urls.reload = t.utils.createTestingUrl('reload')
+            urls.file = cmd.url;
+           // t.settings.baseUrl = baseUrl;
+            t.settings.silent = true;
+
+            var fileFileList = cmd.url.split('/').slice(-1)[0];
+
+
+            sh.mkdirp(self.data.dirFileList);
+            fileFileList = sh.fs.join(self.data.dirFileList, fileFileList)
+
+            t.add(function dlFile() {
+                    t.quickRequest(  urls.file,
+                        'get', onResult )
+                    function onResult(body) {
+
+                        self.proc('saving file to ', fileFileList)
+                        sh.writeFile(fileFileList, body)
+
+                        fx();
+                        // console.log('body', body)
+                       // t.assert(body.id>0, 'post-verify did not let me do a search');
+                        t.cb();
+                    }
+                }
+            );
+
+        }
+        p.cmds.dlListTypeConfig = function dlListTypeConfig(cmd, fx) {
 
 
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)

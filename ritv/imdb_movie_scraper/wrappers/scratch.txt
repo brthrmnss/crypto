@@ -1,0 +1,196 @@
+"C:\Program Files (x86)\JetBrains\WebStorm 2016.1.3\bin\runnerw.exe" "C:\Program Files\nodejs\node.exe" RC_ConfigManager_ExecServer.js
+got a new one ..d..
+
+ reloadServer undefined false
+
+...sdfxsdf......
+-->reloading script go undefined
+>>>*>  RCConfigExecServer loadConfig go to  http://localhost:6008 (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:27:14)
+>>>*>  RCConfigExecServer loadConfig go to  http://192.168.1.154:6008/index.html567.html (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:28:14)
+startSocket ... no no n
+Listening on 6010
+started port2 undefined
+RCConfigExecServer undefined
+
+ reloadServer undefined true
+
+-->reloading script go undefined
+startSocket ... no no n
+	 onReloadLater undefined
+
+ reloadServer undefined false
+
+...sdfxsdf......
+>>>*>  RCConfigExecServer loadConfig go to  http://localhost:6008 (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:27:14)
+>>>*>  RCConfigExecServer loadConfig go to  http://192.168.56.1:6008/index.html567.html (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:28:14)
+RCConfigExecServer undefined
+Listening on 6010
+started port2 undefined
+what is origin ... undefined http://192.168.1.154:6008/index.html567.html
+mixed
+new connnnn
+mixed
+mixed
+>>>*>  Socket onRunCmd what is command listids {
+	"contentType": "Movies",
+	"type": "movies",
+	"maxImdbListSize": "5",
+	"sortType": "Popularity",
+	"yearStart": "2017",
+	"yearEnd": "2017",
+	"cmd": "listids",
+	"wrapType": "imdbSearch",
+	"listIds": [],
+	"taskName": "imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json"
+} (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:255:22)
+listids cmd
+.....!@ddddd9999#d$ undefined undefined
+ok G:\Dropbox\projects\crypto\ritv\distillerv3\tools\santizename\wrappers\SanitizeNamesFromDB.js
+>>>*>  PromiseHelperV3 end added  5 (g:\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:265:14)
+>>>*>  startCmd_Dl  startCmd_Dl (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:414:22)
+cmd { contentType: 'Movies',
+  type: 'movies',
+  maxImdbListSize: '5',
+  sortType: 'Popularity',
+  yearStart: '2017',
+  yearEnd: '2017',
+  cmd: 'listids',
+  wrapType: 'imdbSearch',
+  listIds: [],
+  taskName: 'imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json' }
+
+
+list { listIds: [],
+  taskName: 'imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json' }
+
+
+>>>*>  dlLists  dlLists (g:\Dropbox\projects\crypto\mp\RCExt\RC_ConfigManager_ExecServer.js:459:22)
+thing { contentType: 'Movies',
+  type: 'movies',
+  maxImdbListSize: '5',
+  sortType: 'Popularity',
+  yearStart: '2017',
+  yearEnd: '2017',
+  cmd: 'listids',
+  wrapType: 'imdbSearch',
+  listIds: [],
+  taskName: 'imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json' }
+loading config from G:\Dropbox\projects\crypto\ritv\defaultConfig.json
+{ why: 'Used more for debug and config',
+  type: 'movies',
+  year: null,
+  yearEnd: '2017',
+  _type: 'tv',
+  breed: false,
+  howMany: 250,
+  querytype: 'tvshowsforX',
+  w: 'test tv',
+  _howMany: 10,
+  __howMany: 200,
+  onlyShowExistingFiles: true,
+  url: 'http://www.imdb.com/search/title?at=0&release_date=1994,2017&sort=num_votes,desc&title_type=tv_series',
+  ___: '__',
+  sortBy: 'rating',
+  breedConfigOverrides:
+   { name: 'imdb_app',
+     repeatCmdWrapper: 'mega2list_wrapper.js',
+     repeatLimit: '3',
+     repeatDelayTime: '10000',
+     _testMaxItems: '10',
+     overrideWordPairs:
+      [ [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object],
+        [Object] ],
+     skipItems: [ 'The Daily Show', 'Top Gear' ],
+     ___innerSettingsMixin_:
+      { megaUsername: 'tl8of+4ym7e00jpe0x8@sharklasers.com',
+        megaPassword: 'dpamxizp',
+        showMegaMatchFailures: false },
+     innerSettingsMixin:
+      { skipTestMega: true,
+        checkForExistingFileOnMegaAcct: false,
+        checkForExistingFileOnMegaAcct_stop_gen_report: false,
+        aaa: 'AAASet',
+        ignoreCookies: true } },
+  bulkerSettings: { concurrency: '10', repeat: '10' },
+  useExistingDlListIfFound: false,
+  _useExistingDlListIfFound: false,
+  '_dl.imdb.shorten.list.to.2.items': true,
+  'dl.imdb.shorten.list.to.2.items.why': 'when testing, prevent waiting for many shows',
+  skipImdbSearch: false,
+  _skipImdbSearch: false,
+  'skipImdbSearch.why': 'if true, will skip downloading imdb content.',
+  addPbLinks: true,
+  directDownloadFile: false,
+  breedStop: true,
+  stopAfterGetIMDB: true,
+  contentType: 'Movies',
+  maxImdbListSize: '5',
+  sortType: 'Popularity',
+  yearStart: '2017',
+  cmd: 'listids',
+  wrapType: 'imdbSearch',
+  listIds: [],
+  taskName: 'imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json',
+  fxDone: [Function: onDoneGettingList],
+  configRipper: { minRating: 6 } }
+breed  false
+downloadListOfIMDBIds movies_top_250__2017_rating.json undefined
+>>>*>  onAllURLsSaved  saveData G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_scraper.js:672:22)
+>>>*>  onAllURLsSaved  wrote file to G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_scraper.js:689:26)
+ >>>*>  onDoneWithIMDB_ids  what is file>? G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:302:18)
+>>>*>  onDoneWithIMDB_ids  update and replaced the thing  self.dlSettings.output (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:308:22)
+>>>*>  imdb_dl_app downloadEpisodeInfo maxImdbListSize clipping size 5 (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:396:18)
+had to make dbHelper
+fields { name: '',
+  episode_name: '',
+  desc: 'text',
+  imdb_id: '',
+  imdb_series_id: '',
+  seasonNumber: 0,
+  episodeNumber: 0,
+  user_id: 0,
+  year: '',
+  rating: '',
+  series: true,
+  episode: true,
+  show_name: '',
+  ended: true,
+  start: Sun Apr 09 2017 16:51:25 GMT-0400 (Eastern Summer Time),
+  end: Sun Apr 09 2017 16:51:25 GMT-0400 (Eastern Summer Time),
+  json: 'text' }
+{ timestamps: true }
+>>>*>  done  done.... {"unique":true,"skipBadIds":true} (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:406:18)
+>>>*>  imdb_dl_app createDLList stopAfterGetIMDB (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:438:18)
+>>>*>  imdb_dl_app createDLList G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:439:18)
+filename G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json
+>>>*>  done  done.... {"unique":true,"skipBadIds":true} (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:406:18)
+>>>*>  imdb_dl_app createDLList stopAfterGetIMDB (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:438:18)
+>>>*>  imdb_dl_app createDLList G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:439:18)
+filename G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\IMDB_App_Output/movies_top_250__2017_rating.json
+running
+could not find  G:\Dropbox\projects\crypto\ritv/imdb_movie_scraper/IMDB_App_Output/mags/imdbSearch_undefined_0_Sun_Apr_09_2017_16-50-25.json false
+G:\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:2759
+    throw new Error(a)
+    ^
+
+Error: notfound - could not find the mag output file
+    at Object.throwFx [as throw] (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:2759:11)
+    at Object.fileExists [as exists] (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:2256:21)
+    at step3_postProcessList (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\wrappers\imdb_app_v3_wrapper.js:249:15)
+    at PromiseHelperV3.self.startNextMethod (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:114:13)
+    at PromiseHelperV3.currentCallback_onDoneMethod (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\PromiseHelperV3.js:88:22)
+    at onDoneGettingList (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\wrappers\imdb_app_v3_wrapper.js:187:24)
+    at Object.callIfDefined (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:564:15)
+    at imdb_dl_app.createDLList (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:440:16)
+    at done (G:\Dropbox\projects\crypto\ritv\imdb_movie_scraper\imdb_dl_appV3.js:420:18)
+    at Object.callIfDefined (G:\Dropbox\projects\crypto\node_modules\shelpers\lib\shelpers.js:564:15)
+
+Process finished with exit code 1

@@ -508,8 +508,13 @@ function onInitDB() {
                     } })
                 self.data.ui.txtOneOffQuery = uiUtils.lastId();
 
-                self.getValFrom = function getValFrom(val) {
-                    return {'getValFromId':val}
+                self.getValFrom = function getValFrom(val, fxPost) {
+                    var instruction = {'getValFromId':val};
+                    if ( fxPost ) {
+                        instruction.fxPost = fxPost;
+                    }
+                    
+                    return instruction
                 }
 
                 self.getValFromData = function getValFromData(val) {
@@ -652,7 +657,7 @@ function onInitDB() {
                 uiUtils.br()
             }
             h.create_dlConfigList = function create_dlConfigList(){
-                uiUtils.addLabel({text:"dl config", width:lblWidth-0})
+                uiUtils.addLabel({text:"IMDB Search", width:lblWidth-0})
                 uiUtils.spacer();
 
                 uiUtils.addDiv(
@@ -679,11 +684,13 @@ function onInitDB() {
 
                 uiUtils.br();
 
+                var year = new Date().getFullYear();
+
                 //uiUtils.addLabel({text:"", width:lblWidth})
                 //uiUtils.spacer();
                 uiUtils.addNumber({
                     id:"ddSearchYearStart",
-                    defaultValue:2017,
+                    defaultValue:year,
                     width:60,
                     addSpaceAfter:true,
                 });
@@ -691,13 +698,28 @@ function onInitDB() {
 
                 uiUtils.addNumber({
                     id:"ddSearchYearEnd",
-                    defaultValue:2017,
+                    defaultValue:year,
                     width:60,
                     addSpaceAfter:true,
                 });
                 self.data.ui.ddSearchYearEnd = uiUtils.lastId();
 
+                uiUtils.addNumber({
+                    id:"ddHowMany",
+                    defaultValue:50,
+                    defaultValue:5,
+                    tooltip:"Limit per year",
+                    width:60,
+                    addSpaceAfter:true,
+                });
+                self.data.ui.ddHowMany = uiUtils.lastId();
+
                 uiUtils.popContainer();
+
+                self.toLowerCase =function toLowerCase(val) {
+                    val = val.toLowerCase();
+                    return val;
+                }
 
                 uiUtils.addBtn({
                     text: 'Create DM',
@@ -705,11 +727,13 @@ function onInitDB() {
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
                         contentType:self.getValFrom(self.data.ui.ddContentType),
+                        type:self.getValFrom(self.data.ui.ddContentType,self.toLowerCase, 'TV'),
+                        maxImdbListSize:self.getValFrom(self.data.ui.ddHowMany),
                         sortType:self.getValFrom(self.data.ui.ddSortType),
-                        yearStart:self.getValFrom(self.data.ui.ddSearchYearStart),
+                        year:self.getValFrom(self.data.ui.ddSearchYearStart),
                         yearEnd:self.getValFrom(self.data.ui.ddSearchYearEnd),
-                        cmd:'listConfig',
-                        wrapType: "ttIds"
+                        cmd:'listids',
+                        wrapType: "imdbSearch"
                     }
                 })
 
@@ -1113,6 +1137,9 @@ function onInitDB() {
                     other[k] = v;
                     if (v.getValFromId) {
                         var val = $(v.getValFromId).val();
+                        if ( v.fxPost ) {
+                            val = v.fxPost(val)
+                        }
                         other[k] = val;
                     }
                     if ( v.getValFromData) {
@@ -1207,7 +1234,19 @@ function onInitDB() {
                         nameOfTask =  data.wrapType;
                     }
 
-                    var taskName = self.utils.makeTaskName(this, nameOfTask+'_'+data.listIds[0]+'_'+data.listIds.length);
+
+                    if ( nameOfTask == 'imdbSearch') {
+                        taskName = self.utils.makeTaskName(this,
+                            [nameOfTask,
+                                data.type,
+                            data.type,
+                            data.maxImdbListSize,
+                            data.year,
+                            data.yearEnd
+                            ].join('_'));
+                    } else {
+                        var taskName = self.utils.makeTaskName(this, nameOfTask+'_'+data.listIds[0]+'_'+data.listIds.length);
+                    }
 
                     data.taskName = taskName;
 

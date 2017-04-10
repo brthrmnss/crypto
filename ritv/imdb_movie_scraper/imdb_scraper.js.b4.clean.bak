@@ -1,0 +1,931 @@
+/**
+ * Makes imdb searches
+ * parses the results into metadata files
+ * @type {exports}
+ */
+var cheerio = require('cheerio');
+var request = require('request');
+var async	= require('async');
+var http	= require('http');
+var fs		= require('fs');
+var qp 		= require('query-parse');
+
+var sh = require('shelpers').shelpers
+var SettingsHelper = require('shelpers').SettingsHelper
+
+/*
+ var argv	= require('yargs')
+ .usage('Usage: $0 --url [string:url] --num [num] --out [string:path]')
+ .demand(['url'])
+ .describe('url','imdb url to scrape')
+ .describe('out','output folder for images')
+ .describe('num','number of pages of movies to scrape')
+ .default('num', 5)
+ .default('out', 'images/')
+ .example('$0','--url "http://www.imdb.com/search/title?at=0&sort=moviemeter,asc&start=51&title_type=feature&year=2012,2012"')
+ .argv;
+ */
+//G:\Dropbox\projects\crypto\ritv\distillerv3\utils\SearchPBCachedRequest.js
+var SearchPBCachedRequest = require('./../distillerv3/utils/SearchPBCachedRequest').SearchPBCachedRequest;
+var imdb_api_get_content =
+    require('./imdb_api_get_content').imdb_api_get_content;
+
+
+function IMDB_Scraper(){
+
+    var p = IMDB_Scraper.prototype;
+    var p = this;
+    var self = this;
+    self.data = {};
+
+    self.settings = {}
+
+    var movies_meta = [],
+        movies = [],
+        images = [];
+
+
+    self.loadSettings = function loadSettings(settings) { //.init
+
+
+        self.settings = sh.dv(settings, {})
+        self.settings.minRating = sh.dv(self.settings.minRating, 6.0)
+
+        //console.log( argv.num, argv.out, argv.url )
+
+        //q: how to get search results?
+        //http://www.imdb.com/search/title
+
+        //http://www.imdb.com/search/title?release_date=2011,2011&title=*&title_type=tv_series
+        //http://www.imdb.com/search/title?release_date=2011,2011&title=*&title_type=feature
+        //intl'
+        //http://www.imdb.com/search/title?at=0&release_date=2011,2011&sort=user_rating&title=*&title_type=feature
+
+        //http://www.imdb.com/search/title?at=0&release_date=1995,1995&sort=user_rating&title_type=feature
+        //http://www.imdb.com/search/title?at=0&release_date=1995,1995&sort=moviemeter&title_type=feature
+        //http://www.imdb.com/search/title?at=0&release_date=1995,1995&sort=moviemeter&title_type=tv_series
+
+
+
+       // sh.exit('sdasdf', (self.settings.output))
+
+        self.getUrls();
+        if (self.settings.test == true) {
+            //asdf.g //why: who calls test
+            sh.callIfDefined(self.settings.fxDone);
+            return
+        }
+
+
+        if ( self.data.mode == 'listMode') {
+            self.list.getNumPages()
+            return
+        }
+
+        self.downloadEachContentItem()
+
+    }
+
+    function defineUrlFunctions() {
+        p.getUrls = function getUrls() {
+
+
+
+            var urls = null;
+
+            if (self.settings.urlList) {
+                self.proc('have url list so ...')
+                urls = [self.settings.urlList]
+                self.data.mode = 'listMode'
+            }
+
+            if (self.settings.urlsList) {
+                //asdf.g
+                self.proc('have urlsList so ...')
+                urls = self.settings.urlsList
+                self.data.mode = 'listMode2'
+            }
+
+
+            if (self.settings.ttList) {
+                self.proc('have ttList list so ...')
+                var urls = []
+                sh.each(self.settings.ttList, function convertOrFix(k, u) {
+                    var url = u
+                    if (u.startsWith('tt')) {
+                        url = 'http://www.imdb.com/title/' + u + '/'
+                    }
+                    urls.push(url)
+                })
+
+            }
+
+            if ( urls ) {
+                self.data.urls = urls;
+                return;
+            }
+
+            if (self.settings.urls != null) {
+                urls = self.settings.urls;
+            }
+            else
+            if (self.settings.yearRange != null) {
+                sh.throw('implemented')
+                urls = [];
+                var yearStart = parseInt(self.settings.year);
+                var yearEnd = parseInt(self.settings.yearEnd);
+
+                var allUrls = [];
+                sh.each.times(1 + yearEnd - yearStart, function genUrls(i, it) {
+                    var urls = self.generateUrls(yearStart + i, self.settings)
+                    allUrls = allUrls.concat(urls)
+                }, true)
+                urls = allUrls
+
+                //console.log(urls)
+                // asdf.g
+
+            } else
+            //REQ: For convience generate mutliple sets of urls if yearEnd sepcified
+            if (self.settings.yearEnd != null) {
+                var yearStart = parseInt(self.settings.year);
+                var yearEnd = parseInt(self.settings.yearEnd);
+
+                var allUrls = [];
+                sh.each.times(1 + yearEnd - yearStart, function genUrls(i, it) {
+                    var urls = self.generateUrls(yearStart + i, self.settings)
+                    allUrls = allUrls.concat(urls)
+                }, true)
+                urls = allUrls
+
+                //console.log(urls)
+                // asdf.g
+
+            }
+            else {
+                var urls = self.generateUrls(null, self.settings);
+            }
+
+
+                //urls = [urls]
+                //  urls = [self.settings.downloadEachContentItem]
+            console.log('urls', urls)
+
+
+            self.data.urls = urls;
+        }
+
+        p.generateUrls = function generateUrls(yearOverride, settings) {
+          //  asdf.g
+            settings.dirDownload += settings.year + '_'
+
+            if (self.settings.movieIndie) {
+                settings.dirDownload += 'indie'
+            }
+            else if (self.settings.tv) {
+                settings.dirDownload += 'tv'
+            } else {
+                settings.dirDownload += 'releases'
+            }
+
+
+            if (settings.year != null) {
+                // argv.num = 5
+                var yearStr = settings.year + ',' + settings.year
+            }
+
+            if (settings.year != null && settings.yearEnd != null) {
+                var yearStr = settings.year + ',' + settings.yearEnd
+            }
+
+            if (yearOverride != null) {
+                var yearStr = yearOverride + ',' + yearOverride
+            }
+
+            var searchUrl = "http://www.imdb.com/search/title?at=0&sort=moviemeter,asc&start=51&title_type=feature&year=" + yearStr
+            var searchUrl = "http://www.imdb.com/search/title?at=0&start=51&title_type=feature&year=" + yearStr
+            /*        if ( self.settings.movieIndie) {
+             searchUrl
+             //settings.dirDownload += 'indie'
+
+             searchUrl += '&sort=user_rating'
+             }
+             else if ( self.settings.tv ) {
+             searchUrl
+             //settings.dirDownload += 'tv'
+             var searchUrl = "http://www.imdb.com/search/title?at=0&start=51&title_type=feature&year="+yearStr
+             searchUrl += '&sort=moviemeter'
+             } else {
+             //settings.dirDownload += 'releases'
+             searchUrl += '&sort=moviemeter'
+             }
+             */
+
+            if (self.settings.baseUrl != null) {
+                searchUrl = self.settings.baseUrl;
+            }
+            if (self.settings.url != null) {
+                searchUrl = self.settings.url;
+            }
+
+            settings.dirDownload += '/' //TODO: how is dirDownlopad used?
+            // self.settings.out = 'images/'
+            var domains = [];
+            for (var i = 0; i < self.settings.pageCount; i++) {
+                var paramobj = qp.toObject(searchUrl)
+                paramobj.start = ( i * 50 + 1 );
+                //c/onsole.log(  paramobj.start  );
+                delete paramobj['year']
+                if (self.settings.url == null) {
+                    if (self.settings.baseUrl == null) {
+                        if (self.settings.movieIndie) {
+                            searchUrl
+                            // settings.dirDownload += 'indie'
+                            paramobj.sort = 'user_rating'
+                            // searchUrl += '&sort=user_rating'
+                            paramobj.release_date = yearStr
+                        }
+                        else if (self.settings.tv) {
+                            searchUrl
+                            //  settings.dirDownload += 'tv'
+                            // var searchUrl = "http://www.imdb.com/search/title?at=0&start=51&title_type=feature&year="+yearStr
+                            // searchUrl += '&sort=moviemeter'
+                            paramobj.sort = 'moviemeter,asc'
+                            paramobj.title_type = 'tv_series'
+                            if (yearStr != null)
+                                paramobj.release_date = yearStr
+                        } else {
+                            //  settings.dirDownload += 'releases'
+                            //   paramobj.sort='moviemeter'
+                            // searchUrl += '&sort=moviemeter'
+                            paramobj.release_date = yearStr
+                        }
+                    }
+
+                    if (self.settings.sortBy == 'popularity' || self.settings.sortBy == 'pop') {
+                        paramobj.sort = 'moviemeter,asc';
+                    }
+                    ;
+                    if (self.settings.sortBy == 'user rating' || self.settings.sortBy == 'rating') {
+                        paramobj.sort = 'user_rating,desc';
+                        if (self.settings.tv) {
+                            paramobj.num_votes = '5000,';
+                        } else {
+                            paramobj.num_votes = '50000,';
+                        }
+                    }
+                    ;
+                } else {
+                    //no diff--
+                }
+
+                domains.push(decodeURIComponent(qp.toString(paramobj)))
+            }
+            ;
+
+            self.proc('results', domains)
+            //  asdf.g
+
+
+            return domains
+        }
+    }
+    defineUrlFunctions();
+
+    function defineListMethods() {
+        p.list = {};
+        p.list.getNumPages = function getNumPages() {
+            var url = self.data.urls[0];
+            var options = {}
+            options.url = url
+            options.encoding  =  null
+            options.timeout = 15000;
+            self.request(options, function onGotPageNumbers(body, response, error ) {
+                self.parseIMDBPageHtmlPages(body, response, error, onDoneGettingPages)
+
+                function onDoneGettingPages() {
+                    self.list.addUrlForEachPagegetNumPages()
+                }
+            })
+
+        }
+
+        p.list.addUrlForEachPagegetNumPages = function addUrlForEachPagegetNumPages() {
+            if (self.data.mode == 'listMode') {
+                self.proc('have url list so ...')
+                var url = self.settings.urlList
+                self.request(url, parseIMDBPageHtml_getURLsForEachPage)
+                function parseIMDBPageHtml_getURLsForEachPage(err, resp, html, cb) {
+                    if (err) return console.error(err)
+                    var $ = cheerio.load(html);
+
+                    var itemSize = $('.desc').attr('data-size')
+                    var baseParams = qp.toObject(url.split('?')[1]);
+                    var baseUrl = url.split('?')[0]
+                    if (itemSize < 100) {
+
+                    } else {
+                        var urls = [];
+                        var pages = Math.ceil(itemSize / 100);
+                        sh.each.times(pages, function addNewPage(k, v) {
+                            baseParams.start = 1 + (k * 100);
+                            var url = baseUrl + '?' + qp.toString(baseParams)
+                            url = url.replace('%3A', ':')
+                            console.log('adding', k, url);
+                            urls.push(url);
+
+                        })
+
+                        self.data.urls = urls;
+                    }
+                    self.downloadEachContentItem();
+                }
+
+            }
+        }
+    }
+    defineListMethods();
+
+
+
+    function defineParsingFunctions() {
+
+
+        p.parseIMDBPageHtmlPages = function parseIMDBPageHtmlPages(err, resp, html, cb) {
+
+            if (err) return console.error(err)
+            var $ = cheerio.load(html);
+
+
+           var size = parseInt( $('div.header').find('div.desc').attr('data-size'))
+
+            var pages = Math.floor(size/100)
+
+             sh.each.times(pages, function addPageUrl(k,n) {
+                 //if ( k == 0 ) return ;
+                 var d = (n*100)+1;
+                 var newUrl = self.data.urls[0] +
+                     '/?start='+d+'&view=detail&sort=listorian:asc'
+                 self.data.urls.push(newUrl)
+             })
+
+
+          //  debugger;
+            //sh.exit()
+            cb(err, resp, html);
+
+        }
+
+
+        p.parseIMDBPageHtml = function parseIMDBPageHtml(err, resp, html, cb) {
+
+            if (err) return console.error(err)
+            var $ = cheerio.load(html);
+
+
+            self.data.renameTo = $($('.header')[0]).text();
+            if ( self.settings.urlList ) {
+                var listID = self.settings.urlList.split('/list/').slice(-1)[0]
+                listID = listID.replace('/', '')
+                self.data.renameTo += '_' +  listID
+
+                self.settings.listId = listID
+                var info = {};
+                info.name = $($('.header')[0]).text();
+                info.desc = $($('.description')[0]).text();
+                info.url = self.settings.urlList
+                info.time = new Date();
+                info.skip = true;
+
+                //movies.push(info);
+                movies_meta.push(info);
+            }
+
+
+
+            // get all img tags and loop over them
+            var listItems = $('.lister-item')
+            if (listItems.length == 0)
+                listItems = $('.list_item')
+            sh.each(listItems, function onAddEachItemToList(i, val) {
+
+
+                var _movie = {};
+
+
+//bookmark.where are pages parsed
+
+                if ($(val).find('.lister-item-image').length == 0) {
+
+                    $(val).find('img')
+                    _movie.rating = $('.rating-rating', val).find('.value').text().trim()
+                    _movie.image = $(val)
+                        .find('img').attr('src');
+                    _movie.title = $($(val).find('.info')
+                        .find('a')[0]).text().trim();
+                    _movie.imdb_url = $($(val).find('.info')
+                        .find('a')[0]).attr('href');
+                    _movie.imdb_id = _movie.imdb_url.split('/')[2] //title/')[1].replace(/[^\w]/gi,'');
+                    _movie.year = $('.year_type', val).text();
+                    _movie.desc = $('.item_description', val).text().trim();
+                    _movie.comment = $('.description', val).text().trim();
+                } else {
+
+                    //_movie.rawIMDB 	= $(val).html();
+                    _movie.rating = $('.ratings-imdb-rating', val).text().trim()
+                    _movie.image = $(val).find('.lister-item-image')
+                        .find('img').attr('src');
+                    _movie.title = $(val).find('.lister-item-header')
+                        .find('a').text().trim()
+                    _movie.imdb_url = $(val).find('.lister-item-header')
+                        .find('a').attr('href');
+                    _movie.imdb_id = _movie.imdb_url.split('/')[2] //title/')[1].replace(/[^\w]/gi,'');
+                    _movie.year = $('.lister-item-year', val).text();
+
+
+                    _movie.desc = $($(val).find('p')[1]).text().trim()
+                    // _movie.rating 	= $('.rating-rating .value',val).text();
+                    _movie.runtime = $('.runtime', val).text();
+                    _movie.rated = $(val).find('.certificate').text();//.attr('title');
+                    _movie.genres = $(val).find('.genre').text().trim().split(',');
+                    /*$('.genre a',val).map(function(i,genre){
+                     _movie.genres.push( $(genre).text() )
+                     })*/
+
+                }
+
+                var rating = parseFloat(_movie.rating);
+
+                if (isNaN(rating) || sh.isNumber(rating) == false) {
+                    console.error('skipping-c', _movie.title,_movie.year, 'b/c rating', 'is nan', rating)
+                    return;
+                }
+
+                if (rating < self.settings.minRating) {
+                    console.error('skipping-c', _movie.title, _movie.year,'b/c rating', 'less than 6.0', rating)
+                    return;
+                }
+
+                // console.log('What is movie', _movie.title)
+                var tvSeriesInTitle = 'TV Series'
+                //(2014) or (1996 TV Series)
+                if (_movie.year.indexOf(tvSeriesInTitle) != -1) {
+                    // asdf.g
+                    _movie.year = _movie.year.replace(' ' + tvSeriesInTitle, '')
+                    _movie.series = true;
+                }
+                _movie.year = sh.unWrap(_movie.year);
+
+                var movie_year = _movie.year;
+                if (sh.includes(_movie.year, '–')) {
+                    _movie.series = true;
+                    _movie.year = movie_year.split('–')[0];
+                    //self.proc('years split', movie_year.split('–'));
+                    var yearEnd = movie_year.split('–')[1];
+                    if (yearEnd != null && yearEnd.trim() != '') {
+                        _movie.year_end = movie_year.split('–')[1];
+                        _movie.ended = true;
+                    } else {
+                        _movie.ended = false;
+                    }
+                }
+
+
+                movies_meta.push(_movie);
+                movies.push(_movie.title);
+                images.push({src: _movie.image, imdb_id: _movie.imdb_id})
+                //console.log(i)
+            });
+
+            if ( listItems.length == 0 && self.settings.ttList ) {
+                //load the 1 movie
+                var i = new imdb_api_get_content();
+                /*if (sh.startsWith(imdb_id, 'tt') == false) {
+                    callback()
+                    return;
+                }
+                i.getContent(imdb_id, function haveContent(content) {
+                    callback();
+                    contentItemsToCreate.push(content);
+                });*/
+                    var content = i.parseContentPage(html)
+                movies_meta.push(content);
+                movies.push(content.title);
+                images.push({src: content.image, imdb_id: content.imdb_id})
+
+                console.log('imdb', content)
+               // sh.exit('what is the year parsing?')
+            }
+
+
+            self.proc('size of movies all together', movies.length)
+            if ( movies.length == 0 ) {
+                //console.log('why is the length 0???? is this an episode?')
+            }
+            //sh.exit()
+            cb(err, resp, html);
+
+        }
+    }
+    defineParsingFunctions()
+    p.saveIMDBDataToJSONFiles = function saveIMDBDataToJSONFiles(err){
+        self.proc('saving data');
+
+
+        //download all images and place them in the correct folder
+        fs.mkdir('images',function(err){});
+        sh.makePathIfDoesNotExist(self.settings.dirDownload)
+
+        var imageCount = 0
+        //save images
+        async.eachLimit( images, 1,
+            function saveImage (imageToSave, callback){
+                self.proc('image count', imageCount)
+                imageCount++
+                var thumbnailPath = self.settings.dirDownload + imageToSave.imdb_id  + '_TH.jpg'
+                //var thumbnail = fs.createWriteStream( thumbnailPath );
+                var fullsizePath = self.settings.dirDownload + imageToSave.imdb_id + '_FS.jpg'
+                //var fullsize = fs.createWriteStream( fullsizePath ) ;
+                var urlThumbnail = imageToSave.src.split('_SX')[0] + '_SX500.jpg'
+                self.proc(urlThumbnail, thumbnailPath)
+                var requestOptions = {}
+                requestOptions.url = urlThumbnail;
+                requestOptions.encoding = null;
+
+                /*request.head(urlThumbnail, function(err, res, body) {
+                 console.log('content-type:', res.headers['content-type']);
+                 console.log('content-length:', res.headers['content-length']);
+                 var r = request(urlThumbnail).pipe(fs.createWriteStream(thumbnailPath));
+                 //r.on('close', callback);
+                 //r.on('error', error);
+                 });
+                 */
+
+
+                var fullsizeUrl = imageToSave.src.split('_SX')[0] + '_SX1000.jpg' //).pipe( fullsize );
+                var requestOptions = {}
+                requestOptions.url = fullsizeUrl;
+                requestOptions.encoding = null;
+
+                request( requestOptions, function onRecieveThumbnail(error, response, body ) {
+                    if ( response.statusCode == 404 ){
+                        console.error('...erroron', requestOptions.url)
+                        return;
+                    }
+                    var writeObj = {}
+                    writeObj.name = imageToSave.imdb_id  + '_FS.jpg'
+                    writeObj.dir = self.settings.dirDownload
+                    //writeObj.content = new Buffer(body, "binary");
+                    writeObj.content = body;
+                    writeObj.binary = true
+                    sh.writeFile2(writeObj)
+                    //  process.exit()
+                    //thumbnailPath
+                    return;
+                }) // ).pipe( thumbnail );
+                // request( imageToSave.src.split('_SX')[0] + '_SX1000.jpg' ).pipe( fullsize );
+
+
+
+                request( requestOptions, function onRecieveThumbnail(error, response, body ) {
+                    if ( response.statusCode == 404 ){
+                        console.error('...erroron')
+                        return;
+                    }
+                    var writeObj = {}
+                    writeObj.name = imageToSave.imdb_id  + '_TH.jpg'
+                    writeObj.dir = self.settings.dirDownload
+                    //writeObj.content = new Buffer(body, "binary");
+                    writeObj.content = body;
+                    writeObj.binary = true
+                    sh.writeFile2(writeObj)
+                    //  process.exit()
+                    //thumbnailPath
+                    return;
+                })
+
+                callback();
+            },
+            function allImagesSaved(err){}
+        );
+
+        //write json to folder
+        //c/onsole.log(movies[0]);
+        //fs.writeFile('movies_metadata.json', JSON.stringify(movies_meta, null, 4), function(err){})
+        //fs.writeFile('movies.json', JSON.stringify(movies, null, 4), function(err){})
+
+
+        var writeObj = {}
+        writeObj.name = 'movies_metadata.json'
+        writeObj.dir = self.settings.dirDownload
+        writeObj.contents =  JSON.stringify(movies_meta, null, 4)
+        sh.writeFile2(writeObj)
+
+
+        var writeObj = {}
+        writeObj.name = 'movies.json'
+        writeObj.dir = self.settings.dirDownload
+        writeObj.contents =  JSON.stringify(movies, null, 4)
+        sh.writeFile2(writeObj)
+
+
+
+
+
+
+    }
+
+
+
+    p.loadConfigBulk = function loadConfigBulk(configFileOrSettings) {
+        //create defaults
+        var defaultSettings = {}
+        defaultSettings.years = [1994,2014];
+        defaultSettings.movieFeatureFilms = true;
+        defaultSettings.movieIndie = false;
+        defaultSettings.pageCount = 5;
+        defaultSettings.tv = false;
+        defaultSettings.dirDownload = 'downloads/';
+
+        //load config
+        var settingsHelperConfig = {}
+        settingsHelperConfig.input = configFileOrSettings;
+        settingsHelperConfig.defaultSettings = defaultSettings;
+
+        settingsHelperConfig.fxResult = function BulkonSettingsLoadedHandler(settings){
+            self.proc('loading bulk options', settings)
+            self.topSettings = settings;
+
+            self.topSettings.items = []
+
+            var years = []
+
+            if ( settings.years.length > 1  ) {
+                var yearStart =parseInt( settings.years[0] )
+                var yearLast = parseInt(settings.years[1] );
+
+                if ( yearStart > yearLast ) {
+                    throw new Error('years not right ')
+                }
+
+
+                if ( yearStart== 0  ) {
+                    throw new Error('years not right ')
+                }
+
+                var newYears = []
+                for (var i = yearStart; i < yearLast; i++) {
+                    var year = i// +1
+                    newYears.push(year)
+                }
+
+                years = newYears
+
+            } else {
+                years = settings.years
+            }
+
+
+
+            //create instance for each query
+            async.forEachLimit(years, 1, function (year, fxAsyncDone) {
+                /*if ( sh.startsWith(query, '#')){
+                 fxAsyncDone()
+                 return
+                 }*/
+
+
+                var clonedSettings = sh.clone(settings)
+                var go = new IMDB_Scraper()
+                function fxDone(){
+                    self.topSettings.items.push(go);
+                    fxAsyncDone()
+                }
+                clonedSettings.year = year;
+                clonedSettings.fxDone = fxDone
+                go.loadConfig(clonedSettings)
+            }, function doneAll(){
+                self.proc('done...')
+            })
+
+
+
+
+        }
+        self.helper = SettingsHelper.LoadSettings(settingsHelperConfig);
+    }
+
+    p.loadConfig = function loadConfig(configFileOrSettings) {
+        //create defaults
+        var defaultSettings = {}
+        defaultSettings.year = 2014;
+        defaultSettings.movieFeatureFilms = true;
+        defaultSettings.movieIndie = false;
+        defaultSettings.pageCount = 4;
+        defaultSettings.tv = false;
+        defaultSettings.dirDownload = 'downloads/';
+
+        defaultSettings.test = false;
+
+        //load config
+        var settingsHelperConfig = {}
+        settingsHelperConfig.input = configFileOrSettings;
+        settingsHelperConfig.defaultSettings = defaultSettings;
+
+        settingsHelperConfig.fxResult = function onSettingsLoadedHandler(settings){
+            self.proc('options', settings);
+
+            self.settings = settings;
+            self.loadSettings(settings)
+        }
+        self.helper = SettingsHelper.LoadSettings(settingsHelperConfig);
+    }
+
+
+    p.request = function onRequestReidrect(url, callbck) {
+        var options = {}
+        options.url = url
+        if ( url.url ) {
+            options = url;
+        }
+        options.encoding  =  null
+        options.timeout = 4000;
+        var instance = new SearchPBCachedRequest();
+        var config = {};
+        config.fileExt = '.html'
+        //config.ignoreIf = 'Database maintenance, please check back in 10 minutes.'
+        config.dir = __dirname + '/../../CachedRequests/imdbscraper_SearchPBCachedRequests/'
+        instance.init(config)
+        instance.request(options, function onRequestRedirect_done(body, response, error ) {
+            callbck(body, response, error)
+        })
+    }
+
+
+    p.downloadEachContentItem = function downloadEachContentItem() {
+       //asdf.g
+
+        async.eachLimit(self.data.urls, 1,
+            function onGetUrl( url, callback){
+                self.proc('dl', url)
+                /*request( url, function done(body, response, error ) {
+                 self..parseIMDBPageHtml(body, response, error, callback)
+                 } );*/
+                var options = {}
+                options.url = url
+                options.encoding  =  null
+                options.timeout = 15000;
+                var instance = new SearchPBCachedRequest();
+                var config = {};
+                config.fileExt = '.html'
+                //config.ignoreIf = 'Database maintenance, please check back in 10 minutes.'
+                config.dir = __dirname + '/../../CachedRequests/imdbscraper_SearchPBCachedRequests/'
+                instance.init(config)
+                instance.request(options, function done(body, response, error ) {
+                    self.parseIMDBPageHtml(body, response, error, callback)
+                })
+
+
+            },
+            function onAllURLsSaved(err){
+
+                if ( self.data.renameTo ){ //why: rename imdb file to match list name
+                    var dd =sh.getPath(self.settings.output) //.split('/')
+                    dd = /*__dirname + '/'+*/ dd+'/'+  sh.stripSpecialChars( self.data.renameTo)+'.json'
+                    self.settings.output =   dd
+                    self.settings.listId
+                    self.settings.fileOutputListPlain  =__dirname + '/'+'IMDB_App_Output/' +self.settings.listId+'.json';
+                }
+
+                self.proc('saveData', self.settings.output);
+                //sh.callIfDefined(self.settings.fxDone);
+//sh.exit()
+
+                if ( self.settings.output_type == 'list') {
+                    var items = [];
+                    sh.each(movies_meta, function (idx, content) {
+                        items.push(content.imdb_id + ' # ' + content.title)
+                    });
+                    sh.writeFile(self.settings.output, sh.toJSONString(items));
+                    //
+                }
+                if ( self.settings.output_type == 'raw_json_list') {
+                    var items = [];
+                    var listContents = sh.toJSONString(movies_meta)
+                    sh.writeFile(self.settings.output, listContents);
+                    //
+                    self.proc('wrote file to', self.settings.output)
+                  /*  if ( self.settings.doNotStoreRawList != true && self.settings.fileOutputListPlain ) {
+                        self.proc('writing plain list to', self.settings.fileOutputListPlain)
+                        //why store list with a name that is predictable
+                        //sh.writeFile( self.settings.fileOutputListPlain, listContents);
+
+                    }*/
+                }
+                if ( self.settings.saveToJSON ) {
+                    self.saveIMDBDataToJSONFiles();
+                }
+                //console.log('what is fxDone', self.settings.fxDone)
+              //  asdf.g
+                sh.callIfDefined(self.settings.fxDone, self, self.settings.output)
+            }
+        )
+
+    }
+
+
+
+
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        return sh.sLog(arguments)
+    }
+
+}
+
+exports.IMDB_Scraper = IMDB_Scraper;
+
+if ( module.parent == null ) {
+
+    var imdb = new IMDB_Scraper();
+//imdb.searchFor('2012')
+
+   function getD() {
+       var settings = {}
+       settings;
+       settings.test = false;
+       settings.tv = true
+       settings.pageCount = 3
+       settings.dirDownload = 'c:/trash/imdb/'
+       settings.dirDownload = '/mnt/hgfs/C/trash/imdb/'
+//imdb.loadConfigBulk(settings)
+
+//create only top tv pagesbest2shows
+//settings.urls = ['http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series']
+       settings.baseUrls = 'http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series'
+
+       settings.dirDownload += 'top150 shows/'
+
+       //get top 250 tvshows
+       settings = {};
+       settings.tv = true;
+       settings.pageCount = 3
+       settings.dirDownload = ''
+       settings.query = '';
+       settings.baseUrls = 'http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series'
+       settings.output_type = 'list'
+       settings.output = 'tv_top_150_list.json'
+       imdb.settings = settings;
+       imdb.loadSettings(settings)
+   }
+
+    //getD();
+
+
+
+
+    function getD2() {
+        //return
+        var settings = {}
+        settings;
+        settings.test = false;
+        settings.tv = true
+        settings.pageCount = 3
+        settings.dirDownload = 'c:/trash/imdb/'
+        settings.dirDownload = '/mnt/hgfs/C/trash/imdb/'
+//imdb.loadConfigBulk(settings)
+
+//create only top tv pagesbest2shows
+//settings.urls = ['http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series']
+        settings.baseUrls = 'http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series'
+
+        settings.dirDownload += 'top150 shows/'
+
+        //get top 250 tvshows
+        settings = {};
+        settings.tv = true;
+        settings.pageCount = 3
+        settings.dirDownload = ''
+        settings.query = '';
+        settings.baseUrls = 'http://www.imdb.com/search/title?at=0&release_date=1994,2013&sort=num_votes,desc&title_type=tv_series'
+        settings.output_type = 'list'
+        settings.output_type = 'raw_json_list'
+        settings.output = 'tv_top_2YYY_list.json'
+
+        'http://www.imdb.com/title/tt0068646/'
+
+        settings.ttList = [
+            'tt0068646',
+            'tt0108052'
+        ]
+
+        settings.saveToJSON=true
+        imdb.settings = settings;
+        imdb.loadSettings(settings)
+    }
+
+    getD2();
+
+}
