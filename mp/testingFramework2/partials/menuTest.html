@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<style>
+    .uib-tab {
+        background-color: #f2f2f2;
+        padding: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        list-style: none;
+        display: inline-block;
+    }
+</style>
+
+<x42-nav-sidebar-menu items="site.sidebarItems" class="ng-scope ng-isolate-scope x42-nav-sidebar-menu">
+    <x42-tree root="vm.displayMenu" node-label="node.label" node-children="node.children" node-icon="node.icon"
+              node-class="node.fullClass" node-title="node.title" node-expanded="node.expanded"
+              node-click="node.onclick(node, nodeLevel, $event)" anchor.ng-disabled="treeNode.node.disabled"
+              class="ng-isolate-scope tree x42-tree">
+        <div class="alert alert-danger ng-binding ng-hide" ng-show="treeCtrl.errorMessage"></div>
+        <x42-tree-node node="treeCtrl.node" level="1" anchor.ng-disabled="treeNode.node.disabled"
+                       class="ng-isolate-scope x42-tree-node">
+            <div class="tree x42-nav-sidebar-item state-type-undefined x42-nav-sidebar-item-root-item is-a-link parent expanded"
+                 ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href="" title=""
+                                                  ng-click="treeNode.handleClick($event)" ng-switch="treeNode.json"
+                                                  ng-disabled="treeNode.node.disabled"><i
+                    class="tree-icon tree-label-content" ng-class="treeNode.icon"></i> <!-- ngSwitchWhen: true -->
+                <!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                        class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default=""></span>
+                <!-- end ngSwitchWhen: --></a>
+                <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                    <!-- ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default="">Returns</span>
+                            <!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/RevenuePT" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          onclick="treeNode.handleClick('Revenue')"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/RevenuePT"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Revenue</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/externalRevenuePT" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          onclick="treeNode.handleClick('externalRevenue')"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/externalRevenuePT"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">External Revenue</span><!-- end ngSwitchWhen: -->
+                                    </a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/RevenueCharts" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          onclick="treeNode.handleClick('RevenueCharts')"
+
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/RevenueCharts"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Revenue Charts</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed is-current"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/PnLTrends" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          onclick="treeNode.handleClick('PnLTrends')"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/PnLTrends"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Revenue Trends</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope"
+                                    ng-switch-default="">PBT</span><!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/PBTSummary" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/PBTSummary"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="" title="">PBT Summary<span
+                                                class="navBarIcon">&nbsp;</span><i style="color:#C90000;"
+                                                                                   class="fa fa-exclamation-circle navBarIcon"
+                                                                                   aria-hidden="true"
+                                                                                   title="Currently only visible for COOs / developers"></i></span>
+                                        <!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default="">Expenses</span>
+                            <!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/Expenses" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/Expenses"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">YoY Comparison</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/ExpensesTimeView" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/ExpensesTimeView"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Monthly View</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope"
+                                    ng-switch-default="">Risk</span><!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/RiskTrends" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/RiskTrends"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Risk Trends</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/EquityHedges" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/EquityHedges"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Equity Hedges</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope"
+                                    ng-switch-default="">EV</span><!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/ev_monthlyViewByTrading" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/ev_monthlyViewByTrading"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Monthly View by Trading</span>
+                                        <!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/eV_exportImportView" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/eV_exportImportView"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Export Import View</span><!-- end ngSwitchWhen: -->
+                                    </a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/ev_monthlyBySales" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/ev_monthlyBySales"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Monthly View By Sales</span>
+                                        <!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/ev_monthlyByClient" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/ev_monthlyByClient"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Monthly View By Client</span>
+                                        <!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default="">Capital</span>
+                            <!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/summaryStressLosses" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/summaryStressLosses"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Stress Loss</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/B3SLR" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/B3SLR"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">B3/SLR</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/CapitalTrends" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/CapitalTrends"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Capital Trends</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/Capital" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/Capital"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Capital</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default="">Staffing</span>
+                            <!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/headCount" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/headCount"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Headcount</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/hcYtdChanges" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/hcYtdChanges"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">YTD Changes</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope" ng-switch-default="">Market</span>
+                            <!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/MarketShare" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/MarketShare"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Market Share</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                    <x42-tree-node node="child" level="2" ng-repeat="child in treeNode.children track by $index"
+                                   anchor.ng-disabled="treeNode.node.disabled"
+                                   class="ng-scope ng-isolate-scope x42-tree-node">
+                        <div class="tree x42-nav-sidebar-item state-type-category not-a-link parent expanded"
+                             ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container" ng-href=""
+                                                              title="" ng-click="treeNode.handleClick($event)"
+                                                              ng-switch="treeNode.json"
+                                                              ng-disabled="treeNode.node.disabled"><i
+                                class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                            <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                    class="tree-label tree-label-content ng-binding ng-scope"
+                                    ng-switch-default="">Admin</span><!-- end ngSwitchWhen: --></a>
+                            <div class="tree-children" ng-show="treeNode.isNodeOpen()">
+                                <!-- ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/usageStatistics" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/usageStatistics"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon"></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Usage statistics</span><!-- end ngSwitchWhen: -->
+                                    </a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index -->
+                                <x42-tree-node node="child" level="3"
+                                               ng-repeat="child in treeNode.children track by $index"
+                                               anchor.ng-disabled="treeNode.node.disabled"
+                                               class="ng-scope ng-isolate-scope x42-tree-node">
+                                    <div class="tree x42-nav-sidebar-item state-type-internal is-a-link leaf collapsed"
+                                         ng-class="treeNode.className"><a class="tree-label-anchor tree-label-container"
+                                                                          ng-href="#/notifications" title=""
+                                                                          ng-click="treeNode.handleClick($event)"
+                                                                          ng-switch="treeNode.json"
+                                                                          ng-disabled="treeNode.node.disabled"
+                                                                          href="#/notifications"><i
+                                            class="tree-icon tree-label-content" ng-class="treeNode.icon" title=""></i>
+                                        <!-- ngSwitchWhen: true --><!-- ngSwitchWhen: true --><!-- ngSwitchDefault:  --><span
+                                                class="tree-label tree-label-content ng-binding ng-scope"
+                                                ng-switch-default="">Notifications</span><!-- end ngSwitchWhen: --></a>
+                                        <div class="tree-children ng-hide" ng-show="treeNode.isNodeOpen()">
+                                            <!-- ngRepeat: child in treeNode.children track by $index --></div>
+                                    </div>
+                                </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+                        </div>
+                    </x42-tree-node><!-- end ngRepeat: child in treeNode.children track by $index --></div>
+            </div>
+        </x42-tree-node>
+    </x42-tree>
+</x42-nav-sidebar-menu>
+
+
+<script>
+   /* var t = treeNode =  {}
+    window.treeNode = t
+    t.handleClick = function handleClick(input) {
+        console.warn('testing...', input)
+        uiUtils.addDivsWithContent(
+                {
+                    toDiv:'#tabHolder',
+                    ui:function createUI(x) {
+                        uiUtils.makeTag('span')
+                        uiUtils.addClass('uib')
+                        uiUtils.make({
+                            tag:'span',
+                            addClass:'uib',
+                            addTo:true
+                        })
+                    }
+                }
+        )
+    }
+*/
+</script>
+</body>
+</html>

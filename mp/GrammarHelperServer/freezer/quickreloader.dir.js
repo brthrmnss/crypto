@@ -227,6 +227,25 @@
                     file = file.substr(0, file.lastIndexOf(".")) + ".js";
                     //return;
                 }
+
+
+
+                var loadJS2 = function loadJS2(src, fx) {
+                    var script = document.createElement('script');
+                    script.src = src;
+                    script.onload = function (a) {
+                        //alert('got js ' + src)
+                        if ( fx != null ) {
+                            fx(a)
+                        }
+                    };
+                    document.head.appendChild(script);
+                };
+
+                loadJS2(src, $scope.rerenderDirective)
+                return;
+
+
                 jQuery.ajax({
                     url: file,
                     dataType: "script",
@@ -239,6 +258,7 @@
                         // sh.callIfDefined(fx)
                         $scope.rerenderDirective();
                     });
+
             }
 
             $scope.reloadContent = function reloadContent(addFile){

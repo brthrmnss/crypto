@@ -524,7 +524,9 @@
       window.dictTypes = dictTypes;
       window.dictAttrs = dictAttrs;
 
-      quickUI = quickUI.create();
+    
+      
+      
       var q = quickUI;
       //var children = utils.templateContent.find('*');
       q.process(utils.templateContent, dictTypes, dictAttrs)

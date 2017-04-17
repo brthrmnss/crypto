@@ -61,6 +61,38 @@
       utils.userTemplateContent = tElem.clone();
     }
 
+
+    utils.showElem = function showElem(node, str) {
+
+      console.error(str, utils.outerHTML(node))
+    }
+    utils.outerHTML = function outerHTML(node){
+      if ( node == null ) {
+        return 'null'
+      }
+      if ( node[0] ) {
+        node = node[0]
+      }
+      return node.outerHTML || new XMLSerializer().serializeToString(node);
+    }
+
+
+
+    utils.renderAttempt = function renderAttempt(scope) {
+      if (   scope.countRenderers == null)
+        scope.countRenderers = 0
+      scope.countRenderers++
+      console.error('what is -element count ', scope.countRenderers)
+    }
+
+    utils.showElements = function showElements(element) {
+      //console.error('what is element count ', scope.countRenderers)
+      console.error('what is -element1 ', utils.outerHTML(element[0]).length)
+      console.error('what is -element2 ', utils.outerHTML(utils.templateContent).length)
+      console.error('what is -element3 ', utils.outerHTML(utils.userTemplateContent).length)
+    }
+
+
     /**
      * Get component template (skin) and
      * reference to element.
@@ -91,6 +123,7 @@
       if ( self.userTemplateContent == null ) {
         throw new Error('userTemplateContent is null')
       }
+      self.userTemplateContent = self.userTemplateContent.clone();
 
       utils.element = elementPostProcessed;
       self.userContent = elementPostProcessed;
@@ -98,17 +131,17 @@
       self.contentTarget;//
       //this is the template element
       self.contentTemplate = self.directiveTemplate = self.templateContent;
-
+      self.directiveTemplateContent
       //why: this shows what angularjs would expet the componnet to be
       self.devContentPost = self.contentCurrent = self.currentContent =
-          self.contentPost = self.userContent;
+          self.contentPost = self.userContent; self.resultDom
       //why: rarely used shows what angularjs has done to content ....
       //why: not sure if this should be used ...
       //this is what dev specified, ang-expressions have been processed
 
       //wh: this is what the user specified inside the directive in the parent dom
       self.devContent = self.contentDev = self.contentDom = self.userTemplateContent;
-
+      self.devDom='?'
       //self.contentDevContents =
       // self.contentDevOuterHTML = element.html() //this is html of entire outer component
     }
@@ -125,7 +158,7 @@
       self.scope = scope;
     }
     utils.finishContent = function finishContent(htmlFinalized, scope , target) {
-      if ( htmlFinalized ) {
+      if ( htmlFinalized == null ) {
         htmlFinalized = utils.getFinalTemplate();
       }
       var directiveElements = self.$compile(htmlFinalized)(self.scope)
@@ -161,6 +194,8 @@
     utils.copyContentGroup2 = function ( from, to, clear, fxModify,
                                          getChildrenOnly, hideIfNotFound) {
       var fromContent = utils.userTemplateContent.find(from)[0];
+      //var fromContent = utils.templateContent.find(from)[0];
+      //debugger
       utils.userContent.find(from).remove();
       if ( fromContent == null || fromContent.length == 0  ) {
         if ( hideIfNotFound != false ) {
@@ -453,7 +488,7 @@
 
 
     p.new = function(item) {
-     // debugger;
+      // debugger;
       return new TransclutionHelper(item);
     }
 
@@ -470,7 +505,6 @@
 
 
 
-
   if ( window.reloadableHelper ) {
     function defineQuickReloadingDir() {
       var app = angular.module('com.sync.quick');
@@ -482,6 +516,7 @@
         .makeServiceReloadable('transcludeHelper', TransclutionHelper);
     app.factory('transcludeHelper', wrapperRelodableService);
   } else {
+    var app = angular.module('com.sync.quick');
     app.factory('transcludeHelper', TransclutionHelper);
   }
 

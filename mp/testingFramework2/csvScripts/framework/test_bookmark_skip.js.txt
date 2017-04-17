@@ -1,0 +1,29 @@
+#test for basic csv
+require "Win32API"
+Beep = Win32API.new("kernel32", "Beep", ["I", "I"], 'v')
+
+#click 1
+#endtest
+
+click Revenue; x42-nav-sidebar
+
+if {find:'sheery', goto:'step4'}
+
+click 1
+click 2
+click 3
+bookmark step4
+click 4
+click 5
+if  {find:'skipTo8', goto:'step8'}
+click 6
+click 7
+waitForShow 7
+bookmark step8
+click 8
+click 9
+click 10
+
+click Press for div
+
+endtest

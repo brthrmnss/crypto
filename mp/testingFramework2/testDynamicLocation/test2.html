@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Diff Location</title>
+
+    <!-- Prove can work in diff dir -->
+    <script>
+        setTimeout(function hideDiv() {
+            if ( window.$ == null ) {
+                console.log('wait for jquery')
+                setTimeout(hideDiv, 1000);
+                return;
+            }
+            $('#showDiv').hide();
+        }, 500)
+        window.onRedButton = function onRedButton() {
+            console.log('ddd')
+        }
+        window.onShowDiv = function onShowDiv() {
+            console.log('onShowDiv')
+
+            setTimeout(function hideDiv() {
+                $('#showDiv').show();
+            }, 500)
+
+            setTimeout(function hideDiv() {
+                $('#showDiv').hide();
+            }, 5000)
+        }
+       // window.preamble = '/test3/';
+        window.testCallFromEval = function () {
+            console.log('boom')
+        }
+    </script>
+    <script>
+        window.preamble = '../'
+    </script>
+    <script src="../testLL.js"></script>
+
+    <script>
+        function lazyLoadAndRunTest() {
+            loadTestingFramework(function onReady(){
+                testStackingDemo2B(true);
+            })
+        }
+        function autoloadTestFramework() {
+            window.location += '?loadTestFramework=true'
+        }
+    </script>
+
+    <script>
+        setTimeout(function auto_startTestingFramework() {
+            console.log('loading testing framework')
+            loadTestingFramework()
+        },500)
+    </script>
+    <style>
+        body {
+            font-weight: 400;
+            background-color: #CBD9E6;
+            font-family: 'Arial';
+        }
+    </style>
+</head>
+<body>
+<button>Test</button> <br />
+<button onclick="lazyLoadAndRunTest()">LL Test - Run Test</button>  <br />
+<button onclick="tH.clickTest2()">Run Test 2</button>  <br />
+<textarea id="txtArea" ></textarea>
+<button id="btnTest">Test</button>
+<!--
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+    asdf
+</div>
+-->
+
+
+
+<div>
+    <button class="redTest"
+            onclick="onRedButton()" >Go</button>
+
+    <button class="redTest2"
+            onclick="onShowDiv()" >Press for div</button>
+    <div id="showDiv" style="color:white;">
+        this the show div</div>
+</div>
+
+
+</body>
+</html>

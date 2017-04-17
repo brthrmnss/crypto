@@ -95,6 +95,33 @@ function RCConfigExecServer() {
             res.send('Hello World!');
         });
 
+
+        app.get('/goToFile', function onReadFile (req, res) {
+            var name = req.query.file;
+            name = name.replace('/media/sf_Dropbox', 'G:/Dropbox/')
+           console.log(name)
+            var opened = false;
+            if ( sh.fs.exists(name) ) {
+                if ( sh.fs.isDir(name)) {
+                    sh.run('start "" '+sh.qq(name))
+                    opened  = true
+                } else {
+                    var dir = sh.fs.goUpOneDir(name)
+                    sh.run('start "" '+sh.qq(name))
+                    opened = true
+                }
+            }
+
+            if ( opened == false ) {
+                res.status(404)
+                res.send('no found ' + name)
+                return;
+            }
+
+            res.send('ok');
+
+        });
+
         app.post('/listFiles', function onSaveFile (req, res) {
 
             var body = req.body;
@@ -106,6 +133,8 @@ function RCConfigExecServer() {
 
             res.send('Hello World!');
         });
+
+        sh.defineExitware(self.app)
 
         var JSONFileHelper = require('shelpers').JSONFileHelper;
         
@@ -277,6 +306,21 @@ function RCConfigExecServer() {
                 console.log('window invoke')
                 socket.broadcast.emit('window.invoke', x);
             })
+
+
+
+
+
+            socket.on('getLocalFiles', function onGetLocalFiles(data){
+                self.proc('what is command', data.cmd, sh.toJSONString(data) )
+
+                 socket.emit('getLocalFiles_results', 'cool');
+
+                return
+            });
+
+
+
 
         });
 
@@ -482,6 +526,8 @@ function RCConfigExecServer() {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
 
+                    self.cmds.sendStatus('file is ' + file)
+                    self.cmds.sendStatus('finished making manifest')
                     cb();
                 }
 
@@ -757,12 +803,20 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict, clas
 if (module.parent == null) {
 
     function runServer() {
-        exports.reloadServer()
+       //  sh.get('127.0.0.1:6010/exitQuit')
+         sh.get('127.0.0.1:6008/exitQuit') 
+        setTimeout(function startup() {
+            if  (RCConfigExecServer.oldServer) {
+                RCConfigExecServer.oldServer.active_server.close();
+            }
+            exports.reloadServer()
+        },500)
 
 
-        setTimeout(function onReload() {
+
+   /*     setTimeout(function onReload() {
             exports.reloadServer(RCConfigExecServer.oldServer)
-        }, 2500)
+        }, 1500)*/
     }
     runServer()
 

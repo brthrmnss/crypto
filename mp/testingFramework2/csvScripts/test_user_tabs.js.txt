@@ -1,0 +1,39 @@
+#test for basic csv
+log this test will enter the EU Trading 2 subsite
+log Will create 2 tabs on two pages ,
+log Then verify tabs have been created.
+
+msg Test Tabs
+
+fx closeallpopups
+
+
+fx removeAllTabs(true);
+
+fx createTab(0,true, 'User Tab 1-t');
+#fx createTab(0,true, 'User Tab 1-t');
+fx deleteTabSafe('User Tab 1-t', true)
+fx revertTabs()
+
+fx createTab(0,true, 'User Tab 1');
+fx ensureTab('User Tab 1', true)
+fx revertTabs()
+fx ensureTab('User Tab 1', true)
+fx createTab(0,true, 'User Tab 2');
+fx revertTabs()
+fx ensureTab('User Tab 1', true)
+fx ensureTab('User Tab 2', true)
+
+fx gotopage; External Revenue; External Revenue
+
+wait 2
+
+
+fx gotopage; Revenue; Revenue
+
+wait 2
+
+fx ensureTab('User Tab 1', true)
+fx ensureTab('User Tab 2', true)
+
+endtest

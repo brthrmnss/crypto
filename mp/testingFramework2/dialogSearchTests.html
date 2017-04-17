@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="searchTests.js" ></script>
+</head>
+<body>
+<!--
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+    asdf
+</div>
+-->
+<style>
+    #testTable thead, #testTable tbody { display: block; }
+    #testTable tbody {
+        height: 100px;       /* Just for the demo          */
+        overflow-y: auto;    /* Trigger vertical scroll    */
+        overflow-x: hidden;  /* Hide the horizontal scroll */
+    }
+    .dialogX {
+    }
+
+
+</style>
+<section class="xtransparent-container xcontainer dialogX"
+        >
+    <div  style="font-weight: bold;">Test List</div>
+    <br />
+
+    <input id="txtSearchTestNames" type="search" class="form-control light-table-filter"
+           data-table="order-table" placeholder="filter">
+    <br />
+    <table id="testTable" class="order-table table">
+        <!-- <thead>
+         <tr>
+             <th>Name</th>
+             <th>Description</th>
+             <th></th>
+         </tr>
+         </thead>-->
+        <tbody>
+        <tr>
+            <td>John Doe</td>
+            <td>john.doe@gmail.com</td>
+            <td><button class="btn btn-primay">Play</button></td>
+        </tr>
+        <tr>
+            <td>Jane Vanda</td>
+            <td>jane@vanda.org</td>
+            <td>9876543210</td>
+            <td>349</td>
+        </tr>
+        <tr>
+            <td>Alferd Penyworth</td>
+            <td>alfred@batman.com</td>
+            <td>6754328901</td>
+            <td>199</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

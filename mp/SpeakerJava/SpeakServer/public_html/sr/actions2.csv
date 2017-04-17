@@ -1,0 +1,165 @@
+name,cmd
+ccrt,http://ccrt/
+prod,|ccrt
+qa,http://ccrt-qa/
+dev,http://rr413c1n7.ms.com:10051/ccrt/index.html
+ccrt-dev,|dev
+dev-reloadable,http://rr413c1n7.ms.com:10051/ccrt/index_reloader.html#/reloadablePage
+trunk,http://ccrt-trunk/
+ccrt-trunk,|trunk
+ccrt-reloader,http://rr413c1n7.ms.com:10051/ccrt/index_reloader.html#/reloadablePage
+reloader,|ccrt-reloader
+trunk2,http://rr413c1n7.ms.com:10055/ccrt/index.html
+outlook,outlook
+pt-layouts,\\msad\root\NA\NY\LIB\fid\SPSTRAT\DESK\spgrt\ccrt\siteconfig\rev\morriste,ccrt pivt table layouts
+dirptlayouts,|pt-layouts
+dirc,c:\
+dirp4,q:\
+dirp4v2,Q:\p4v2
+dirsrc,|dirp4v2
+dirbackup,\\Msad\root\NA\NY\USERS\morriste\My Documents\backup
+dirputty,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell
+pdfplayer,http://localhost:10100/index.html#/player
+dirccrt,Q:\p4\spg\spgrt\ui\dev\
+q,q:\
+mydocs,u:\My documents
+yahoo,http://yahoo.com
+dirproject,U:\My Documents\projects
+pj,|dirproject
+dirlogs,U:\My Documents\worklogs
+dirtrash,U:\My Documents\trash
+dirMyDocs,|mydocs
+dirdownloads,\\Msad\root\NA\NY\users\morriste\My Documents\downloads
+calendar,https://calendar.google.com/calendar/render#main_7
+cal,|calendar
+hnsearch *,https://hn.algolia.com/?query=%W%&sort=byPopularity&prefix&page=0&dateRange=all&type=story
+hn,https://news.ycombinator.com/
+pocket,https://getpocket.com/a/queue/
+getpocket,|pocket
+
+weather,https://www.google.com/search?q=weatherh&oq=weatherh+&aqs=chrome..69i57.745j0j7&sourceid=chrome&ie=UTF-8#q=weather+10036
+news,https://news.google.com/news?hl=en&pz=1&ftcl=true&zx=4jsatqrgp9xo&pog=false
+
+#comment line
+#> means use many aliases until the end
+#< means this is the command script
+>a,b,c,d,e,g,f,http://alphabet.com
+newspocket,https://getpocket.com/a/recommended/
+tts,http://127.0.0.1:4444/
+speak,|tts//Send
+#group
+init,[tts,speaker]
+readit,http://127.0.0.1:10100/tinymce.html#/player
+speaker,http://127.0.0.1:10100/tinymce.html#/player
+pdfconvertoer,http://127.0.0.1:10100/tinymce.html#/player
+autosave,http://127.0.0.1:10100/tinymce_autosave.html
+gsamz *,https://www.google.com/search?q=%W%+amazon
+gs *,https://www.google.com/search?q=%W%
+newtor,https://torrentfreak.com/
+docerr,http://wiki-na.ms.com/CCRT/ErrorsAndNotifications
+docs,http://wiki-na.ms.com/CCRT/
+docsui,http://wiki-na.ms.com/CCRT/UIDeveloperSetup
+ccrt-docs,|docs
+twiki,|docs
+docserr,http://wiki-na.ms.com/CCRT/ErrorsAndNotifications
+digg,http://digg.com/
+dbgithub,https://github.com/brthrmnss?tab=repositories
+dbgithubcrypto,https://github.com/brthrmnss/crypto
+ghshelpers,https://github.com/brthrmnss/crypto/blob/master/node_modules/shelpers/lib/shelpers.js
+downgithubtesting,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2Fcrypto%2Ftree%2Fmaster%2Fmp%2FtestingFramework
+downgithubgrammar,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2Fcrypto%2Ftree%2Fmaster%2Fmp%2FGrammarHelperServer
+dbgittrade,https://github.com/brthrmnss/CJS
+dbgittransfer,|dbgittrade
+dbgitreader,https://github.com/brthrmnss/TTS-ReaderV2,
+dirWorking,C:\Users\morriste\train\train_drive\trash\
+dirWorkTrash,C:\Users\morriste\train\train_drive\trash\trash
+dirnodeprj,C:\Users\morriste\train\train_drive\trash\
+tasknewdoc,
+kanban,http://syp.kanbantool.com/boards/177652-ytest
+desktop,Y:\NA\NY\users\morriste\Desktop
+beyondcompare,Y:\NA\NY\users\morriste\Desktop\Beyond Compare 4\BCompare.exe
+capture,\\MSAD\ROOT\NA\NY\USERS\morriste\Desktop\FSCapture.exe
+marytts,C:\Users\morriste\train\train_drive\trash\marytts\marytts-5.2\marytts-5.2\bin\marytts-server.bat
+putty,\\ms\dist\sec\PROJ\putty\prod\common\bin\putty.cmd
+cmd,cmd
+docsnodejs,http://wiki.ms.com/NodeJS/WebHome
+tasktimesheet,https://www.fieldglass.net/?next=%2Ftime_sheet_list.do
+timesheetpassword,$20MFG_Mor2  password4
+putty,\\ms\dist\sec\PROJ\putty\prod\common\bin\putty.cmd
+dashboard,"U:\My documents\dashboard.docx"
+docsdashboard,|dashboard
+docstrunkconfig,"U:\My Documents\projects\pj-ccrt-trunk.docx"
+docsccrttrunkdoc,|docstrunkconfig
+putty6,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\sr\start_putty.bat
+problem:racingthoughts,$have a book read to you, listen to eckart tolle, power of now, listen to mindcalm, mediate 10 minutes, bring it on,close eye for 10mins
+problem:bored,$kill jelf
+q:how to open chrome taskmanager?,shortcut esc + shift
+problem:$moving slow, not focused: broom, listen to youtube rap instrumentals
+problem:$falling asleep at work: listen to youtou music instrumetnals
+what is most important?:$rc, $, moment release,chaning,being self, simplicity
+
+dirlayoutsdev,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\dev\site
+dirlayoutsqa,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\qa\site
+dirlayoutsprod,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\prod\site
+
+readit,http://127.0.0.1:10100/tinymce.html#/player
+focus,http://127.0.0.1:4444/blankwhitepage.html
+platitudes,http://127.0.0.1:4444/platitudes.html
+#task force show completion  - alt -f
+#task bring window to front, command line .. pwoershell if that is what it is ...
+#howto reload grammar
+#howto reload ccrt, ccrt reloader, reloaderServer.js
+#howto reload sr
+i hate myself: more than 100 thoughts? presence can only be felt in the now
+holidays,http://www.calendarpedia.com/holidays/federal-holidays-2017.html
+
+flexbox;http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=row&flex-wrap=nowrap&justify-content=center&align-items=center&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto
+
+nback,http://brainscale.net/dual-n-back
+blankwhitepage,http://127.0.0.1:4444/blankwhitepage.html
+
+timer5m,https://www.google.com/search?q=timer+5+mins
+timer10m,https://www.google.com/search?q=timer+10+mins
+timer15m,https://www.google.com/search?q=timer+15+mins
+timer30m,https://www.google.com/search?q=timer+30+mins
+json,http://www.bodurov.com/JsonFormatter/
+ccrt-dashboard,http://hz413c1n7.ms.com:3000/index.html
+
+
+listwishlist, https://www.amazon.com/gp/registry/wishlist/2Y4JZ0RMMKX29/ref=nav_wishlist_lists_1
+listaorders, https://www.amazon.com/gp/css/order-history/ref=nav_nav_orders_first
+listamazonorders,|listaorders
+
+prog,C:\Program Files
+dirProgramFiles,|prog
+progx32,C:\Program Files (x86)
+db,http://rr413c1n7.ms.com:3000/index.html
+
+helpdeskremote,http://wiki.ms.com/Remote/HelpDesk
+
+gtccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_ccrt.ahk
+gtactions,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-actions.ahk
+editactions,|gtactions
+gtrdk,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-rdk.ahk
+gtdev,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev.ahk
+editgotos,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editahkgotos.ahk
+gteditgotos,|editgotos
+p4,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\gtp4.ahk
+
+windowspy,C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Applications\AutoHotkey\AutoIt3 Window Spy
+
+
+gtreloader,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_reloader.ahk
+
+gtccrtdb,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_ccrt_db.ahk
+ccrtdb,|grccrtdb
+editccrttrunkjs,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editccrtserverjs.ahk
+editccrtdb,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editccrtdbhtml.ahk
+
+runccrtcb,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\startccrtserver_in_unix_combined.ahk.ahk
+startccrtdb,|ruccrtdb
+startlayoutmanager,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\start_ccrt_layoutManager_in_unix_combined.ahk
+#startccrtdb,|ruccrtdb
+
+
+gttestccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_editccrt.ahk

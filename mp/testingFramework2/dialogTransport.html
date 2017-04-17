@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="searchTests.js" ></script>
+</head>
+<body>
+Popups
+<!--
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+    asdf
+</div>
+-->
+<style>
+    .dialog {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+    }
+</style>
+<div>
+    <button id="btnPlay"
+            onclick="window.testHelper.transport.play()"
+            >Play</button>
+    <button id="btnPause"
+            onclick="window.testHelper.transport.pause()"
+            >Pause</button>
+    <button id="btnStop"
+            onclick="window.testHelper.transport.stop()"
+            >Stop</button>
+    <button id="btnRerun"
+            onclick="window.testHelper.transport.rerun()"
+            >Rerun</button>
+</div>
+
+</body>
+</html>

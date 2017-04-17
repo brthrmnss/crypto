@@ -1,0 +1,28 @@
+#t
+
+log asdf2
+
+
+function fxa1() {
+    console.debug('fxa1', 'what ....')
+   // debugger
+}
+
+function fxa2() {
+    //debugger
+    console.debug('...')
+    tH.fxs.fxa1('4')
+}
+
+fx.fxa2()
+//tH.fx('fxa2') --> fx.fx
+//fxa2()
+/*
+fxa2()
+tH.fx('fxa2')
+log asdf
+
+tH.fx('fxa2')
+*/
+log asdf
+endtest

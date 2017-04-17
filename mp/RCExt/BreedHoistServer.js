@@ -19,6 +19,8 @@ var shelpers = require('shelpers');
 var express = require('express')
 
 var HoistServer = require('./HoistServer').HoistServer
+var RC_HelperFxs = require('./supporting/TestRCScripts.js').RC_HelperFxs
+
 
 function DLHoistServer() {
 
@@ -46,7 +48,7 @@ function DLHoistServer() {
     }
 
     p.createHoistServer2 = function createHoistServer2(config) {
-      //  sdf.g
+        //  sdf.g
         self.app.get('/valid', function onReadFile (req, res) {
             var name = req.query.name;
             //var content = sh.readFile(dirSaves+name+'.html')
@@ -84,6 +86,106 @@ function DLHoistServer() {
 
             //var content = sh.readFile(dirSaves+name+'.html')
             res.send('moved');
+
+        });
+
+
+        self.app.get('/useConfig', function onUseConfig (req, res) {
+            var taskName = req.query.taskName;
+            var fileManifest = sh.fs.makePath(__dirname, 'manifests', taskName)
+            self.proc('run config with', fileManifest);
+            sh.fs.exists(fileManifest, 'manifest must exists')
+            console.log('what', fileManifest);
+            if ( sh.fs.notFound(fileManifest)  ) {
+                res.send(sh.json.error('not found '+ taskName));
+                return;
+            }
+
+            var dirDestination = sh.fs.makePath(__dirname, 'configs')
+            var fileConfigCp = sh.fs.copy(fileManifest, dirDestination);
+
+            var fileConfig = sh.getFileName(fileConfigCp)
+
+            if ( req.query.run != 'false') {
+                self.runFromConfigFile(fileConfig);
+                res.send('run');
+            }
+
+            //var content = sh.readFile(dirSaves+name+'.html')
+            res.send('moved');
+
+        });
+
+
+        self.app.get('/getStatus', function onGetStatus (req, res) {
+            var output = onGetStatus2(false)
+            res.send(output);
+        });
+
+
+        sh.defineExitware(self.app)
+         
+       /* self.app.get('/exitQuit', function onExit (req, res) {
+            process.exit();
+            //var output = onGetStatus2(false)
+            res.send(5);
+        });*/
+
+
+        function onGetStatus2 ( onlyProgress ) {
+
+            var items = self.data.instance.items;
+            var items2 = [];
+            var status  = {};
+            items2.push(status)
+
+            count=0
+            countUnstarted=0
+            countDone = 0
+            countProgress = 0;
+
+            sh.each(items, function filterProp(k,item) {
+                count++;
+                if ( item.globalStatus == null) {
+                    countUnstarted++;
+                }
+                else if ( item.globalStatus.startsWith('done') ) {
+                    countDone++;
+                }
+                else  {
+                    countProgress++;
+                }
+
+                if ( onlyProgress ) {
+                    if (item.globalStatus == null || item.globalStatus.startsWith('done')) {
+                        return;
+                    }
+                }
+                var filterProps = ['name2','title', 'size', 'dirRemoteMega', 'urlTorrent', 'workerId',
+                    'globalStatus']
+                var itemFiltered = sh.filterProps(item, filterProps)
+                items2.push(itemFiltered)
+
+            })
+
+            status.count = count;
+            status.unstarted = countUnstarted
+            status.progress = countProgress;
+            status.done = countDone;
+
+
+            var output = sh.toJSONString(items2)
+            output = sh.toHTMLStr(output)
+
+            return output;
+
+        }
+
+        self.app.get('/getStatus2',  function onGetStatusB(req, res) {
+
+            var output = onGetStatus2()
+
+            res.send(output);
 
         });
 
@@ -190,8 +292,8 @@ function DLHoistServer() {
                     io.emit('chat message', msg);
                 });
 
- //sdf.g
-                
+                //sdf.g
+
                 socket.on('runcmd', function onRunCmd(data){
                     self.proc('what is command', data.cmd, sh.toJSONString(data) )
                     //  self.proc('cmd no match', data)
@@ -207,6 +309,34 @@ function DLHoistServer() {
                     return
                 });
 
+
+                socket.on('getLocalFiles', function onGetLocalFiles(data){
+                    self.proc('what is command', data.cmd, sh.toJSONString(data) )
+                    /*//  self.proc('cmd no match', data)
+                    self.handleSocket(data, function onFinished (a,b,c) {
+                        var result = {}
+                        result.a = a; result.b = b; result.c = c;
+                        if ( data.noreturn != true  ) {
+                            var str = data.cmd + '' + '_results'
+                            console.log('str', str)
+                            io.emit(str, result);
+                        };
+                    })*/
+                    var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
+                    var dirOutput = sh.fs.getDir(fileOutput)
+                    sh.fs.mkdirp(dirOutput)
+                    RC_HelperFxs.listFilesInDirectories(fileOutput, function onDone(fileOutput, lite) {
+                        //console.error(lite)
+                        self.proc('file output', fileOutput);
+                        var content = sh.readFile(fileOutput)
+                       // onResultOfcall(content)
+                        socket.emit('getLocalFiles_results', content);
+                        //socket.broadcast.emit('window.invoke', x); 
+                    }, null);
+                    
+                    return
+                });
+                
 
                 socket.on('window.invoke', function (x) {
                     console.log('window invoke')
@@ -278,7 +408,7 @@ function DLHoistServer() {
                 var config = {};
 
                 config.fxDone = function fxDone(file) {
-                  
+
                     var filename = sh.getFileName(file)
                     console.log('file', file, filename);
                     //var url = 'http://'
@@ -317,8 +447,8 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict) {
     console.log(sh.n, 'reloadServer2', count, oldServer!= null, sh.n)
     if ( oldServer) {
         //var yyy =  oldServer.active_server2.close()
-      //  if ( oldServer.server && oldServer.server.close )
-            var oldS = oldServer.active_server.close();
+        //  if ( oldServer.server && oldServer.server.close )
+        var oldS = oldServer.active_server.close();
         ///console.log('output',null!=oldServer, yyy, oldS)
         setTimeout(function onReloadLater () {
             if ( dict.count != count ) {
@@ -326,6 +456,8 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict) {
                 return;
             }
             console.log('\t','onReloadLater', count)
+  
+            sh.get('127.0.0.1:6012/exitQuit')
             exports.reloadServer(null, fxFin, count, dict);
         }, 1500);
         return;

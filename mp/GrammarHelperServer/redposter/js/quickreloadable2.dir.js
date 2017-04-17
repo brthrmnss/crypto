@@ -16,7 +16,7 @@
   var app = defineQuickReloadingDir();
 
 //debugger
-  console.log('reload', app.reloadableDirective)
+  console.log('r eload', app.reloadableDirective)
   //debugger;
 
   /** s

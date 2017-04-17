@@ -1,0 +1,142 @@
+#test for basic csv
+require "Win32API"
+Beep = Win32API.new("kernel32", "Beep", ["I", "I"], 'v')
+
+click Revenue; x42-nav-sidebar
+
+if {find:'sheery', goto:'step4'}
+
+click 1
+click 2
+click 3
+bookmark step4
+click 4
+click 5
+if  {find:'skipTo8', goto:'step8'}
+click 6
+click 7
+bookmark step8
+click 8
+click 9
+click 10
+
+endtest
+
+eval close all popups
+  window.$scope.popups.hideAllDialogs()
+ window.$scope.popups.data.openDialogs = []
+ window.$scope.popups.data.modalCount = 0
+  //window.$subsitesScope.popups.hideAllDialogs()
+end
+def beep freq, duration
+    #puts 'beep', freq, 'd', duration
+  Beep.call(freq, duration)
+end
+beep 600, 400
+eval - showdropdown
+var x42NavBarNav_DropDown = $('ul.navbar-nav').find('li.dropdown');
+x42NavBarNav_DropDown.addClass('open')
+endeval
+eval - showdropdown
+var x42NavBarNav_DropDown = $('ul.navbar-nav').find('li.dropdown');
+x42NavBarNav_DropDown.addClass('open')
+endeval
+
+fx showdropdown
+
+waitForShow .x42-nav-header-submenu
+
+waitForShow Create New Subsite
+
+#create new subsite
+
+click Create New Subsite
+waitForShow #dialogManageSubsite
+set .txtManageSubsiteName; EU Trading2
+#set [value="otherPeople"]; selected
+eval
+ $('[value="otherPeople"]').prop('checked', true);
+  $('[value="otherPeople"]').click();
+end
+
+set .txtSearchName2; Ji hye
+pressEnter .txtSearchName2
+set .txtSearchName2; Gergo
+pressEnter .txtSearchName2
+set .txtSearchName2; Fermin
+pressEnter .txtSearchName2
+waitForShow ferminr
+
+
+click OK; #dialogManageSubsite //ignore
+waitForShow EU Trading2
+
+waitForShow #dialogAddNewTab
+click #dialogAddNewTab
+
+waitForShow #dialogCloneTabFrom
+#waitForShow Function
+#click Function; #dialogCloneTabFrom
+
+eval
+  var selectList = $('#dialogCloneTabFrom').find('select')
+  var first = selectList.find('option').first()
+  first.prop('selected', true);
+end
+
+click OK; #dialogCloneTabFrom
+
+#############################
+endtest
+click button
+
+
+click Leave Subsite
+
+waitForHide Leave Subsite
+
+click Manage Subsites...
+
+waitForShow #dialogManageSubsites
+
+eval close all popups
+  //window.$scope.popups.hideAllDialogs()
+  //window.$subsitesScope.popups.hideAllDialogs()
+
+  var y = testHelper.findByContent('EU Trading2', $('#dialogManageSubsites') )
+  var tr = y.parents('tr')
+  var trashIcon = tr.find('.fa-trash')
+  console.clear();
+  console.log('trash',y,tr, trashIcon);
+  trashIcon.click()
+end
+
+waitForShow #confirmDialog
+
+#click Cancel; #confirmDialog //ignore
+click OK; #confirmDialog //ignore
+
+
+waitForShow #dialogManageSubsites
+click Close; #dialogManageSubsites
+
+wait 1
+endtest
+click button
+clickJ .redTest //click red button
+clickText jump
+clickText test 2
+log test
+set #txtArea set the text
+set #txtArea; set the text ~use semi colon to delinate args
+set #txtArea |set the text ~use pika to delinate args
+alert new alert
+logNow sdfsdf
+logNext sdfsdfsdf
+log sdfsdfsdfsdfsdf
+wait 2 //wait 2 seoncds
+/*
+block comment
+*/
+--comment
+~some message alert //alias for log

@@ -1,0 +1,105 @@
+#test for basic csv
+//log Test will ensure tabs have proper options
+
+status this test will test advanced tab workflow
+fx closeallpopups
+//log test
+
+fx createSubsite('SS-Tabs-Adv', null, true, true)
+status go to 
+fx goToSubsite('SS-Tabs-Adv')
+status remove all tabs
+
+status ensure first tab is always selected
+fx ensureTabSelected(0)
+//endtest
+
+fx leaveSubsite();
+fx ensureTabSelected(0);
+//endtest
+
+/*
+status reset all tabs
+//ensure user is in subsite mode
+fx goToSubsite('SS-Tabs-Adv')
+
+fx unhideAllTabs()
+status ensureAllTabsVisible
+fx ensureAllTabsVisible()
+
+#endtest
+
+
+status verify all tabs show proper tabs
+fx ensureAllTabsHaveProperOptions();
+*/
+
+fx goToSubsite('SS-Tabs-Adv')
+status verify that hidden tab (0) is hidden, and unhidden when i leave
+fx hideTab(0);
+fx isTabIndexHidden(0,true);
+fx leaveSubsite();
+status verify hidden tab (0) after leaving subsite
+fx isTabIndexVisible(0);
+
+//fx hideTab();
+
+//fx unhideAllTabs()
+
+
+/*
+//ensure hidden tab is ivisible again
+fx goToSubsite('SS-Tabs-Adv')
+
+status leave subsite
+//leave subsite
+fx leaveSubsite();
+
+status ensureVisible-all tabs after leaving the subsite
+fx ensureAllTabsVisible()
+
+endtest
+*/
+
+
+status verify all options on all tabs
+fx goToSubsite('SS-Tabs-Adv')
+fx verifyTabOptions()
+
+//fx removeAllTabs();
+
+//show all hidden tabs
+//fx unhideAllTabs()
+
+status hide tab
+fx hideTab();
+fx unhideAllTabs()
+
+
+fx goToSubsite('SS-Tabs-Adv')
+//create new tab
+status subsite tab
+fx createTab(0,false, 'Subsite Tab 1');
+
+//click on standard tab
+status verifyTabOptions
+fx verifyTabOptions()
+
+//ensure tab is selected
+//ensure layout is visible so user can select latyout
+//do 2x
+//hide standard tab
+//hide new tab
+//switch order on tabs
+status leave subsite
+//leave subsite
+fx leaveSubsite();
+//ensure hidden tab is ivisible agian
+status ensureVisible-all tabs after leaving the subsite
+fx ensureAllTabsVisible()
+
+ msg go back to subsite
+ msg ensure hidden tabs and order is preserved
+
+
+endtest

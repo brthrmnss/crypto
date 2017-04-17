@@ -100,7 +100,8 @@ function HoistServer(_self) {
 
         p.getJSONPath = function getJSONPath(path, doNotHTML) {
 
-            var totalPath = 'self.data.instance.data';
+            var totalPath = self.data.defaultPath
+            totalPath = sh.dv(self.data.defaultPath, 'self.data.instance.data');
             if ( path) {
                 totalPath += '.' + path;
             }
@@ -116,6 +117,8 @@ function HoistServer(_self) {
                 console.error('coudl not run command', totalPath)
                 throw (e)
             }
+
+            console.log('path', totalPath)
 
             output = sh.clone(output);
 

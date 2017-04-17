@@ -45,7 +45,7 @@ function GrammarHelperServer() {
         // sh.exit()
         // app.use(sh.allowWildcardRequests)
         app.use(function bo(req,res,next) {
-            console.log('iiii ... i am where', req.originalUrl)
+            //console.log('iiii ... i am where', req.originalUrl)
             sh.allowWildcardRequests(req, res, null, true)
             next();
         })
@@ -256,11 +256,15 @@ function GrammarHelperServer() {
         })
 
         self.app.get('/file/:id*?', function onGetFileFromReloader(req, res) {
-            console.log('output', JSON.stringify([req.params, req.query]))
-
+            var dbg = false
+            if (  dbg ) {
+                console.log('output', JSON.stringify([req.params, req.query]))
+            }
             var y = req.originalUrl;
             if ( sh.isWin() ) {
-                console.error('orig url', y)
+                if (  dbg ) {
+                    console.error('orig url', y)
+                }
             }
             var split = y.split('/')
             var fileSections = split
@@ -290,9 +294,15 @@ function GrammarHelperServer() {
 
         self.app.get('/g/:id*?', function (req, res) {
             console.log('output', JSON.stringify([req.params, req.query]))
+            var dbg = false
             var y = req.originalUrl;
+            if ( y.includes('?')) {
+                y = y.split('?')[0]
+            }
             if ( sh.isWin() ) {
-                console.error('orig url', y)
+                if (  dbg ) {
+                    console.error('orig url', y)
+                }
             }
             var split = y.split('/')
             var fileSections = split
@@ -305,8 +315,10 @@ function GrammarHelperServer() {
             }
             var file = split.join('/')
 
-            console.error('y', y, split);
-            console.error('base dir', dir, file);
+            if ( dbg ) {
+                console.error('y', y, split);
+                console.error('base dir', dir, file);
+            }
             //can't find dir
 
 
@@ -317,6 +329,7 @@ function GrammarHelperServer() {
 
             //var _fileIndexAlias =/* _dirAppOverrides+'/'*/ 'port3_app.html';
             var fileTemplate = self._dirYeomanAppTmp+'quickcrud_tester.html'
+            var fileTemplate = self._dirYeomanAppTmp+'simpleapp.3.html'
 
             var leaf = file;
 
@@ -352,38 +365,51 @@ function GrammarHelperServer() {
                         })
                         filesSharedResources = l;
 
-                        console.error('dirFill', dirFill);
+                        if (  dbg ) {
+                            console.error('dirFill', dirFill);
+                        }
                         recursive(dirFill, [ ignoreFunc], function (err, files) {
                             files = filesSharedResources.concat(files);
                             files = files.sort();
-                            console.error('files', files)
+                            if (  dbg ) {
+                                console.error('files', files)
+                            }
 
                             if ( sh.isWin() ) { //try to change dirFill, but need dirfill to get files
-                                console.error('dir fill2--', dirFill)
+                                if (  dbg ) {
+                                    console.error('dir fill2--', dirFill)
+                                }
                                 dirFill = dirFill.replace(/\//gi, '\\'); //replace windows dir, b/c mixed with / \
-                                console.error('dir fill3--', dirFill)
+                                if (  dbg ) {
+                                    console.error('dir fill3--', dirFill)
+                                }
                             }
                             // asdf.g
-                            self.proc('file length', files.length);
-
+                            if (  dbg ) {
+                                self.proc('file length', files.length);
+                            }
                             //files.push('../../js/socket.io-1.2.0.js.')
-                            files.push('../../js/reloader.js')
+                            files.unshift('../../js/reloaderGH1.js') //put at top
                             var contents = sh.readFile(fileTemplate)
                             var cSplit = contents.split('</body>')
                             var start = cSplit[0]
-                            sh.each(files, function (k,v) {
+                            sh.each(files, function onRecurseAllFiles (k,v) {
 
                                 if (sh.endsWith(v, '.js')) {
                                     var str = '<script src="Placeholder" ></script>'
-                                    self.proc('v', v, 'replace with', dirFill)
+                                    if (  dbg ) {
+                                        self.proc('v', v, 'replace with', dirFill)
+                                    }
                                     var dirOrig =  v;
                                     v = v.replace(dirFill, '/')
-                                    self.proc( dirOrig.length,  v.length)
-
+                                    if (  dbg ) {
+                                        self.proc(dirOrig.length, v.length)
+                                    }
                                     str = str.replace('Placeholder', 'g/' + dir + '' + v + '');
 
-
-                                    console.error('dir fill3', v, dirFill, 'g/' + dir + '' + v + '')
+                                    if (  dbg ) {
+                                        console.error('dir fill3', v, dirFill, 'g/' + dir + '' + v + '')
+                                    }
                                     if ( v.length >= dirOrig.length ) {
                                         //  asdf.g
                                     }
@@ -481,7 +507,9 @@ function GrammarHelperServer() {
                 var file2 = dir + '/' +  file;
                 var file3 = sh.fs.resolve(file2)
                 var exist = sh.fileExists(file3)
-                self.proc('does exist', file3, msg, exist)
+                if ( dbg ) {
+                    self.proc('does exist', file3, msg, exist)
+                }
                 if (  exist ) {
                     return file3;
                 }

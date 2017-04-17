@@ -1,0 +1,75 @@
+#test for basic csv
+require "Win32API"
+Beep = Win32API.new("kernel32", "Beep", ["I", "I"], 'v')
+
+
+function clickBtn(btnTxt) {
+    var btn = tH.findByContent(btnTxt)
+    tH.click(btn);
+    tH.fx('annotateDiv', btnTxt)
+}
+
+function clickUpTo3(a,b,c) {
+
+    if ( a ) {
+        tH.fx('clickBtn', a)
+    }
+        if ( b ) {
+            tH.fx('clickBtn', b)
+        }
+            if ( c ) {
+                tH.fx('clickBtn', c)
+            }
+
+}
+
+
+function clearAnnotations() {
+   var tClass = 'timeAnnotation';
+    //  uiUtils.removeWithClass(tClass)
+  uiUtils.removeWithClass(tClass)
+}
+
+function annotateDiv(text) {
+//} fix this
+   var tClass = 'timeAnnotation';
+   /*
+   var link = $(".tree.x42-nav-sidebar-item.is-a-link.is-current")
+   var div = link.find('.'+tClass);
+   var linkName = div.text().trim();
+   */
+   var link = tH.findByContent(text)
+   var div = $("[forLink='"+text+"']");
+
+
+    if ( div.length == 0  )  {
+
+        var cfg = uiUtils.addFloatingDiv()
+        var div = cfg ; //cfg.ui;
+        // div.text('holder')
+        div.attr('forLink', text);
+        div.css('background', '#f2f2f2')
+        div.css('padding', '5px')
+        /*if ( text ) {
+        div.text(text);
+        }*/
+        div.addClass(tClass);
+        div.css('z-index', 10000);
+        console.log('.........',div);
+
+        uiUtils.moveAToB(div, link)
+        uiUtils.pos.adjust(div, -5, null, null, 20)
+    }
+
+    var cfg = uiUtils.addSpan()
+    var divA =  cfg.ui;
+    divA.text('ccccccccccccccb')
+    if ( text ) {
+        divA.text(text+' ');
+    }
+    div.append(divA)
+}
+
+fx.clearAnnotations()
+fx.clickUpTo3(1,2,3)
+fx.clickUpTo3(7,8,9)

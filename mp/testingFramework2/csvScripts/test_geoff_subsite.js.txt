@@ -1,0 +1,17 @@
+#test for basic csv
+log this test will enter the EU Trading 2 subsite
+log Ensure user can see 2 subsite tabs.
+
+msg Test Tabs
+
+
+fx closeallpopups
+#fx removeSubsite('Geoff_Subsite');
+#fx createSubsite('Geoff_Subsite', null, true)
+fx closeallpopups
+editSubsite('')
+fx createTab(0,false, 'Munis');
+
+
+
+endtest

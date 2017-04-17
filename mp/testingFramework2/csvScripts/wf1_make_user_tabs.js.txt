@@ -1,0 +1,244 @@
+#test for basic csv
+log this test will enter the EU Trading 2 subsite
+log Will create 2 tabs on two pages ,
+log Then verify tabs have been created.
+
+#fx alert
+fx showdropdown
+
+endtest
+
+click External Revenue; x42-nav-sidebar
+waitForShow #dialogAddNewTab
+
+fx showdropdown
+
+bookmark running test
+
+
+waitForShow EU Trading2; wait for subsite in list; #holderMySubsiteList
+click  EU Trading2; #holderMySubsiteList
+
+
+waitForShow #dialogAddNewTab; ensure the new subsite tab button is visible
+
+
+bookmark clone the first tab
+#click #dialogAddNewTab
+#waitForShow #dialogCloneTabFrom
+#waitForShow Function
+#click Function; #dialogCloneTabFrom
+
+def create-tab
+
+    function cloneTab_QuickIFTabExists(){
+        var indexTab = 0;
+        if ( arg1  ) {
+            indexTab = arg1;
+        }
+        var name = window.$scope.tableHelper
+        .data.layoutTabs[indexTab].name
+        var expectedName = name + ' (copy)'
+
+        var existingTab = tH.findByContent(expectedName, '#tabHolder')
+        if ( existingTab.length > 0 ) {
+            console.log('found eexisting copy of clone');
+
+            tH.logNow('found existing tab', expectedName )
+            tH.clickNext('Cancel', '#dialogCloneTabFrom');
+            return;
+            var btnCancel = tH.findByContent('Cancel', '#dialogCloneTabFrom')
+            btnCancel.click()
+            return
+        } else {
+
+        }
+        tH.logNow('creating the new tab', expectedName )
+        window.$scope.layoutToCopy = [name]
+        window.$scope.$apply()
+
+        var selectList = $('#dialogCloneTabFrom').find('select')
+        var first = selectList.find('option').first()
+        first.prop('selected', true);
+        first.click();
+
+        tH.clickNext('OK', '#dialogCloneTabFrom');
+    }
+    tH.setDefaultAddNext()
+    tH.logNow('running create tab?')
+    // cloneTab_QuickIFTabExists();
+    tH.click('#dialogAddNewTab');
+    tH.waitForShow( '#dialogCloneTabFrom')
+    //  tH.click('')
+    tH.addSync(cloneTab_QuickIFTabExists)
+    tH.resetDefaultAddNext();// = false;
+end
+
+def verifySubsiteTab
+    // tH.setDefaultAddNext()
+    function cloneTab_QuickIFTabExists(){
+        var indexTab = 0;
+        if ( arg1  ) {
+        indexTab = arg1;
+        }
+        var name = window.$scope.tableHelper
+        .data.layoutTabs[indexTab].name
+        var expectedName = name + ' (copy)'
+
+        var existingTab = tH.findByContent(expectedName, '#tabHolder')
+        if ( existingTab.length > 0 ) {
+        console.log('found eexisting copy of clone');
+        return
+        }
+         tH.fail('missing subsite tab ', expectedName)
+    }
+    tH.addSync(cloneTab_QuickIFTabExists)
+
+    //  tH.resetDefaultAddNext();// = false;
+end
+
+
+fx create-tab; 0
+fx create-tab; 1
+fx verifySubsiteTab; 0
+fx verifySubsiteTab; 1
+//fx verifySubsiteTab; 2
+wait .2
+
+bookmark leave page
+
+def refresh_subsites
+    tH.setDefaultAddNext()
+    tH.callFx('showdropdown' )
+    tH.waitForShow('Leave Subsite')
+    tH.click('Leave Subsite')
+    tH.waitForHide('Leave Subsite')//,'#holderMySubsiteList')
+     tH.wait(.5)
+    //tH.logNow('clicking', arg1)
+
+    tH.logNow('go to subsite')
+     tH.click('EU Trading2', '#holderMySubsiteList')
+     window.$scope.subsites.remote.sites.listItems( function() {
+       tH.wait(.5)
+         //click Leave Subsite
+         //waitForHide Leave Subsite
+         //waitForShow EU Trading2; wait for subsite in list; #holderMySubsiteList
+         //click  EU Trading2; #holderMySubsiteList
+
+         //console.log('1', arg1);
+         //tH.logNow('clicking', arg1)
+         tH.resetDefaultAddNext()
+         tH.test.cb()
+   }  )
+
+end
+
+fxasync refresh_subsites
+fx verifySubsiteTab; 0
+fx verifySubsiteTab; 1
+
+
+bookmark leaving page
+
+def gotopage
+    tH.setDefaultAddNext()
+    var pageName = arg2
+    var pageMenuLinkText = arg1
+    tH.data.maxTimesNext = 50;
+    tH.click(pageMenuLinkText , 'x42-nav-sidebar');
+  tH.nextTimeoutTime(60)
+    tH.waitForShow(pageName, 'did not switch to '+pageName+' page', '.x42-nav-body-container' )
+   tH.nextTimeoutTime(60)
+    tH.waitForShow('pt-table', 'pt table did not load')
+    tH.log('Navigated to', pageName);
+    tH.resetDefaultAddNext()
+end
+
+
+fx gotopage; Revenue; Revenue
+
+log changed to revenue page
+wait 2
+
+fx gotopage; External Revenue; External Revenue
+
+fx verifySubsiteTab; 0
+fx verifySubsiteTab; 1
+
+endtest
+
+
+click Revenue; x42-nav-sidebar
+eval
+  tH.data.maxTimesNext = 120;
+end
+waitForShow Revenue; waiting for revenue page to load; .x42-nav-body-container
+waitForShow #dialogAddNewTab
+
+click External Revenue; x42-nav-sidebar
+log finished runnign refresh_subsites
+
+waitForShow Revenue; waiting for revenue page to load; .x42-nav-body-container
+waitForShow #dialogAddNewTab
+fx verifySubsiteTab; 0
+fx verifySubsiteTab; 1
+
+endtest
+
+
+
+
+#############################
+endtest
+click button
+
+
+click Leave Subsite
+
+waitForHide Leave Subsite
+
+click Manage Subsites...
+
+waitForShow #dialogManageSubsites
+
+eval close all popups
+  //window.$scope.popups.hideAllDialogs()
+  //window.$subsitesScope.popups.hideAllDialogs()
+
+  var y = testHelper.findByContent('EU Trading2', $('#dialogManageSubsites') )
+  var tr = y.parents('tr')
+  var trashIcon = tr.find('.fa-trash')
+  console.clear();
+  console.log('trash',y,tr, trashIcon);
+  trashIcon.click()
+end
+
+waitForShow #confirmDialog
+
+#click Cancel; #confirmDialog //ignore
+click OK; #confirmDialog //ignore
+
+
+waitForShow #dialogManageSubsites
+click Close; #dialogManageSubsites
+
+wait 1
+endtest
+click button
+clickJ .redTest //click red button
+clickText jump
+clickText test 2
+log test
+set #txtArea set the text
+set #txtArea; set the text ~use semi colon to delinate args
+set #txtArea |set the text ~use pika to delinate args
+alert new alert
+logNow sdfsdf
+logNext sdfsdfsdf
+log sdfsdfsdfsdfsdf
+wait 2 //wait 2 seoncds
+/*
+block comment
+*/
+--comment
+~some message alert //alias for log

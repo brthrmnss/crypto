@@ -1,0 +1,64 @@
+#test that works well
+
+/*
+log success
+log yes
+*/
+
+def fxOther(a,b,c)
+    console.log('fxOther', a,b,c)
+end
+def fx_inner
+    console.log('arg1', null)
+    tH.click('what')
+    tH.fx('fxOther', 1,2,3)
+end
+fx fx_inner
+
+#endtest
+def fx0
+    console.log('arg1', null)
+end
+fx fx0
+def fx1
+    console.log('arg1', arg1)
+end
+
+fx fx1; a; b; c
+fx fx1 a; b; c //technically incorrect
+#endtest
+
+def fx1b //ignore comment plz
+    console.log('v2', 'arg1', arg1)
+end
+
+fx fx1b a; b; c
+fx fx1b; a; b; c
+fx fx1b('aalpha');
+
+
+def fx2
+    console.log('arg1', arg1, arg2)
+end
+
+fx fx2 a; b
+
+
+
+def fx3(a,b,c)
+    console.log('a', a, 'b', b, 'c', c);
+end
+
+
+fx fx3(4,5,'ertert');
+fx fx3
+
+fx fx3 5; 6
+#endtest
+
+def fx4(a,b,c) //will this work?
+    console.log('fx4', 'a', a, 'b', b, 'c', c);
+end
+
+
+fx fx4(4,5,'ertert');

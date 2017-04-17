@@ -8,10 +8,14 @@
   var quickCrud2 = function quickCrud2($templateRequest,
                                        $compile,
                                        $interpolate,
-                                       transcludeHelper
+                                       transcludeHelper2
   ) {
 
-    var utilsParent = transcludeHelper.new();
+    reloadableHelper.saveDirectiveCtx(reload_name, arguments)
+
+
+    //quickUI = quickUI.create();
+    //var utilsParent = transcludeHelper2.create();
 
     function link(scope, element, attrs, ctrl, transclude){
       var urlTemplate = '';
@@ -27,7 +31,11 @@
             //alert('created ' +  scope.id);
 
             //var utilsParentDict = utils.dictTemplates;
-            var utils = transcludeHelper.new();
+            var tH2 = transcludeHelper2.create(this);
+            tH2.setupTransclution(reload_name, scope, $compile, element, html, attrs);
+            scope.render(tH2);
+            
+            return;
             utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
             utils.$compile = $compile;
 
@@ -42,8 +50,19 @@
 
     };
 
-    var compile = function (tElem, attrs) {
-      utilsParent.storeTemplate(tElem, attrs);
+    var compile = function (tElem, attrs, repeat) {
+
+
+      var newerDdo = reloadableHelper.recompileDirective(reload_name,arguments, this,  repeat)
+      if ( newerDdo ) {
+        return newerDdo
+      }
+
+      TransclutionHelper2.addInitStuff(reload_name, tElem, attrs)
+
+      console.error('what is -element', 'par', tElem[0].outerHTML.length )
+     // utilsParent.storeTemplate(tElem, attrs);
+     // debugger
 
       function defineDirectiveDefaults() {
         if ( attrs.selectedIndex === null  ) {
@@ -58,8 +77,8 @@
         };
       }
       defineDirectiveDefaults();
-      utilsParent.defaultAttr('testAttr', '5', attrs)
-      utilsParent.storeUserContent(tElem);
+     // utilsParent.defaultAttr('testAttr', '5', attrs)
+    //  utilsParent.storeUserContent(tElem);
       //console.log('fxCompile','url',attrs);
       return {
         pre: function(scope, element, attrs, controller){
@@ -118,16 +137,17 @@
         config.quickListConfig = sh.dv(config.quickListConfig, {});
         config.quickFormConfig = sh.dv(config.quickFormConfig, {});
 
-        $scope.render = function render( utils, attrs, element ) {
-          if ( $scope.utils == null ) {
-            $scope.utils = utils;
-            $scope.templateContent = utils.templateContent.clone()
-            $scope.userTemplateContent = utils.userTemplateContent.clone()
+        $scope.render = function render( tH2,   attrs, element  ) {
+          if ( $scope.tH2 == null ) {
+            $scope.tH2 = tH2;
           } else {
-            utils = $scope.utils;
+            tH2 = $scope.tH2;
           }
 
-
+          tH2.resetTemplate()
+ 
+         // utils.renderAttempt($scope)
+         // utils.showElements(element)
 
           var config = scope.vm.config;
 
@@ -139,7 +159,7 @@
 
           //debugger
           config.fxReRender = function onReRender() {
-            $scope.render ();
+            $scope.render();
           }
 
           config.quickListConfig = sh.dv(config.quickListConfig, {});
@@ -201,7 +221,6 @@
           }
 
 
-
           if ( attrs ) {
             if (attrs.showTitle != null) {
               attrs.showTitle = attrs.showTitle
@@ -218,17 +237,17 @@
           function removeLayoutCols() {
             utils.templateContent.find('#containerCols').removeClass('quick-crud-container');
           }
-          utils.ifFalseHide(config.showList, '#quick-crud-leftcol');
-          utils.ifFalse(config.showList, removeLayoutCols);
-          utils.ifFalseHide(config.showList, '#btnRefresh');
-          utils.ifFalseHide(config.canCreate, '#btnNew');
+          tH2.ifFalseHide(config.showList, '#quick-crud-leftcol');
+          tH2.ifFalse(config.showList, removeLayoutCols);
+          tH2.ifFalseHide(config.showList, '#btnRefresh');
+          tH2.ifFalseHide(config.canCreate, '#btnNew');
 
-          utils.ifFalseHide(config.showForm, '#colRight');
-          utils.ifFalse(config.showForm, removeLayoutCols);
+          tH2.ifFalseHide(config.showForm, '#colRight');
+          tH2.ifFalse(config.showForm, removeLayoutCols);
 
-          utils.ifTrueShow(config.showFilter,
+          tH2.ifTrueShow(config.showFilter,
               '#filterSelect');
-          utils.ifTrueShow(config.showSettings,
+          tH2.ifTrueShow(config.showSettings,
               '#btnSettings');
 
           /*
@@ -239,7 +258,7 @@
            );
            */
 
-          utils.transclude('item-renderer', '#listHolder', true,
+          tH2.transclude('item-renderer', '#listHolder', true,
               null, false, false
           );
 
@@ -267,33 +286,19 @@
             };
 
 
-          }
+          } 
 
 
+          $scope.createWatchers(tH2);
 
-          $scope.createWatchers(utils);
-
-          var html = utils.getFinalTemplate();
-
-          //var html = utils.templateContent[0];
-          //console.log('quickcrud pre-html output', utils.templateContent.clone()[0] ); //.toString() ); //.clone());
-          // console.log('quickcrud pre-html output', utils.templateContent.clone()[0].toString() ); //.toString() ); //.clone());
-          function outerHTML(node){
-            return node.outerHTML || new XMLSerializer().serializeToString(node);
-          }
-          //console.log('quickcrud pre-html output', outerHTML(utils.templateContent.clone()[0]) ); //.clone());
-          //console.log('quickcrud pre-html output', attrs.id, outerHTML(utils.templateContent.clone().find('#listHolder')[0]) ); //.clone());
-          //console.log('quickcrud pre-html output', attrs.id, outerHTML(utils.templateContent.clone()[0])  ); //.clone());
-
-         // console.error('', 'html output', html.outerHTML);
-
-
+          html = tH2.getFinalOutput();
 
           var a = $('<div>empty</div>')
-          utils.finishContent(a)
+          a = null;
+
+          tH2.finishContent(a)
+
           return;
-
-
 
          // utils.finishContent(html)
           // element.append($compile(html)(scope));
@@ -489,6 +494,7 @@
           $scope.listData = data;
           var config = $scope.vm.config;
           config.list = data;
+
           if ( config.quickListConfig) {
             config.quickListConfig.list = data;
           }
@@ -704,11 +710,7 @@
           $scope.vm.config.quickFormConfig.fxChangeDataObject(item)
         };
 
-
-
         $scope.vm.config.quickListConfig.fxItemSelected = $scope.onSelectListItem;
-
-
 
         function autoComplete() {
           var self = $scope;
@@ -783,9 +785,6 @@
           }
         }
         autoComplete();
-
-
-
 
 
 

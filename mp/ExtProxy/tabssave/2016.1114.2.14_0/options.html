@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Replace this with your extension's title. -->
+		<title>Options</title>
+		<link rel="stylesheet" type="text/css" href="css/ext/options.css" />
+    <link rel="stylesheet" type="text/css" href="css/options.css" />
+    <script type="text/javascript" src="js/ext/options-setup.js"></script>
+	</head>
+	<body>
+		<nav class="sideBar">
+			<h1>Chrome</h1>
+			<ul>
+				<li><a href="chrome://history" target="_blank">History</a></li>
+				<li class="selected">
+					<a href="chrome://extensions" target="_blank">Extensions</a>
+					<ul>
+            <li id="extShortName">Extension Short Name</li>
+					</ul>
+				</li>
+				<li><a href="chrome://settings" target="_blank">Settings</a></li>
+				<li><a href="chrome://help" target="_blank">Help</a></li>
+			</ul>
+		</nav>
+		<header>
+			<!-- Replace this with your extension's title. -->
+			<h1 style="">
+        <span id="extName">Extension Name</span><a id="statsLink" class="hidden btnDonate btn-ochre internal_links" href="stats.html">Stats</a>
+        <span class="hidden postDonate titleSupporter">Thanks for supporting ClutterFree!</span>
+        <form target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post" class="preDonate titleSupport">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="GD2XSXXL34SDG">
+          <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" class="btn btnDonate btn-red topButton" />
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" style="visibility:hidden">
+        </form>
+      </h1>
+      
+		</header>
+		<!-- Replace everything below this point with your extension's options. -->
+    
+    <div class="settings-sections">
+      
+      <h2 class="settings-section-title">General Settings</h2>
+      
+        <section id="sync">
+          <h3>Sync Settings</h3>
+          <label for="syncStorage">
+            <input type="checkbox" id="syncStorage"/>
+            Sync settings across all your devices where you use Chrome with ClutterFree
+          </label>
+        </section>
+        
+        <section id="whitelist">
+          <h3>Whitelist</h3>
+          <p>Add URLs of websites or domains to whitelist</p>
+          <form id="whitelistAddForm">
+            <input id="whitelistInput" type="text" placeholder="c306.net or chrome://apps/">&nbsp;<button type="submit" id="whitelistAddButton">Add to whitelist</button>
+          </form>
+          <p>Manage whitelist</p>
+          <form class="form-horizontal" id="whitelistRemoveForm">
+            <select multiple="multiple" id="whitelistSelect" size="9">
+            </select>
+            <p></p>
+            <button id="whitelistRemoveButton" type="submit">Remove from whitelist</button>
+          </form>
+        </section>
+        
+        <section id="startStateDiv">
+          <h3>Starting state</h3>
+          <p>Start with the extension in switched 'On' state</p>
+          <select id="startState">
+            <option value="on">Start Switched ON</option>
+            <option value="off">Start Switched OFF</option>
+          </select>
+        </section>
+        
+        <section id="browserActionDiv">
+          <h3>Browser Button</h3>
+          <p>Select preferred action for clicking on extension's browser button</p>
+          <select id="browserAction">
+            <option value="duplicate">Duplicate current tab</option>
+            <option value="toggleState">Switch extension off/on</option>
+            <option value="popup">Show popup with options (default)</option>
+          </select>
+        </section>
+        
+        <section id="showContextMenuDiv">
+          <h3>Context Menu</h3>
+          <p>Select actions in context (right-click) menu</p>
+          <div id="contextMenuItemsDiv">
+            <label class="contextMenuItemLabels" for="contextMenuItemDuplicate"><input class="showContextCheckbox" type="checkbox" name="contextMenuItemDuplicate" id="contextMenuItemDuplicate" value="duplicate">Duplicate this tab</label>
+            <label class="contextMenuItemLabels" for="contextMenuItemWhitelist"><input class="showContextCheckbox" type="checkbox" name="contextMenuItemWhitelist" id="contextMenuItemWhitelist" value="whitelist">Whitelist this page (Allows duplicates)</label>
+            <label class="contextMenuItemLabels" for="contextMenuItemMoveToLast"><input class="showContextCheckbox" type="checkbox" name="contextMenuItemMoveToLast" id="contextMenuItemMoveToLast" value="moveToLast">Move this tab to end of page</label>
+            <label class="contextMenuItemLabels" for="contextMenuItemOff"><input class="showContextCheckbox" type="checkbox" name="contextMenuItemOff" value="off">No context menu</label>
+          </div>
+        </section>
+        
+        <section id="originalTabBehaviourDiv">
+          <h3>Duplicate link behaviour</h3>
+          <p>What to do to original tab when you click a link that's already open</p>
+          <select id="originalTabBehaviour">
+            <option value="closeAndSwitch">Close source tab and switch to tab with target link</option>
+            <option value="justSwitch">Switch to tab with target link without closing source tab</option>
+            <option value="closeAndStay">Stay on source tab, while preventing duplicate target tab from opening</option>
+          </select>
+        </section>
+      
+      <div class="settings-separater"></div>
+        
+        <h2 class="settings-section-title">About Clutter Free (and me)</h2>
+        
+        <section id="supportDonate" class="">
+          <h3 class="highlight title">Support!</h3>
+          <div class="preDonate">
+            <p>If you like Clutter Free,  please help me keep it going...</p>
+          </div>
+          <div class="hidden postDonate">
+            <p>Thanks a lot for your donation! Chewie :o3 might get some extra treats 8==3 tonight </p>
+          </div>
+          <form target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="GD2XSXXL34SDG">
+            <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" class="btn btnDonate btn-red" />
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" style="visibility:hidden">
+          </form>
+        </section>
+        
+        <section id="cFLinks">
+          <h3>Updates &amp; Reviews</h3>
+          <ul>
+            <li><a href="http://c306.net/apps/updates/app/clutterfree?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_changelogLink&utm_campaign=chrome_projects" target="_blank" class="external_links" id="c306_updatenotes" >Update notes</a> (a.k.a. Change Log)</li>
+            <li><a href="https://chrome.google.com/webstore/detail/iipjdmnoigaobkamfhnojmglcdbnfaaf/reviews?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=reviewsLink&utm_campaign=chrome_projects" target="_blank" class="external_links" id="cws_review" >Reviews</a> - Leave us a handsome one, will ya? :)</li>
+          </ul>
+        </section>
+        
+        <section id="feedback">
+          <h3>Feedback</h3>
+          Please use <a href="https://docs.google.com/forms/d/1Io6iamQ5Xlw7FoaffRo_tpGPfw_9GvtT4BaAk7wx3UE/viewform?entry.1545185881=Clutter+Free+-+Prevent+duplicate+tabs&entry.1097111967&entry.1652780603&entry.984758361=Say+good+things+about+us&entry.1210432706=When+we've+got+nothing+else+to+do&entry.1609176506" class="external_links" id="feedback" target="_blank">this form</a> to share your feedback and inputs on the extension.
+        </section>
+      
+        <section id="me">
+          <h3>Me</h3>
+          <p>Twitter: <a href="http://twitter.com/adityabhaskar" target="_blank" class="external_links" id="twitter_adityabhaskar">@adityabhaskar</a></p>
+          <p>Web &amp; the rest: <a href="http://c306.net/?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_homeLink&utm_campaign=chrome_projects" target="_blank" class="external_links" id="c306_home">c306.net</a></p>
+          <h4>Other Chrome Extensions &amp; Apps:</h4>
+          <ul id="extList">
+            <li><a href="https://chrome.google.com/webstore/detail/ndaldjfflhocdageglcnflfanmdhgfbi?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_tt_CWS&utm_campaign=chrome_projects" target="_blank" class="external_links" id="cws_ar">AcceleReader</a> - Super charge your reading experience in <a href="https://getpocket.com" target="_blank"  class="external_links" id="getpocket">Pocket</a> on the web and mobile.</li>
+            <li><a href="https://chrome.google.com/webstore/detail/hjheoelfkeadifffbnfalekganbennde?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_tt_CWS&utm_campaign=chrome_projects" target="_blank" class="external_links" id="cws_ntp">Pastel New Tab Page</a> - A simple new tab page with a random pastel colour background, and a clock in the middle of screen.</li>
+            <li><a href="https://chrome.google.com/webstore/detail/mndijfcodpjlhgjcpcbhncjakaboedbl?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_tt_CWS&utm_campaign=chrome_projects" target="_blank" class="external_links" id="cws_todotxt">Todo.txt for Chrome</a> - Task manager extension for that todo.txt file in your Dropbox. Works with other <a href="http://todotxt.com?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_todotxtcom&utm_campaign=chrome_projects" target="_blank" class="external_links" id="todotxtcom">Todo.txt</a> apps.</li>
+            <li><a href="https://chrome.google.com/webstore/detail/pbghjbbdfkjffaalmcfgelakmeckapnd?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Options_aC_CWS&utm_campaign=chrome_projects" target="_blank" class="external_links" id="cws_ac">autoConvert</a> - Automatically converts measurement units and currencies on any webpages you visit</li>
+          </ul>
+        </section>
+        
+      <div class="settings-separater"></div>
+      
+      <h2 class="settings-section-title">Advanced Settings</h2>
+      
+        <section id="showNotificationsDiv">
+          <h3>Notifications</h3>
+          <label for="showNotifications">
+            <input type="checkbox" id="showNotifications"/>
+            Show browser notifications when whitelist updated, or tabs restored. <em>(Default: On)</em>
+          </label>
+        </section>
+        
+        <section id="ignoreHashDiv">
+          <h3>Ignore hash</h3>
+          <label for="ignoreHash">
+            <input type="checkbox" id="ignoreHash" />
+            Close tabs with same base URLs but different hashes as duplicates. <strong>(Not Recommended)</strong>
+          </label>
+        </section>
+        
+        <section id="refreshOriginalDiv">
+          <h3>Refresh Original</h3>
+          <label for="refreshOriginal">
+            <input type="checkbox" id="refreshOriginal" />
+            Refresh original tab when switching to them after closing a duplicate. <strong>(Not Recommended)</strong>
+          </label>
+        </section>
+        
+        <section id="allowDuplicatesAcrossWindowsDiv">
+          <h3>Duplicates across Windows</h3>
+          <label for="allowDuplicatesAcrossWindows">
+            <input type="checkbox" id="allowDuplicatesAcrossWindows" />
+            Allow duplicate tabs across separate Chrome Windows, just not in the same one. <em>(Default: Off)</em>
+          </label>
+        </section>
+        
+        <section id="moveTabToWindowEndDiv">
+          <h3>Move duplicate to last tab</h3>
+          <label for="moveTabToWindowEnd">
+            <input type="checkbox" id="moveTabToWindowEnd" />
+            On detecting a duplicate link, move the original tab to the last position in window.
+          </label>
+        </section>
+        
+        <!-- Disabled section -->
+        
+        <section class="disabled hidden">
+          <h3>Show infobar</h3>
+          <p>Show infobar on duplicate tab, instead of closing it automatically</p>
+          <select id="showInfobar">
+            <option selected value="off">Close duplicates</option>
+            <option value="on">Show infobar, don't close duplicates</option>
+          </select>
+        </section>
+        
+        <section class="disabled hidden">
+          <h3>Keep newer tab</h3>
+          <label for="keepNewer">
+            <input type="checkbox" id="keepNewer" />
+            Keep the newer duplicate tab, and close the old one. <strong>(Not Recommended)</strong>
+          </label>
+        </section>
+        
+        <!-- End disabled section -->
+      
+		</div>
+    
+    <div id="cx-edit-help-content">
+      <div id="keepNewerHelp">
+      </div>
+      <div id="startStateDivHelp">
+      </div>
+      <div id="showContextMenuDivHelp">
+      </div>
+      <div id="originalTabBehaviourDivHelp">
+      </div>
+      <div id="ignoreHashDivHelp">
+      </div>
+      <div id="moveTabToWindowEndDivHelp">
+      </div>
+      <div id="allowDuplicatesAcrossWindowsDivHelp">
+      </div>
+      <div id="showNotificationsDivHelp">
+      </div>
+      <div id="refreshOriginalDivHelp">
+      </div>
+      <div id="showInfobarHelp">
+      </div>
+      <div id="whitelistHelp">
+      </div>
+      <div id="feedbackHelp">
+      </div>
+      <div id="meHelp">
+      </div>
+    </div>
+    <script type="text/javascript" src="js/ext/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/ls.js"></script>
+    <script type="text/javascript" src="js/constants.js"></script>
+    <script type="text/javascript" src="js/options.js"></script>
+	</body>
+</html>

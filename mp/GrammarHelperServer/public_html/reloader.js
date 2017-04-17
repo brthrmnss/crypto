@@ -167,7 +167,11 @@ window.reloadFile = function reloadFile(file, fx) {
     if ( file.endsWith('.js')) {
 
         if ( false == file.includes('://')) {
-            file = 'http://'+window.location.host + '/' + file
+            var slash = '';
+            if ( file.startsWith('/')) {
+                slash = '';
+            }
+            file = 'http://'+window.location.host + slash + file
             console.log('change file')
         }
 

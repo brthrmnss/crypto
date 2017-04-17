@@ -1,5 +1,4 @@
 //'use strict';
-
 (function(){
   var reload_name = 'quicklist2';
   var urlPath= 'g/js/quick/';
@@ -8,13 +7,14 @@
                                         $interpolate, transcludeHelper,
                                         $timeout, sh) {
 
-    var utils = transcludeHelper.new();
+    //var utils = transcludeHelper.new();
+    var utilsParent = transcludeHelper.new(this);
 
     if ( reloadableHelper ) {
       reloadableHelper.saveDirectiveCtx(reload_name, arguments)
     }
     // debugger;
-    var utilsParent = transcludeHelper.new(this);
+
     function link(scope, element, attrs, ctrl, transclude){
 
       var urlTemplate = '';
@@ -25,11 +25,10 @@
           function onCreateDomElements(html){
             var s = {};
             var ctrl = scope.vmC;
-            /*var templateContent = angular.element(html);
-             utils.templateContent = templateContent;
-             utils.userTemplateContent = templateOriginal;
-             utils.userTemplateContent = dictTemplates[attrs.title]
-             utils.userContent = element;*/
+
+            var utils = transcludeHelper.new();
+            utils.dictTemplates = utilsParent.dictTemplates;
+
             utils.loadTemplate(html, element, attrs);
 
             utils.copyContentGroup("header", '#headerContent');
@@ -51,18 +50,23 @@
               utils.templateContent/*.find('#quickListTemplate')*/.removeClass('panel-default');
             });
 
+            //console.error('what is template1', outerHTML(utils.templateContent[0]))
+
             s.copyListContentsOrListItems = function copyListContentsOrListItems(){
               //why: by default, we expect dev to make own list and pass it in
               if ( attrs.plainList == 'true') {
                 utils.templateContent.find('#bodyContent').empty();
                 var listContent = utils.copyContentGroup2("list", '#bodyContent');
               } else {
+              //  debugger
                 var listContent = utils.copyContentGroup2("list", '#listContent');
               }
 
             }
-
             s.copyListContentsOrListItems();
+
+            //console.error('what is template2', outerHTML(utils.templateContent[0]))
+
             //enable user to specify listContent area
 
             var config = scope.vmC.config;
@@ -96,6 +100,8 @@
             //replace repeat with vmC.items;
 
             //$interpolate(attrs.items)($scope);
+
+            //console.log('items', vmC.items)
 
             var wrapList = '<md-list-item class="md-3-line_ test-background" ng-repeat="item in vmC.items" ng-click="goTo(item)"></md-list-item>'
             utils.ifDefined(attrs.itemRendererClass, function () {
@@ -135,9 +141,15 @@
 
             html = utils.templateContent[0];
 
-            console.log('QuickList.init', ctrl.title, ctrl.grid);
+            console.error('QuickList.init.2', ctrl.title, ctrl.grid);
 
-            element.append($compile(html)(scope));
+           // var html2 = $('<span>vvvvvvvv vvvvv</span>')
+            //html = html2;
+            //console.error('what is html?', html)
+ 
+            //console.error('what is html2? ', outerHTML(html))
+
+            element.html($compile(html)(scope));
 
             //will set the selected index based on value, of not already set
             if ( selectedIndex != null &&
@@ -263,7 +275,12 @@
     };
 
     var controllerReference = null;
-    var compile = function (tElem, attrs) {
+    var compile = function (tElem, attrs,repeat) {
+
+      var newerDdo = reloadableHelper.recompileDirective(reload_name,arguments, this,  repeat)
+      if ( newerDdo ) {
+        return newerDdo
+      };
 
       /*templateOriginal = tElem.clone();
        dictTemplates[attrs.title] = templateOriginal;
@@ -277,7 +294,10 @@
       }
       defineDirectiveDefaults();
 
-      utils.storeTemplate(tElem, attrs);
+      utilsParent.storeTemplate(tElem, attrs);
+      utilsParent.storeUserContent(tElem);
+      utilsParent.showElem(tElem, 'Initial Thing')
+     // debugger
       //utils.storeUserContent(tElem);
       return {
         pre: function(scope, element, attrs, controller){
@@ -360,7 +380,7 @@
       console.log('select', item, '...change')
       $scope.goTo(item);
     }
- 
+
 
     $scope.selectIndex = function selectIndex(index) {
       $scope.$apply(function () {
@@ -387,6 +407,7 @@
     var _app = defineQuickReloadingDir();
     _app.reloadableController(reload_name+'Ctrl', Ctrl);
     _app.reloadableDirective(reload_name, Dir);
+
   } else {
     //debugger;
     app.reloadableController(reload_name+'Ctrl',  Ctrl);

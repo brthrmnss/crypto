@@ -117,6 +117,8 @@ function defineUtils() {
 		return typeof objectOrString == 'string'
 	}
 
+	u.cid = callIfDefined;
+	u.callIfDefined = u.cid;
 
 	self.clone = function clone(e) {
 		var eee = JSON.stringify(e)
@@ -546,7 +548,8 @@ function defineUtils() {
 			ui.attr('id', cfg.id);
 		}
 		ui.on('change', function onChange() {
-			console.error('y',  this.value );
+			console.debug('selected from list',  this.value );
+			u.cid(cfg.fxDone, this.value)
 		})
 		u.addUI(cfg, ui)
 	}
@@ -610,8 +613,16 @@ function defineUtils() {
 		btn.css('width', '10px')
 		btn.css('display', 'inline-block');
 		u.addUI(cfg, btn)
+		return cfg
 	}
 	uiUtils.addSpace = uiUtils.spacer;
+
+	uiUtils.spacerSlim = function spacer(cfg, fxD) {
+		var cfg2 = uiUtils.addSpace(cfg, fxD)
+		cfg2.ui.css('width', '2px')
+		return cfg2
+	}
+
 
 	uiUtils.disable = function disable(id, fxD) {
 		$(id).css('opacity', 0.3);
@@ -718,6 +729,12 @@ function defineUtils() {
 		}
 		if ( cfg.tooltip ) {
 			ui.attr('title', cfg.tooltip)
+		}
+		if ( cfg.title ) {
+			ui.attr('title', cfg.title)
+		}
+		if ( cfg.html ) {
+			ui.html( cfg.html)
 		}
 		cfg.ui = ui;
 		u.lastCfg = cfg;

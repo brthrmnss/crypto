@@ -1,0 +1,25 @@
+#test for basic csv
+log this test will enter the EU Trading 2 subsite
+log Ensure user can see 2 subsite tabs.
+
+msg Test Tabs
+
+
+fx closeallpopups
+fx viewSubsite('EU Trading2')
+fx ensureTab('Subsite Tab 1', false,true,false)
+fx ensureTab('Subsite Tab 2', false,true,false)
+fx leaveSubsite()
+
+
+fx ensureTabGone('Subsite Tab 1', false,false)
+fx ensureTabGone('Subsite Tab 2', false,false)
+
+
+fx viewSubsite('EU Trading2')
+fx ensureTab('Subsite Tab 1', false,true,false)
+fx ensureTab('Subsite Tab 2', false,true,false)
+fx leaveSubsite()
+
+
+endtest

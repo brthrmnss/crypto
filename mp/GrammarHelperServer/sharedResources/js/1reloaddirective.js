@@ -69,7 +69,10 @@ reloadableHelper.recompileDirective = function
     recompileDirective(name, args, _this, preventRecursion) {
     var args = Array.prototype.slice.call(args);
     var ctx =  reloadableHelper.dirs[name]
-    // if ( ctx == null ) return;
+
+
+    if ( ctx == null ) { console.error('nothing for', name)  }
+     if ( ctx == null ) return;
     /*if ( ctx.createdOriginalDDO != true  ) {
      ctx.createdOriginalDDO = false; //skip first time
      return
@@ -77,6 +80,17 @@ reloadableHelper.recompileDirective = function
     //q: why is repeat important?
     if (  ctx.ddoNew  && preventRecursion == undefined
         && ctx.ddoNew.runOnce == null ) {
+        //console.warn('forwarding', tElem, repeat);
+        args.pop();
+        args.push(true); //preventRecursion
+        ctx.ddoNew.runOnce = true;
+        return ctx.ddoNew.compile.apply(_this, args);
+    }
+
+
+    if (  ctx.ddoNew  && preventRecursion == undefined
+        && ctx.ddoNew.runOnce == true ) {
+        console.error('reloading', name)
         //console.warn('forwarding', tElem, repeat);
         args.pop();
         args.push(true); //preventRecursion

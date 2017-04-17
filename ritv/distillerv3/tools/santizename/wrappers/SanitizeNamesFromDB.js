@@ -48,7 +48,7 @@ function SanitizeNamesFromDB() {
                 "imdb_series_id": "tt0388629"
             }
 
-            self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest () {
+            self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest_episodeToSave () {
                 self.proc('item updated')
             });
         }
@@ -141,8 +141,9 @@ function SanitizeNamesFromDB() {
                         helper.updateEpidoe(obj.dataValues)
 // asdf.g
                         if ( token.oldEpisode == null  ) {
+                            self.proc('Warning: old episode is null, so to avoid empty update, ... ginore this ', fxDoneAddingEpisode)
                             sh.callIfDefined(fxDoneAddingEpisode)
-                            self.proc('Warning: old episode is null, so to avoid empty update, ... ginore this ')
+                            console.error(fxDoneAddingEpisode, 'is null')
                             return;
                         }
 
@@ -250,7 +251,7 @@ function SanitizeNamesFromDB() {
                 indexes: [{unique: true, fields: ['id']}]
             },
             fields:{
-               // id:0,//why:cannot bulk create records if id field is not specified
+                // id:0,//why:cannot bulk create records if id field is not specified
                 originalFilename:'',
                 episode_name:'',
                 show_name:'',
@@ -260,9 +261,9 @@ function SanitizeNamesFromDB() {
                 imdb_series_id: "",
                 seasonNumber: 0, episodeNumber: 0,
                 adminNotes:"",
-                episode:true, 
-                series:true, 
-                
+                episode:true,
+                series:true,
+
                 //user_id: 0,
                 //year: "",
                 //rating: ""
@@ -290,13 +291,25 @@ function SanitizeNamesFromDB() {
 
     }
 
-    p.addFileListToDatabase =function addFileListToDatabase(fileList) {
+    p.addFileListToDatabase =function addFileListToDatabase(fileList, skipDBImport ) {
         var contents = sh.readFile(fileList);
         //contents = contents.replace(/\r/g, "");
         var files = sh.breakStringIntoLinesSafe(contents)
         files = self.utils.filterFilesOnly(files)
         files = self.utils.filterStrings(files, self.settings.fileFilter)
 
+        self.data.files = files;
+        var filesNormalized = [];
+        sh.each(files, function noramlizeFile(k,file) {
+            var file2 =  sh.fs.norm(file)
+            filesNormalized.push(file2);
+        })
+        self.data.filesNormalized = filesNormalized;
+
+        if ( skipDBImport ) {
+            self.proc('skipDBImport')
+            return;
+        }
 
         self.addFilesToDatabase(files)
     }
@@ -718,8 +731,8 @@ function SanitizeNamesFromDB() {
                                 episode.episode_name = content.episode_name;
                                 episode.imdb_series_id = content.imdb_series_id;
                                 episode.episode = true;
-                               // console.log('sdf', 'what', episode)
-                               // sh.exit('..why is imdb_id not saved?')
+                                // console.log('sdf', 'what', episode)
+                                // sh.exit('..why is imdb_id not saved?')
                             } else {
                                 sh.copyProps(content, token.episode,null, true)
                                 //token.episode = content; //replace with what was in database ...
@@ -748,7 +761,7 @@ function SanitizeNamesFromDB() {
                      */
 
 
-                    self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest () {
+                    self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest_addNewEpisodeToDatabase () {
                         //self.proc('item updated');
                         console.log('22222222222222222222222222222222222222222')
                         cbB();
@@ -821,7 +834,10 @@ function SanitizeNamesFromDB() {
 
             self.data  = {};
             self.data.notFound = []
+            self.data.foundImdbContent = []
             self.data.countFound = 0;
+            self.data.countValid = 0; 
+            self.data.countMissing = 0; 
             self.data.imdbInfosNotFound = []
 
             if ( imdbIds) {
@@ -888,7 +904,7 @@ function SanitizeNamesFromDB() {
         p.onDoneGoingingThroughFiles =  function onDoneGoingingThroughFiles(done) {
             self.proc('mode 2', 'coundFound', self.data.countFound)
             self.proc('completed iterating over files')
-           // sh.exit('why is countFound always 0count is always 0')
+            // sh.exit('why is countFound always 0count is always 0')
             var errorRows = [];
             sh.each(self.data.notFound, function showItem(i,error) {
                 var row =[
@@ -897,17 +913,17 @@ function SanitizeNamesFromDB() {
                 //console.error(i, error)
                 if (error.imdb_series_id == null  ) {
                     var row =[
-                         error.name,  error.imdb_id,
+                        error.name,  error.imdb_id,
                         ' ', error.name];
                 }
                 // console.error( sh.join(row) );
                 errorRows.push(sh.join(row));
             });
 
-          //  sh.exit('stop after seeing errors')
+            //  sh.exit('stop after seeing errors')
             if ( self.settings.mode2 == true ) {
                 if (self.settings.fxDoneErrors) {
-                    self.settings.fxDoneErrors( errorRows )
+                    self.settings.fxDoneErrors( errorRows , self.data)
                 }
 
 
@@ -1010,28 +1026,41 @@ function SanitizeNamesFromDB() {
                             }
                             var jsonInfo = {};
                             jsonInfo.imdb_id = lookFor_imdbInfo.imdb_id;//c
-
                         }
-
 
                         //self.proc('searching for', JSON.stringify(lookFor_imdbInfo))
                         self.proc('searching for', self.utils.getNameForImdb(lookFor_imdbInfo))
-
+                        //todo, search for file based on filename? b/c might have mirrored files
                         //query = {};
                         //  query.imdb_series_id = jsonInfo.imdb_id;
                         self.findFileInToDB(jsonInfo, function onFoundResultsInSantiziedDatabase(imdbs) {
-                            var dbg = [jsonInfo,0]
+                            var dbg = [jsonInfo, 0]
                             self.data.countFound++ //number of sea
                             //asdf.g// rch
 
                             self.proc(sh.t, 'found', imdbs.length, jsonInfo)
 
 
-                            if ( imdbs.length > 0  ) {
+
+                            var imdbInfoMatch = imdbs[0];
+
+                            if ( self.settings.fxFilterFile) {
+                                imdbInfoMatch = self.settings.fxFilterFile(imdbs)
+                               // imdbInfoMatch.localFilePath.startsWith('') //TODO match to dir name
+                            }
+
+                            //IOW: Get alll matchin imdb, then filter it late4r for proper match based on filename ... input?
+                            //from input to settings of path?
+                            if ( imdbInfoMatch ) {
+                                self.data.countValid++ //
+                                
                                 //sh.exit('no records in db')
+                                self.data.foundImdbContent.push(imdbInfoMatch)
                                 fxDone()
                             } else {
                                 console.error('missing')
+                                self.data.countMissing++ //
+
                                 //sdf.g
                                 //sh.x('no records in db');
                                 if ( self.settings.findIMDBIfMissing ) {
@@ -1063,7 +1092,7 @@ function SanitizeNamesFromDB() {
                         });
                     },
                     function recordsProcessed() {
-                       // sh.exit('no records in db 3')
+                        // sh.exit('no records in db 3')
                         sh.callIfDefined(fxDone_processingFilenames)
 
                     }
@@ -1130,7 +1159,7 @@ function SanitizeNamesFromDB() {
                 }
             }
             //asdf.g
-           // console.error('query', query)
+            // console.error('query', query)
             //self.dbTo.dbHelper2.settings.logConsole =  self.settings.logConsole
             self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
                 if ( self.settings.logConsole != false )
@@ -1314,9 +1343,9 @@ function SanitizeNamesFromDB() {
                 name = sh.join(imdb.name, imdb.imdb_id, 'Episode',
                     's'+imdb.seasonNumber+'x'+ 'e'+imdb.episodeNumber)
                 //sh.exit('what is the espideo thing?', imdb)
-               // asdf.g
+                // asdf.g
             }
-         //   name = sh.join(imdb.name, imdb.imdb_id)
+            //   name = sh.join(imdb.name, imdb.imdb_id)
             return name
         }
         //files = self.utils.filterStrings(files, self.settings.filterFiles )

@@ -1,0 +1,31 @@
+{
+   "background": {
+      "scripts": [ "js/constants.js", "js/ls.js", "js/gacode.js", "js/workhorse.js", "js/urlshorteners.js", "js/bgscript.js" ]
+   },
+   "browser_action": {
+      "default_icon": {
+         "19": "img/dt19.png",
+         "38": "img/dt38.png"
+      },
+      "default_popup": "popup.html",
+      "default_title": "__MSG_browserButtonTitle__"
+   },
+   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+   "default_locale": "en",
+   "description": "__MSG_appDescription__",
+   "icons": {
+      "128": "img/dt128.png",
+      "16": "img/dt16.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4F2SzP6DZiENrpMLBLe1Iqow0IzvoPyUhTLzbHhnAgvxTFT2ENpnsw9ux32z42Gcph2RHyE7+RqCBHKhIzPRbAgO7CzGi8wezTc0N/ToTlNY2MGdS/I3UjiFZmgc49WkNpf4sM2j/Y0yK9CjdWKIKB+XR5aCsnxf9Q90sfmNmFKohi8wX9raJ0nA0hAvipwoUQk7mkZJPj0xjvxFdDLqrqH6VdwNjK6lHOFNfLKmajpI/+zcv4G15h7mLYqvt0rmzplFmgW0mcX4iBIiSL7RneVNd19cdmy/WtwNAcn9YVrRQ1LdLZH7HRx4l9kHypnI76LzZbrnaqKqitgX9vzC9QIDAQAB",
+   "manifest_version": 2,
+   "name": "__MSG_appName__",
+   "offline_enabled": true,
+   "options_page": "options.html",
+   "permissions": [ "contextMenus", "notifications", "alarms", "storage", "unlimitedStorage", "tabs", "\u003Call_urls>" ],
+   "short_name": "__MSG_shortName__",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "2016.1114.2.14",
+   "version_name": "2016.1114.2.14 release",
+   "web_accessible_resources": [ "img/*" ]
+}

@@ -1,0 +1,25 @@
+{
+   "author": "ebooklogin2@protonmail.com",
+   "content_scripts": [ {
+      "js": [ "js/lib/jquery-3.1.1.min.js", "js/script.js",
+         "js/lib/socket.io-1.2.0.js",
+         "js/lib/reloaderChromeExt.js",
+         "js/ListExtractorScraper.js",
+         "js/amz_hijacks.js"],
+      "matches": [ "*://*.bookzz.org/*" ]
+   } ],
+   "description": "This extension compares amazon against ebooks.wtf",
+   "homepage_url": "https://ebooks.wtf/",
+   "icons": {
+      "128": "images/128.png",
+      "16": "images/16.png",
+      "256": "images/256.png",
+      "48": "images/48.png"
+   },
+   "key": "M7IBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmj2BvE1ZJfYAZ+4n7wnfEXLkb9B9sIidec5kiTkpks/P3uxh7YX0nhClAtLEAYjBbktgLdbqHQDLzPGViuErYJl/8k02R3EDe8PssnZf9MDa7u2hws6UXmosERkEZzZ9hk2C1ebNlkbfhan2V8qgR+vUOoEn5XyYQqZ5HChp3snogwE9JuK4ySfo8yfGe49TM8F/oHMARrNNDWo1lfpov/57B2AbkC8PFulbDampgI6umKvE8a16b2VRYsjrVoqReTx1jgA4MvlXd1cv44FxSNDpesnNwlfpDK9W6m+FxD6NJ6D9lDs1i+NuMNE/6f3aKlj9L4zGsa3YzJkGjOna7QIDAQAB",
+   "manifest_version": 2,
+   "name": "Bookzz",
+   "permissions": [ "activeTab", "https://ebooks.wtf/" ],
+   "update_url": "ehttps://clients2.google.com/service/update2/crx",
+   "version": "0.5"
+}

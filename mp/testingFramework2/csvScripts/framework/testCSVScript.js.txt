@@ -1,0 +1,103 @@
+
+#test for basic functionality
+click hat
+click red ball
+
+
+
+def gotopage
+      tH.setDefaultAddNext()
+        var pageName = arg2
+        var pageMenuLinkText = arg1
+      tH.data.maxTimesNext = 50;
+        tH.addSync(function showStuffLater() {
+        if ( window.$scope != null ){
+         return; //live don't need it
+        }
+             var y =  tH.findByContent(pageName, '.x42-nav-body-container' )
+              var y2 = tH.findByContent('pt-table')//, 'pt table did not load')
+              y2.hide()
+              y.hide()
+                   setTimeout(function () {
+                            y.show(); }, 1500)
+              setTimeout(function () {
+              y2.show(); }, 3500)
+        });
+      tH.click(pageMenuLinkText , 'x42-nav-sidebar');
+      tH.waitForShow(pageName, 'did not switch to '+pageName+' page', '.x42-nav-body-container' )
+      tH.waitForShow('pt-table', 'pt table did not load')
+      tH.log('Navigated to', pageName);
+
+      tH.resetDefaultAddNext()
+end
+
+
+fx gotopage; Revenue; Revenue
+
+log changed to revenue page
+wait 2
+
+fx gotopage; External Revenue; External Revenue
+
+
+
+endtest
+
+click #aaaaaa
+
+def testaddorder
+    function cloneTab_QuickIFTabExists() {
+        //tH.setDefaultAddNext();
+        tH.click('333');
+        // tH.resetDefaultAddNext();// = false;
+    }
+    tH.setDefaultAddNext();
+    tH.click('#1111');
+    //  tH.waitForShow( '#dialogCloneTabFrom')
+    tH.click('2222')
+    tH.addSync(cloneTab_QuickIFTabExists)
+    tH.click('4444')
+    tH.resetDefaultAddNext();// = false;
+end
+
+click #bbbb
+fx testaddorder
+click #ccccc
+endtest
+
+eval run_basic_fx
+    tH.logNow('evaled')
+end
+
+fx run_basic_fx
+
+def test-args
+    console.log('1', arg1);
+    console.log('2', arg2);
+    console.log('3', arg3)
+    tH.logNow('args', arg1, arg2, arg3)
+end
+ 
+
+fx test-args; 5; 6; 8
+
+
+def test_def
+    tH.logNow('test_def', arg1 )
+end
+def clickAnItem
+    //#item; howManyItems
+    console.log('1', arg1);
+    tH.logNow('clicking', arg1)
+    tH.defaultAddNext = true;
+    tH.click(arg1, '#divsContainerCounter' )
+    tH.callFx('test_def',  'hellooo' )
+    tH.defaultAddNext = false;
+end
+
+
+fx clickAnItem; 6
+fx clickAnItem; 2
+
+
+

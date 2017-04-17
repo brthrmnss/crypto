@@ -1,0 +1,256 @@
+#http://rr413c1n7.ms.com:10051/ccrt/index_subsites.html#/externalRevenuePT?testName=testCSV&arg1=csvScripts%2Fsmoketest.js.txt&loadTestFramework=true&dialogSearchTests=true
+http://rr413c1n7.ms.com:10051/ccrt/index.html#/externalRevenuePT?testName=testCSV&arg1=csvScripts%2Fsmoketest.js.txt&loadTestFramework=true&dialogSearchTests=true
+
+#test for basic csv
+log this test verifies create subsite functionality
+
+#fx closeallpopups
+
+status ok
+
+
+
+
+
+function clearAnnotations() {
+   var tClass = 'timeAnnotation';
+
+    //  uiUtils.removeWithClass(tClass)
+
+
+  uiUtils.removeWithClass(tClass)
+}
+
+function addAnnotation(text) {
+
+//} fix this
+    var tClass = 'timeAnnotation';
+
+       var link = $(".tree.x42-nav-sidebar-item.is-a-link.is-current")
+       var div = link.find('.'+tClass);
+       var linkName = div.text().trim();
+       var div = $("[forLink='"+linkName+"']");
+
+
+    if ( div.length == 0  )  {
+
+        var cfg = uiUtils.addFloatingDiv()
+        var div = cfg ; //cfg.ui;
+       // div.text('holder')
+        div.attr('forLink', linkName);
+        div.css('background', '#f2f2f2')
+        div.css('padding', '5px')
+        /*if ( text ) {
+            div.text(text);
+        }*/
+        div.addClass(tClass);
+        div.css('z-index', 10000);
+        console.log('.........',div);
+
+          uiUtils.moveAToB(div, link)
+          uiUtils.pos.adjust(div, -5, null, null, 20)
+     }
+
+        var cfg = uiUtils.addSpan()
+        var divA =  cfg.ui;
+        divA.text('ccccccccccccccb')
+        if ( text ) {
+            divA.text(text+' ');
+        }
+        div.append(divA)
+
+}
+fx.clearAnnotations();
+fx.addAnnotation('test'); 
+fx.addAnnotation('test2');
+//endtest
+fx.clearAnnotations();
+
+function waitForLoadPtLoad(tabName) {
+    console.log('x')
+    tH.waitForLoad = function waitForLoad(jquery, waitForFailureReason, parentJq, times ) {
+        console.log('...', 5)
+        var s = 'Error Could not load tab'
+        var stepMsg = [waitForFailureReason,'(waitForLoad) ',
+            jquery, parentJq, s].join(' ')
+
+
+        tH.waitForError = stepMsg;
+        tH.testWaitforfxFail = function testWaitforfxFail() {
+              //debugger
+              tH.fxNow('addAnnotation', tabName+' failed')
+        }
+        tH.waitFor(function isPtTableVisble_(){ //waitForHide
+            var ptTable = $('pt-table')
+            console.log('...', 4, ptTable.css("opacity"), ptTable.is(":visible"))
+            tH.moveCursorTo(ptTable);
+            //debugger;
+            if ( ptTable.length == 0 ) {
+                console.warn('jqueryIs 0 length', jquery);
+                return false;
+            }
+            if ( ptTable.css("opacity") != "1") {
+                return false;
+            }
+            return true==ptTable.is(":visible");
+        }, 1, null, false );
+    };
+    tH.waitForLoad()
+}
+
+#fx.waitForLoadPtLoad()
+#endtest
+
+function getNavMenuLinks( clickLinks, maxLinksToClick, clickTabs) {
+
+    var links =     $('x42-tree').find('.tree-label-anchor')
+    var links2 = links.filter(function filterInvalidLinks(i){
+        //
+        var ui = $(this)
+        //ui = ui.find('a')
+        var hasHref = ui.attr('href') != null
+        //console.debug('links', i, ui, hasHref, ui.attr('href'))
+        if ( hasHref ) {
+            return true;
+        }
+        return false;
+    })
+
+    console.debug('links', links.length)
+    console.debug('links2', links2.length)
+
+    if ( clickLinks ) {
+
+    if ( maxLinksToClick == null ) { maxLinksToClick = links2.length }
+
+         var linkNames = [];
+              $.each(links2,
+                    function onClick_NavLink(k,ui) {
+                        var navLink = $(ui)
+                        // debugger;
+                        var linkName = navLink.text().trim()
+                        console.debug('click link', k)
+
+                        //var skipTabs = ['+', 'Custom']
+                        //if ( skipTabs.indexOf(tabName) != -1  ) {
+                        //    return;
+                        //}
+                        if ( k <= maxLinksToClick ) {
+                            //tH.click(tabName, '#tabHolder');
+                            navLink.offsetWidthForAnnotation = true;
+                            tH.click(navLink);
+                            tH.wait(2);
+                           if ( clickTabs ) {
+                               // tH.addStep(function findTabsOnPage() {
+                                    //tH.fxNow('findTabs', 2);
+                                    tH.fx('findTabs', 2, linkName);
+                                //    tH.test.cb()
+                               // })
+                            }
+                            //navLink.click();
+                        }
+                        linkNames.push(linkName);
+                    }
+                 );
+
+        console.debug('clicking nav links', linkNames)
+
+    } else {
+        if ( clickTabs ) {
+                tH.fx('findTabs', 2);
+        }
+    }
+
+            //TODO: make a tH.fxNow .. that wraps it in a step ...
+
+    return links2
+
+
+}
+
+
+
+//getNavMenuLinks()
+fx.getNavMenuLinks(  true,3, true)
+
+
+function findTabs(maxTabs, linkName) {
+    var tabs =  $('#tabHolder').find('li.uib-tab:visible')
+    console.debug('tabs', maxTabs, tabs.length);
+    var tabNames = [];
+    if ( maxTabs ) {
+        tH.addStep(function clickTabs() {
+            $.each(tabs, function onClick(k,ui) {
+                var tab = $(ui)
+                // debugger;
+                console.debug('booo', k)
+                var tabName = tab.text().trim()
+                var skipTabs = ['+', 'Custom']
+                if ( skipTabs.indexOf(tabName) != -1  ) {
+                    return;
+                }
+                if ( k <= maxTabs ) {
+                    tH.click(tabName, '#tabHolder');
+                    //fx.waitForLoadPtLoad()
+                    tH.msgStatus('loading tab', tabName);
+                    //tH.wait(3)
+                    // tH.wait(2)
+                    tH.fx('waitForLoadPtLoad', tabName)
+                    return;
+                }
+                tabNames.push(tabName);
+            });
+
+            tH.test.cb()
+         });
+     }
+    console.debug('tabNames', tabNames);
+    return tabs
+}
+
+#fx.findTabs(2);
+
+
+
+function clickkForX() {
+    var table = $('pt\\:remote-table');
+    $('pt-table').css('opacity');
+    return tabs
+}
+
+
+
+findTabs()
+
+
+
+function testFx(a,b,c) {
+    console.log(a,b,c)
+    console.log('ok')
+    function breakit () {
+
+    };
+    return
+}
+
+fx.testFx('g')
+
+endtest
+
+
+
+
+
+log test
+
+
+
+$('x42-tree').find('x42-tree-node').find('[level=3]').find('.tree-label-anchor')
+
+$('x42-tree').find('.tree-label-anchor')
+
+
+fx waitForLoadPtLoad
+
+
+endtest

@@ -1,0 +1,12 @@
+#test for love
+click hat
+click red ball
+
+def test-args
+    console.log('1', arg1);
+    console.log('2', arg2);
+    console.log('3', arg3)
+end
+
+
+fx test-args 5 6

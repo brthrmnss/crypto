@@ -1,0 +1,29 @@
+#test for basic csv
+log this test will enter the EU Trading 2 subsite
+log Will create 2 tabs on two pages ,
+log Then verify tabs have been created.
+
+fx closeallpopups
+
+fx leaveSubsite();
+
+fx refreshSubsites('EU Trading2');
+msg deleting the subsite
+fx removeSubsite('EU Trading2');
+
+msg creating the subsite
+msg creating the subsite3
+fx createSubsite('EU Trading2');
+
+fx createTab(0,false, 'Subsite Tab 1');
+fx createTab(0,false, 'Subsite Tab 2');
+
+
+fx leaveSubsite();
+
+fx ensureTabGone('Subsite Tab 1', false)
+fx goToSubsite('EU Trading2')
+fx ensureTab('Subsite Tab 1', false, true, false)
+
+
+endtest

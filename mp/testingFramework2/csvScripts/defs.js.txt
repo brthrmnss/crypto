@@ -1,0 +1,1100 @@
+#test for basic csv
+#load this iat runtime from the main page
+#can defs be shared after test has run? i hope so
+#when change defs, rerun last test ...? , so add to index as well
+log creating definitions
+
+
+
+
+
+
+def y
+    window.gsdf.gsdf = 'j'
+end
+#fx y
+
+def - alert
+    alert('in alert')
+endeval
+
+
+def - closeallpopups 
+    window.$scopeSubsites.popups.hideAllDialogs()
+    //window.$subsitesScope.popups.hideAllDialogs()
+end
+
+def - showdropdown
+    tH.wait(0.5);
+    var x42NavBarNav_DropDown = $('ul.navbar-nav').find('li.dropdown');
+    //x42NavBarNav_DropDown.addClass('open')
+    x42NavBarNav_DropDown.mouseenter();
+    tH.waitForShow('Create New Subsite', 'dropdown didnt show',
+     '#dialogNavBar_SubsiteMenu')
+endeval
+
+def hidedropdown
+    tH.wait(0.5);
+    var x42NavBarNav_DropDown = $('ul.navbar-nav').find('li.dropdown');
+    x42NavBarNav_DropDown.mouseleave();
+    //x42NavBarNav_DropDown.removeClass('open')
+endeval
+
+
+def create-tab
+
+    function cloneTab_QuickIFTabExists(){
+        var indexTab = 0;
+        if ( arg1  ) {
+            indexTab = arg1;
+        }
+        var name = window.$scopeSubsites.tableHelper
+        .data.layoutTabs[indexTab].name
+        var expectedName = name + ' (copy)'
+
+        var existingTab = tH.findByContent(expectedName, '#tabHolder')
+        if ( existingTab.length > 0 ) {
+            console.log('found eexisting copy of clone');
+
+            tH.logNow('found existing tab', expectedName )
+            tH.clickNext('Cancel', '#dialogCloneTabFrom');
+            return;
+            var btnCancel = tH.findByContent('Cancel', '#dialogCloneTabFrom')
+            btnCancel.click()
+            return
+        } else {
+
+        }
+        tH.logNow('creating the new tab', expectedName )
+        window.$scopeSubsites.layoutToCopy = [name]
+        window.$scopeSubsites.$apply()
+
+        var selectList = $('#dialogCloneTabFrom').find('select')
+        var first = selectList.find('option').first()
+        first.prop('selected', true);
+        first.click();
+
+        tH.clickNext('OK', '#dialogCloneTabFrom');
+    }
+    tH.setDefaultAddNext()
+    tH.logNow('running create tab?')
+    // cloneTab_QuickIFTabExists();
+    tH.click('#dialogAddNewTab');
+    console.log('clonned tab', $('#dialogAddNewTab'));
+    tH.waitForShow( '#dialogCloneTabFrom', did not see clone tab')
+    //  tH.click('')
+    tH.addSync(cloneTab_QuickIFTabExists)
+    tH.resetDefaultAddNext();// = false;
+end
+
+def verifySubsiteTab
+    // tH.setDefaultAddNext()
+    function cloneTab_QuickIFTabExists(){
+        var indexTab = 0;
+        if ( arg1  ) {
+        indexTab = arg1;
+        }
+        var name = window.$scopeSubsites.tableHelper
+        .data.layoutTabs[indexTab].name
+        var expectedName = name + ' (copy)'
+
+        var existingTab = tH.findByContent(expectedName, '#tabHolder')
+        if ( existingTab.length > 0 ) {
+        console.log('found eexisting copy of clone');
+        return
+        }
+         tH.fail('missing subsite tab ', expectedName)
+    }
+    tH.addSync(cloneTab_QuickIFTabExists)
+
+    //  tH.resetDefaultAddNext();// = false;
+end
+#fx verifySubsiteTab; 1
+
+
+
+def refreshSubsites(subsiteName)
+    tH.fx('showdropdown' )
+    tH.fx('leaveSubsite' )
+    tH.wait(.5)
+
+    tH.logNow('go to subsite')
+
+    tH.fx('ensureAllSubsiteTabsGone')
+
+    tH.addStep(function refreshSubsiteList(){
+        window.$scopeSubsites.subsites.remote.sites.listItems( function() {
+            tH.wait(.5)
+            // tH.resetDefaultAddNext()
+             tH.test.cb()
+        })
+    });
+
+    if (subsiteName) {
+        tH.click(subsiteName, '#holderMySubsiteList')
+    }
+
+       tH.fx('hidedropdown');
+end
+
+
+
+def revertTabs(subsiteName)
+    tH.fx('showdropdown' )
+     tH.fx('leaveSubsite' )
+    tH.wait(.5)
+
+    tH.logNow('go to subsite')
+
+    tH.fx('ensureAllSubsiteTabsGone')
+
+    tH.addStep(function refreshSubsiteList(){
+        window.$scopeSubsites.subsites.remote.sites.listItems( function() {
+            tH.wait(.5)
+            // tH.resetDefaultAddNext()
+             tH.test.cb()
+        })
+    });
+
+    tH.addStep(function clearTabs(){
+        window.$scopeSubsites.utilsFx.revertUITabs(false, function onTabsUpdated(){
+
+        })
+        tH.test.cb();
+    });
+
+
+    tH.wait(2)
+    tH.log('... recreating tabs');
+    //return
+    tH.addStep(function clearTabs(){
+        window.$scopeSubsites.utilsFx.revertUITabs(true, function onTabsUpdated(){
+              tH.test.cb();
+        })
+
+    });
+
+    if (subsiteName) {
+        tH.click(subsiteName, '#holderMySubsiteList')
+    }
+
+    tH.fx('hidedropdown');
+end
+
+def leaveSubsite
+    tH.fx('showdropdown' )
+    tH.wait(1)
+    
+      tH.addStep(function tryToLeaveSubsite() {
+            var leaveCurrentSubsite = tH.findByContent('Leave', '#dialogNavBar_SubsiteMenu');
+            if ( leaveCurrentSubsite.length == 0 ) { 
+                tH.test.cb();
+                return;
+                //exit
+            }
+            
+            //mignt not be in subsite mode
+            tH.click('Leave', '#dialogNavBar_SubsiteMenu'); //will fali if not available
+            tH.waitForNone('Leave', null, '#dialogNavBar_SubsiteMenu')
+            
+            tH.waitForHide('#dialogAddNewTab',
+            'Ensure add to subsite tab is hidden - when user leaves subsite edit mode');
+            //tH.waitForNone('li[type="subsiteTab"]', 'Did not hide the subsite tabs when left subsite')
+            
+            tH.fx('hidedropdown');
+            tH.test.cb()
+        });
+    
+
+end
+
+
+
+def ensureAllSubsiteTabsGone
+
+    var tabsUser = $('[type=userTab]')
+    var tabsSubsite = $('[type=subsiteTab]')
+
+    if ( tabsSubsite.length > 0 ) {
+        tH.fail('had subsite tabs', tabsSubsite);
+        window.failData = tabsSubsite;
+    }
+
+end
+
+
+def ensureAllCustomTabsGone
+
+    var tabsUser = $('[type=userTab]')
+    var tabsSubsite = $('[type=subsiteTab]')
+
+    if ( tabsSubsite.length > 0 ) {
+        tH.fail('had subsite tabs', tabsSubsite);
+        window.failData = tabsSubsite;
+    }
+
+    if ( tabsUser.length > 0 ) {
+        tH.fail('had tabsUser, expected 0', tabsUser);
+        window.failData = tabsUser;
+    }
+end
+
+def removeAllTabs(userTabs)
+    tH.wait(1);
+    tH.addStep(function findAllUserTabs() {
+        if ( userTabs == true || userTabs == 'true'  ) {
+             var items = $('[type=userTab]')
+             //debugger
+        } else {
+            var items = $('[type=subsiteTab]')
+       //     debugger
+        }
+
+        var arrTabs = []
+        $.each(items, function onDeleteTabInLoop(k,v) {
+            var tabName2 = $(v).text().trim();
+            //debugger
+            console.log('will delete tab', tabName2);
+            tH.wait(1);
+            tH.fx('deleteTab', tabName2)
+            arrTabs.push(tabName2);
+        });
+
+        var arrTabNames =  $scopeSubsites.utilsFx.getTabNames()
+        console.log('all tab names', arrTabNames);
+
+        console.log('will delete tabs', arrTabs);
+
+
+        tH.test.cb()
+    });
+end
+
+def deleteTab(tabName_, userTabType)
+    tH.click(tabName_, '#tabHolder');
+    tH.wait(0.5);
+
+    if ( userTabType == 'true' || userTabType == true ) {
+        tabType = 'userTab'
+    }
+
+    tH.log('will delete', 'searching for tab', tabName_)
+
+
+    function findTabByName() {
+        tH.logNow('where is tab', tabName_,'?');
+        var tabs = tH
+        .findByContent('li|||'+tabName_,
+        '#tabHolder');
+
+        if ( tabs.length > 1 ) {
+            tH.clickNow(tabs)
+        }
+        return tabs;
+    }
+
+    tH.waitForShow(findTabByName, 'Did not see context controls');
+
+    //tH.waitForShow('$2 li|||'+expectedName, 'tab edit controls did not appear on display', '#tabHolder')
+
+    #wait for show item under by content
+    tH.click('#editTabNameDialogContent')
+    tH.wait(0.5)
+    tH.click('a|||Delete', '#dialogTabContextMenuContent')
+    tH.waitForShow('#confirmDialog')
+    tH.click('OK', '#confirmDialog')
+     tH.waitForHide('#confirmDialog', 'Pressed OK, but confirmDialog did not close')
+    tH.addSync(function deleteLog() {
+         tH.log('will delete tab', tabName_, 'gone')
+    })
+    tH.wait(1) //wait for tab to clear
+    tH.fx('findTab', tabName_,userTabType)
+    tH.addStep(function throwErrorIfTabFound() {
+        if (   window.foundTab = null ||   window.foundTab.length == 0 ) {
+
+        } else {
+            tH.fail('found the tab', tabName_, userTabType)
+        }
+        tH.test.cb();
+    })
+
+
+end
+
+
+def findTab(tabName,userTabType)
+  window.foundTab = null;
+    var existingTab = tH.findByContent(tabName, '#tabHolder')
+    var tabType = 'subsiteTab'
+    if ( userTabType == 'true' || userTabType == true ) {
+        tabType = 'userTab'
+    }
+    existingTab = existingTab.filter('[type='+tabType+']');
+    if ( existingTab.length > 0 ) {
+        console.log('found eexisting copy of clone', existingTab);
+        //return
+    } else {
+
+    }
+    window.foundTab = existingTab;
+    tH.logNow('searched for tab', tabName )
+end
+
+def deleteTabSafe(tabName,type)
+    //tH.logNow('creating the new tab', expectedName )
+    tH.fx('findTab',tabName, type);
+    tH.addStep(function onTestTAb() {
+        existingTab = window.foundTab;
+        // tH.logNow('found existing tab', tabName , existingTab.length)
+        if ( existingTab.length > 0 ) {
+            // asdf.g
+            tH.logNow('found existing tab, deleting tab named:', tabName )
+            tH.fx('deleteTab', tabName, type);//
+            // return
+        } else {
+
+        }
+        tH.test.cb()
+    });
+
+
+end
+
+def unhideAllTabs()
+       tH.fx('closeallpopups');
+       //tH.fx('closeallpopups');
+
+       tH.addStep( function selectFirstTab() {
+            var tabs = $('#tabHolder').find('li')
+            tab = tabs[0]
+            tab = $(tab)
+            //tH.msgStatus('click', tab.text());
+            console.log(tab.text())
+            tH.click(tab.text(), '#tabHolder');
+            tH.test.cb()
+       })
+
+
+
+       tH.addStep( function onOpenPopup_() {
+            tH.waitForShow('#editTabNameDialogContent')
+            tH.click('#editTabDialogContent');
+                   tH.waitForShow('#dialogManageTabs');
+            tH.test.cb()
+            return;
+            //tH.waitForShow('.pt-layout-name-input')
+            tH.test.cb()
+            return;
+       })
+
+
+       tH.addStep( function onClickHiddenTabs() {
+            var hiddenTabs = $('#dialogManageTabs').find('.fa-eye-slash')
+            $.each(hiddenTabs, function onClick(k,tab) {
+               tH.clickNow(tab);
+            });
+              tH.click('Close', '#dialogManageTabs')
+            tH.test.cb()
+       })
+
+end
+
+def ensureAllTabsVisible()
+       tH.addStep( function selectFirstTab() {
+            var tabs = $('#tabHolder').find('li')
+            var tabNotVisible = [];
+            $.each(tabs, function onAddTab(k, tab) {
+
+                tab = $(tab)
+                var tabName = tab.text();
+
+                tabName = tabName.trim();
+                var isVisible = tab.is(':visible');
+                console.error('is tab visible?', tabName, isVisible );
+
+                if ( tabName == '+' ) {
+                    return
+                }
+
+                if ( isVisible == false ) {
+                    tabNotVisible.push(tabName)
+                }
+                //tH.wait(0.2);
+            })
+
+            if ( tabNotVisible.length > 0  ) {
+                tH.fail('there is an issue', tabNotVisible, 'expected 0 tabs');
+            }
+            tH.test.cb()
+       })
+end
+
+def ensureAllTabsHaveProperOptions()
+       tH.fx('closeallpopups');
+       //tH.fx('closeallpopups');
+
+       tH.addStep( function selectFirstTab() {
+            var tabs = $('#tabHolder').find('li')
+            var tabNotVisible = [];
+            $.each(tabs, function onAddTab(k, tab) {
+
+                tab = $(tab)
+                var tabName = tab.text();
+
+                tabName = tabName.trim();
+                var isVisible = tab.is(':visible');
+               // console.debug('is tab visible?', tabName, isVisible );
+
+                if ( tabName == '+' ) {
+                    return;
+                }
+                if ( isVisible == false ) {
+                    tabNotVisible.push(tabName)
+                    return;
+                }
+                   console.debug('is tab visible?', tabName, isVisible );
+
+                tH.click(tabName, '#tabHolder');
+                tH.log('clicking', tabName);
+                if ( tabName != 'Custom' ) {
+                    tH.waitForShow('#editTabNameDialogContent',
+                    tabName + " " +
+                    'clicking tab did not display the tab options-3')
+
+
+                }
+
+                tH.fx('ensureSelectedTabsOptions');
+            })
+
+
+            tH.test.cb()
+       })
+end
+
+def ensureSelectedTabsOptions()
+
+       tH.addStep( function selectFirstTab() {
+            var tab = $('#tabHolder').find('li.active')
+
+            if ( tab.length == 0 ) {
+                tH.fail('no tab is active')
+            }
+            var tabName = tab.text();
+                            tabName = tabName.trim();
+
+            var tabType = tab.attr('type')
+
+
+            if ( tabType == null ) {   tH.test.cb();  return; }
+
+
+
+
+            if ( tabType == 'default' ) {
+                //tH.waitForNone('.pt-layout-name-input')
+            }
+
+            if ( tabType == 'subsiteTab' ) {
+                tH.waitForShow('.pt-layout-name-input', 'subsiteTab')
+            }
+
+            if ( tabType == 'userTab' ) {
+                tH.waitForShow('.pt-layout-name-input', tabType)
+            }
+
+            if ( tabType == 'Custom' ) {   tH.test.cb(); return; }
+
+
+            tH.waitForShow('#editTabNameDialogContent',
+            tabName + " " +
+            'clicking tab did not display the tab options-4')
+
+            tH.click('#editTabNameDialogContent');
+            tH.waitForShow('#dialogTabContextMenu')
+
+
+            if ( tabType == 'default' ) {
+                tH.waitForShow('Hide',  null, '#dialogTabContextMenu')
+            }
+
+            if ( tabType == 'subsiteTab' ) {
+                tH.waitForShow('Rename',  null, '#dialogTabContextMenu')
+                tH.waitForShow('Delete',  'delete option did not appear', '#dialogTabContextMenu')
+            }
+
+            tH.test.cb();
+            return;
+       })
+end
+
+
+
+def verifyTabOptions()
+     tH.fx('closeallpopups');
+     tH.fx('hidedropdown');
+
+       tH.addStep( function testOnEachTab() {
+            var tabs = $('#tabHolder').find('li');
+            var typesList = []
+            $.each(tabs, function onAddTab(k, tab) {
+
+                tab = $(tab)
+                var tabName = tab.text();
+
+                tabName = tabName.trim();
+                //  console.error('what is tab', tab.text() );
+                var type = tab.attr('type')
+
+                if ( type == null ) {
+                                    return;
+                                }
+                if ( typesList.indexOf(type) != -1 ) {
+                                    return;
+                }
+                typesList.push(type);
+
+                tH.wait(1);
+                tH.click(tab.text(), '#tabHolder');
+                tH.waitForShow('#editTabNameDialogContent')
+                tH.click('#editTabNameDialogContent');
+                tH.waitForShow('#dialogTabContextMenu')
+
+                if ( type == 'default' ) {
+                    //delete
+                    tH.waitForShow('Hide',  null, '#dialogTabContextMenu')
+                }
+
+                if ( type == 'subsiteTab' ) {
+                    //delete
+                    tH.waitForShow('Delete',  null, '#dialogTabContextMenu')
+
+                }
+
+                if ( type == 'standardTab' ) {
+                    tH.waitForShow('Delete',  null, '#dialogTabContextMenu')
+                }
+                console.error('what it is', tabName, type)
+
+                tH.wait(1);
+
+            })
+
+            tH.test.cb()
+       })
+
+
+
+return;
+
+       tH.addStep( function onOpenPopup_() {
+            tH.waitForShow('#editTabNameDialogContent')
+            tH.click('#editTabDialogContent');
+                   tH.waitForShow('#dialogManageTabs');
+            tH.test.cb()
+            return;
+            //tH.waitForShow('.pt-layout-name-input')
+            tH.test.cb()
+            return;
+       })
+
+
+       tH.addStep( function onClickHiddenTabs() {
+            var hiddenTabs = $('#dialogManageTabs').find('.fa-eye-slash')
+            $.each(hiddenTabs, function onClick(k,tab) {
+               tH.clickNow(tab);
+            });
+              tH.click('Close', '#dialogManageTabs')
+            tH.test.cb()
+       })
+
+end
+
+
+
+def hideTab(tabIndex)
+     //tH.fx('closeallpopups');
+     //tH.fx('hidedropdown');
+
+       tH.addStep( function testOnEachTab() {
+            var tabs = $('#tabHolder').find('li');
+
+             if ( tabIndex == null) {
+                tabIndex = 0
+             }
+
+            var tabObject = $scopeSubsites.tableHelper.data.layoutTabs[tabIndex]
+
+            if ( tabObject.hidden ) {
+                 console.debug('tab is alreayd hidden')
+                 tH.test.cb();
+                return;
+            }
+
+            var tab = tabs[tabIndex];
+            tab = $(tab);
+
+            var typesList = [];
+
+            //find first standard tab
+
+            tab = $(tab)
+            var tabName = tab.text();
+
+            tabName = tabName.trim();
+            var type = tab.attr('type')
+
+            tH.wait(1);
+            tH.waitForShow(tabName, 'Show tab',
+                    '#tabHolder');
+
+            tH.click(tab.text(), '#tabHolder');
+            tH.waitForShow('#editTabNameDialogContent')
+            tH.click('#editTabNameDialogContent');
+            tH.waitForShow('#dialogTabContextMenu')
+//TODO: Fix this so it has try catch in eval block and throws error and fails test
+//asdf.g
+            var clickHide = false;
+            if ( type == 'default' ) {
+               clickHide = true
+            } else {
+                return;
+            }
+
+
+            if ( clickHide ) {
+                tH.logNow('hiding')
+                //delete
+                tH.waitForShow('Hide',
+                'default did not show hide option',
+                '#dialogTabContextMenu')
+                tH.logNow('waiting for hide to appear')
+                tH.click('Hide')
+                tH.waitForNone(tabName, 'Tab was not hidden' , '#tabHolder');
+            }
+
+
+
+            tH.test.cb()
+       })
+
+
+end
+
+def isTabIndexHidden(tabIndex)
+    var tab = $scopeSubsites.tableHelper.data.layoutTabs[tabIndex]
+    if ( tab.hidden ) {
+         console.debug('tab is alreayd hidden')
+       return;
+    }
+
+    tH.fail('tab', tab.name, 'should be hidden', tab);
+end
+
+
+def isTabIndexVisible(tabIndex)
+    var tab = $scopeSubsites.tableHelper.data.layoutTabs[tabIndex]
+    if ( tab.hidden !== true ) {
+         console.debug('tab is visible')
+       return;
+    }
+
+    tH.fail('tab', tab.name, 'should be visible', tab);
+end
+
+def ensureTabSelected(tabIndex)
+    //tH.waitForShow('')
+
+    /*
+    get all visible tabs
+    if tab ==
+    */
+    var tabs = $('#tabHolder').find('li.uib-tab:visible');
+    var tab = tabs[tabIndex];
+
+    tab = $(tab);
+    var found=tab.find('#editTabDialog').length > 0
+
+    var tabName = tab.text().trim();
+
+    if ( found ) {
+    } else {
+        tH.fail('tab not selected', 'expected tab index',
+        tabIndex, 'to be selected', tabName, 'was selected')
+    }
+
+    return;
+end
+
+def createTab(indexTab,userTab,tabName)
+
+    if ( indexTab == null  ) {
+        indexTab = 0;
+    }
+    var name = window.$scopeSubsites.tableHelper
+    .data.layoutTabs[indexTab].name
+    var expectedName = name + ' (copy)';
+
+    var tabAlreadyExists = false;
+
+     if (userTab === true || userTab === 'true') {
+         userTab = true;
+    } else {
+        userTab = false;
+        //debugger
+    }
+    if ( tabName == 'Subsite Tab 1' ) {
+       // debugger;
+    }
+
+    if ( userTab == false ) {
+       // userTab = true
+         //$('#dialogAddNewTab');
+         tH.waitForShow('#dialogAddNewTab', 'Cannot make a subsite tab b/c u are not on a subsite')
+    }
+
+    function cloneTab_QuickIFTabExists(){
+        var existingTab = tH.findByContent(expectedName, '#tabHolder')
+        var tabType = 'subsiteTab'
+        if ( userTab == 'true' || userTab == true ) {
+            tabType = 'userTab'
+        }
+        existingTab = existingTab.filter('[type='+tabType+']');
+        //debugger
+        if ( tabName ) { //check if proper name already exists
+            existingTab = tH.findByContent(tabName, '#tabHolder')
+            existingTab = existingTab.filter('[type='+tabType+']')
+            tH.logNow('renaming', tabName, existingTab.length);
+        }
+
+        if ( existingTab.length > 0 ) {
+            console.log('found existing copy of clone', expectedName, tabName);
+            tabAlreadyExists = true
+            expectedName = tabName; //ensure we click proper tab
+            tH.logNow('found existing tab', expectedName )
+            tH.clickNext('Cancel', '#dialogCloneTabFrom');
+            return;
+        } else {
+
+        }
+        tH.logNow('creating the new tab', expectedName )
+
+        if ( tabAlreadyExists ) {
+            console.log('tabAlreadyExists', tabAlreadyExists);
+            return;
+        }
+        console.error('clone tab', indexTab,userTab,tabName)
+        if (userTab != true && userTab != 'true') {
+            tH.click('#dialogAddNewTab');
+        } else {
+            tH.click('#dialogAddNewTabToUserLayout')
+        }
+        tH.waitForShow( '#dialogCloneTabFrom', 'waiting for clonetab dialog')
+
+        window.$scopeSubsites.layoutToCopy = [name]
+        window.$scopeSubsites.$apply()
+
+        var selectList = $('#dialogCloneTabFrom').find('select')
+        var first = selectList.find('option').first()
+        first.prop('selected', true);
+        first.click();
+
+        tH.click('OK', '#dialogCloneTabFrom');
+
+
+    }
+
+    tH.logNow('running create tab?',userTab, tabName)
+
+    tH.addSync(cloneTab_QuickIFTabExists)
+
+    tH.addStep(function createNewTab_ifNeeded() {
+
+        tH.test.cb();
+    })
+
+    if ( tabName ) {
+        tH.addStep(function onXYX() {
+                if ( tabAlreadyExists ) {
+                    console.log('tabAlreadyExists', tabAlreadyExists);
+                    tH.test.cb()
+                    return;
+                }
+                tH.wait(1)
+                tH.click(expectedName, '#tabHolder')
+                tH.wait(1)
+                tH.waitForShow('#editTabNameDialogContent')
+                tH.click('#editTabNameDialogContent')
+                tH.wait(0.5)
+                tH.click('a|||Rename', '#dialogTabContextMenuContent')
+                tH.waitForShow('#dialogRenameTab')
+
+                tH.set('#txtRenameTabName',tabName, true)
+                tH.click('OK', '#dialogRenameTab')
+                tH.test.cb()
+
+        } )
+    }
+
+
+    if ( tabName ) {
+        tH.addStep(function verifyTabIsSelected() {
+                tH.click(expectedName, '#tabHolder')
+                tH.wait(1)
+                tH.waitForShow('#editTabNameDialogContent')
+                // tH.waitForShow('.pt-layout-name-input', 'verify is select')
+                tH.test.cb()
+        } )
+    }
+
+
+
+end
+
+
+def ensureTab(tabName,userTabType,present,refreshSubsite)
+    tH.log('ensureTab.input:', tabName)
+
+    if ( refreshSubsite != false ) {
+        tH.addStep(function refreshLayouts2(){
+            //tH.log('what')
+            //console.log('s')
+            tH.fx('refreshSubsites')
+            tH.test.cb()
+        })
+    }
+    tH.addStep(function refreshTabs(){
+        window.$scopeSubsites.loadPageLayout_FromSubsite();
+        tH.test.cb()
+    })
+
+
+    function checkIfTabExists(){
+        tH.logNow('@checking for tab', tabName)
+        var existingTabs = tH.findByContent(tabName, '#tabHolder')
+        var tabType = 'subsiteTab'
+        if ( userTabType == 'true' || userTabType == true ) {
+            tabType = 'userTab'
+        }
+
+        var existingTab = existingTabs.filter('[type='+tabType+']');
+        var tabFound = existingTab.length > 0
+        if ( present == false ) {
+            if ( tabFound == false ) {
+                console.log('did not find tab, ok');
+            } else {
+                tH.fail('Did not want to see tab', tabName)
+            }
+            return;
+        }
+        tH.logNow('result of @checking for tab', tabName,
+        existingTabs.length, existingTab.length)
+        if ( tabFound ) {
+            console.log('found eexisting copy of clone');
+        } else {
+            tH.fail('Did not find tab', tabName)
+        }
+       // tH.logNow('creating the new tab', expectedName )
+    }
+
+    tH.addSync(checkIfTabExists)
+
+end
+
+def ensureTabGone(tabName,userTabType, refreshSubsite)
+    tH.fx('ensureTab', tabName, userTabType, false, refreshSubsite);
+end
+
+
+
+def createSubsite(subsiteName, addUsernames, quick, onlyIfNeeded)
+    tH.fx('showdropdown')
+
+    if ( onlyIfNeeded ) {
+        tH.addStep(function skipIfNotNeed() {
+             var subsiteLink = tH.findByContent(subsiteName, '#dialogNavBar_SubsiteMenu')
+             if ( subsiteLink.length > 0 ) {
+               tH.logNow('ss already exists');
+                tH.fx('hidedropdown');
+             }
+             else {
+                tH.fx('createSubsite',subsiteName, addUsernames, quick);
+             }
+            tH.test.cb()
+        });
+        return;
+    }
+
+
+    #create new subsite
+    tH.click('Create New Subsite')
+    tH.waitForShow('#dialogManageSubsite')
+    tH.waitForShow('Create Subsite', 'Ensure title text on dialog', '#dialogManageSubsite')
+    tH.waitForShow('A subsite name is required',
+        'Ensure empty subsite name warning is display', '#dialogManageSubsite')
+    var typeText = true;
+    if ( quick != true ) {
+        function getNameTxt() {
+            return $('#dialogManageSubsite ')
+                .find('.txtManageSubsiteName')
+        }
+        tH.set(getNameTxt,'This name is too long to fit', true)
+
+       //tH.set('.txtManageSubsiteName','This name is too long to fit', true)
+       tH.waitForHide('A subsite name is required',
+       'Ensure empty subsite name warning is removed', '#dialogManageSubsite')
+       tH.waitForShow('Max length is 16 characters',
+       'Ensure "long name" warning is display', '#dialogManageSubsite')
+
+    } else {
+        typeText = false;
+    }
+
+
+    tH.set('.txtManageSubsiteName',subsiteName, typeText)
+    #set [value="otherPeople"]; selected
+
+    tH.addStep(function onSelectProps() {
+        var radioOption =
+        $('[value="otherPeople"].ng-valid')
+        radioOption.prop('checked', true);
+        radioOption[0].click();
+        tH.test.cb()
+    });
+    tH.log('set text')
+    var usernamesDefault = ['Ji Hye', 'Gergo', 'Fermin'];
+
+    usernamesToAdd = usernamesDefault;
+
+    if ( addUsernames && addUsernames != 'null') {
+        usernamesToAdd = addUsernames;
+        usernamesToAdd =addUsernames.split(',')
+       // debugger
+        console.error('to add', usernamesToAdd);
+    }
+
+    $.each(usernamesToAdd, function onCreateEachUser(k,userQuery) {
+        tH.set('.txtSearchName2', userQuery);
+        tH.pressEnter( '.txtSearchName2');
+        /*
+        tH.set('.txtSearchName2', 'Ji hye')
+        tH.pressEnter( '.txtSearchName2')
+        tH.set('.txtSearchName2', 'Gergo')
+        tH.pressEnter('.txtSearchName2');
+        tH.set('.txtSearchName2', 'Fermin')
+        tH.pressEnter('.txtSearchName2');
+        tH.waitForShow('ferminr')
+        */
+    })
+
+    tH.click('OK', '#dialogManageSubsite')
+    tH.waitForShow(subsiteName)
+
+    tH.fx('closeallpopups');
+end
+
+def removeSubsite(subsiteName)
+    tH.fx('showdropdown' )
+
+    tH.addStep(function on() {
+        var existingSubsiteLink = y
+        = testHelper.findByContent(subsiteName,
+        $('#holderMySubsiteList') );
+        tH.data.existingSubsiteLink = existingSubsiteLink;
+        tH.test.cb()
+    } )
+
+    tH.addStep(function on() {
+        if ( tH.data.existingSubsiteLink.length > 0 ) {
+            tH.log('deleting subsite');
+            tH.fx('removeSubsite2', subsiteName)
+        } else {
+            tH.log('not deleting subsite');
+        }
+        tH.test.cb()
+    } )
+    tH.fx('refreshSubsites')
+end
+
+def removeSubsite2(subsiteName)
+tH.log('removeSubsite2', subsiteName)
+    tH.fx('showdropdown' )
+    tH.click('Manage Subsites...')
+    tH.waitForShow('#dialogManageSubsites')
+    tH.addStep(function findThing() {
+        var y = testHelper.findByContent(subsiteName, $('#dialogManageSubsites') )
+        var tr = y.parents('tr')
+        var trashIcon = tr.find('.fa-trash')
+        console.clear();
+        console.log('trash',y,tr, trashIcon);
+        trashIcon.click()
+        tH.test.cb();
+    })
+
+    tH.waitForShow('#confirmDialog')
+    tH.click('OK', '#confirmDialog')
+
+    tH.waitForShow('#dialogManageSubsites')
+    tH.wait(0.5)
+    tH.click('Close', '#dialogManageSubsites')
+
+
+end
+
+
+
+
+def viewSubsite(subsiteName)
+    var container = '#holderMySubscribedSubsiteList'
+    tH.fx('showdropdown' )
+    tH.waitForShow(subsiteName, 'wait for the subsite in the list',
+    container)
+    tH.click(subsiteName, container);
+    tH.wait(2)
+end
+
+def goToSubsite(subsiteName)
+
+    var container = '#holderMySubsiteList'
+    tH.fx('showdropdown' )
+    tH.waitForShow(subsiteName, 'wait for the subsite in the list',
+    container)
+    //waitForShow EU Trading2; wait for subsite in list; container)
+    tH.click(subsiteName, container);
+    tH.wait(2)
+end
+
+def editSubsite(subsiteName)
+    var container = '#holderMySubsiteList'
+    tH.fx('showdropdown' )
+    tH.waitForShow(subsiteName, 'wait for the subsite in the list',
+    container)
+    //waitForShow EU Trading2; wait for subsite in list; container)
+    tH.click(subsiteName, container);
+    tH.wait(2)
+end
+
+def gotopage
+    tH.setDefaultAddNext()
+    var pageName = arg2
+    var pageMenuLinkText = arg1
+    tH.data.maxTimesNext = 50;
+    tH.click(pageMenuLinkText , 'x42-nav-sidebar');
+    tH.nextTimeoutTime(60)
+    tH.waitForShow(pageName, 'did not switch to '+pageName+' page', '.x42-nav-body-container' )
+    tH.nextTimeoutTime(60)
+    tH.waitForShow('pt-table', 'pt table did not load')
+    tH.log('Navigated to', pageName);
+    tH.resetDefaultAddNext()
+end
+#fx gotopage; Revenue; Revenue
+
+#log changed to revenue page
+#wait 2
+
+#fx gotopage; External Revenue; External Revenue
+
+#fx verifySubsiteTab; 0
+
+
+#endtest

@@ -97,7 +97,7 @@ function BabyRend() {
         b.create.square(2)
         b.mat.createMaterial()
 
-        b.pos(-5,1,0)
+        b.pos(-8,1,0)
 
         // return the created scene 
         return scene;
@@ -131,7 +131,7 @@ function BabyRend() {
             )
         })
 
-        uiUtils.addBtn({text:'boob'}, function onF() {
+        uiUtils.addBtn({text:'zoomfit'}, function onF() {
             console.log(
                 'onF'
             )
@@ -202,7 +202,7 @@ function BabyRend() {
 
             var xDist = max.x - min.x
 
-            self.data.x.camera.position = new BABYLON.Vector3(0, 5,-xDist*1.5);
+            self.data.x.camera.position = new BABYLON.Vector3(0, 10,-xDist*1.5);
 
         })
 

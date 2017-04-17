@@ -1,0 +1,3 @@
+Get-Process | Where-Object {$_.ProcessName -eq 'OUTLOOK'} | Get-ChildWindow
+
+Get-Process | Where-Object {$_.ProcessName -eq 'OUTLOOK'} | Get-ChildWindow | Where-Object {$_.ProcessName -eq 'OUTLOOK'}

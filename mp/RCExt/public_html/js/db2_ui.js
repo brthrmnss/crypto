@@ -1,3 +1,5 @@
+var u = uiUtils;
+
 /**
  * Created by user1 on 1/1/2017.
  */
@@ -109,7 +111,8 @@ function onInitDB() {
             self.getPreviousTasks();
 
 
-           // uiUtils.setText(self.data.ui.txtTaskNameOverride, 'listIds_ls051393312.json');
+
+            // uiUtils.setText(self.data.ui.txtTaskNameOverride, 'listIds_ls051393312.json');
         }
 
 
@@ -212,6 +215,7 @@ function onInitDB() {
                     + '/listFiles';
                 uiUtils.getUrl(url, function onGotRecentList(sdf){
                     console.log('onGotRecentList', sdf)
+                    debugger
                     uiUtils.setSelect(self.data.ui.recentPages,
                         sdf, 'name', 'name');
                     callIfDefined(fxDone);
@@ -266,6 +270,8 @@ function onInitDB() {
 
 
 
+
+
             p.onSaveTest = function onSaveTest(){
                 self.onSave(function onSaveTest(){
                     console.log('saved it')
@@ -317,6 +323,12 @@ function onInitDB() {
             }
         }
         defineRemote();
+
+        p.onReuseThisPreviousJob = function selectOnReuse(item) {
+            console.log('user wants to resume', item)
+            //todo show a button to clear this setting
+            //todo set the input values back ...
+        }
 
         var lblWidth = 80;
 
@@ -389,14 +401,73 @@ function onInitDB() {
             });
 
 
-            uiUtils.br()
-            uiUtils.hr()
 
 
+            self.createUI1();
 
+        }
+
+        p.createUI1 = function createUI1() {
+
+
+            uiUtils.addSection(function onAddReuse() {
+                uiUtils.br()
+                uiUtils.hr()
+
+                uiUtils.addLabel({text:'R', width:lblWidth+0})
+                /*
+
+                 uiUtils.addLabel(
+                 {//id:'txtRefreshTaskName',
+                 //addSpacerBefore:true,
+                 tooltip:"Reuse existing item",
+                 html:u.glyph('inbox')})
+                 */
+
+                uiUtils.spacer()
+                uiUtils.addSelect({
+                    text:'yeah',
+                    tooltip:'Reuse this',
+                    id:'ddPrevTasks',
+                    fxDone:self.onReuseThisPreviousJob
+                })
+                self.data.ui.ddPrevTasks = uiUtils.lastId();
+                uiUtils.updateSelect('ddPrevTasks', [1,2,3,4,5]);
+
+
+                return //fix this later
+                uiUtils.addBtn(
+                    {
+                        title: 'Upload a new item',
+                        text: 'Status',
+                        html: uiUtils.glyph('upload')
+                    },
+                    function onNew(){
+                        u.error('not implemented yet')
+                    }
+                )
+
+
+                uiUtils.addBtn(
+                    {
+                        title: 'Show progress and items',
+                        text: 'Status',
+                        html: uiUtils.glyph('trash')
+                    },
+                    function onNew(){
+                        return
+                        var url = uiUtils.getLocation('getStatus2', 6012);
+                        uiUtils.openNewWindow(url)
+
+                        u.error('not implemented yet ')
+                    }
+                )
+            })
 
 
             uiUtils.addSection(function onAddTaskName() {
+                uiUtils.br()
+                uiUtils.hr()
                 uiUtils.addLabel({id:'x',
                     width:lblWidth+0,
                     text:'Task Name'})
@@ -433,16 +504,6 @@ function onInitDB() {
                 })
                 uiUtils.hide(self.data.ui.txtRefreshTaskName)
 
-                uiUtils.br()
-
-                uiUtils.addLabel({text:"", width:lblWidth+0})
-                uiUtils.spacer()
-                uiUtils.addSelect({
-                    text:'yeah',
-                    id:'ddPrevTasks',
-                })
-                self.data.ui.ddPrevTasks = uiUtils.lastId();
-                uiUtils.updateSelect('ddPrevTasks', [1,2,3,4,5]);
 
                 uiUtils.br()
                 uiUtils.addLabel({id:'x',
@@ -463,9 +524,8 @@ function onInitDB() {
                 uiUtils.hr()
             })
 
-
-
         }
+
         p.createUI2 = function createUI2() {
 
             var divParent = $('#divSaveArea');
@@ -513,7 +573,7 @@ function onInitDB() {
                     if ( fxPost ) {
                         instruction.fxPost = fxPost;
                     }
-                    
+
                     return instruction
                 }
 
@@ -921,11 +981,13 @@ function onInitDB() {
 
 
             div.append('Run');
+            //once the x is ready, ten u can disable
             uiUtils.br()
 
             uiUtils.addBtn(
                 {
                     text: 'Upload & Run',
+                    html:  uiUtils.glyph('play'),
                     tootlip: 'uploads and runs current file, will end current file running'
                 },
                 function onUploadAndRun(){
@@ -949,11 +1011,12 @@ function onInitDB() {
 
 
 
-            uiUtils.spacer();
+            // uiUtils.spacer();
 
             uiUtils.addBtn(
                 {
                     text: 'Stop',
+                    html:  uiUtils.glyph('stop'),
                 },
                 function onStop(){
                     var url = uiUtils.getLocation('stop', 6012);
@@ -964,21 +1027,70 @@ function onInitDB() {
             )
 
 
-            uiUtils.spacer();
+            uiUtils.spacerSlim();
             uiUtils.addBtn(
                 {
+                    title: 'Show progress and items',
                     text: 'Status',
+                    html: uiUtils.glyph('th-list')
                 },
                 function onNew(){
-                    var url = uiUtils.getLocation('getJSONPath', 6012);
+                    var url = uiUtils.getLocation('getStatus2', 6012);
                     uiUtils.openNewWindow(url)
+
 
                 }
             )
 
 
+            //uiUtils.spacer();
+            uiUtils.addBtn({
+                    title:'Show All Elements',
+                    text: '~',
+                    title: 'Show progress and items',
+                    text: 'Status',
+                    html: uiUtils.glyph('list-alt')
+                },
+                function onNew(){
+                    var url = uiUtils.getLocation('getStatus', 6012);
+                    uiUtils.openNewWindow(url)
+                }
+            )
 
-            uiUtils.br()
+
+
+
+            uiUtils.spacer();
+
+
+
+
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Show More options',
+                    text: 'Show Menu Options',
+                    html: uiUtils.glyph('menu-right')
+                },
+                function onNew(){
+                }
+            )
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Download Manifest',
+                    text: 'Status',
+                    html: uiUtils.glyph('download-alt')
+                },
+                function onNew(){
+                }
+            )
+
+
+
+
 
             return;
         }
@@ -996,6 +1108,183 @@ function onInitDB() {
             uiUtils.br(); uiUtils.br();
             div.append('Verify');
             uiUtils.br()
+
+
+            /*
+             uiUtils.addBtn(
+             {
+             text: 'Server Ip',
+             addSpacer: true,
+             fxClick: self.onTestHoistServer,
+             data: {
+             //url: self.data.ui.txtBreedServerUrl,
+             //tor:self.getValFromData('queryTor'),
+             url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+             cmd: 'testit'
+             }
+             }
+             );
+             */
+
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Download File List',
+                    text: 'Status',
+                    html: uiUtils.glyph('cloud-download')
+                },
+                function onNew(){
+                }
+            )
+
+            uiUtils.spacerSlim();
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'View File List',
+                    text: 'Status',
+                    html: uiUtils.glyph('info-sign')
+                },
+                function onNew(){
+                }
+            )
+
+            uiUtils.addLabel({text:"", id:"txtFileListReport"})
+            u.br()
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Check Progress',
+                    text: 'Status',
+                    html: uiUtils.glyph('adjust')
+                },
+                function onNew(){ }
+            )
+            uiUtils.spacerSlim();
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'View Sanitized files',
+                    text: 'Status',
+                    html: uiUtils.glyph('info-sign')
+                },
+                function onNew(){
+                }
+            )
+
+            uiUtils.addLabel({text:"", id:"txtSantiziedReport"})
+            u.br()
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Santize file list - Gerneate santize report',
+                    text: 'Status',
+                    html: uiUtils.glyph('compressed')
+                },
+                function onNew(){ }
+            )
+
+
+            uiUtils.spacerSlim();
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'View Sanitized files',
+                    text: 'Status',
+                    html: uiUtils.glyph('info-sign')
+                },
+                function onNew(){
+                }
+            )
+
+            uiUtils.addLabel({text:"", id:"txtSantiziedReport"})
+
+
+            u.br()
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Remote Import files',
+                    text: 'Status',
+                    html: uiUtils.glyph('transfer')
+                },
+                function onNew(){
+                }
+            )
+
+
+            u.br()
+
+            uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
+                    title: 'Upload back to server',
+                    text: 'Status',
+                    html: uiUtils.glyph('cloud-upload')
+                },
+                function onNew(){
+                    //only non override files ... that match the same name
+                }
+            )
+
+
+
+
+
+            return;
+
+
+            uiUtils.addTextInput({
+                text:self.data.url,
+                id:'txtIpHostpost_Verify',
+                onDebounce:function onChanged(newName) {
+                    console.log('debouched', newName)
+                    self.autoSave(false, onSaved_SaveWithNewName)
+
+                    function onSaved_SaveWithNewName(){
+                        console.debug('saved content');
+                        self.onSave(onSaved_WithNewName_DeleteOldName, newName)
+                    }
+
+                    function onSaved_WithNewName_DeleteOldName(){
+                        self.data.lastSaveName = self.data.currentName;
+                        console.debug('delete old name', self.data.lastSaveName);
+                        self.removeFile( self.data.lastSaveName, onRemovedOldFile)
+                        self.data.currentName = newName;
+                    }
+
+                    function onRemovedOldFile(){
+                        console.debug('complete')
+                        self.getRecentPageList();
+                    }
+
+                }
+            })
+
+            self.data.ui.txtIpPortVerify = uiUtils.lastId();
+
+
+            uiUtils.addBtn(
+                {
+                    text: 'DL Manifest & Files',
+                    addSpacer: true,
+                    fxClick: self.onTestHoistServer,
+                    data: {
+                        //url: self.data.ui.txtBreedServerUrl,
+                        //tor:self.getValFromData('queryTor'),
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        cmd: 'testit'
+                    }
+                }
+            );
+
             uiUtils.addBtn(
                 {
                     text: 'Test',
@@ -1009,19 +1298,19 @@ function onInitDB() {
                     }
                 }
             );
-            uiUtils.addBtn(
-                {
-                    text: 'Get File List',
-                    addSpacer: true,
-                    fxClick: self.onHoistServerTask,
-                    data: {
-                        //url: self.data.ui.txtBreedServerUrl,
-                        //tor:self.getValFromData('queryTor'),
-                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-                        cmd: 'getFileList'
-                    }
-                }
-            );
+            /*   uiUtils.addBtn(
+             {
+             text: 'Get File List',
+             addSpacer: true,
+             fxClick: self.onHoistServerTask,
+             data: {
+             //url: self.data.ui.txtBreedServerUrl,
+             //tor:self.getValFromData('queryTor'),
+             url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+             cmd: 'getFileList'
+             }
+             }
+             );*/
             /*  uiUtils.addBtn(
              {
              text: '% Complete',
@@ -1083,8 +1372,8 @@ function onInitDB() {
 
             var url = self.data.baseDataUrl
                 + '/listFiles';
-            uiUtils.getUrl(url, function onGotRecentList(sdf){
-                // console.log('onGotRecentList', sdf)
+            uiUtils.getUrl(url, function getPreviousTasksList(sdf){
+                console.log('getPreviousTasksList', sdf)
                 uiUtils.setSelect(self.data.ui.ddPrevTasks,
                     sdf, 'name', 'name');
                 callIfDefined(fxDone);
@@ -1114,6 +1403,12 @@ function onInitDB() {
 
             //if task not set, disable all of verify
             //if task not set, disable upload and stop
+
+            if ( self.data.fileManifest ) {
+                //uiUtils.enable(self.data.runStep)
+            } else {
+                //uiUtils.disable(self.data.runStep)
+            }
         }
 
         function createUtils() {
@@ -1239,10 +1534,10 @@ function onInitDB() {
                         taskName = self.utils.makeTaskName(this,
                             [nameOfTask,
                                 data.type,
-                            data.type,
-                            data.maxImdbListSize,
-                            data.year,
-                            data.yearEnd
+                                data.type,
+                                data.maxImdbListSize,
+                                data.year,
+                                data.yearEnd
                             ].join('_'));
                     } else {
                         var taskName = self.utils.makeTaskName(this, nameOfTask+'_'+data.listIds[0]+'_'+data.listIds.length);
@@ -1371,15 +1666,15 @@ function onInitDB() {
                     var title = self.getTaskTitle();
                     //   uiUtils.disable(self.data.ui.btnCreateDM_query);
                     uiUtils.socket.nextEmit(this);
-                    
-                    
+
+
                     data.title = title;
                     self.data.fileFileList = self.data.hostname+'.list.files.txt'
                     data.fileFileList = self.data.fileFileList;
                     self.data.fileManifest = title;
                     data.fileManifest = self.data.fileManifest;
                     console.log('title', title, data);
-                    
+
                     //return;
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);

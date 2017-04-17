@@ -1,0 +1,7 @@
+#test for basic csv
+log this test will ensure the user can see the create new subsite option
+
+fx closeallpopups();
+fx showdropdown();
+status User can create a new subsite
+endtest

@@ -60,7 +60,7 @@
        <!--<label>Filter</label>
        <input ng-model="user.title">-->
 
-       <md-autocomplete
+   <!--    <md-autocomplete
          md-selected-item="selectedItem"
          md-search-text-change="searchTextChange(searchText)"
          md-search-text="searchText"
@@ -77,7 +77,7 @@
            No matches found for "{{searchText}}".
          </md-not-found>
        </md-autocomplete>
-
+-->
    </div>
 
 
@@ -86,26 +86,31 @@
           aria-hidden="true"></span>-->
   </div>
 
-  <div id="containerCols" class="quick-crud-container">
-    <div id="quick-crud-leftcol" class="quick-crud-leftcol">
+
+
+  <div id="containerCols" class="layout-horizontal">
+    <div id="quick-crud-leftcol" class="layout-horizontal-item">
+
+
 
       <quicklist2
-        padding-left="5px"
-        style="height: 300px; overflow:hidden; overflow-y:scroll;"
-        ng-style="vm.colLeftStyle"
-        items="listData"
-        selected-index="selectedIndex"
-        _selected-index2="selectedIndex"
-        fx-item-selected="onSelectListItem"
-        panel="false"
-        config="quickListConfig"
-        >
+              padding-left="5px"
+              style="height: 300px; overflow:hidden; overflow-y:scroll;"
+              ng-style="vm.colLeftStyle"
+              items="listData"
+              selected-index="selectedIndex"
+              _selected-index2="selectedIndex"
+              fx-item-selected="onSelectListItem"
+              panel="false"
+              config="quickListConfig"
+      >
         <list>
           <!--length: {{vmC.items.length}}-->
           <ul id="listHolder"
               class="quick-crud-list" >
+            listline
             <li ng-repeat="item in vmC.items"  >
-
+              ss
               <div ng-click="goTo(item)"
                    class="sideNavTextRow2">
                 {{item.name}}
@@ -116,27 +121,19 @@
               <div ng-if="item.selected==true">selected</div>
             </li>
           </ul>
-
-          <!--<li ng-repeat="item in vmC.items" class="" >
-            {{item.name}}
-            <div ng-click="goTo(item)"
-                 class="sideNavTextRow2">{{item.first_name}}
-              {{item.last_name}}
-            </div>
-            <div ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
-
-            <div ng-click="vmC.$scope.$parent.deleteItem(item)">yx</div>
-            <div ng-if="item.selected==true">selected</div>
-          </li>-->
-
         </list>
       </quicklist2>
 
 
       <!-- <div>Pagination</div> -->
-      <quick-paginate config="paginatorConfig" >
 
-      </quick-paginate>
+      <quick-paginate2 config="paginatorConfig" >
+
+      </quick-paginate2>
+
+      <!--<quick-paginate config="paginatorConfig" >
+
+      </quick-paginate>-->
     </div>
 
 
@@ -168,7 +165,7 @@
 
     <div id="colRight"
          ng-style="vm.colRightStyle"
-         class="quick-crud-rightcol">
+         class="layout-horizontal-item-stretch">
       <!--   <br />
 
          dataObject:

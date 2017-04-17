@@ -5,11 +5,7 @@
  */
 ( function() {
 
-
   //console.error('reloding quickUI')
-
-
-
   var isNode = true
 
   if (typeof exports === 'undefined' || exports.isNode == false) {

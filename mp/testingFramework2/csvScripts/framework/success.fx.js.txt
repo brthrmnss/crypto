@@ -1,0 +1,358 @@
+#test that works well
+
+
+function waitForLoadPtLoad() {
+    console.log('x')
+    tH.waitForLoad = function waitForLoad(jquery, waitForFailureReason, parentJq, times ) {
+        console.log('...', 5)
+        var s = new Error().stack
+        var stepMsg = [waitForFailureReason,'(waitForShow) ',
+            jquery, parentJq, s].join(' ')
+
+        tH.waitForError = stepMsg;
+        tH.waitFor(function isDialogVisible_waitForShow(){ //waitForHide
+            var ptTable = $('pt-table')
+            console.log('...', 4, ptTable.css("opacity"), ptTable.is(":visible"))
+            tH.moveCursorTo(ptTable);
+            if ( ptTable.length == 0 ) {
+                console.warn('jqueryIs 0 length', jquery);
+                return false;
+            }
+            if ( ptTable.css("opacity") != "1") {
+                return false;
+            }
+            return true==ptTable.is(":visible");
+        });
+    };
+    tH.waitForLoad()
+}
+
+fx.waitForLoadPtLoad()
+endtest
+
+
+function fxWithQQ( boolean)  {
+    console.debug('booooooooo', true)
+}
+
+fx.fxWithQQ(true)
+function fxWithQQ2( boolean)
+    //tH.fx.fxWithQQ2()
+        tH.fx('fxWithQQ', true)
+    console.debug('booooooooo', true)
+}
+
+fx.fxWithQQ2(true)
+endtest
+
+function sayBoo( boolean) {
+    console.debug('booooooooo', true)
+}
+
+fx.sayBoo2(true)
+
+endtest
+
+/*
+todo, support this:
+function sayBoo( boolean) {
+    console.debug('booooooooo', true)
+        }
+*/
+
+/*
+def testTFConversion( boolean)
+    var result = true === boolean
+    console.log('testTFConversion', true===boolean)
+    if ( result != true ) {
+        debugger
+        throw new Error('not true')
+    }
+end
+*/
+
+
+
+function testTFConversion( boolean) {
+    var result = true === boolean
+    console.log('testTFConversion', true===boolean)
+      console.error('-->testTFConversion', true===boolean)
+      console.log(testTFConversion);
+
+    var calledInnerFx = false;
+     function testCallingInnerFunction() {
+      console.log('\t','inner function')
+      calledInnerFx = true;
+     }
+     testCallingInnerFunction();
+
+     if ( calledInnerFx == false) {
+        throw new Error('did not call');
+        console.log('???')
+     }
+
+    tH.fx.sayBoo('test')
+    if ( result != true ) {
+        debugger
+        throw new Error('not true')
+    }
+}
+
+
+
+function testTFConversion( boolean)
+    var result = true === boolean
+    console.log('testTFConversion', true===boolean)
+      console.error('-->testTFConversion', true===boolean)
+      console.log(testTFConversion);
+
+    var calledInnerFx = false;
+     function testCallingInnerFunction() {
+      console.log('\t','inner function')
+      calledInnerFx = true;
+     }
+     testCallingInnerFunction();
+
+     if ( calledInnerFx == false) {
+        throw new Error('did not call');
+        console.log('???')
+     }
+
+    if ( result != true ) {
+        debugger
+        throw new Error('not true')
+    }
+}
+
+
+def testTFConversion2(boolean)
+    console.log('testTFConversion2', boolean)
+    tH.fx('testTFConversion', true)
+end
+
+#fx testTFConversion
+
+#fx testTFConversion true
+
+#fx.testTFConversion(true)
+tH.fx.testTFConversion(true)
+
+#fx testTFConversion(true)
+
+log boo
+
+endtest
+
+function findTabs(maxTabs) {
+    var tabs =  $('#tabHolder').find('li.uib-tab:visible')
+    console.debug('tabs', maxTabs, tabs.length)
+    if ( maxTabs ) {
+        $.each(tabs, function onClick(k,ui) {
+            var u = $(ui)
+            if ( maxTabs >= i  ) {
+               tH.click(tab.text(), '#tabHolder');
+               return;
+            }
+
+
+        });
+    }
+    return tabs
+}
+
+
+
+fx.findTabs(2);
+
+
+
+
+endtest
+
+testTFConversion(true)
+
+fx testTFConversion true; false
+fx testTFConversion(true);
+fx testTFConversion2
+endtest
+
+set #txtArea; what is this; false
+set #txtArea; what is this; true
+
+
+
+
+def outerloop(type2)
+    tH.addStep(function findAllUserTabs() {
+        var items = $('#divContainerCounter')
+        .find('button')
+        if ( type2 ) {
+                  var items = $('#divContainerCounter')
+                  .find('button2')
+        }
+        var arrTabs = []
+        $.each(items, function onAdd(k,v) {
+            var tabName = $(v).text().trim();
+            console.log('will delete tab', tabName);
+           // tH.wait(1);
+            tH.fx('deleteTab2', tabName)
+            arrTabs.push(tabName);
+        });
+
+        console.log('will delete tab', arrTabs);
+
+        tH.test.cb()
+    });
+end
+def deleteTab2(tabName)
+    tH.click(tabName, '#divContainerCounter');
+   //  console.log('will delete', 'searching for tab', tabName)
+   //tH.wait(0.5);
+    tH.addStep(function onx(){
+        //console.log('will delete done', tabName);
+        tH.test.cb()
+    })
+end
+
+fx outerloop
+#fx outerloop(true)
+
+
+
+
+def fx1(a,b,c)
+    var fxName ='-fx1'
+    tH.dbg(fxName,1)
+    tH.fx('fx4')
+    tH.addStep(function callTo2() {
+        console.error('running')
+        tH.dbg(fxName,2)
+
+        tH.fx('fx2')
+        tH.dbg(fxName,3)
+
+        tH.test.cb()
+    })
+    //tH.fx('fx2')
+    tH.dbg(fxName
+    ,4)
+end
+
+def fx2(a,b,c)
+    var fxName ='-fx2'
+    tH.dbg(fxName, 1);
+
+    tH.addStep(function callTo3() {
+        tH.log(fxName, 2)
+        tH.fx('fx3')
+        tH.dbg(fxName, 3)
+        tH.test.cb()
+    })
+    tH.dbg(fxName, 4);
+end
+
+
+
+def fx3(a,b,c)
+    var fxName = '--fx3'
+    tH.dbg(fxName, 1);
+
+    tH.addStep(function testFx3Logging() {
+        //tH.log('2')
+        //tH.fx('fx2')
+        tH.dbg(fxName, 2)
+        tH.test.cb()
+    })
+    tH.dbg(fxName, 3);
+end
+
+def fx4(a,b,c)
+    var fxName = '-fx4'
+    tH.dbg(fxName, 1);
+
+    tH.addStep(function testFx3Logging() {
+        //tH.log('2')
+        tH.log(fxName, 2)
+        tH.test.cb()
+    })
+    tH.dbg(fxName, 3);
+end
+
+
+
+
+fx fx1()
+
+
+
+
+
+
+endtest
+
+def fx1(a,b,c)
+    tH.log('fx1')
+    //tH.fx('fx2')
+end
+
+
+#fx fx1()
+
+#endtest
+
+/*
+def fx1(a,b,c)
+    console.log('fx1');
+end
+*/
+
+def fx2(a,b,c)
+    tH.log('fx2');
+    tH.fx('fx4')
+end
+
+
+def fx3(a,b,c)
+    tH.log('fx3');
+end
+
+
+
+def fx4(a,b,c)
+    tH.log('fx4');
+    tH.add(function () {
+        tH.setDefaultAddNext()
+        tH.logNow('fx4b')
+        tH.log('fx4c')
+        tH.fxNow('fx5')
+        tH.log('fx4d-postfx5')
+          tH.log('fx4e-postfx5')
+        tH.resetDefaultAddNext();
+        tH.test.cb();
+    });
+end
+
+
+def fx5(a,b,c)
+    tH.log('fx5');
+    tH.add(function asdf () {
+        tH.setDefaultAddNext()
+        tH.logNow('fx5b')
+        tH.log('fx5.last')
+
+        tH.log('fx5.pre')
+        tH.add(function inner1() {
+            tH.logNow('fx5c+++')
+            tH.test.cb();
+        })
+        tH.resetDefaultAddNext();
+        tH.log('fx5.post')
+        tH.test.cb();
+    });
+end
+
+
+
+fx fx1();
+fx fx2();
+fx fx3();

@@ -29,7 +29,9 @@ XY.startBreed = function startBreed(filePath_orConfig, ignoreMissing) {
     sh.mergeObjects( defaultSettings, breedConfig.innerSettingsMixin, true );
 //, false );
 
-
+    breedConfig.innerSettingsMixin.skipExistingDirCheck = true; //remove when live
+    config.innerSettingsMixin.skipExistingDirCheck = true;
+    
     var fileTestJSON = filePath_orConfig;// __dirname+'/'+'testData/' + 'test_dl_manifest.json';
     if ( sh.isObject(filePath_orConfig) ) {
         if (filePath_orConfig.file) {

@@ -131,11 +131,11 @@ function GrammarHelperServer() {
                 console.log(sh.t, 'results', body)
                 // t.assert(body.error == null , 'bad data ')
                 //   sh.callIfDefined(fxDone, body.credit)
-                 t.cb();
+                t.cb();
             }
         })
 
-       // return;
+        // return;
         t.add(function noTryToTestContent() {
             var data = 'print(y)'
             t.quickRequest(urls.urlgenindex,
@@ -183,7 +183,7 @@ function GrammarHelperServer() {
             })
         }
 
-var y = `
+        var y = `
 print(RDK.AddFile)
 r1= RDK.AddFile("C:/RoboDK/Library/KUKA_KR_210_2.robot")
 r1.setName("booty")
@@ -192,7 +192,7 @@ print("is sname?",r1==r1b)
 r1
 `
 
-            console.log('y', y)
+        console.log('y', y)
         runCmd(y);
         runCmd('');
         t.wait(3)

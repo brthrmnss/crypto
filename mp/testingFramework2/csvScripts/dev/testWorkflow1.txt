@@ -1,0 +1,26 @@
+#test for basic csv
+log Test for workflow 1, creates subssite and adds 2 tabs to it on 2 pages , verifies tabs were created
+eval - opendropdown
+var x42NavBarNav_DropDown = $('ul.navbar-nav').find('li.dropdown');
+x42NavBarNav_DropDown.addClass('open')
+endeval
+click #btnCreateSubsite
+set .txtManageSubsiteName newsubsitename
+clickJ .redTest //click red button
+clickText jump
+clickText test 2
+log test
+set #txtArea set the text
+set #txtArea; set the text ~use semi colon to delinate args
+set #txtArea |set the text ~use pika to delinate args
+alert new alert
+logNow sdfsdf
+logNext sdfsdfsdf
+log sdfsdfsdfsdfsdf
+wait 2 //wait 2 seoncds
+/*
+block comment
+*/
+--comment
+~some message alert //alias for log
+--fxdone: window.popups.closeAll();

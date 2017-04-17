@@ -6,7 +6,7 @@
 
   var quickReloadableDir2 = function quickReloadableDir2_($templateRequest,
                                                           $compile, $interpolate,
-                                                          transcludeHelper,
+                                                          transcludeHelper2,
                                                           $templateCache,
                                                           reloadableHelperTestService,
                                                           quickUI,
@@ -20,7 +20,8 @@
     reloadableHelper.saveDirectiveCtx(reload_name, arguments)
     //window.ddoFxArgs = Array.prototype.slice.call(arguments);
     // debugger; //only invoked 1x
-    var utilsParent = transcludeHelper.new(this);
+
+
     function link(scope, element, attrs, ctrl, transclude){
       var urlTemplate = '';
       urlTemplate = urlPath + reload_name + '.dir.html'
@@ -30,7 +31,7 @@
             /*angFunc = angFunc.create();*/
             var xUIHelper = xUI.create();
 
-
+            var tH2 = transcludeHelper2.create(this);
             //debugger;
 
             element.on('remove', function(){
@@ -44,81 +45,13 @@
             console.warn('link.2');
 
             //var utilsParentDict = utils.dictTemplates;
-            var utils = transcludeHelper.new();
-            utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
-            utils.$compile = $compile;
-            utils.loadTemplate(html, element, attrs);
-            scope.render(utils);
-
+            // var utils = utilsParent.create();
+            //utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
+            tH2.setupTransclution(reload_name, scope, $compile, element, html, attrs);
+            scope.render(tH2);
 
             var $scope = scope;
 
-
-            function QuickNavConfigHelper(){
-              var self = this;
-              var p = self;
-              self.data = {};
-              self.data.config = {}
-              self.config = self.data.config;
-              self.config.areas = {};
-
-              p.init = function init() {
-
-              }
-              p.addArea = function addARea(name, id) {
-                if ( id == null ) {
-                  id = 'area_'+name;
-                }
-                if ( id.includes('#') == false ) {
-                  id = '#'+id;
-                }
-                var areaConfig = {};
-                areaConfig.name = name;
-                areaConfig.id = id;
-                areaConfig.ui = $(id)
-                if ( areaConfig.ui == null ) {
-                  console.warning('it is missing', areaConfig.id)
-                }
-                self.config.areas[name] = areaConfig;
-                console.debug('adding an area info', name, id)
-              }
-              p.getArea = function getArea(name) {
-                var area = self.config.areas[name];
-                return area;
-              }
-              p.defaultArea = function defaultArea(name, id) {
-
-                var defaultArea = self.config.areas[name];
-                sh.throw  = function (err) {
-                  throw new Error(err)
-                }
-
-                sh.throwIfNull  = function throwIfNull(val, err) {
-                  if ( val != null )
-                    return
-                  throw new Error(err)
-                }
-
-                sh.throwIfNull(defaultArea, 'Name is not valid default area');
-
-                self.config.defaultAreaName = defaultArea.name;
-                console.debug('adding defaultArea area', name, defaultArea.name);
-
-              }
-            }
-
-
-
-            function defineConfigForQuickNave() {
-              var qNC = new QuickNavConfigHelper();
-              var cfg = {};
-              qNC.addArea('login', 'areaLogin');
-              qNC.defaultArea('login');
-              qNC.addArea('list')
-              qNC.addArea('edit')
-              scope.configNavBar = qNC;
-            }
-            defineConfigForQuickNave();
 
             scope.$watch('vm.config',
                 function (v, oldVal) {
@@ -155,8 +88,12 @@
         return newerDdo
       }
 
-      utilsParent.storeTemplate(tElem, attrs);
-      utilsParent.reloadTemplate = tElem.clone();
+      //utilsParent.storeTemplate(tElem, attrs);
+      //utilsParent.reloadTemplate = tElem.clone();
+
+      //transcludeHelper2.
+      TransclutionHelper2.addInitStuff(reload_name, tElem, attrs)
+
       //alert('defined ddo')
       function defineDirectiveDefaults() {
         if ( attrs.selectedIndex === null  ) {
@@ -191,7 +128,7 @@
 
   var QuickReloadablelistController2 = function
       QuickReloadablelistController_ ($scope,
-                                      transcludeHelper,
+                                      transcludeHelper2,
                                       sh,
 
                                       dialogService,
@@ -201,16 +138,15 @@
                                       quickFormHelper,
                                       quickCrudHelper,
                                       quickListHelper
-
   ) {
     //alert('...dddh')
-    var pubSub = pubSub.create();
+    //var pubSub = pubSub.create();
 
-    pubSub.subscribe('no', function onNo(arg){
-      console.log('who is saying no?', arg)
-    })
+    /*  pubSub.subscribe('no', function onNo(arg){
+     console.log('who is saying no?', arg)
+     })
 
-    pubSub.publish('no', 'ia am')
+     pubSub.publish('no', 'ia am')*/
     var config = $scope.vm.config;
     if ( config == null ) { config = {} };
 
@@ -223,8 +159,6 @@
     $scope.render = function render( utils ) {
       if ($scope.utils == null) {
         $scope.utils = utils;
-        $scope.templateContent = utils.templateContent.clone();
-        $scope.userTemplateContent = utils.userTemplateContent.clone();
       } else {
         utils = $scope.utils;
       }
@@ -237,31 +171,16 @@
       var config = $scope.vm.config;
       config = sh.dv(config, {});
 
-      utils.templateContent = $scope.templateContent.clone()
-      utils.userTemplateContent = $scope.userTemplateContent.clone()
-
       function addUIEm() {
         quickUI = quickUI.create();
+        
         var q = quickUI;
-        q.processDefaults(utils.templateContent );
+        q.processDefaults(utils.contentOutput);
       }
       addUIEm();
 
-
       scope.generateListConfig = function generateListConfig() {
         var y = appService.gen()
-        //console.error('y', y);
-        /**/
-        /*   var x = new appService.gen();
-         var template = {name: '', date: null, age: 0}
-         x.createObjects(template, 10)
-         x.randomizeStr('name')
-         x.randomizeNumber('age', 0, 120, 2)
-         x.randomizeDate('date', 365 * 2)
-         x.show()
-         scope.vm.listData = x.items;*/
-        /**/
-
 
         var cfg = {}
         cfg.asdf = 'sdfs';
@@ -289,34 +208,20 @@
       }
       scope.generateListConfig();
 
-
-
       scope.generateFormConfig = function generateFormConfig() {
         var y = appService.gen()
-        //console.error('y', y);
-        /*
-         var x = new appService.gen();
-         var template = {name: '', date: null, age: 0}
-         x.createObjects(template, 10)
-         x.randomizeStr('name')
-         x.randomizeNumber('age', 0, 120, 2)
-         x.randomizeDate('date', 365 * 2)
-         x.show()
-         scope.vm.listData = x.items;
-         */
-   
 
         var cfgCrud = {};
         scope.configCrud = cfgCrud;
 
         var cfg = {}
         quickFormHelper = quickFormHelper.create();
-       // quickFormHelper.loadConfig(cfg)
+        // quickFormHelper.loadConfig(cfg)
         quickFormHelper.loadForm({}, cfgCrud, cfg)
         var h = quickFormHelper;
         // h.showTitle('List shit bost');
         scope.configForm =cfg;
-        
+
         //cfg.dataObject = cfgCrud;
 
 
@@ -329,7 +234,7 @@
           console.info('hit')
           cfgCrud.fxReRender()
         }  )
-        
+
         quickFormHelper.fxAnyChange(function thingCjhangd(){
           console.info('hit')
           cfgCrud.fxReRender()
@@ -339,17 +244,17 @@
 
       scope.generateCrudConfig = function generateCrudConfig() {
         var y = appService.gen()
-        //console.error('y', y);
- 
-         var x = new appService.gen();
-         var template = {name: '', date: null, age: 0}
-         x.createObjects(template, 10)
-         x.randomizeStr('name')
-         x.randomizeNumber('age', 0, 120, 2)
-         x.randomizeDate('date', 365 * 2)
+        console.error('generateCrudConfig', y);
+
+        var x = new appService.gen();
+        var template = {name: '', date: null, age: 0}
+        x.createObjects(template, 10)
+        x.randomizeStr('name')
+        x.randomizeNumber('age', 0, 120, 2)
+        x.randomizeDate('date', 365 * 2)
         // x.show()
-     //    scope.vm.listData = x.items;
-         
+        //    scope.vm.listData = x.items;
+
         if ( scope.configCrud ) {
           cfg = scope.configCrud;
         } else {
@@ -362,8 +267,12 @@
         quickCrudHelper = quickCrudHelper.create();
         quickCrudHelper.loadConfig(cfg)
         var h = quickCrudHelper;
-        h.showTitle('List shit bost');
+        h.showTitle('List Boost');
 
+        //asdf.g
+
+        x.items = x.items.slice(0,10)
+        //x.items = [];
 
         h.connectToInMemory(x.items)
 
@@ -385,10 +294,11 @@
       scope.generateCrudConfig();
 
 
+      html = utils.getFinalOutput();
 
-
-
-      html = utils.getFinalTemplate();
+      //throw(u)
+      console.log('html', html)
+     // debugger;
       element.html($compile(html)(scope));
 
     }

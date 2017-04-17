@@ -70,6 +70,31 @@ $('form').submit(function(){
     $('#m').val('');
     return false;
 });
+/*
+$('#audioThing')[0].addEventListener("ended",function() {
+    var src =  $('#audioThing').attr('src');
+    socket.emit('audioEnded', src);
+});*/
+$('#audioThing')[0].onended = function onEnd() {
+    var src =  $('#audioThing').attr('src');
+    socket.emit('audioEnded', src);
+};
+
+
+socket.on('play', function(msg){
+    console.log('play', msg)
+    $('#messages').append($('<li>').text(msg));
+    h.scrollToBottom();
+
+    var myAudio= $('#audioThing')[0];
+    $('#audioThing')[0].pause();
+    $('#audioThing').attr('src', msg.url)
+    myAudio.playbackRate = 1.6;
+    $('#audioThing')[0].play();
+});
+
+
+
 socket.on('chat message', function(msg){
     if (msg.indexOf('eval-')==0) {
         msg = msg.replace('eval-', '')
@@ -97,9 +122,8 @@ socket.on('runcmd', function(msg){
     }
     $('#messages').append($('<li>').text(msg));
 
-    var myAudio= $('#audioThing')[0];
 });
-    myAudio.playbackRate = 1.6;
+
 var h = {};
 h.scrollToBottom = function scrollToBottom(){
     //$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
@@ -722,7 +746,6 @@ function ddList() {
 
 
     var machines = [
-        {name:'seed4-16', ip:'95.211.137.145'},
         {name:'seed3', ip:'37.48.94.161'},
         {name:'staging', ip:'127.0.0.1'},
         {name:'seed2', ip:'5.79.75.96'},

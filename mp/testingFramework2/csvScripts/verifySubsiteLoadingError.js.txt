@@ -1,0 +1,13 @@
+#test for basic csv
+log this test will ensure the user can see the create new subsite option
+
+
+wait 4
+log 1
+wait 4
+log 2
+#wait 4
+#log 3
+waitForShow('#subsiteLoadErrorMsg', 'did not see website error')
+status Subsites did not load, Did see warning icons. (#subsiteLoadErrorMsg)
+endtest

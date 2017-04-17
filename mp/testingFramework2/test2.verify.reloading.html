@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Diff Location</title>
+
+    <!-- Prove can work in diff dir -->
+    <script>
+        /* var evalTxt = '34,fs.dfsjfsdfsdkksllll;;;;++++(){'
+         try {
+         eval(evalTxt);
+         } catch ( e ) {
+         console.error('error running eval', evalName)
+         console.error(e)
+         console.error(e.stack)
+         tH.logNow('error in fx', evalName)
+         tH.logNow(e)
+         tH.logNow(e.stack)
+         tH.fail('see above')
+         }*/
+
+        setTimeout(function hideDiv() {
+            if (window.$ == null) {
+                console.log('wait for jquery')
+                setTimeout(hideDiv, 1000);
+                return;
+            }
+            $('#showDiv').hide();
+
+            var nums = [];
+            for (var i = 0; i < 10; i++) {
+                nums.push(i)
+            }
+            //console.log(nums, nums)
+            var c = $('#divContainerCounter')
+            var c2 = $('#divContainerCounter2')
+            c2.css('opacity', '0')
+            $.each(nums, function onADdBtn(k, num) {
+                var btn = $('<button/>')
+                btn.text(num + 1)
+                btn.click(function onClickX() {
+                    var count = num + 1
+                    // console.log('clicked', count)
+                    function click2(sz) {
+                        console.log('clicked', sz, btn.text())
+                    }
+
+                    click2(count)
+                })
+                if (k % 2 == 0) {
+                    c2.append(btn.clone())
+                } else {
+                    var span = $('<div/>');
+                    span.css('width', '23' + 'px');//uiUtils.make('span')
+                    span.css('display', 'inline-block')
+                    c2.append(span)
+                }
+                c.append(btn)
+
+
+            })
+
+        }, 500)
+        window.onRedButton = function onRedButton() {
+            console.log('ddd')
+        }
+        window.onShowDiv = function onShowDiv() {
+            console.log('onShowDiv')
+
+            setTimeout(function hideDiv() {
+                $('#showDiv').show();
+            }, 500)
+
+            setTimeout(function hideDiv() {
+                $('#showDiv').hide();
+            }, 5000)
+        }
+        // window.preamble = '/test3/';
+        window.testCallFromEval = function () {
+            console.log('boom')
+        }
+    </script>
+    <script>
+        // window.preamble = '../test7/'
+    </script>
+    <script src="../testingFramework/testLL.js"></script>
+
+    <script>
+        function lazyLoadAndRunTest() {
+            loadTestingFramework(function onReady() {
+                testStackingDemo2B(true);
+            })
+        }
+        function autoloadTestFramework() {
+            window.location += '?loadTestFramework=true'
+        }
+    </script>
+
+    <script>
+        setTimeout(function auto_startTestingFramework() {
+            console.info('auto - loading testing framework')
+            loadTestingFramework(fxDoneLoading)
+            function fxDoneLoading() {
+                console.log('---')
+                var cfg = {};
+                cfg.url = 'partials/menuTest.html';
+                cfg.id = 'divTestMenu'
+                uiUtils.utils.loadPage(cfg)
+            }
+        }, 500)
+    </script>
+
+    <style>
+        body {
+            font-weight: 400;
+            background-color: #CBD9E6;
+            font-family: 'Arial';
+        }
+    </style>
+
+    <!-- one of my script conflicts with ths main script ... plz fix -->
+    <script src="http://127.0.0.1:3000/socket.io-1.2.0.js"></script>
+    <script>
+        function startReloading() {
+            if (window.$ == null) {
+                console.info('startReloading', 'wait for jquery')
+                setTimeout(startReloading, 1000);
+
+
+                return;
+            }
+
+
+            var scriptsForReloading = [
+                'http://127.0.0.1:3000/socket.io-1.2.0.js',
+                'http://localhost:3000/reloader.js'
+            ]
+
+            function loadReloadingFramework_ForTesting(fxDone, force) {
+
+                loadScript2(scriptsForReloading.concat(),
+                        onFinishedLoadingTestFramework)
+
+                function onFinishedLoadingTestFramework() {
+                    console.info('finished loading reloading framework',
+                            scriptsForReloading.length);
+                    // window.tests.loaded = true;
+                    if (fxDone) {
+                        fxDone()
+                    }
+                }
+            }
+
+            window.testDefs = 'csvScripts/defs.js.txt'
+
+            loadReloadingFramework_ForTesting(function onSetupReloadListeners() {
+
+
+                reloader.reloadWhenFx('/csvScripts/', function onTestOneJs(a, b, c) {
+                    b = a.split('/csvScripts/')[1]
+                    b = window.preamble + 'csvScripts/' + b;
+                    console.log('rerun last test', b, b, c)
+                    tH.runTest('testCSV', b)
+                    //debugger
+                    return true
+                })
+
+
+                reloader.reloadWhenFx('testingFramework/', function onTestOneJs(a, b, c) {
+
+
+                    setTimeout(function reRunTest() {
+                        tH.rerunLastTest()
+                    }, 800)
+
+                    return;
+                    loadTestFrameworkFiles(function onFinishedRerunTest() {
+                        console.log('rerun last test')
+                        tH.rerunLastTest()
+                    }, true)
+                })
+
+
+                reloader.reloadWhenFx('reloading.html', function onTestOneJs(a, b, c) {
+                    location.reload();
+                })
+                /* reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
+                 location.reload();
+                 })*/
+            })
+        }
+        startReloading()
+    </script>
+
+    <!--
+
+        <script src="http://127.0.0.1:3000/socket.io-1.2.0.js" ></script>
+        <script src="http://localhost:3000/reloader.js" ></script>
+    -->
+
+</head>
+<body>
+<button>Test</button>
+<br/>
+<button onclick="lazyLoadAndRunTest()">LL Test - Run Test</button>
+<br/>
+<button onclick="tH.clickTest2()">Run Test 2</button>
+<br/>
+<textarea id="txtArea"></textarea>
+<button id="btnTest">Test</button>
+<!--
+<div style="display: none; position: fixed; bottom: 10px; right: 10px" id="testLogPanel" >
+    asdf
+</div>
+-->
+
+
+<div>
+    <button class="redTest"
+            onclick="onRedButton()">Go
+    </button>
+
+    <button class="redTest2"
+            onclick="onShowDiv()">Press for div
+    </button>
+    <div id="showDiv" style="color:white;">
+        this the show div
+    </div>
+</div>
+
+<div id="divContainerCounter2">
+</div>
+<div id="divContainerCounter">
+    <span>skipTo8</span>
+    <br/>
+</div>
+<style>
+    .layout-horizontal {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-content: stretch;
+        align-items: stretch;
+    }
+
+    .fb-align-left {
+        justify-content: flex-start !important;
+    }
+
+    .layout-horizontal-left {
+        justify-content: flex-start !important;
+    }
+</style>
+
+
+<div class="x42-nav-body-container">
+    <div>Revenue</div>
+    <div>External Revenue</div>
+</div>
+<pt-table>
+    table
+</pt-table>
+
+<br/>
+
+<div id="divContainerTest"
+     style="max-width:700px; overflow-y: auto;"
+     class="hide layout-horizontal layout-horizontal-left">
+    <div>span1</div>
+    <div>span1</div>
+    <div>span1</div>
+</div>
+
+
+<style>
+    .hide {
+        display: none;
+    }
+    .tdCell {
+        border: solid 1px black;
+    }
+</style>
+
+
+<div id="tabHolder">
+
+</div>
+
+<div id="divTestMenu">
+
+</div>
+
+
+<script>
+    var t = treeNode =  {}
+    window.treeNode = t;
+    t.handleClick = function handleClick(input) {
+        console.warn('testing...', input)
+
+        uiUtils.clear('#tabHolder')
+        uiUtils.addTo('#tabHolder')
+
+
+        var x = 1;
+
+        function onAddTab(name) {
+            //li.uib-tab
+            uiUtils.make({
+                tag:'li',
+                addClass:'uib-tab',
+                text: input+'-tab'+x
+                // addTo:true
+            })
+
+            x++;
+
+        }
+
+        onAddTab(input)
+        onAddTab(input)
+        onAddTab(input)
+    }
+
+</script>
+
+
+</body>
+</html>

@@ -33,14 +33,18 @@ function FileWatcher() {
     var self = this;
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
+        if ( self.settings.__filename ) {
+            self.settings.__filename = sh.replaceBackslash(self.settings.__filename);
+        }
 
         self.watchDirs();
         self.setupSocket();
 
+
         if ( self.settings.runFirst != false &&
             self.settings.action == 'runFile') {
-            self.proc('running', self.settings.file)
-            var y = sh.runAsync('node ' + self.settings.file)
+            self.proc('running', self.settings.file);
+            var y = sh.runAsync('node ' + self.settings.file);
         }
     }
 
@@ -113,8 +117,50 @@ function FileWatcher() {
 
                 }
             }
-            self.proc('running', self.settings.file)
-            var  y= sh.runAsync('node '+ self.settings.file)
+            if ( self.settings.fxTestFile ) {
+                var ok = sh.cid(self.settings.fxTestFile, file)
+
+                if ( ok != true ) {
+                    if ( self.settings.runAnyFilter ) {
+                        ok = sh.filterCheck(self.settings.runAnyFilter, file, sh.fs.norm)
+                    }
+                }
+
+                if ( ok == false ) {
+                    return;
+                }
+            }
+            var fileToRun = self.settings.file;
+
+            self.proc('asdf', file, self.settings.__filename)
+            if ( self.settings.__filename == file ) {
+                self.proc('same file')
+                return;
+            }
+            if ( file == null ) {
+                console.log('is null')
+                return
+            }
+            if ( sh.fs.exists(file) == false )
+            {
+                console.log('no exist')
+                return
+            }
+            if ( self.settings.runCurrentFile ) {
+                fileToRun = file;
+                var isDir =  sh.fs.isDir(file);
+                self.proc('isdir', isDir)
+                if (isDir ) {
+                    self.proc('skip dir', file)
+                }
+
+                var dirFile = sh.dirname(file)
+                ///var process = var require('process')
+                process.chdir(dirFile)
+            }
+
+            self.proc('running', fileToRun)
+            var  y= sh.runAsync('node '+ fileToRun)
             //spit stdout to screen
             y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
 
@@ -256,8 +302,14 @@ function FileWatcher() {
                 }
             });
 
-            monitor.on('change', function (changes) {
-                var file = dirMonitored2 + '/ ' + changes.modifiedFiles[0]
+            monitor.on('change', function onChange(changes) {
+                var file = dirMonitored2 + '/' + changes.modifiedFiles[0]
+                if ( self.settings.dir6) {
+                    var file = self.settings.dir6 + '/' + changes.modifiedFiles[0]
+                }
+                //file = sh.fs.norm2(file);
+                file = sh.replaceBackslash(file);
+
                 if ( self.settings.debugChanges )
                     console.log(file, changes);
                 if ( changes.modifiedFiles.length == 0 ) {

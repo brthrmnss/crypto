@@ -1,0 +1,198 @@
+Test Log (2)
+url: test_tab_workflow.js.txt
+starting test 'testCSV'
+this test will enter the EU Trading 2 subsite
+Will create 2 tabs on two pages ,
+Then verify tabs have been created.
+8. //running stored fx _L closeallpopups 0
+create tab
+35. //running stored fx _L createTab 0 var arg1 = "0",var arg2 = "true",var arg3 = "User Tab 1"
+running create tab? true User Tab 1
+renaming User Tab 1 1
+found existing tab User Tab 1
+--- clickAction Cancel #dialogCloneTabFrom null
+too many items User Tab 1 has more than 1
+--- clickAction User Tab 1 #tabHolder 2
+____ still waiting for (waitForShow) #editTabNameDialogContent Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at verifyTabIsSelected (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :806:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+revertTabs
+37. //running stored fx _L revertTabs 0 var arg1 = ""
+go to subsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+184. ||running stored fx d leaveSubsite 0 leaveSubsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction Leave #dialogNavBar_SubsiteMenu 1
+____ still waiting for
+____ still waiting for Ensure add to subsite tab is hidden - when user leaves subsite edit mode (waitForHide) #dialogAddNewTab
+36. ||running stored fx d hidedropdown 0 hidedropdown
+213. ||running stored fx d ensureAllSubsiteTabsGone 0 ensureAllSubsiteTabsGone
+... recreating tabs
+36. ||running stored fx d hidedropdown 0 hidedropdown
+41. //running stored fx _L createSubsite 0 var arg1 = "EU Trading-Tabs"
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+too many items Create New Subsite has more than 1
+--- clickAction Create New Subsite 7
+____ still waiting for (waitForShow) #dialogManageSubsite Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at createSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :909:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :954:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for Ensure title text on dialog (waitForShow) Create Subsite #dialogManageSubsite Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at createSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :910:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :954:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for Ensure empty subsite name warning is display (waitForShow) A subsite name is required #dialogManageSubsite Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at createSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :911:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :954:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for Ensure empty subsite name warning is removed (waitForHide) A subsite name is required
+____ still waiting for Ensure "long name" warning is display (waitForShow) Max length is 16 characters #dialogManageSubsite Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at createSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :923:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :954:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+set text
+--- clickAction OK #dialogManageSubsite 1
+____ still waiting for (waitForShow) EU Trading-Tabs Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at createSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :950:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :954:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+22. ||running stored fx d closeallpopups 0 closeallpopups
+43. //running stored fx _L goToSubsite 0 var arg1 = "EU Trading-Tabs"
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for wait for the subsite in the list (waitForShow) EU Trading-Tabs #holderMySubsiteList Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at goToSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :1041:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :1048:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction EU Trading-Tabs #holderMySubsiteList 1
+44. //running stored fx _L createTab 0 var arg1 = "0",var arg2 = "false",var arg3 = "Subsite Tab 1"
+running create tab? false Subsite Tab 1
+renaming Subsite Tab 1 0
+creating the new tab Function (copy)
+--- clickAction #dialogAddNewTab 1
+____ still waiting for waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #dialogCloneTabFrom 1
+too many items Function (copy) has more than 1
+--- clickAction Function (copy) #tabHolder 2
+____ still waiting for (waitForShow) #editTabNameDialogContent Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at onXYX (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :792:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction #editTabNameDialogContent 1
+--- clickAction a|||Rename #dialogTabContextMenuContent 1
+____ still waiting for (waitForShow) #dialogRenameTab Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at onXYX (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :796:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #dialogRenameTab 1
+--- clickAction Function (copy) #tabHolder null
+____ still waiting for (waitForShow) #editTabNameDialogContent Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at verifyTabIsSelected (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :806:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+45. //running stored fx _L ensureTab 0 var arg1 = "User Tab 1",var arg2 = "true"
+what2 User Tab 1
+116. ||running stored fx d refreshSubsites 0 refreshSubsites
+go to subsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+184. ||running stored fx d leaveSubsite 0 leaveSubsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction Leave #dialogNavBar_SubsiteMenu 1
+____ still waiting for
+____ still waiting for Ensure add to subsite tab is hidden - when user leaves subsite edit mode (waitForHide) #dialogAddNewTab
+36. ||running stored fx d hidedropdown 0 hidedropdown
+213. ||running stored fx d ensureAllSubsiteTabsGone 0 ensureAllSubsiteTabsGone
+36. ||running stored fx d hidedropdown 0 hidedropdown
+@checking for tab User Tab 1
+result of @checking for tab User Tab 1 2 1
+48. //running stored fx _L deleteTabSafe 0 var arg1 = "User Tab 1",var arg2 = "true"
+320. ||running stored fx d findTab 0 findTab User Tab 1 true
+searched for tab User Tab 1
+found existing tab, deleting tab named: User Tab 1
+270. ||running stored fx d deleteTab 0 deleteTab User Tab 1 true
+too many items User Tab 1 has more than 1
+--- clickAction User Tab 1 #tabHolder 2
+will delete searching for tab User Tab 1
+where is tab User Tab 1 ?
+____ still waiting for Did not see context controls (waitForShow) function findTabByName() { tH.logNow('where is tab', tabName_,'?'); var tabs = tH .findByContent('li|||'+tabName_, '#tabHolder'); if ( tabs.length > 1 ) { tH.clickNow(tabs) } return tabs; } Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :290:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction #editTabNameDialogContent 1
+--- clickAction a|||Delete #dialogTabContextMenuContent 1
+____ still waiting for (waitForShow) #confirmDialog Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :295:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #confirmDialog 1
+will delete tab User Tab 1 gone
+320. ||running stored fx d findTab 0 findTab User Tab 1 true
+searched for tab User Tab 1
+49. //running stored fx _L ensureTabGone 0 var arg1 = "User Tab 1",var arg2 = "true"
+834. ||running stored fx d ensureTab 0 ensureTab User Tab 1 true false
+what2 User Tab 1
+116. ||running stored fx d refreshSubsites 0 refreshSubsites
+go to subsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+184. ||running stored fx d leaveSubsite 0 leaveSubsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+213. ||running stored fx d ensureAllSubsiteTabsGone 0 ensureAllSubsiteTabsGone
+36. ||running stored fx d hidedropdown 0 hidedropdown
+@checking for tab User Tab 1
+53. //running stored fx _L goToSubsite 0 var arg1 = "EU Trading-Tabs"
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for wait for the subsite in the list (waitForShow) EU Trading-Tabs #holderMySubsiteList Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at goToSubsite (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :1041:4) at eval (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :1048:1) at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction EU Trading-Tabs #holderMySubsiteList 1
+55. //running stored fx _L deleteTabSafe 0 var arg1 = "Subsite Tab 1"
+320. ||running stored fx d findTab 0 findTab Subsite Tab 1
+searched for tab Subsite Tab 1
+found existing tab, deleting tab named: Subsite Tab 1
+270. ||running stored fx d deleteTab 0 deleteTab Subsite Tab 1
+too many items Subsite Tab 1 has more than 1
+--- clickAction Subsite Tab 1 #tabHolder 2
+will delete searching for tab Subsite Tab 1
+where is tab Subsite Tab 1 ?
+____ still waiting for Did not see context controls (waitForShow) function findTabByName() { tH.logNow('where is tab', tabName_,'?'); var tabs = tH .findByContent('li|||'+tabName_, '#tabHolder'); if ( tabs.length > 1 ) { tH.clickNow(tabs) } return tabs; } Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :290:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction #editTabNameDialogContent 1
+--- clickAction a|||Delete #dialogTabContextMenuContent 1
+____ still waiting for (waitForShow) #confirmDialog Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :295:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #confirmDialog 1
+will delete tab Subsite Tab 1 gone
+320. ||running stored fx d findTab 0 findTab Subsite Tab 1 undefined
+searched for tab Subsite Tab 1
+56. //running stored fx _L ensureTabGone 0 var arg1 = "Subsite Tab 1",var arg2 = "true"
+834. ||running stored fx d ensureTab 0 ensureTab Subsite Tab 1 true false
+what2 Subsite Tab 1
+116. ||running stored fx d refreshSubsites 0 refreshSubsites
+go to subsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+184. ||running stored fx d leaveSubsite 0 leaveSubsite
+27. ||running stored fx d showdropdown 0 showdropdown
+____ still waiting for dropdown didnt show (waitForShow) Create New Subsite #dialogNavBar_SubsiteMenu Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :35:4) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction Leave #dialogNavBar_SubsiteMenu 1
+____ still waiting for
+____ still waiting for Ensure add to subsite tab is hidden - when user leaves subsite edit mode (waitForHide) #dialogAddNewTab
+36. ||running stored fx d hidedropdown 0 hidedropdown
+213. ||running stored fx d ensureAllSubsiteTabsGone 0 ensureAllSubsiteTabsGone
+36. ||running stored fx d hidedropdown 0 hidedropdown
+@checking for tab Subsite Tab 1
+61. //running stored fx _L removeAllTabs 0
+62. //running stored fx _L removeAllTabs 0 var arg1 = "true"
+270. ||running stored fx d deleteTab 0 deleteTab User Tab 1
+too many items User Tab 1 has more than 1
+--- clickAction User Tab 1 #tabHolder 2
+will delete searching for tab User Tab 1
+where is tab User Tab 1 ?
+____ still waiting for Did not see context controls (waitForShow) function findTabByName() { tH.logNow('where is tab', tabName_,'?'); var tabs = tH .findByContent('li|||'+tabName_, '#tabHolder'); if ( tabs.length > 1 ) { tH.clickNow(tabs) } return tabs; } Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :290:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction #editTabNameDialogContent 1
+--- clickAction a|||Delete #dialogTabContextMenuContent 1
+____ still waiting for (waitForShow) #confirmDialog Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at deleteTab (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :295:4) at eval (eval at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17), :311:1) at dAddNextOffsetnEval_Later (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1315:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #confirmDialog 1
+will delete tab User Tab 1 gone
+320. ||running stored fx d findTab 0 findTab User Tab 1
+searched for tab User Tab 1
+68. //running stored fx _L createTab 0 var arg1 = "0",var arg2 = "true",var arg3 = "User Tab 1"
+running create tab? true User Tab 1
+renaming User Tab 1 0
+creating the new tab Function (copy)
+--- clickAction #dialogAddNewTabToUserLayout 1
+____ still waiting for waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #dialogCloneTabFrom 1
+too many items Function (copy) has more than 1
+--- clickAction Function (copy) #tabHolder 2
+____ still waiting for (waitForShow) #editTabNameDialogContent Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at onXYX (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :792:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction #editTabNameDialogContent 1
+--- clickAction a|||Rename #dialogTabContextMenuContent 1
+____ still waiting for (waitForShow) #dialogRenameTab Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at onXYX (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :796:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #dialogRenameTab 1
+--- clickAction Function (copy) #tabHolder null
+____ still waiting for (waitForShow) #editTabNameDialogContent Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at verifyTabIsSelected (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :806:4) at tH_addStep_fx2 (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:517:13) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+69. //running stored fx _L createTab 0 var arg1 = "1",var arg2 = "true"
+running create tab? true
+creating the new tab Complex (copy)
+--- clickAction #dialogAddNewTabToUserLayout 1
+____ still waiting for waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+--- clickAction OK #dialogCloneTabFrom 1
+70. //running stored fx _L createTab 0 var arg1 = "0",var arg2 = "false",var arg3 = "Subsite Tab 1"
+running create tab? false Subsite Tab 1
+renaming Subsite Tab 1 0
+creating the new tab Function (copy)
+--- clickAction #dialogAddNewTab 0
+____ still waiting for waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+____ still waiting for waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13)
+_________
+Test Failed failed on thing isDialogVisible_waitForShow waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod (http://rr413c1n7.ms.com:10051/testingFramework/PromiseHelperV3.js:161:13) 11 10 waiting for clonetab dialog (waitForShow) #dialogCloneTabFrom Error at Object.waitForShow (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:1671:17) at cloneTab_QuickIFTabExists (eval at runEval_Later_L (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:2748:29), :768:4) at outerWrapper (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:537:17) at fx_testLinkSync (http://rr413c1n7.ms.com:10051/testingFramework/testFramework.js:440:17) at self.startNextMethod

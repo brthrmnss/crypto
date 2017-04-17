@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" href="css/popup.css" >
+  </head>
+  <body>
+    <div id="tools">
+      <a href="#toggleState" id="toggleStateLink">Disable/Enable de-duplication</a>
+      <a href="#showOptions" id="showOptionsLink" class="">Open settings</a>
+      <!-- <a href="#nothing" id="" class="disabled nothing">&nbsp;</a> -->
+      <hr/>
+      <a href="#duplicateTab" id="duplicateTabLink" class="">Duplicate this tab</a>
+      <a href="#whitelistThis" id="whitelistThisLink" class="">Whitelist this webpage</a>
+      <!-- <a href="#nothing" id="" class="disabled nothing">&nbsp;</a> -->
+      <hr/>
+      <a href="#closeDuplicates" id="closeDuplicatesLink" class="">Close all duplicate tabs*</a>
+        <span id="closeDuplicatesWarning">Warning: Will lose unsaved form data in duplicate tabs!</span>
+      <a href="#nothing" id="" class="disabled nothing">&nbsp;</a>
+      <a href="#recoverLost" id="recoverLostLink" class="">Restore all tabs from startup</a>
+      <hr/>
+      <div id="donateDiv">
+        <form target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post" class="preDonate support">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="GD2XSXXL34SDG">
+          <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" class="btn btnDonate btn-red btn-small" />
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1" style="visibility:hidden">
+        </form>
+        <div class="postDonate supporter hidden">
+          Thanks for supporting ClutterFree!
+        </div>
+      </div>
+    </div>
+    <div id="bottomBar" class="showMe bar">
+      <a href="https://c306.net/?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=bottombar_homelink&utm_campaign=chrome_projects" target="_blank" class="external_links bottomBarLinks" id="c306_home" title="About Me - C306"><img src="img/ab16.png" alt="About Me" id="ab16"></a>
+      
+      <a href="http://twitter.com/adityabhaskar/?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=bottombar_twitter&utm_campaign=chrome_projects" target="_blank" class="external_links bottomBarLinks" id="twitter_adityabhaskar" title="Twitter: @adityabhaskar"><img src="img/twitter.png" alt="@adityabhaskar" id="twitter"></a>
+      
+      <div class="clearFloat"></div>
+      <a href="https://c306.net/apps/updates/app/clutterfree?utm_source=Clutter%20Free&utm_medium=chrome_projects&utm_content=dT_Popup_versionlogLink&utm_campaign=chrome_projects" class="external_links" target="_blank" id="versionSpan">&nbsp;</a>
+    </div>
+    <div id="bottomBarPlaceholder" class="">&nbsp;</div>
+    
+    <script src="js/ext/jquery-2.1.1.min.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/popup.js"></script>
+  </body>
+</html>
