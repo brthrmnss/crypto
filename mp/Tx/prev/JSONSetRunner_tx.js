@@ -131,6 +131,8 @@ if (module.parent == null) {
         cfg.it.fxDone = null;
         cfg.includeAllItems = null
         cfg.it.noOutput = false
+        cfg.it.unimportant = false
+
         delete cfg.it.noOutput;
         delete cfg.it.desc;
         cfg.it.fxFilter = null;
@@ -197,6 +199,7 @@ if (module.parent == null) {
         cfg.it.desc = 'remove outside of target year ( Ensure All Dates in range)'
         cfg.it.tagWhy = 'sdfsdfsdfsdfsdf'
         cfg.it.peachTreeAcct = 54654564
+        cfg.it.unimportant = true;
 
         cfg.it.matchesDefault = []
         cfg.it.fxFilter = function fxFilter(item) {
@@ -312,6 +315,7 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'DblCount American Express'
     cfg.it.matchesDefault = []
+    cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
         if ( item.desc2.includes('Withdrawal-ACH-A-AMEX')) {
             return true;
@@ -324,6 +328,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Checks-Tagger'
+    cfg.it.unimportant = true;
     //cfg.inputIsOutput_doesNotFilter = true //if doesn't filter, will use original list
     cfg.it.matchesDefault = []
 
@@ -391,6 +396,7 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = ' American Express'
     cfg.it.matchesDefault = []
+    cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
         if ( item.desc2.includes('AUTOPAY PAYMENT') && item.accountName == 'Gold Card') {
             return true;
@@ -417,6 +423,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Air Travel'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault = ['Airlines', 'SW AIR', 'Southwest Airlines']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
@@ -445,6 +452,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Groceries'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Trader Joe',
             'Giant', 'Safeway',
@@ -479,6 +487,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Dry Cleaning'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['BAYVIEW CLEANERS'
 
@@ -488,6 +497,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Pills'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['VITAMIN AND CARD OUTLE' ,
             'PUREFORMULAS.COM',
@@ -501,6 +511,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Fraud'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['FS *FSPRG.COM', //file sharing ? Fast Share / putio
             'Gpo Haslemere Gb'
@@ -510,6 +521,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Gym'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['WORLD GYM'
 
@@ -518,6 +530,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Crypto_currencies'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Coinbasebtc'
             ,'WEBCOINBASE',
@@ -598,6 +611,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Audiobooks'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Audible',
             '']
@@ -616,6 +630,7 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Junk Food'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Pizza','Pizzeria',
             'Chipotle',
@@ -646,6 +661,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Clothes'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ["Khol's",'Target',
             "KOHL'S"
@@ -655,6 +671,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'ATM'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['atm', 'atmlk'
 
@@ -684,6 +701,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Paypal'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['paypal'
 
@@ -704,6 +722,7 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Travel Incidentals'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['MCAA PARKING'
 
@@ -713,11 +732,13 @@ if (module.parent == null) {
 
 
     cfg.it.iteratorName = 'Mobile Apps'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Google.com/' ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Amazon'
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Amazon' ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
@@ -824,6 +845,7 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Unknown'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
+    cfg.it.unimportant = true;
     cfg.includeAllItems = false
     cfg.it.fxFilter = function fxFilter(item) {
         count++
@@ -835,11 +857,10 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Final'
     cfg.it.matchesDefault = []
+    cfg.it.unimportant = true;
     cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
         runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
         console.log('|open comments_output.json')
-
-
 
         var columns         = columnify(   JSONSetIterator_Generic.comments       );
         // if ( self.settings. showAllItemsAtEnd)
@@ -853,6 +874,11 @@ if (module.parent == null) {
 
         var columns = columnify(   JSONSetIterator_Generic.allLines  , cfg     );
         runner.createAdditionalFlatFile('final_output', columns, 'csv')
+
+
+        var columns = columnify( JSONSetIterator_Generic.allLines2, cfg );
+        runner.createAdditionalFlatFile('final_output_filtered', columns, 'csv')  
+        
         console.log('<|open comments_output.txt')
 
     }
@@ -870,6 +896,7 @@ if (module.parent == null) {
         cfg.it.iteratorName = 'OrganizePayments'
         cfg.it.matchesDefault = []
         cfg.it.noOutput = true
+        cfg.it.unimportant = true;
         //cfg.includeAllItems = true
         cfg.it.fxFilter = function fxFilter(item) {
             item.amount = parseFloat(item.amount);

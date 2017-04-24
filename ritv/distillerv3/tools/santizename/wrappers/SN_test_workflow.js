@@ -340,6 +340,15 @@ function SanitizeList_FileWorkflow() {
     };
 }
 
+var RestHelperSQLTest = require('shelpers').RestHelperSQLTest;
+var MySQLAdapater = RestHelperSQLTest.MySQLAdapater
+
+MySQLAdapater.cacheEnabled = true;
+
+
+
+//MySQLAdapater
+
 
 SNTestWorkflow.testWorkflow = function testWorkflow(fileManifest, fileList, fxDone, skipFileImport) {
 

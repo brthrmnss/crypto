@@ -170,6 +170,12 @@ window.reloadFile = function reloadFile(file, fx) {
             var slash = '';
             if ( file.startsWith('/')) {
                 slash = '';
+            } else {
+                if ( file.startsWith('http')) {
+
+                } else {
+                    slash = '/'
+                }
             }
             file = 'http://'+window.location.host + slash + file
             console.log('change file')

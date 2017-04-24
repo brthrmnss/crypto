@@ -1,0 +1,1 @@
+powershell -noexit "& ""C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\sr\gotops.ps1"""

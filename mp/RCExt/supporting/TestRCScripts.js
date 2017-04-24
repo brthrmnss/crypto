@@ -8,6 +8,9 @@ var rch = RitvHelper.ritvHelper;
 var SNTestWorkflow = sh.require('ritv/distillerv3/tools/santizename/wrappers/'+'SN_test_workflow.js')
     .SNTestWorkflow
 
+var file_GetFileListFromRemoteScript = './WorkflowGetFilesFromRemoteMachine.js';
+var GetFileListFromRemote = require(file_GetFileListFromRemoteScript).GetFileListFromRemote;
+
 
 var RC_HelperFxs = {}
 RC_HelperFxs.getDlDirs = function getDLDirs(dirs) {
@@ -335,6 +338,33 @@ RC_HelperFxs.checkPercentageCompleteDeep =
     });
     return;
 }
+
+RC_HelperFxs.getFileListUsingSockets =
+    function getFileListUsingSockets(config, fxDoneProc) {
+
+        var instance = new GetFileListFromRemote();
+      /*  var config = {};
+        config.ip = '127.0.0.1'
+        config.port = '6014'
+
+        config.socket = self.data.socketBreed;
+        config.ip = data.ip;
+        config.port = data.port;*/
+        //config.localTest = true
+        config.fxDone = function fxDone_GettingList() {
+            sh.fxForward(fxDoneProc, arguments);
+
+            return;
+            self.proc('sending a result back.....')
+            if ( instance.data.socket && self.data.socketBreed == null ) {
+                self.data.socketBreed = instance.data.socket;
+            }
+        }
+        instance.init(config)
+
+        return;
+    }
+
 
 exports.RC_HelperFxs = RC_HelperFxs;
 exports.RCScripts = RC_HelperFxs;

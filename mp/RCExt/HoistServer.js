@@ -274,8 +274,9 @@ function HoistServer(_self) {
                 console.log('Listening on ' +  self.settings.port)
             });
 
+            self.proc('creatingHostServer2')
  
-            console.log('createHostServer2',self.createHoistServer2 )
+           // console.log('createHostServer2',self.createHoistServer2 )
             if ( self.createHoistServer2 ){
                 self.createHoistServer2()
             }

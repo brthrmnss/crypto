@@ -39,13 +39,7 @@ function FileWatcher() {
 
         self.watchDirs();
         self.setupSocket();
-
-
-        if ( self.settings.runFirst != false &&
-            self.settings.action == 'runFile') {
-            self.proc('running', self.settings.file);
-            var y = sh.runAsync('node ' + self.settings.file);
-        }
+        self.handleInitRunSettings();
     }
 
     p.watchDirs = function watchDirs(config) {
@@ -57,6 +51,22 @@ function FileWatcher() {
         self.watchWinDir(self.settings.file)
     }
 
+    p.handleInitRunSettings = function handleInitRunSettings() {
+        if ( self.settings.runFirst != false &&
+            self.settings.action == 'runFile') {
+            self.proc('running.runFirst', self.settings.file);
+            self.utils.runFile(file);
+        }
+
+        if ( self.settings.initRun ) {
+            sh.each(self.settings.initRun, function onRunInitFile(k,file) {
+                self.proc('running.initRun', file);
+                self.utils.runFile(file);
+                return;
+            })
+        }
+    }
+    
     p.trigger = function trigger(file, changes) {
         if ( changes.addedFiles && changes.addedFiles.length == 1 ) {
             var fileFirst = changes.addedFiles[0];
@@ -148,59 +158,13 @@ function FileWatcher() {
             }
             if ( self.settings.runCurrentFile ) {
                 fileToRun = file;
-                var isDir =  sh.fs.isDir(file);
-                self.proc('isdir', isDir)
-                if (isDir ) {
-                    self.proc('skip dir', file)
-                }
 
-                var dirFile = sh.dirname(file)
-                ///var process = var require('process')
-                process.chdir(dirFile)
             }
 
-            self.proc('running', fileToRun)
-            var  y= sh.runAsync('node '+ fileToRun)
-            //spit stdout to screen
-            y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
-
-            //spit stderr to screen
-            y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
-
+            self.utils.runFile(file)
 
         }
         self.socket.emit('window.invoke', file)
-        return;
-
-        /*
-         var yyy = sh.runAsync2('node',
-         [self.settings.file])
-         */
-        var  y= sh.runAsync('node '+ self.settings.file)
-        //  var  yy= sh.run('node '+ self.settings.file)
-//spit stdout to screen
-        y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
-
-//spit stderr to screen
-        y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
-
-        return;
-
-        var spawn = require('child_process').spawn;
-
-//kick off process
-        var child = spawn('node', ['-latkR', '/']);
-
-//spit stdout to screen
-        child.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
-
-//spit stderr to screen
-        child.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
-
-        child.on('close', function (code) {
-            console.log("Finished with code " + code);
-        });
-
         return;
     }
 
@@ -213,14 +177,7 @@ function FileWatcher() {
         socket.on('disconnect', function(){});
         socket.emit('my other event', __filename + ' is listening')
         self.socket = socket;
-        /*
-         var sh = require('shelpers').shelpers;
-         var shelpers = require('shelpers');
-         */
-
-
     }
-
 
     p.test = function testTrigger() {
         self.trigger('somerandomfile')
@@ -253,11 +210,7 @@ function FileWatcher() {
 
         }
 
-
-
         p.watchWinDir = function other(dir) {
-
-
             /**
              * Check if dir is examples, generators
              * check if file type is .js, or
@@ -323,6 +276,51 @@ function FileWatcher() {
 
     }
     defineWatchers();
+    
+    function defineUtils () {
+        p.utils = {}
+        p.utils.runFile = function runFile(file) {
+
+            fileToRun = file;
+
+            if  ( self.settings.blockDefaultPublicHTML ) {
+                if ( fileToRun.includes('/public_html/') ) {
+                    console.log('skip public file', fileToRun)
+                    return;
+                }
+            }
+
+
+            if ( fileToRun.endsWith('.js') == false ) {
+                self.proc('does not end with .js, so ignore')
+                return;
+            }
+
+            self.proc('running.runFile', file);
+
+            var isDir =  sh.fs.isDir(file);
+            self.proc('isdir', isDir)
+            if (isDir ) {
+                self.proc('skip dir', file)
+            }
+
+
+            var dirFile = sh.dirname(file)
+            ///var process = var require('process')
+            process.chdir(dirFile)
+
+            self.proc('running', fileToRun)
+            var  y = sh.runAsync('node '+ fileToRun)
+            //spit stdout to screen
+            y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
+            //spit stderr to screen
+            y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
+
+
+        }
+
+    }
+    defineUtils();
 
     p.proc = function debugLogger() {
         if ( self.silent == true) {

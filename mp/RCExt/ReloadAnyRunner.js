@@ -20,4 +20,11 @@ config.runCurrentFile  = true
 config.runFirst  = false
 config.dir6 = __dirname
 config.__filename = __filename; 
+
+config.blockDefaultPublicHTML= true; 
+
+config.initRun = [
+    'G:/Dropbox/projects/crypto/mp/RCExt/RC_ConfigManager_ExecServer.js',
+    'G:/Dropbox/projects/crypto/mp/RCExt/BreedHoistServer.js'
+]
 f.init(config)  

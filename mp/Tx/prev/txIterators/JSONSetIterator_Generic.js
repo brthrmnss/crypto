@@ -45,6 +45,12 @@ function JSONSetIterator_Generic() {
         }
         if ( self.settings.it.fxFilter ) {
             self.item.date2 = new Date(self.item.date);
+          /*  if ( self.item.originalDescription.includes(',')) {
+                self.item.originalDescription =
+                self.item.originalDescription.replace(/,/gi, '\\,')
+                console.log('originalDescription', self.item.originalDescription)
+                asdf.g
+            }*/
             // console.log(self.item)
             self.item.desc = self.item.originalDescription.toLowerCase();
             self.item.desc2 = self.item.originalDescription;
@@ -119,12 +125,12 @@ function JSONSetIterator_Generic() {
             })
             sortedList.push({})
             /*dictPaymentsSameDesc.each(function or(kDesc,items2) {
-                //console.log(items)
-                sh.sortByDate(items2)
-                sh.each(items2, function or(kDesc,item) {
-                    sortedList.push(item)
-                })
-            })*/
+             //console.log(items)
+             sh.sortByDate(items2)
+             sh.each(items2, function or(kDesc,item) {
+             sortedList.push(item)
+             })
+             })*/
 
             var allDescs=[];
             var dictDescToItems = {};
@@ -132,24 +138,24 @@ function JSONSetIterator_Generic() {
                 //console.log(items)
                 sh.sortByDate(items2)
                 //sh.each(items2, function or(kDesc,item) {
-                 //   sortedList.push(item)
+                //   sortedList.push(item)
                 //})
-               // console.log('k', i, k)
+                // console.log('k', i, k)
                 dictDescToItems[kDesc] = items2;
                 allDescs.push(kDesc)
             })
 
             /*
-            dictPaymentsSameDesc.each(function or(kDesc,items2) {
-                console.log(kDesc, items2)
-                allDescs.push(kDesc)
-            })
-*/
+             dictPaymentsSameDesc.each(function or(kDesc,items2) {
+             console.log(kDesc, items2)
+             allDescs.push(kDesc)
+             })
+             */
             var sortedDecs = allDescs.sort();
             //console.log('sorted', sortedDecs)
             sh.each(sortedDecs, function or(i, kDesc) {
                 var items2 = dictDescToItems[kDesc]
-               // console.log('k', i, kDesc)
+                // console.log('k', i, kDesc)
                 sh.sortByDate(items2)
                 sh.each(items2, function or(kDesc,item) {
                     sortedList.push(item)
@@ -158,19 +164,44 @@ function JSONSetIterator_Generic() {
 
             return sortedList;
         }
+        self.utils.minify = function minify(items) {
+            var listOutputMinified = []
+            //console.log(items)
+            sh.each(items, function or(k,item) {
+                var minified = sh.clone(item)
+                item = minified;
+                delete item.filtered
+                delete item.desc
+                delete item.desc2
+                delete item.rejected
+                delete item.date2
+               // console.log(item)
+                if ( item.originalDescription ) {
+                    item.originalDescription =
+                        sh.qq(item.originalDescription )
+                       // item.originalDescription.replace(/,/gi, '\\,')
+                    //console.log('originalDescription', self.item.originalDescription)
+                    //asdf.g
+                }
+                listOutputMinified.push(minified)
+            })
+           return listOutputMinified
+        }
 
         var columns         = columnify(  self.data.matches );
         var groupedByDescription = self.utils.groupByDescription( self.data.matches)
         var columns =  columnify(  groupedByDescription );
 
-        
+
         //asdf.g
-        
+
         self.runner.createAdditionalFlatFile(self.name, columns)
 
 
         JSONSetIterator_Generic.comments = sh.dv(JSONSetIterator_Generic.comments, [])
         JSONSetIterator_Generic.allLines = sh.dv(JSONSetIterator_Generic.allLines, [])
+        JSONSetIterator_Generic.allLines2 = sh.dv(JSONSetIterator_Generic.allLines2, [])
+
         //console.error('whole config', self.settings)
         //  process.exit()
 
@@ -267,7 +298,10 @@ function JSONSetIterator_Generic() {
 
 
         //exportObj.listY = [1,2,3]
-     //  asdf.g
+        //  asdf.g
+
+
+        var groupedByDescriptionFlatMinified = self.utils.minify(groupedByDescription)
 
         /*  JSONSetIterator_Generic.comments.push(
          logLine
@@ -279,12 +313,33 @@ function JSONSetIterator_Generic() {
         JSONSetIterator_Generic.allLines.push(
             exportObj
         )
-        sh.each(groupedByDescription, function onADd(k,lineItem) {
+        sh.each(groupedByDescriptionFlatMinified, function onADd(k,lineItem) {
             JSONSetIterator_Generic.allLines.push(
                 lineItem
             )
         })
 
+
+
+        function addToFilteredallLines() {
+            if ( self.settings.includeAllItems === true ) {
+                //noOutput //?
+                return;
+            }
+            if ( self.settings.it.unimportant === true ) {
+                return;
+            }
+ 
+           // console.log(self.settings )
+            //sh.exit()
+            JSONSetIterator_Generic.allLines2.push(
+                exportObj
+            )
+            sh.each(groupedByDescriptionFlatMinified, function onADd(k,lineItem) {
+                JSONSetIterator_Generic.allLines2.push( lineItem )
+            })
+        }
+        addToFilteredallLines();
 
 
 
@@ -324,7 +379,7 @@ function JSONSetIterator_Generic() {
                 }
             }
 
-            return '|'+numPrintable
+            return /*'|'+*/numPrintable
         }
 
 

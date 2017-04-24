@@ -12,7 +12,7 @@ function ChromeExtMod() {
         } else {
             window.what += 1;
         }
-        console.log('yyy-4', window.what)
+        console.log('2yyy-4', window.what)
         console.clear()
         self.utils.loadReloader()
     }

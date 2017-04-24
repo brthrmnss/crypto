@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>RT-CC-2</title>
+  <title>BDB TT</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font: 13px Helvetica, Arial; }
@@ -131,8 +131,12 @@
 <script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
 <script src="http://localhost:10110/reloader.js" ></script>
 
+
+<script src="js/RenderHelper.js" ></script>
+<script src="js/shz.js" ></script>
 <script src="js/ui_utils.js" ></script>
 <script src="js/db2_ui.js" ></script>
+
 
 <!--
 <script src="http://localhost:10110/lib/bootstrap.min.css" ></script>
@@ -161,6 +165,22 @@
 
     })
 
+
+    reloader.reloadWhenFx('RenderHelper.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      setTimeout(function () {
+        window.onInitDB()
+      }, 500)
+
+    })
+    /*reloader.reloadWhenFx('db2_ui.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      setTimeout(function () {
+        window.onInitDB()
+      }, 500)
+
+    })
+*/
 
     reloader.filter = '/RCExt/';
     reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/crypto/mp/RCExt/public_html/', '')

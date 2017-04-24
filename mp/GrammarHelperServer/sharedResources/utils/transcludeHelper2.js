@@ -349,24 +349,39 @@
      * @param elemQuery
      * @returns {boolean}
      */
-    p.ifTrueShow = function (val,  elemQuery ) {
+    p.ifTrueShow = function ifTrueShow(val,  elemQuery ) {
       self.hide(elemQuery);
       return self.ifTrue(val, function () {
         self.show(elemQuery);
       });
     }
 
-    p.ifFalseHide = function (val,  elemQuery, hideDetach ) {
-      return self.ifFalse(val, function () {
+    p.ifFalseHide = function ifFalseHide(val,  elemQuery, hideDetach ) {
+      var isFalse =  self.ifFalse(val, function isFalseHide() {
+        //debugger
         self.hide(elemQuery);
         if ( hideDetach) {
           self.contentOutput.find(elemQuery).detach();
         }
       });
+      return isFalse;
+    }
+    
+    p.unescapeAng = function unescapeAng(val) {
+      var output = val
+
+      output = val 
+            .split('[[').join('{{')
+            .split(']]').join('}}');
+      return output
     }
 
-    p.hide = function ( elemQuery ) {
-      self.contentOutput.find(elemQuery).hide()
+    p.hide = function hide( elemQuery ) {
+      var el =  self.contentOutput.find(elemQuery)
+      if ( el.length == 0 ) {
+        console.warn('hide', elemQuery, 'could not find')
+      }
+      el.hide()
     }
 
 

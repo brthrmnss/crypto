@@ -31,6 +31,9 @@ function DLHoistServer() {
 
     self.data.filePathTestConfig =  __dirname+'/'+'testData/' + 'test_dl_manifest.json'
 
+  //  console.error(self.data.filePathTestConfig)
+    //sh.exit(self.data.filePathTestConfig)
+
     var superInstance = new HoistServer(self)
     //DLHoistServer.prototype;
     p.init = function init(config) {
@@ -124,7 +127,7 @@ function DLHoistServer() {
 
 
         sh.defineExitware(self.app)
-         
+
        /* self.app.get('/exitQuit', function onExit (req, res) {
             process.exit();
             //var output = onGetStatus2(false)
@@ -442,28 +445,19 @@ exports.DLHoistServer = DLHoistServer;
 
 exports.RCExtV = 1;
 
-exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict) {
+exports.reloadServer = function reloadServer(delayed ) {
 
-    console.log(sh.n, 'reloadServer2', count, oldServer!= null, sh.n)
-    if ( oldServer) {
-        //var yyy =  oldServer.active_server2.close()
-        //  if ( oldServer.server && oldServer.server.close )
-        var oldS = oldServer.active_server.close();
-        ///console.log('output',null!=oldServer, yyy, oldS)
-        setTimeout(function onReloadLater () {
-            if ( dict.count != count ) {
-                console.error('warn', 'bad count', count, '!=', dict.count)
-                return;
-            }
-            console.log('\t','onReloadLater', count)
-  
-            sh.get('127.0.0.1:6012/exitQuit')
-            exports.reloadServer(null, fxFin, count, dict);
-        }, 1500);
+
+    if ( delayed !== true ) {
+        sh.get('127.0.0.1:6012/exitQuit')
+        setTimeout(function a(){
+            exports.reloadServer(true)
+        }, 500)
         return;
     }
-    //var t = new DLHoistServer()
 
+    //var t = new DLHoistServer()
+ 
     var instance = new DLHoistServer();
     var t = instance;
 
@@ -475,11 +469,9 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict) {
     innerConfig.file = instance.data.filePathTestConfig;
     config.innerConfig = innerConfig;
 
-    console.error('-->reloading script', 'go', count)
+    //console.error('-->reloading script', 'go', count)
 
-    if ( oldServer && oldServer.lastConfig ) {
-        config = oldServer.lastConfig;
-    }
+
     DLHoistServer.oldServer = instance;
 
     instance.init(config)
@@ -495,9 +487,6 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict) {
      i.testLocally()
      i.testRemotely();*!/
      */
-
-    if ( fxFin ) {
-        fxFin(t) }
 
     return t;
 }

@@ -12,8 +12,8 @@ function ChromeExtMod() {
         } else {
             window.what += 1;
         }
-        console.log('yyy-4', window.what)
-        console.clear()
+        console.log('zyyy-4', window.what)
+       // console.clear()
         self.utils.loadReloader()
     }
 

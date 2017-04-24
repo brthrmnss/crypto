@@ -44,7 +44,7 @@
 
 
     p.process = function process(elStart, dictTypes, dictAttrs) {
-      console.info('process quick inf', dictAttrs)
+      //console.info('process quick inf', dictAttrs)
 
       $.each(dictAttrs, function checkAttrForInvalidName(name, attr) {
         if ( name.toLowerCase() != name ) {
@@ -55,6 +55,7 @@
       })
       //console.error('loading version', QuickUIConvertor.version, window.QuickUIConvertor.version)
       var children = elStart.find('*');
+      children.push(elStart); //add starting element
       var ifx = function ifXHasPropCallFxWithVal(x, prop, fx) {
         if ( x[prop] != null ) {
           fx(x[prop])
@@ -139,8 +140,7 @@
           return false;
         }
 
-
-
+       /// debugger
         $.each(attrs, function (attrName, val) {
           attrName = attrName.toLowerCase();
           //search for matching attr change definition in dictionary
@@ -163,6 +163,7 @@
             }
             return;
           }
+          //debugger
           if ( attrDef.keep !== true ) {
             q.attr(attrName, null);
           }
@@ -175,6 +176,7 @@
           }
 
 
+          //debugger
 
           if ( attrDef.modifyChildrenFx ) { //use method to modify children
             $.each(q.children(), function addStyleChild(k,v) {
@@ -321,6 +323,14 @@
       dictAttrs['absolute'] = {
         addCSS: {'position': 'absolute', top: '0px', left: '0px'}
       }
+
+      dictAttrs['abs'] = {
+        addCSS: {'position': 'absolute' }
+      }
+      dictAttrs['tr'] = {
+        addCSS: {'position': 'absolute', top: '10px', right: '10px'}
+      }
+
       dictAttrs['bottom'] = {
         addCSS: {'position': 'absolute', top: '', bottom: '0px'}
       }
@@ -333,9 +343,17 @@
       dictAttrs['bg-offwhite'] = {
         addCSS: {'background-color': '#EAEAE2'}
       }
+      dictAttrs['bg-white'] = {
+        addCSS: {'background-color': 'white'}
+      }
       dictAttrs['bg-blue'] = {
         addCSS: {'background-color': '#09FFFF'}
       }
+
+     /* dictAttrs['bg-blue'] = {
+        addCSS: {'background-color': '#2F416C'}
+      }
+*/
       dictAttrs['bg-red'] = {
         addCSS: {'background-color': 'red'}
       }
@@ -384,6 +402,12 @@
         }
       }
 
+      dictAttrs['h2'] = {
+        addCSS: {
+          'height': '2px',
+        }
+      }
+
       dictAttrs['wh100'] = {
         addCSS: {
           'width': '100%',
@@ -411,6 +435,52 @@
           'height': '50%',
         }
       }
+
+
+      dictAttrs['top10'] = {
+        addCSS: {
+          'top': '10px',
+        }
+      };
+      dictAttrs['right10'] = {
+        addCSS: {
+          'right': '10px',
+        }
+      }
+      dictAttrs['left10'] = {
+        addCSS: {
+          'left': '10px',
+        }
+      }
+
+      dictAttrs['left0'] = {
+        addCSS: {
+          'left': '0px',
+        }
+      }
+
+      dictAttrs['min-width-250'] = {
+        addCSS: {
+          'min-width': '250px',
+        }
+      }
+      dictAttrs['min-height-50'] = {
+        addCSS: {
+          'min-height': '50px',
+        }
+      }
+
+      dictAttrs['mw250'] = {
+        addCSS: {
+          'min-width': '250px',
+        }
+      }
+      dictAttrs['mh50'] = {
+        addCSS: {
+          'min-height': '50px',
+        }
+      }
+
 
       dictAttrs['content-area'] = {
         addCSS: {
@@ -471,7 +541,7 @@
 
   }
 
-
+/*
   function QuickUIService() {
     var self = this;
     var p = this;
@@ -483,7 +553,7 @@
     p.new = function create() {
       return new QuickUIService();
     }
-  }
+  }*/
 
   //alert('reloaded then')
   //window.QuickUIService != QuickUIService;

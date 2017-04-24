@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --allow-running-insecure-content --allow-outdated-plugins --always-authorize-plugins --profile-directory="profile 1"

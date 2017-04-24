@@ -108,7 +108,7 @@
           <!--length: {{vmC.items.length}}-->
           <ul id="listHolder"
               class="quick-crud-list" >
-            listline
+            <!--
             <li ng-repeat="item in vmC.items"  >
               ss
               <div ng-click="goTo(item)"
@@ -120,6 +120,31 @@
               <div ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
               <div ng-if="item.selected==true">selected</div>
             </li>
+            -->
+
+            <li ng-repeat="item in vmC.items"  >
+              <div relative style="min-width:250px; min-height:50px;" >
+                <div ng-click="goTo(item)"
+                     xclass="sideNavTextRow2">
+                  {{item.name}}
+                  {{item.first_name}}
+                  {{item.last_name}}
+                </div>
+                <div
+                        style="font-size:14px;"
+                        tr ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
+                <div ng-if="item.selected==true">selected</div>
+
+                <div w100
+                     bottom
+                     bg-black
+                     style="height:2px;"
+                     ng-if="item.selected==true"></div>
+              </div>
+
+            </li>
+
+
           </ul>
         </list>
       </quicklist2>
@@ -187,11 +212,29 @@
        </div>-->
       <quickform2
         titlex="formForCrud"
-
         config="quickFormConfig"
         fx-save="saveFormObject"
         refresh="refresh"
         >
+        <list>
+          <!--length: {{vmC.items.length}}-->
+          <ul id="listHolder"
+              class="quick-crud-list" >
+            <li ng-repeat="item in vmC.items"  >
+              <!--ss-->
+              <div ng-click="goTo(item)"
+                   class="sideNavTextRow2">
+                {{item.name}}
+                {{item.first_name}}
+                {{item.last_name}}
+              </div>
+              <span ng-click="vmC.$scope.$parent.deleteItem(item)">
+                x
+              </span>
+              <div ng-if="item.selected==true">selected</div>
+            </li>
+          </ul>
+        </list>
       </quickform2>
 
     </div>

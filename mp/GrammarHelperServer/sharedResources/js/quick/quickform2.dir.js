@@ -8,6 +8,7 @@
   var quickForm2 = function quickForm2_($templateRequest, $compile,
                                         $interpolate, transcludeHelper) {
 
+    reloadableHelper.saveDirectiveCtx(reload_name, arguments)
     var utilsParent = transcludeHelper.new();
 
     function link(scope, element, attrs, ctrl, transclude){
@@ -32,7 +33,7 @@
 
             //console.error('qf', 'pre-', scope.vm)
             scope.render(utils);
-            
+
 
             scope.$watch('vm.formObject', function (v, oldVal) {
               if (scope.vm.formObject != null) {
@@ -43,6 +44,7 @@
                   scope.vm, v,oldVal);
             });
             scope.$watch('vm.dataObject', function (v, oldVal) {
+              //debugger
               if (scope.vm.dataObject != null) {
                 console.log('quickform',
                     'scope.vm.dataObject... changed: ',
@@ -54,6 +56,7 @@
                   'scope.vm.dataObject... changed: ')
             });
             scope.$watch('vm.dataObject', function (v, oldVal) {
+              //debugger
               if (scope.vm.dataObject != null) {
                 console.log('quickform',
                     'scope.vm.dataObject...', 'inner', 'changed: ',
@@ -63,18 +66,44 @@
                     scope.vm.config.fxChange(v);
                   }
                 }
+                //debugger
+                console.log('penis')
                 // scope.dataObject = v;
               }
 
             }, true);
 
 
-            scope.$watch('dataObject', function (v, oldVal) {
+            scope.$watch('dataObject', function onDataObject_Changed(v, oldVal, a,b,c) {
               if (scope.dataObject != null) {
                 /* console.log('quickform',
                  '--dataObject...', 'inner', 'changed: ',
                  scope.dataObject, v);*/
+
+                /*
+                var json = JSON.stringify(oldVal.list)
+                if ( oldVal.list) {
+                  //debugger
+                  var jsonTo = JSON.stringify(scope.dataObject.list)
+                  if ( jsonTo != json && json.length > 0 ) {
+                    console.info('.... okok', 'quitting')
+                    return;
+                  }
+                }
+                */
+
+
+                if ( scope.vm && scope.vm.config && scope.vm.config.fxFilterRefresh ) {
+                  if ( scope.vm.config.fxFilterRefresh(v, oldVal) ) {
+                    console.info('....nono', '---')
+                    return;
+                  }
+                }
+
+
                 scope.userChangedForm( );
+
+
               }
             }, true);
             //keep in mind 'formData' is an alias for 'dataObject'
@@ -182,7 +211,13 @@
     };
 
     var controllerReference = null;
-    var compile = function (tElem, attrs) {
+    var compile = function onCompileQuick(tElem, attrs, repeat) {
+
+      var newerDdo = reloadableHelper.recompileDirective(reload_name,arguments, this,  repeat)
+      if ( newerDdo ) {
+        return newerDdo
+      };
+
       utilsParent.storeTemplate(tElem, attrs);
       function defineDirectiveDefaults() {
         if ( attrs.selectedIndex === null  ) {
@@ -1410,6 +1445,7 @@
         $.each(formObject,
             function handleDynamicMethods(index, value) {
               var fieldInfo = value || {};
+              //debugger
               //invoke dynamic change handler
               if ( fieldInfo.fxChange != null ) {
                 var val = $scope.dataObject[index];
@@ -1551,6 +1587,13 @@
         }
         $scope.previousDataObject = sh.clone($scope.dataObject);
 
+
+        console.debug('fxChange', config.fxChange)
+        if ( config.fxChange ) {
+          config.fxChange();
+        }
+
+        //debugger
       };
 
       //utils.templateContent.find('#bodyContent').append(form);
@@ -1572,7 +1615,7 @@
       }
 
       config.fxChangeDataObject = function fxChangeDataObject(asdf) {
-        $scope.vm.config.dataObject = asdf; 
+        $scope.vm.config.dataObject = asdf;
         $scope.render()
       }
 

@@ -34,13 +34,13 @@ function GetFileListFromRemote() {
 
         if ( self.settings.url ) {
 
-        } 
+        }
         else
         {
             self.settings.url = 'http://'+self.settings.ip+':'+self.settings.port + '/'
         }
 
-        
+
         if ( self.settings.file == null ) {
             var filename = sh.fs.clean(self.settings.url)
             var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists',filename+'.txt' )
@@ -50,7 +50,7 @@ function GetFileListFromRemote() {
             self.settings.file = fileOutput
         }
         self.proc('self.settings.file', self.settings.file)
-       // return
+        // return
         self.runStesps();
     }
 
@@ -98,7 +98,7 @@ function GetFileListFromRemote() {
 
         function onResultOfcall(data) {
             self.proc('data', data.length)
-          //  asdf.g
+            //  asdf.g
             sh.fs.writeFile(self.settings.file, data)
             self.chain.nextLink()
         }
@@ -127,9 +127,9 @@ function GetFileListFromRemote() {
 
 
     p.step3_returnFile = function step3_returnFile() {
-
+        self.proc('ok...')
         self.chain.cb()
-         sh.callIfDefined(self.settings.fxDone, self.settings.file, self)
+        sh.callIfDefined(self.settings.fxDone, self.settings.file, self)
     }
 
     p.test = function test(config) {

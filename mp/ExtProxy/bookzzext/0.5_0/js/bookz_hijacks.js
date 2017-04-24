@@ -1,4 +1,4 @@
-console.clear()
+//console.clear()
 console.log('loaded', 'amz_hijack.js')
 
 function ChromeExtMod() {
@@ -13,7 +13,7 @@ function ChromeExtMod() {
             window.what += 1;
         }
 
-        console.log('yyy-4', window.what)
+        console.log('1yyy-4', window.what)
 
         self.utils.loadReloader()
     }

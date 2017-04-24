@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SR</title>
+
+
+    <script src="js/socket.io-1.2.0.js.ignore"></script>
+    <script src="js/jquery-1.11.1.js.ignore"></script>
+    <script src="js/jquery-ui-1.12.1.js"></script>
+    <link rel="stylesheet" href="js/jquery-ui.css">
+
+    <script>
+        $( function() {
+            var availableTags = [
+                "ActionScript",
+                "AppleScript",
+                "Asp",
+                "BASIC",
+                "C",
+                "C++",
+                "Clojure",
+                "COBOL",
+                "ColdFusion",
+                "Erlang",
+                "Fortran",
+                "Groovy",
+                "Haskell",
+                "Java",
+                "JavaScript",
+                "Lisp",
+                "Perl",
+                "PHP",
+                "Python",
+                "Ruby",
+                "Scala",
+                "Scheme"
+            ];
+            $( "#tags" ).autocomplete({
+                source: availableTags,
+                //autoFocus : true
+            });
+
+            // response: function( event, ui ) {}
+
+            $( "#tags" ).on( "autocompleteselect",
+                    function onSelected( event, ui ) {
+                        console.log(event, ui)
+                        console.log('item', ui)
+                        window.sr.onAction(ui.item.label);
+
+                        //   console.log('what', $('#tags').val());
+                    } );
+
+
+            /*  $( "#tags" ).on( "autocompleteopen", function( event, ui ) {
+             console.log('yyy', event, ui, ui.item)
+             } )
+             $( "#tags" ).on( "autocompletesearch", function( event, ui ) {
+             console.log('yyy', event, ui, ui.item)
+             } )*/
+
+            var last = {};
+
+            $( "#tags" ).on( "autocompleteresponse", function onAutocompleteResponse( event, ui ) {
+                // store for later if user presses tab
+                last.content = ui.content;
+                console.log(ui.content)
+            } )
+
+
+
+            $('#tags').keydown(function onKeyDown(e) {
+                var code = e.keyCode || e.which;
+
+                if (code === 9) {
+                    e.preventDefault();
+                    // myFunction();
+                    // alert('it works!');
+                    var firstItem = last.content[0]
+                    console.debug('testing', code, firstItem)
+
+                    $(this).autocomplete('close');
+                    if ( firstItem )
+                        window.sr.onAction(firstItem.label);
+
+                    $(this).val(firstItem.label)
+                    //console.debug('testing', code, last.content)
+                }
+
+                console.log('code', code)
+                if (code == 40) {
+                   // console.log('sdf', 40)
+                    e.preventDefault();
+                    var lastItem =  window.sr.onPrev();
+                    last.content = [{label:lastItem}];
+                    $(this).val(lastItem)
+                }
+                if (code == 38 ) {
+                    e.preventDefault();
+                    var lastItem =  window.sr.onPrev_Next();
+                    last.content = [{label:lastItem}];
+                    $(this).val(lastItem)
+                }
+            });
+
+            /* $( "#tags" ).on( "autocompletechange",
+             function onSelected( event, ui ) {
+             console.log(event, ui)
+             console.log('item', ui)
+             console.log('what', $('#tags').val());
+             } );*/
+
+        } );
+    </script>
+
+    <style>
+        .txt2 {
+            background: #fcfcfc;
+            border: solid 1px gray;
+            padding: 4px;
+            color: #666666;
+            font-size: 14px;
+        }
+        body {
+            font-family: Helvetica, Arial;
+        }
+    </style>
+</head>
+<body>
+<div class="ui-widget">
+    <label for="tags"> </label>
+    <input id="tags" class="txt2">
+    <span id="txtStatus2"></span>
+</div>
+
+<br />
+
+<div id="txtAnswer" ></div>
+
+
+
+<div id="txtAnswerX" ></div>
+<!--
+<script src="eval_client.js"></script>
+
+-->
+
+
+<script type="application/javascript" src="js/ui_utils.js"></script>
+
+
+<script type="application/javascript" src="ParseCSV.js"></script>
+<script type="application/javascript" src="sr.js"></script>
+<script type="application/javascript" src="QuickSpeaker.js"></script>
+
+<script src="http://localhost:10110/g/js/reloader.js" ></script>
+<script>
+    if ( window.reloader) {
+        reloader.reloadWhen('sr.html')
+
+        reloader.filter = '/public_html/'
+        //reloader.filter = '\\public_html\\'
+        reloader.reloadWhenFx('drawPB.js', function onTestOneJs(a, b, c) {
+            //console.log('pussy', a,b,c)
+            //window.drawPBJS.go();
+        })
+        //reloader
+    } else {
+        window.sr = new SR();
+        window.sr.init();
+        window.sr.getList();
+    }
+</script>
+
+<script>
+    $(window).focus(function(e) {
+// Do Focus Actions Here
+        console.log('font')
+        window.sr.utils.asdf();
+    });
+
+    $( document ).ready(function onPageReady() {
+        console.log('font')
+        window.sr.utils.asdf();
+        setTimeout(window.sr.utils.asdf, 500)
+    });
+
+</script>
+
+
+</body>
+</html>

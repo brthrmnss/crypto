@@ -32,6 +32,7 @@
 
             //var utilsParentDict = utils.dictTemplates;
             var tH2 = transcludeHelper2.create(this);
+            console.log('issue', tH2 )
             tH2.setupTransclution(reload_name, scope, $compile, element, html, attrs);
             scope.render(tH2);
             
@@ -90,20 +91,11 @@
 
     var ddo = {
       scope: {
-        urlSrc:'@',
-        title: '@',
-        showTitle2: '@',
         fxItemSelected: '&',
         fxItemSaved: '&',
         fxsaved: '&',
-        //  testAttr: '@',
-        // datainput: '=',
-        // formObject: '=',
-        //  dataObject:'=',
         config: '=',
         refresh: '='
-        //id: '@',
-        //where objects come from
       },
       controller: reload_name+'Ctrl',
       controllerAs: 'vm',
@@ -145,7 +137,7 @@
           }
 
           tH2.resetTemplate()
- 
+
          // utils.renderAttempt($scope)
          // utils.showElements(element)
 
@@ -234,9 +226,18 @@
             console.debug('showtitle', attrs.showTitle);
           }
 
+
+          config.title = tH2.unescapeAng(config.title)
+          console.log('showTitle', config.showTitle)
+          tH2.ifContentDefinedAddTo(config.title,
+              '#qCTitle', null, true, true);
+          tH2.ifFalseHide(config.showTitle, '#qCTitle');
+
           function removeLayoutCols() {
-            utils.templateContent.find('#containerCols').removeClass('quick-crud-container');
+            return; //...
+            tH2.templateContent.find('#containerCols').removeClass('quick-crud-container');
           }
+
           tH2.ifFalseHide(config.showList, '#quick-crud-leftcol');
           tH2.ifFalse(config.showList, removeLayoutCols);
           tH2.ifFalseHide(config.showList, '#btnRefresh');
@@ -603,6 +604,8 @@
             config.fxNew($scope.dataObject);
           }
 
+          $scope.onSelectListItem($scope.dataObject)
+
         }
 
 
@@ -705,7 +708,7 @@
           $scope.vm.config.selectedItem = yyy;
           $scope.vm.config.selectedItemOrig = item;
 
-          console.error('what is config?',  $scope.vm.config.quickFormConfig)
+          console.error('---what is config?',  $scope.vm.config.quickFormConfig)
           //debugger;
           $scope.vm.config.quickFormConfig.fxChangeDataObject(item)
         };

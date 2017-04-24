@@ -43,7 +43,7 @@ function onBtn() {
 }
 
 
-var btn = $('<button style="position:absolute">Retry</button>')
+var btn = $('<button style="position:absolute">Retryz</button>')
 btn.css('position', 'absolute');
 btn.css('z-index', '500');
 btn.css('top', '0px');

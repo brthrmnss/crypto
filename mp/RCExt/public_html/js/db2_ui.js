@@ -1,57 +1,45 @@
 var u = uiUtils;
 
-/**
- * Created by user1 on 1/1/2017.
- */
-function splitStrIntoArray(str, splitOnChar, allowNull) {
-    allowNull = defaultValue(allowNull, true)
-    splitOnChar = defaultValue(splitOnChar, null)
-    if (str == null) {
-        if (allowNull) {
-            return []
-        } else {
-            throw new Error('str not valid', str)
+
+uiUtils.setTextSD = function setSelDestructingMessage(txt, msg) {
+    uiUtils.setText(txt , msg);
+    //self.data.lastLogText = msg;
+    setTimeout(function onClearStatusText() {
+        var  val = uiUtils.getText(txt);
+        if ( val == msg ) {
+            uiUtils.setText(txt, '');
         }
-    }
-    var output = null
-    //ignore if split
-    if (str instanceof Array) {
-        return str;
-    }
-    //allow user to seopcify char to split
-    if (splitOnChar != null) {
-        if (str.indexOf(splitOnChar) != -1) {
-            output = str.split(splitOnChar)
-        } else {
-            output = []
-        }
-    }
-    else {
-        //otherwsie fallback on common options
-        if (str.indexOf(', ') != -1) {
-            output = str.split(', ')
-        } else if (str.indexOf(',') != -1) {
-            output = str.split(',')
-        } else if (str.indexOf(' ') != -1) {
-            output = str.split(' ')
-        } else {
-            output = [str] //just one
-        }
-    }
-    return output
+    }, 5000)
 }
-var sh = {}
-sh.splitStrIntoArray = splitStrIntoArray
+
+uiUtils.getText = function getText(jq) {
+    var ui = $(jq)
+    //console.log('what is ', jq, ui, val)
+    if ( ui.length == 0 ) {
+        console.warn('cannot set', jq, 'to', val, 'empty query set')
+    }
+    var val=ui.val()
+    if ( ui.is('span')) {
+        var val = ui.text()
+    }
+    return val;
+}
+
+u.selectAction = function selectAction(id) {
+    var ui = $(id)
+    ui.change()
+}
 
 
 function onInitDB() {
     //console.log('...ddd')
-
+    console.log('pppppppppp')
     function Db2() {
         var self = this;
         self.data = {}
         self.data.port = 6012;
         self.data.portHoist = 6012;
+        self.data.portHoist2 = 6012+2;
         self.data.portData = '6008';
         self.data.ip = '127.0.0.1';
         self.data.ip = window.location.hostname
@@ -66,6 +54,10 @@ function onInitDB() {
 
         self.data.dbg = {};
         self.data.dbg.autosaving = false;
+
+        self.settings = {};
+        self.settings.lblWidth = 80;
+
         var p = this;
 
         p.init = function init() {
@@ -97,13 +89,20 @@ function onInitDB() {
 
             self.data.taskReqd = uiUtils.makeUIDict();
 
+            var rH = new RenderHelper()
+            self.renderHelper = rH
+            rH.init(self);
 
             self.connectSocket();
 
-            t.createUI();
-            t.createUI2();
-            t.createUI3();
-            t.createVerifyBlock();
+            self.createUI();
+
+            self.createUI.taskManagement();
+            self.createUI1();
+
+            self.createUI2();
+            self.createUI3();
+            self.createVerifyBlock();
 
             self.isConnected()
 
@@ -111,7 +110,10 @@ function onInitDB() {
             self.getPreviousTasks();
 
 
+            self.render()
 
+
+            self.getFileList(); 
             // uiUtils.setText(self.data.ui.txtTaskNameOverride, 'listIds_ls051393312.json');
         }
 
@@ -328,6 +330,8 @@ function onInitDB() {
             console.log('user wants to resume', item)
             //todo show a button to clear this setting
             //todo set the input values back ...
+            self.data.listDlManifest = item;
+            self.render();
         }
 
         var lblWidth = 80;
@@ -342,11 +346,15 @@ function onInitDB() {
 
 
             uiUtils.br(); uiUtils.br();
-            uiUtils.addLabel({text:"Server Brd", id:"txtServer"})
+            uiUtils.addLabel({text:"Server Brd",
+                width:lblWidth+0,
+                id:"txtServer"})
             uiUtils.makeBtn(uiUtils.lastId(), 'Test socket');
             uiUtils.onClick(uiUtils.lastId(), self.testSocket)
 
-            uiUtils.br()
+            uiUtils.spacer();
+
+           // uiUtils.br()
             uiUtils.addTextInput({
                 text:self.data.url,
                 id:'txtIpHostpost',
@@ -391,6 +399,21 @@ function onInitDB() {
             uiUtils.socket.addListener('updateStatus', function onStatusUpdated(e) {
                 console.log('e', e)
                 var msg = e.msg;
+
+                if ( e.type == 'dlRemoteFileList') {
+                    //TODO: Remove stuff when u start ... restart sockets ...
+                    uiUtils.setTextSD(self.data.ui.txtDlRemoteFileListStatus, msg);
+                    return;
+                }
+
+                var defV = self.data.forwardOutputType[e.type]
+                if ( defV ) {
+                    //TODO: Remove stuff when u start ... restart sockets ...
+                    uiUtils.setTextSD(defV, msg);
+                    return;
+                }
+
+
                 uiUtils.setText(self.data.ui.txtServerStatus , msg);
                 self.data.lastLogText = msg;
                 setTimeout(function onClearStatusText() {
@@ -402,8 +425,148 @@ function onInitDB() {
 
 
 
+        }
 
-            self.createUI1();
+        p.createUI.taskManagement = function taskManagement() {
+
+
+            uiUtils.addSection(function onAddReuse() {
+                uiUtils.br()
+                uiUtils.hr()
+                uiUtils.addLabel({
+                    width:self.settings.lblWidth+0,
+                    addSpaceAfter:true,
+                    text:'TM'})
+                /*
+                recent list
+                name override
+                settings list
+                save button
+                 */
+
+                uiUtils.addSelect({
+                    text:'yeah',
+                    tooltip:'Reuse this',
+                    id:'ddPrevTaskList',
+                    fxDone:self.onReuseThisPreviousJob
+                })
+                self.data.ui.ddPrevTaskList = uiUtils.lastId();
+                uiUtils.updateSelect('ddPrevTaskList', [1,2,3,4,5]);
+
+
+
+                u.br()
+                uiUtils.addLabel({
+                    width:self.settings.lblWidth+0,
+                    addSpaceAfter:true,
+                    text:'Name'})
+                uiUtils.addTextInput({
+                    placeholder:'Task Name',
+                    id:'txtTaskName2',
+                    onDebounce:function onChanged(newName) {
+                        self.data.lastNameIsDefault = false;
+                        console.log('debouched', newName)
+                        uiUtils.show(self.data.ui.txtRefreshTaskName)
+                    }
+                })
+                self.data.ui.txtTaskName2 = uiUtils.lastId();
+
+
+                u.br()
+                uiUtils.addLabel({
+                    width:self.settings.lblWidth+0,
+                    addSpaceAfter:true,
+                    text:'V'})
+                uiUtils.addLabel({id:'txtCurrentTaskValues',
+                    text:'{}'})
+                self.data.ui.txtCurrentTaskValues = uiUtils.lastId();
+
+
+                self.utils.addRowLbl = function addLblForForm(txtLbl) {
+                    u.br()
+                    u.addLabel({
+                        width:self.settings.lblWidth+0,
+                        addSpaceAfter:true,
+                        text:txtLbl})
+                }
+
+                self.utils.addRowLbl();
+                u.addBtn({
+                    text: 'Save',
+                    //addSpacerBefore:true,
+                    //fxClick: self.onGetMagR,
+                    data:{
+                        //query:self.getValFrom(self.data.ui.txtOneOffQuery),
+                        //cmd:'searchpb'
+                    }
+                })
+
+
+                p.onTestC = function onTestC() {
+
+                }
+
+                self.utils.addRowLbl();
+                u.addBtn({
+                    text: 'Test Load',
+                    //addSpacerBefore:true,
+                    fxClick: self.onC,
+                    data:{
+                        //query:self.getValFrom(self.data.ui.txtOneOffQuery),
+                        //cmd:'searchpb'
+                    }
+                })
+
+                return;
+                /*
+
+                 uiUtils.addLabel(
+                 {//id:'txtRefreshTaskName',
+                 //addSpacerBefore:true,
+                 tooltip:"Reuse existing item",
+                 html:u.glyph('inbox')})
+                 */
+
+                uiUtils.spacer()
+                uiUtils.addSelect({
+                    text:'yeah',
+                    tooltip:'Reuse this',
+                    id:'ddPrevTasks',
+                    fxDone:self.onReuseThisPreviousJob
+                })
+                self.data.ui.ddPrevTasks = uiUtils.lastId();
+                uiUtils.updateSelect('ddPrevTasks', [1,2,3,4,5]);
+
+
+                return //fix this later
+                uiUtils.addBtn(
+                    {
+                        title: 'Upload a new item',
+                        text: 'Status',
+                        html: uiUtils.glyph('upload')
+                    },
+                    function onNew(){
+                        u.error('not implemented yet')
+                    }
+                )
+
+
+                uiUtils.addBtn(
+                    {
+                        title: 'Show progress and items',
+                        text: 'Status',
+                        html: uiUtils.glyph('trash')
+                    },
+                    function onNew(){
+                        return
+                        var url = uiUtils.getLocation('getStatus2', 6012);
+                        uiUtils.openNewWindow(url)
+
+                        u.error('not implemented yet ')
+                    }
+                )
+            })
+
 
         }
 
@@ -531,6 +694,12 @@ function onInitDB() {
             var divParent = $('#divSaveArea');
             var div = uiUtils.addDiv('divAreaInput').ui;
             divParent.append(div);
+            self.data.ui.divParent = uiUtils.lastId();
+
+
+
+            self.renderHelper.idRequires('txtBEE', 'self.data.listFileList')
+            self.renderHelper.blockIfNull( self.data.ui.divParent, 'self.data.listDlManifest')
             //$('#divSaveArea').html('')
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
@@ -974,10 +1143,14 @@ function onInitDB() {
             uiUtils.br(); uiUtils.br();
             var divParent = $('#divSaveArea');
             var div = uiUtils.addDiv('divAreaRun').ui;
+            self.data.ui.divAreaRun = uiUtils.lastId();
+
             divParent.append(div);
             //$('#divSaveArea').html('')
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
+
+            self.renderHelper.blockIfNull( self.data.ui.divAreaRun, 'self.data.listDlManifest')
 
 
             div.append('Run');
@@ -1109,37 +1282,29 @@ function onInitDB() {
             div.append('Verify');
             uiUtils.br()
 
-
-            /*
-             uiUtils.addBtn(
-             {
-             text: 'Server Ip',
-             addSpacer: true,
-             fxClick: self.onTestHoistServer,
-             data: {
-             //url: self.data.ui.txtBreedServerUrl,
-             //tor:self.getValFromData('queryTor'),
-             url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-             cmd: 'testit'
-             }
-             }
-             );
-             */
-
+            self.types = {};
+            self.data.forwardOutputType = {};
+            self.types.dlRemoteFileList = 'dlRemoteFileList';
 
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
                     title: 'Download File List',
                     text: 'Status',
-                    html: uiUtils.glyph('cloud-download')
-                },
-                function onNew(){
+                    html: uiUtils.glyph('cloud-download'),
+                    fxClick: self.onServerTask,
+                    data: {
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        ip:self.data.ip,
+                        port:self.data.portHoist2,
+                        ///howh to get this?
+                        //fileManifest:self.getFxVal(self.data.utils.getManifestName),
+                        //url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        cmd: self.types.dlRemoteFileList
+                    }
                 }
             )
-
             uiUtils.spacerSlim();
-
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
@@ -1151,65 +1316,78 @@ function onInitDB() {
                 }
             )
 
-            uiUtils.addLabel({text:"", id:"txtFileListReport"})
+
+            uiUtils.addLabel({id:'txtDlRemoteFileListStatus',
+                addSpacerBefore:true,
+                text:''})
+            self.data.ui.txtDlRemoteFileListStatus = uiUtils.lastId();
             u.br()
 
+
+            self.types.checkProgressLite = 'checkProgressLite';
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
                     title: 'Check Progress',
                     text: 'Status',
-                    html: uiUtils.glyph('adjust')
-                },
-                function onNew(){ }
+                    html: uiUtils.glyph('adjust'),
+                    fxClick: self.onServerTask,
+                    data: {
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        ip:self.data.ip,
+                        port:self.data.portHoist2,
+                        cmd: self.types.checkProgressLite
+                    }
+                }
             )
             uiUtils.spacerSlim();
-
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
                     title: 'View Sanitized files',
                     text: 'Status',
                     html: uiUtils.glyph('info-sign')
-                },
-                function onNew(){
                 }
             )
-
-            uiUtils.addLabel({text:"", id:"txtSantiziedReport"})
+            uiUtils.spacerSlim();
+            uiUtils.addLabel({id:'txt_'+self.types.checkProgressLite });
+            self.data.ui.txt_checkProgressLite = uiUtils.lastId();
+            self.data.forwardOutputType[self.types.checkProgressLite] = self.data.ui.txt_checkProgressLite
             u.br()
 
+
+            self.types.sanitizeFileList = 'sanitizeFileList';
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
                     title: 'Santize file list - Gerneate santize report',
                     text: 'Status',
-                    html: uiUtils.glyph('compressed')
-                },
-                function onNew(){ }
-            )
-
-
+                    html: uiUtils.glyph('compressed'),
+                    fxClick: self.onServerTask,
+                    data: {
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        ip:self.data.ip,
+                        port:self.data.portHoist2,
+                        cmd: self.types.sanitizeFileList
+                    }
+                })
             uiUtils.spacerSlim();
-
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
                     title: 'View Sanitized files',
                     text: 'Status',
                     html: uiUtils.glyph('info-sign')
-                },
-                function onNew(){
-                }
-            )
-
-            uiUtils.addLabel({text:"", id:"txtSantiziedReport"})
-
+                }  )
+            uiUtils.addLabel({id:'txt_'+self.types.sanitizeFileList });
+            self.data.ui.txt_sanitizeFileList = uiUtils.lastId();
+            self.data.forwardOutputType[self.types.sanitizeFileList] = self.data.ui.txt_sanitizeFileList
 
             u.br()
 
+
             uiUtils.addBtn({
-                    title:'Dl',
+                    title:'Tell Box to run import scriopt',
                     text: '~',
                     title: 'Remote Import files',
                     text: 'Status',
@@ -1223,7 +1401,7 @@ function onInitDB() {
             u.br()
 
             uiUtils.addBtn({
-                    title:'Dl',
+                    title:'Push Sanitized Files to Server',
                     text: '~',
                     title: 'Upload back to server',
                     text: 'Status',
@@ -1376,6 +1554,8 @@ function onInitDB() {
                 console.log('getPreviousTasksList', sdf)
                 uiUtils.setSelect(self.data.ui.ddPrevTasks,
                     sdf, 'name', 'name');
+                //clickofactiontosethitsvalu
+                uiUtils.selectAction(self.data.ui.ddPrevTasks)
                 callIfDefined(fxDone);
             }, null, function onError(){
                 alert('server is not running start autoaveserver')
@@ -1409,6 +1589,16 @@ function onInitDB() {
             } else {
                 //uiUtils.disable(self.data.runStep)
             }
+
+
+            var mini = {}
+            mini.listDlManifest = self.data.listDlManifest;
+            mini = JSON.stringify(mini)
+            uiUtils.setVal(self.data.ui.txtCurrentTaskValues , mini)
+
+            //get list from server ....?
+
+            self.renderHelper.render(); 
         }
 
         function createUtils() {

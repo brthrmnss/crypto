@@ -59,6 +59,17 @@ function GrammarHelperServer() {
             res.sendfile( fileSocket );
         });
 
+        app.get('/ui_utils.js', function (req, res) {
+            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
+            fileSocket = 'G:/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js'
+            res.sendfile( fileSocket );
+        });
+
+        app.get('/shelpers-mini.js', function (req, res) {
+            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
+            fileSocket = 'G:/Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js'
+            res.sendfile( fileSocket );
+        });
 
 
 
@@ -390,6 +401,7 @@ function GrammarHelperServer() {
                             }
                             //files.push('../../js/socket.io-1.2.0.js.')
                             files.unshift('../../js/reloaderGH1.js') //put at top
+                            files.unshift('../../../ui_utils.js') //put at top
                             var contents = sh.readFile(fileTemplate)
                             var cSplit = contents.split('</body>')
                             var start = cSplit[0]

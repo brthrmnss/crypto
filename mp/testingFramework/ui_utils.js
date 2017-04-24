@@ -96,6 +96,19 @@ function defineUtils2() {
 		}
 		return asyncController;
 	}
+
+	if ( $.isObject == null ) {
+		$.isObject = function isObject(obj) {
+			if ( $.isFunction(obj)) {
+				return false;
+			}
+			if ( obj == null ) {
+				return false;
+			}
+			return typeof obj == 'object'
+		}
+
+	}
 }
 defineUtils2();
 
@@ -112,62 +125,72 @@ function defineUtils() {
 
 	uiUtils.dictCfg = {};
 
-    u.dv = dv;
-   uiUtils.qq = function qq(txt) {
-                            return '"' + txt + '"'
-                        }
+	uiUtils.cid = uiUtils.callIfDefined =  callIfDefined 
+	
+	u.dv = dv;
+	uiUtils.qq = function qq(txt) {
+		return '"' + txt + '"'
+	}
 
-    $.isString = function isString(objectOrString) {
+	uiUtils.paren = function paren(txt) {
+		return '(' + txt + ')'
+	}
+
+	uiUtils.b = function b(txt) {
+		return '<b>' + txt + '</b>'
+	}
+
+	$.isString = function isString(objectOrString) {
 		//return (objectOrString instanceof String)
 		return typeof objectOrString == 'string'
 	}
 
-
-	self.args =  function convertArgumentsToArray_(_arguments) {
-		var args = Array.prototype.slice.call(_arguments, 0);
-		return args
-	}
+	p.convertArgumentsToArray =
+		p.args =  function convertArgumentsToArray_(_arguments) {
+			var args = Array.prototype.slice.call(_arguments, 0);
+			return args
+		}
 
 	self.clone = function clone(e) {
 		var eee = JSON.stringify(e)
 		return JSON.parse(eee)
 	}
 
-                uiUtils.makeHiderBtn = function makeHiderBtn(jqBtn, jqContainer, parentUI, hideOnInit) {
-                    var btnHide = $(jqBtn)
-                    if (parentUI) {
-                        btnHide = parentUI.find(jqBtn)
-                    }
+	uiUtils.makeHiderBtn = function makeHiderBtn(jqBtn, jqContainer, parentUI, hideOnInit) {
+		var btnHide = $(jqBtn)
+		if (parentUI) {
+			btnHide = parentUI.find(jqBtn)
+		}
 
-                    btnHide.attr('title', 'Hide this element')
-                    btnHide.addClass('unselectable2')
-                    btnHide.addClass('useFingerPointerCursor')
+		btnHide.attr('title', 'Hide this element')
+		btnHide.addClass('unselectable2')
+		btnHide.addClass('useFingerPointerCursor')
 
-                    var hideContainer = $(jqContainer)
-                    if (parentUI) {
-                        hideContainer = parentUI.find(jqContainer)
-                    }
+		var hideContainer = $(jqContainer)
+		if (parentUI) {
+			hideContainer = parentUI.find(jqContainer)
+		}
 
-                    function onToggleVisibility() {
-                        btnHide.hidden = !btnHide.hidden;
-                        if (btnHide.hidden) {
-                            hideContainer.hide()
-                        } else {
-                            hideContainer.show();
-                        }
-                    }
+		function onToggleVisibility() {
+			btnHide.hidden = !btnHide.hidden;
+			if (btnHide.hidden) {
+				hideContainer.hide()
+			} else {
+				hideContainer.show();
+			}
+		}
 
 
-                    btnHide.click(onToggleVisibility)
+		btnHide.click(onToggleVisibility)
 
-                    if (hideOnInit) {
-                        setTimeout(function () {
-                            onToggleVisibility()
-                        }, 150)
-                    }
-                }
-		
-		
+		if (hideOnInit) {
+			setTimeout(function () {
+				onToggleVisibility()
+			}, 150)
+		}
+	}
+
+
 	uiUtils.makePanel = function makePanel(cfg) {
 		throwIfNull(cfg.id, 'need an id')
 		u.cfg.fixId(cfg)
@@ -244,8 +267,8 @@ function defineUtils() {
 	}
 	uiUtils.panel.br =function makeBrPanel(cfg) {
 		/*if ( cfg.length ) {
-			var cfg = {ui:cfg}
-		}*/
+		 var cfg = {ui:cfg}
+		 }*/
 		cfg = u.cfg.str(cfg, 'id')
 		p.panel(cfg);
 		u.clearPositions(cfg.ui)
@@ -306,22 +329,22 @@ function defineUtils() {
 			}
 		}
 		/*console.log(
-			ui,
-			ui.css('left'),
-			ui.css('top'),
-			ui.css('right'),
-			ui.css('bottom')
-		)*/
+		 ui,
+		 ui.css('left'),
+		 ui.css('top'),
+		 ui.css('right'),
+		 ui.css('bottom')
+		 )*/
 		//debugger
 
 		/*
-		if (  t != null )
-			ui.css('top', t + 'px')
-		if (  r != null )
-			ui.css('right', r + 'px')
-		if (  b != null )
-			ui.css('bottom', b + 'px')
-		*/
+		 if (  t != null )
+		 ui.css('top', t + 'px')
+		 if (  r != null )
+		 ui.css('right', r + 'px')
+		 if (  b != null )
+		 ui.css('bottom', b + 'px')
+		 */
 	}
 
 	u.pos = u.position;
@@ -352,6 +375,8 @@ function defineUtils() {
 	uiUtils.addDefaultCfg = function addDefaultCfg(cfg) {
 		uiUtils.flagCfg = cfg;
 	}
+	uiUtils.flagCfg = {};
+
 	uiUtils.makeCheckbox = function makeCheckbox(cfg, id) {
 		cfg = u.cfg.str(cfg, 'text');
 		u.cfg.addToCfg(cfg, 'id', id);
@@ -502,18 +527,58 @@ function defineUtils() {
 		return cfg;
 	}
 
-	uiUtils.addDiv = function addDiv(cfg) {
+	uiUtils.addDiv = function addDiv(cfg, mergeInCfg) {
 		cfg = u.cfg.str(cfg, 'id')
+		//or .type
 		cfg.tag = dv(cfg.tag, 'div');
+		uiUtils.utils.mergeIn(mergeInCfg, cfg);
 		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
 
+
 		var ui = u.tag(cfg.tag)
+
+		/*if (){
+		 //uiUtils.skipNextAdd = true
+		 }*/
+
 		ui.html(cfg.text)
 		u.addUI(cfg, ui);
 		if ( cfg.newBaseContainer ) {
 			cfg.lastAddTo = cfg.addTo
 			cfg.addTo = ui;
 		}
+		return cfg;
+	}
+	uiUtils.create =
+		uiUtils.make = uiUtils.addDiv;
+
+	uiUtils.addA =
+		uiUtils.makeA = function makeA(typeOrCfg, justCfg) {
+
+			//make it but dont'add it
+			// uiUtils.skipNextAdd = true
+			var cfg = uiUtils.createA(typeOrCfg, justCfg);
+			//debugger
+			return cfg;
+		}
+
+	uiUtils.createA = function addA(typeOrCfg, justCfg) {
+		var cfg = typeOrCfg
+		if ( justCfg ) {
+			if ( $.isObject( justCfg ) == false ) {
+				throw new Error('bad input')
+			};
+			cfg = justCfg;
+		}
+		if ( $.isString(typeOrCfg)) {
+			cfg = {};
+			if ( $.isObject(justCfg)) {
+				cfg = justCfg
+			}
+			cfg.tag = typeOrCfg
+		}
+		cfg = uiUtils.make(cfg);
+		//debugger
 		return cfg;
 	}
 
@@ -660,6 +725,51 @@ function defineUtils() {
 	p.addButton = u.addBtn;
 
 
+	uiUtils.addLink = function addLink(cfg, fxD) {
+		cfg = u.cfg.str(cfg, 'text')
+		cfg.tag = dv(cfg.tag, 'a');
+		cfg.fxDone = dv(cfg.fxDone, fxD);
+		uiUtils.utils.mergeIn(uiUtils.flagCfg, cfg);
+
+		var btn = u.tag(cfg.tag)
+		btn.html(cfg.text)
+
+		u.addUI(cfg, btn)
+		btn[0].onclick = cfg.fxDone
+		if ( cfg.fxClick ) {
+			$(btn).on('click', cfg.fxClick)
+		}
+
+		if ( cfg.data ){
+			btn[0].data = cfg.data
+		}
+
+		if ( cfg.addSpacer ) {
+			uiUtils.spacer();
+		}
+
+
+
+
+		if ( cfg.href )
+			btn.attr('href', cfg.href)
+		
+		if ( cfg.link ) {
+			btn.attr('href', cfg.link)
+		}
+
+		if ( cfg.blank || cfg.openInBlank )
+			btn.attr('target', '_blank')
+		
+		
+		u.addUI(cfg, btn);
+		cfg.ui = btn;
+		//btn.addClass('btn')
+		//btn.addClass('btn-primary btn-sm')
+		//btn.on('click', cfg.fxDone)
+		return cfg;
+	}
+
 	uiUtils.addTextInput = function addTextInput(cfg, fxD) {
 		cfg = u.cfg.str(cfg, 'text')
 		cfg.tag = dv(cfg.tag, 'input');
@@ -729,13 +839,25 @@ function defineUtils() {
 
 	function defineStyles() {
 		uiUtils.pad = function addPadding(l, t, r, b) {
+			if (l) {
+				uiUtils.lastUI.css('padding-left', l + 'px')
+			}
+			if (t) {
+				uiUtils.lastUI.css('padding-top', t + 'px')
+			}
 			if (b) {
+				uiUtils.lastUI.css('padding-right', r + 'px')
+			}
+			if (r) {
 				uiUtils.lastUI.css('padding-bottom', b + 'px')
 			}
 		}
 		uiUtils.wH = function setWidthAndHeight(w, h) {
 			if (w) {
 				uiUtils.lastUI.css('width', w + 'px')
+			}
+			if (h) {
+				uiUtils.lastUI.css('height', h + 'px')
 			}
 		}
 		uiUtils.color = function color(ui, color) {
@@ -745,6 +867,12 @@ function defineUtils() {
 			}
 
 			ui.css('color', color)
+		}
+
+		uiUtils.removeWrap = function removeWrap(ui) {
+			ui = uiUtils.lastUI;
+
+			ui.css('display', 'display-inline')
 		}
 
 		uiUtils.title = function title(title) {
@@ -961,17 +1089,37 @@ function defineUtils() {
 
 	p.addUI = function addUI(cfg, ui ) {
 		if (cfg.addSpacerBefore) {
-			u.spacer()
+			u.spacer();
 		}
+
 		if (cfg.addTo) {
-			cfg.addTo.append(ui)
+			if ( u.doNotAdd == true ) {
+				//u.skipNextAdd = false
+			}
+			else if ( u.skipNextAdd == true ) {
+				u.skipNextAdd = false
+			}
+			else {
+				if ( cfg.prepend ) {
+					cfg.addTo.prepend(ui)
+				} else {
+					cfg.addTo.append(ui)
+				}
+			}
 		}
+
 		if (cfg.addSpacerAfter || cfg.addSpaceAfter) {
 			u.spacer()
 		}
 
 		if (cfg.defaultValue) {
 			ui.val(cfg.defaultValue)
+		}
+		if (cfg.addClass) {
+			ui.addClass(cfg.addClass)
+		}
+		if (cfg.addStyles) {
+			ui.css(cfg.addStyles)
 		}
 
 		if (cfg.width) {
@@ -1238,6 +1386,100 @@ function defineUtils() {
 	}
 	defineClickHandler();
 
+	function defineAnnotationMethods() {
+		uiUtils.removeWithClass = function removeWithClass(className) {
+			$('.'+className).remove();
+		}
+
+		uiUtils.moveAToB = function moveCursorTo(ui, toHere) {
+			var element = $(toHere)
+			var position = $(element).offset();
+
+			// position.left += element.width();
+
+			if ( position == null ){
+				console.warn('failed to cursor to ', toHere, 'position was null')
+				return;
+			}
+
+			//var dbg = [position.left , $('body').width()]
+			//debugger;
+			if ( position.left >= $('body').width() * .80 ) {
+				delete position.left;
+				position.right = 20;
+				console.log('move on left size')
+				//positon.left = $('body').width - 250;
+			} else  {
+				position.left += element.width();
+				position.left -= 0.1*element.width(); //nudge over so inside component
+				// position.left -= 10;
+			}
+
+			//position.top += 10;
+
+			console.log('where is', ui, position)
+			console.log('\t', $(element).offset(), $(element).width())
+			//annotation.css(position)
+
+			ui.css(position)
+		}
+
+
+		uiUtils.pos.adjust = function adjust(ui, t, r, b, l ) {
+			var lefti = ui.css('left');
+			lefti = px(lefti)
+
+			function px(pxVal){
+				pxVal = pxVal.replace('px');
+				pxVal = parseInt(pxVal);
+				return pxVal;
+			}
+
+
+			var topi = ui.css('top');
+			topi = px(topi)
+
+			var righti = ui.css('right');
+			righti = px(righti)
+
+			var bottomi = ui.css('bottom');
+			bottomi = px(bottomi)
+
+			if (  l != null ) {
+				ui.css('left', (lefti + l) + 'px')
+			} else {
+				if (  l === null ) {
+					ui.css('left', '')
+				}
+			}
+
+			if (  t != null ) {
+				console.log( ui.css('top'),  (topi + t) + 'px' )
+				ui.css('top', (topi + t) + 'px')
+			} else {
+				if (  t === null ) {
+					ui.css('top', '')
+				}
+			}
+
+			if (  r != null ) {
+				ui.css('right', (righti + r) + 'px')
+			} else {
+				if (  r === null ) {
+					ui.css('right', '')
+				}
+			}
+
+			if (  b != null ) {
+				ui.css('bottom',(bottomi + b) + 'px')
+			} else {
+				if ( b === null ) {
+					ui.css('bottom', '')
+				}
+			}
+		}
+	}
+	defineAnnotationMethods();
 
 	p.utils = {};
 	p.utils.mergeIn = function mergeIn(a, b, overwriteVals ) {
@@ -1246,7 +1488,7 @@ function defineUtils() {
 		//function copyProps(from, to) {
 		$.each(a, function(k,v){
 			var existingVal  = b[k];
-			if ( existingVal && overwriteVals != true ) {
+			if ( existingVal && overwriteVals !== true ) {
 				return;
 			}
 			b[k]=v;
@@ -1333,95 +1575,95 @@ function defineUtils() {
 		return params;
 	}
 
-  uiUtils.isSimiliarInArray = function isSimiliarInArray(prop, obj, items) {
-                        var found = null;
-                        var foundItem = null;
-                        var likeVal = obj[prop];
-                        $.each(items, function findSimiliar(k, v) {
-                            var val = v[prop];
-                            if (val == likeVal) {
-                                foundItem = v;
-                                found = true;
-                                return false;
-                            }
-                        })
+	uiUtils.isSimiliarInArray = function isSimiliarInArray(prop, obj, items) {
+		var found = null;
+		var foundItem = null;
+		var likeVal = obj[prop];
+		$.each(items, function findSimiliar(k, v) {
+			var val = v[prop];
+			if (val == likeVal) {
+				foundItem = v;
+				found = true;
+				return false;
+			}
+		})
 
-                        return found;
-    }
-
-    function defineEffects() {
-        uiUtils.fadeIn = function fadeIn(_ui, duration) {
-            var cfg = {ui:_ui, duration:duration}
-            if ( _ui.length == null )  {
-                var cfg = _ui;
-            }
-            cfg.ui.show();
-            cfg.ui.css('opacity', 0.0)
-            cfg.duration = u.dv(cfg.duration, 600);
-            cfg.opacity = u.dv(cfg.opacity, 1.0);
-
-            $(cfg.ui).animate({
-                    opacity: cfg.opacity
-                },
-                {
-                    duration:duration,
-                    complete:function onEnd() {
-                        // _ui.hide();
-                    }
-                });
-            //}
-            console.error('fade in')
-        }
-
-
-        uiUtils.fadeOut = function fadeOut(_ui) {
-            //function onHoverOut() {
-            // debugger
-
-            $(_ui).clearQueue();
-            $(_ui).stop(true, true);
-            $(_ui).animate({
-                    opacity: 0.0
-                },
-                {
-                    duration: 300,
-                    complete: function onEnd() {
-                        _ui.hide();
-                    }
-                }
-            );
-            console.error('fadeOut', _ui)
-            //}
-        }
-
-
-        uiUtils.beatFade = function beatFade(_ui) {
-                    var startingOpacity = _ui.css('opacity');
-                    if (startingOpacity == null || startingOpacity == '') {
-                        startingOpacity = 1;
-                    }
-                    startingOpacity = 1;
-                    // console.error('starting', startingOpacity)
-                    $(_ui).clearQueue();
-                    $(_ui).stop(true, true);
-                    setTimeout(function out() {
-                        console.error('go to ', 0.7)
-                        $(_ui).animate({
-                            opacity: 0.7
-                        }, 500);
-                    }, 0)
-
-                    setTimeout(function beatIn() {
-                        console.error('go to ', 1)
-                        $(_ui).animate({
-                            opacity: startingOpacity
-                        }, 500);
-                    }, 500)
-                }
-	
+		return found;
 	}
-	
-	defineEffects(); 
+
+	function defineEffects() {
+		uiUtils.fadeIn = function fadeIn(_ui, duration) {
+			var cfg = {ui:_ui, duration:duration}
+			if ( _ui.length == null )  {
+				var cfg = _ui;
+			}
+			cfg.ui.show();
+			cfg.ui.css('opacity', 0.0)
+			cfg.duration = u.dv(cfg.duration, 600);
+			cfg.opacity = u.dv(cfg.opacity, 1.0);
+
+			$(cfg.ui).animate({
+					opacity: cfg.opacity
+				},
+				{
+					duration:duration,
+					complete:function onEnd() {
+						// _ui.hide();
+					}
+				});
+			//}
+			console.error('fade in')
+		}
+
+
+		uiUtils.fadeOut = function fadeOut(_ui) {
+			//function onHoverOut() {
+			// debugger
+
+			$(_ui).clearQueue();
+			$(_ui).stop(true, true);
+			$(_ui).animate({
+					opacity: 0.0
+				},
+				{
+					duration: 300,
+					complete: function onEnd() {
+						_ui.hide();
+					}
+				}
+			);
+			console.error('fadeOut', _ui)
+			//}
+		}
+
+
+		uiUtils.beatFade = function beatFade(_ui) {
+			var startingOpacity = _ui.css('opacity');
+			if (startingOpacity == null || startingOpacity == '') {
+				startingOpacity = 1;
+			}
+			startingOpacity = 1;
+			// console.error('starting', startingOpacity)
+			$(_ui).clearQueue();
+			$(_ui).stop(true, true);
+			setTimeout(function out() {
+				console.error('go to ', 0.7)
+				$(_ui).animate({
+					opacity: 0.7
+				}, 500);
+			}, 0)
+
+			setTimeout(function beatIn() {
+				console.error('go to ', 1)
+				$(_ui).animate({
+					opacity: startingOpacity
+				}, 500);
+			}, 500)
+		}
+
+	}
+
+	defineEffects();
 
 	function defineUrlMethods() {
 		p.inUrl = function inUrl(dlg) {
@@ -1600,12 +1842,16 @@ function defineUtils() {
 		p.utils.loadPage = function loadPage(cfg) {
 			var div = $(cfg.div)
 			if ( div && div.empty() && cfg.id ) {
-				div = u.cfg.getDiv(cfg.id);
+				//var id = cfg.id;
+				if ( cfg.id.startsWith('#') == false ) {
+					cfg.id = '#'+ cfg.id;
+				}
+				div = u.cfg.getDiv( cfg.id);
 			}
 			if ( div.length == 0 ){
 				throw new Error('could not find area ' + cfg.div);
 			}
-
+			//debugger
 			$.ajax({
 				url: cfg.url,
 				datattype: "html",
@@ -1614,7 +1860,7 @@ function defineUtils() {
 
 					var output = p.utils.parseBodyHTML(data);
 
-					// debugger;
+					//debugger;
 					div.html(output.body.html());
 
 					output.addStyles();
@@ -1624,11 +1870,17 @@ function defineUtils() {
 					callIfDefined(cfg.fxDone, data)
 				},
 				error: function (a,b,c) {
-					debugger;
+					//debugger;
 					console.error('cannot get loadPage info');
-					gUtils.remoteFailed(a,b,c)
+					uiUtils.remoteFailed(a,b,c)
 				}
 			});
+		}
+
+
+		uiUtils.remoteFailed = function remoteFailed(a,b,c) {
+			console.error(a,b,c)
+			debugger
 		}
 
 
@@ -1830,81 +2082,81 @@ function defineUtils() {
 			});
 		}
 
-    }
-    defineFX();
-		u.debouncer = function debouncer(fx, name, time) {
-			//if ( time )
-			var d = {}
-			d.debounce = function debounce(fx2) {
-				if (d.waiting) {
-					clearTimeout(d.waiting)
-				}
-				//console.log('waiting', fx.name)
-				//d.waiting = true;
-				d.waiting = setTimeout(function onDebounced() {
-					if(fx2) {
-						fx2();
-						return;
-					}
-					fx()
-				}, time)
+	}
+	defineFX();
+	u.debouncer = function debouncer(fx, name, time) {
+		//if ( time )
+		var d = {}
+		d.debounce = function debounce(fx2) {
+			if (d.waiting) {
+				clearTimeout(d.waiting)
 			}
-			return d;
+			//console.log('waiting', fx.name)
+			//d.waiting = true;
+			d.waiting = setTimeout(function onDebounced() {
+				if(fx2) {
+					fx2();
+					return;
+				}
+				fx()
+			}, time)
+		}
+		return d;
+	}
+
+
+	function defineDebounce() {
+		uiUtils.debounce = null;
+		uiUtils.debouncers = null;
+
+		uiUtils.debounce = function onDeb(cfg) {
+			if (uiUtils.debouncers == null) {
+				uiUtils.debouncers = {};
+			}
+
+			var dbg = false;
+			var d = uiUtils.debouncers[cfg.name];
+
+			if (cfg.time == null) {
+				cfg.time = 1500
+			}
+
+			if (d == null) {
+				d = {};
+				d.waitCount = 0;
+				if (dbg)
+					console.info('defined a new one')
+				d.debounce = function debounceHandler() {
+					d.waitCount++;
+					var waitCountTmp = d.waitCount;
+					cfg.waiting = d.waitCount + '_' + Math.random();
+					if (dbg)
+						console.log('waiting', cfg.fx.name, d.waitCount)
+					//d.waiting = true;
+					setTimeout(function onDebounced() {
+						if (d.waitCount == waitCountTmp) {
+						} else {
+							if (dbg)
+								console.warn('missed it', waitCountTmp, d.waitCount, d.waiting)
+							return;
+						}
+						d.waiting = null;
+						cfg.fx(cfg.args)
+					}, cfg.time)
+
+				}
+			}
+
+			uiUtils.debouncers[cfg.name] = d;
+
+			d.debounce()
 		}
 
+	}
+	defineDebounce();
 
-    function defineDebounce() {
-        uiUtils.debounce = null;
-        uiUtils.debouncers = null;
-
-        uiUtils.debounce = function onDeb(cfg) {
-            if (uiUtils.debouncers == null) {
-                uiUtils.debouncers = {};
-            }
-
-            var dbg = false;
-            var d = uiUtils.debouncers[cfg.name];
-
-            if (cfg.time == null) {
-                cfg.time = 1500
-            }
-
-            if (d == null) {
-                d = {};
-                d.waitCount = 0;
-                if (dbg)
-                    console.info('defined a new one')
-                d.debounce = function debounceHandler() {
-                    d.waitCount++;
-                    var waitCountTmp = d.waitCount;
-                    cfg.waiting = d.waitCount + '_' + Math.random();
-                    if (dbg)
-                        console.log('waiting', cfg.fx.name, d.waitCount)
-                    //d.waiting = true;
-                    setTimeout(function onDebounced() {
-                        if (d.waitCount == waitCountTmp) {
-                        } else {
-                            if (dbg)
-                                console.warn('missed it', waitCountTmp, d.waitCount, d.waiting)
-                            return;
-                        }
-                        d.waiting = null;
-                        cfg.fx(cfg.args)
-                    }, cfg.time)
-
-                }
-            }
-
-            uiUtils.debouncers[cfg.name] = d;
-
-            d.debounce()
-        }
-
-    }
-    defineDebounce();
-
-    function ifHelpers() {
-        u.ifFxReplace = function ifFxReplace(potFx, fxShoudlBeNull) {
+	function ifHelpers() {
+		u.ifFxReplace = function ifFxReplace(potFx, fxShoudlBeNull) {
 			if ( $.isFunction(potFx) && fxShoudlBeNull ) {
 				return potFx;
 			}
@@ -1930,6 +2182,30 @@ function defineUtils() {
 			}
 		);
 	}
+
+	function defineAppendHelperMethods() {
+
+		uiUtils.clear = function clearHTLM(jq) {
+			$(jq).html('')
+		}
+		uiUtils.addTo = function setLastUI(jq) {
+			var ui  =   $(jq);
+			//uiUtils.lastUI =   $(jq);
+			//uiUtils.flagCfg.lastAddTo = cfg.addTo
+			uiUtils.flagCfg.addTo = ui;
+		}
+
+		uiUtils.addToLast = function addToLast() {
+			uiUtils.flagCfg.addTo = uiUtils.lastUI;
+		}
+
+		uiUtils.setId = function setId(id) {
+			uiUtils.lastUI.attr('id', id)
+		}
+	}
+	defineAppendHelperMethods();
+
+
 	function defineLookAt() {
 		var gUtils = uiUtils
 		gUtils.setLocationHash = function setLocationHash(newHashVal) {

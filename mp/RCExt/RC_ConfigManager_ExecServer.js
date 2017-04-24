@@ -12,7 +12,10 @@ var sh = require('shelpers').shelpers;
 var PromiseHelperV3 = shelpers.PromiseHelperV3;
 var EasyRemoteTester = shelpers.EasyRemoteTester;
 
-console.log('got a new one ..d..')
+var fileScript = sh.fs.join(__dirname,'supporting', 'TestRCScripts.js');
+var RCScripts = require(fileScript).RCScripts;
+
+//console.log('got a new one ..d..')
 function RCConfigExecServer() {
     var p = RCConfigExecServer.prototype;
     p = this;
@@ -365,7 +368,10 @@ function RCConfigExecServer() {
                 self.cmds.sanitizeFileList(data, fx)
             }
             if ( data.cmd == 'percentCompleteList'){
-                self.cmds.sanitizeFileList(data, fx)
+                self.cmds.percentCompleteList(data, fx)
+            }
+            if ( data.cmd == 'dlRemoteFileList'){
+                self.cmds.dlRemoteFileList(data, fx)
             }
             return;
         };
@@ -375,9 +381,10 @@ function RCConfigExecServer() {
 
     function defineCmds() {
         p.cmds = {}
-        p.cmds.sendStatus = function sendStatus(msg) {
+        p.cmds.sendStatus = function sendStatus(msg,type) {
             var data = {};
             data.msg = msg;
+            data.type = type;
             self.appSocket.emit('updateStatus', data);
         }
         p.cmds.searchPb = function searchPb(data, fx) {
@@ -590,7 +597,7 @@ function RCConfigExecServer() {
                 var result = {}
                 //  result.title = token.title;
                 //  result.urlMagnet = token.urlMagnet;
-                result = token.selectedLink;
+                    ,   result = token.selectedLink;
                 fx(result, token.linkz);
             }
             options.fxBail = function bailX(msg) {
@@ -664,9 +671,8 @@ function RCConfigExecServer() {
             );
 
         }
+
         p.cmds.dlListTypeConfig = function dlListTypeConfig(cmd, fx) {
-
-
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
 
             //dl file
@@ -705,19 +711,54 @@ function RCConfigExecServer() {
 
         }
 
-        p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
+
+
+    }
+    defineCmds();
+
+
+    function defineCrossCmds() {
+        p.cmds.dlRemoteFileList = function dlRemoteFileList(cmd, fx) {
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
-            var fileScript = sh.fs.join(__dirname, 'TestRCScripts.js');
-            var RCScripts = require(fileScript).RCScripts;
+            var fileScript = sh.fs.join(__dirname, 'supporting','WorkflowGetFilesFromRemoteMachine.js');
+            var GetFileListFromRemote = require(fileScript).GetFileListFromRemote;
 
+            // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
 
-
-           // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
+            var data = cmd;
 
             var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
             var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
 
-            self.cmds.sendStatus('running tool');
+            //self.cmds.sendStatus('running dlRemoteFileList');
+            var type = 'dlRemoteFileList'
+            self.cmds.sendStatus('running dlRemoteFileList', type);
+
+            var instance = new GetFileListFromRemote();
+            var config = {};
+            config.ip = '127.0.0.1'
+            config.port = '6014'
+
+            config.socket = self.data.socketBreed;
+            config.ip = data.ip;
+            config.port = data.port;
+            //config.localTest = true
+            config.fxDone = function fxDone(file) {
+                //console.log('...', 'y')
+                self.proc('sending a result back.....')
+                // self.cmds.sendStatus('done dlRemoteFileList '+ file);
+
+                if ( instance.data.socket && self.data.socketBreed == null ) {
+                    self.data.socketBreed = instance.data.socket;
+
+                }
+
+                /// self.cmds.sendStatusType('dlRemoteFileList')
+                self.cmds.sendStatus('done dlRemoteFileList '+ file,  type);
+            }
+            instance.init(config)
+
+            return;
 
             RCScripts.verifyComplete(fileDlManifest, fileFileList, function onDone(output) {
                 console.log('found how many?', output.foundCount);
@@ -732,9 +773,60 @@ function RCConfigExecServer() {
             return;
         }
 
-    }
-    defineCmds();
+        p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+            // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
 
+            var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+            var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+
+            self.cmds.sendStatus('running tool');
+
+            var type = 'sanitizeFileList'
+            self.cmds.sendStatus('running sanitizeFileList', type);
+
+
+            RCScripts.checkPercentageCompleteDeep(fileDlManifest, fileFileList, function onDone(output) {
+                console.log('found how many?', output.foundCount);
+                output.itemsValid = null;
+                output.itemsFound = null;
+                output.lines = output.lines.length
+                //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+                fx(output);
+                self.cmds.sendStatus('done with sanitizeFileList '+ output.foundCount, type);
+            });
+
+            return;
+        }
+
+        p.cmds.percentCompleteList = function percentCompleteList(cmd, fx) {
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+
+            // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
+
+            var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+            var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+
+            self.cmds.sendStatus('running tool');
+            var type = 'percentCompleteList'
+            self.cmds.sendStatus('running percentCompleteList', type);
+
+            RCScripts.verifyComplete(fileDlManifest, fileFileList, function onDone(output) {
+                console.log('found how many?', output.foundCount);
+                output.itemsValid = null;
+                output.itemsFound = null;
+                output.lines = output.lines.length
+                // sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+                fx(output);
+                self.cmds.sendStatus('done with  ' +
+                    type + ' '+ output.foundCount, type);
+            });
+
+            return;
+        }
+
+    }
+    defineCrossCmds()
 
     function defineUtils() {
         p.utils = {}
@@ -804,7 +896,7 @@ if (module.parent == null) {
 
     function runServer() {
        //  sh.get('127.0.0.1:6010/exitQuit')
-         sh.get('127.0.0.1:6008/exitQuit') 
+         sh.get('127.0.0.1:6008/exitQuit')
         setTimeout(function startup() {
             if  (RCConfigExecServer.oldServer) {
                 RCConfigExecServer.oldServer.active_server.close();

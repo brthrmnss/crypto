@@ -18,10 +18,11 @@
     function defineBasics() {
       p.loadConfig = function loadConfig(config ) {
         self.config = config;
+        
         self.config.quickListConfig = sh.dv(self.config.quickListConfig,{});
+        //quickListHelper = quickListHelper.create();
+
         quickFormHelper = quickFormHelper.create();
-
-
         self.qFH = self.quickFormHelper =
         self.form = quickFormHelper;
         self.config.quickFormConfig = sh.dv(self.config.quickFormConfig,{});

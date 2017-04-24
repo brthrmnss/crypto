@@ -5,6 +5,7 @@
 
   var quickList2 = function quickList2_($templateRequest, $compile,
                                         $interpolate, transcludeHelper,
+                                        quickUI,
                                         $timeout, sh) {
 
     //var utils = transcludeHelper.new();
@@ -64,6 +65,9 @@
 
             }
             s.copyListContentsOrListItems();
+            
+            
+            
 
             //console.error('what is template2', outerHTML(utils.templateContent[0]))
 
@@ -71,6 +75,11 @@
 
             var config = scope.vmC.config;
             config = sh.dv(config, {});
+            
+            
+            if ( config.fxRender ) {
+              config.fxRender(utils, config);
+            }
             attrs.maxHeight = sh.dv(attrs.maxHeight,  config.maxHeight );
             //console.error('l', attrs.maxHeight, config);
             //if max height
@@ -139,6 +148,13 @@
               }
             }
 
+
+            scope.addUIEm = function addUIEm() {
+              var q =  quickUI.create();
+              q.processDefaults(utils.templateContent);
+            }
+            scope.addUIEm();
+
             html = utils.templateContent[0];
 
             console.error('QuickList.init.2', ctrl.title, ctrl.grid);
@@ -146,7 +162,7 @@
            // var html2 = $('<span>vvvvvvvv vvvvv</span>')
             //html = html2;
             //console.error('what is html?', html)
- 
+
             //console.error('what is html2? ', outerHTML(html))
 
             element.html($compile(html)(scope));
@@ -296,7 +312,7 @@
 
       utilsParent.storeTemplate(tElem, attrs);
       utilsParent.storeUserContent(tElem);
-      utilsParent.showElem(tElem, 'Initial Thing')
+     // utilsParent.showElem(tElem, 'Initial Thing')
      // debugger
       //utils.storeUserContent(tElem);
       return {

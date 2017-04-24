@@ -136,7 +136,7 @@ window.reloadFile = function reloadFile(file, fx) {
 
 window.onerror = function onError(errorMsg, url, lineNumber,d,e) {
     //debugger;
-    if ( window.skipDefaultErrorAlerter == true )   {
+    if ( window.skipDefaultErrorAlerter2 == true )   {
         return
     }
     if ( errorMsg.includes('app is not defined')) {
