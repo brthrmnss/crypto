@@ -33,7 +33,6 @@ function GetFileListFromRemote() {
         config = self.settings;
 
         if ( self.settings.url ) {
-
         }
         else
         {
@@ -47,9 +46,18 @@ function GetFileListFromRemote() {
             var dirOutput = sh.fs.getDir(fileOutput)
             sh.fs.mkdirp(dirOutput)
             self.proc('storing it', fileOutput)
-            self.settings.file = fileOutput
+            self.settings.file = fileOutput;
         }
         self.proc('self.settings.file', self.settings.file)
+        if ( config.initGFFRM ) {
+            self.proc('init...|||>>>')
+            var data = {}
+            data.initGFFRM = true 
+            data.fileExists = sh.fs.exists(self.settings.file)
+            data.file = self.settings.file; 
+            sh.cid(self.settings.fxDone, self.settings.file, data)
+            return;
+        }
         // return
         self.runStesps();
     }

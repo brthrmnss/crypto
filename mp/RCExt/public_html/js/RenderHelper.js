@@ -37,22 +37,36 @@ function RenderHelper() {
             var inst = v;
             var ui = null;
             if (inst.id) {
-                if ( inst.id.startsWith('#') == false ) {
-                     inst.id = '#' + inst.id
+                if ( $.isArray(inst.id )) {
+                    ui = $(inst.id)
+                    //$(ui).map (function () {return this.toArray(); } );
+                    var x = $();  // empty jQuery object
+                    $.each(ui, function(i, o) {x = x.add(o)});
+                    ui = x;
+                //    debugger
+                } else {
+                    if (inst.id.startsWith('#') == false) {
+                        inst.id = '#' + inst.id
+                    }
+                    var ui = $(inst.id)
+
                 }
-                var ui = $( inst.id)
             }
 
             var __self = self.data.self;
-           var evalFx = inst.evalFx.replace('self', '__self')
+            var evalFx = inst.evalFx.replace('self', '__self')
             console.debug('eval', __self,  inst.evalFx, inst.type , p.idRequires.name)
             if (inst.type == p.idRequires.name) {
                 var y = eval(evalFx)
                 if (y == null || y == '') {
                     ui.css('opacity', '0.3')
-                    
+                    /*    $.each(ui, function onApplyAll(k, ui) {
+                     if ( ui.jquery ) {
+                     ui.css('opacity', '0.3')
+                     }
+                     })*/
                 } else {
-                    
+
                     ui.css('opacity', '1')
                 }
             }
@@ -61,14 +75,14 @@ function RenderHelper() {
                 var y = eval(evalFx)
                 if (y == null || y == '') {
                     ui.css('opacity', '0.3')
-                    
+
                 } else {
                     ui.css('opacity', '1')
-                    
+
                 }
             }
-            console.debug('y', y)
-            console.debug('ui', ui, ui.css('opacity'))
+            //console.debug('y', y)
+            //console.debug('ui', ui, ui.css('opacity'))
 
         })
     }

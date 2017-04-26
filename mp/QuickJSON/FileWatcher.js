@@ -54,6 +54,7 @@ function FileWatcher() {
     p.handleInitRunSettings = function handleInitRunSettings() {
         if ( self.settings.runFirst != false &&
             self.settings.action == 'runFile') {
+            var file = self.settings.file;
             self.proc('running.runFirst', self.settings.file);
             self.utils.runFile(file);
         }

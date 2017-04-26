@@ -102,8 +102,11 @@
 </head>
 <body>
 
+
+
 <div class="flex-container" >
 
+  deploy ui_utils...
   <div id="divSaveArea" >
 
     content for u
@@ -127,14 +130,23 @@
 
 <!--<script src="js/lib/socket.io-1.2.0.js.ignore"></script>-->
 <script src="js/lib/jquery-1.11.1.js.ignore"></script>
+<link rel="stylesheet" type="text/css" href="js/lib/style/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="js/lib/style/bootstrap-flat.min.css">
+
 
 <script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="js/lib/socket.io-1.2.0.js.ignore" ></script>
 <script src="http://localhost:10110/reloader.js" ></script>
 
 
 <script src="js/RenderHelper.js" ></script>
 <script src="js/shz.js" ></script>
-<script src="js/ui_utils.js" ></script>
+
+<!--<script src="js/ui_utils.js" ></script>-->
+<script src="js/lib/ui_utils.js" ></script>
+<script src="http://localhost:10110/ui_utils.js" ></script>
+
+
 <script src="js/db2_ui.js" ></script>
 
 
@@ -185,6 +197,12 @@
     reloader.filter = '/RCExt/';
     reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/crypto/mp/RCExt/public_html/', '')
     //reloader
+
+    reloader.fxFilter = function fxFilter(input) {
+      if ( input.includes('ui_utils.js')) {
+        return true ;
+      }
+    }
 
   }
   try {

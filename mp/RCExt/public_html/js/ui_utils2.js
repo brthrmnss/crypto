@@ -9,8 +9,9 @@ function forwardArgsTo(fx, args) {
 
 function convertArgumentsToArray(_arguments) {
     var args = Array.prototype.slice.call(_arguments, 0);
-    return args;
+    return args
 }
+
 
 
 function defaultValue(input, ifNullUse) {
@@ -41,7 +42,7 @@ function convertArgumentsToArray(_arguments) {
 }
 
 function throwIfNull(prop, msg) {
-    if (prop == null) {
+    if ( prop == null ) {
         throw new Error(msg)
     }
 }
@@ -52,19 +53,19 @@ function defineUtils2() {
         var asyncController = {};
         asyncController.index = 0;
         asyncController.getNext = function getNextItem() {
-            var next = items[asyncController.index + 1];
+            var next = items[asyncController.index+1];
             return next;
         }
-        if (playIndex > 0) {
+        if(playIndex>0){
             asyncController.index = playIndex;
         }
-        if (playIndex < 0) {
-            asyncController.index = items.length - 1 + playIndex;
+        if(playIndex<0){
+            asyncController.index = items.length-1+playIndex;
         }
 
         asyncController.length = items.length;
 
-        if (delay == null && $.isNumeric(fxAllDone)) {
+        if ( delay == null && $.isNumeric(fxAllDone)) {
             delay = fxAllDone;
         }
 
@@ -72,7 +73,7 @@ function defineUtils2() {
             var item = items[asyncController.index];
             console.log('playindex', asyncController.index)
             if (asyncController.index > items.length - 1) {
-                if (fxAllDone) {
+                if ( fxAllDone ) {
                     fxAllDone();
                 }
                 return;
@@ -96,12 +97,12 @@ function defineUtils2() {
         return asyncController;
     }
 
-    if ($.isObject == null) {
+    if ( $.isObject == null ) {
         $.isObject = function isObject(obj) {
-            if ($.isFunction(obj)) {
+            if ( $.isFunction(obj)) {
                 return false;
             }
-            if (obj == null) {
+            if ( obj == null ) {
                 return false;
             }
             return typeof obj == 'object'
@@ -124,7 +125,7 @@ function defineUtils() {
 
     uiUtils.dictCfg = {};
 
-    uiUtils.cid = uiUtils.callIfDefined = callIfDefined
+    uiUtils.cid = uiUtils.callIfDefined =  callIfDefined
 
     u.dv = dv;
     uiUtils.qq = function qq(txt) {
@@ -145,7 +146,7 @@ function defineUtils() {
     }
 
     p.convertArgumentsToArray =
-        p.args = function convertArgumentsToArray_(_arguments) {
+        p.args =  function convertArgumentsToArray_(_arguments) {
             var args = Array.prototype.slice.call(_arguments, 0);
             return args
         }
@@ -196,15 +197,15 @@ function defineUtils() {
         var existingUI = $(cfg.id);
 
 
-        if (cfg.clearOld && cfg.id) {
-            $(cfg.id).remove();
+        if ( cfg.clearOld &&  cfg.id ) {
+            $( cfg.id).remove();
         }
 
-        if (existingUI.length > 0) {
-            if (existingUI.length > 0) {
+        if ( existingUI.length > 0 ) {
+            if ( existingUI.length > 0) {
                 console.warn('you have multiple things')
             }
-            if (cfg.clearIfFound !== true) {
+            if ( cfg.clearIfFound !== true ) {
                 //if ( cfg.toggleMode != false ) {
                 //		}
                 existingUI.show();
@@ -217,7 +218,7 @@ function defineUtils() {
             }
         }
 
-        cfg = dv(cfg, {});
+        cfg = dv(cfg,{});
         uiUtils.dictCfg[cfg.id] = cfg;
 
         var panel = $('<div />')//
@@ -234,7 +235,7 @@ function defineUtils() {
         //panel.attr('id', cfg.id);
 
 
-        function onCloseDialog() {
+        function onCloseDialog () {
             panel.hide()
             return;
         }
@@ -250,7 +251,7 @@ function defineUtils() {
 
     uiUtils.panel = uiUtils.makePanel;
 
-    uiUtils.panel.tr = function makeBrPanel(cfg) {
+    uiUtils.panel.tr =function makeBrPanel(cfg) {
         cfg = u.cfg.str(cfg, 'id')
         cfg = p.panel(cfg);
         u.clearPositions(cfg.ui)
@@ -264,7 +265,7 @@ function defineUtils() {
         ui.css('right', '');
         ui.css('top', '');
     }
-    uiUtils.panel.br = function makeBrPanel(cfg) {
+    uiUtils.panel.br =function makeBrPanel(cfg) {
         /*if ( cfg.length ) {
          var cfg = {ui:cfg}
          }*/
@@ -275,7 +276,7 @@ function defineUtils() {
         cfg.ui.css('right', '10px');
     }
 
-    uiUtils.panel.bl = function makeBrPanel(cfg) {
+    uiUtils.panel.bl =function makeBrPanel(cfg) {
         cfg = u.cfg.str(cfg, 'id')
         p.panel(cfg);
         u.clearPositions(cfg.ui)
@@ -284,45 +285,46 @@ function defineUtils() {
     }
 
 
-    uiUtils.position = function position(lOrUI, t, r, b, bz) {
+
+    uiUtils.position =function position(lOrUI, t, r, b, bz) {
         var ui = uiUtils.lastUI;
 
         var l = lOrUI
-        if (lOrUI.length) {
+        if ( lOrUI.length ) {
             ui = lOrUI
             l = t;
             t = r
             r = b
             b = bz
         }
-        if (l != null) {
+        if (  l != null ) {
             ui.css('left', l + 'px')
         } else {
-            if (l === null) {
+            if (  l === null ) {
                 ui.css('left', '')
             }
         }
 
-        if (t != null) {
+        if (  t != null ) {
             ui.css('top', t + 'px')
         } else {
-            if (t === null) {
+            if (  t === null ) {
                 ui.css('top', '')
             }
         }
 
-        if (r != null) {
+        if (  r != null ) {
             ui.css('right', r + 'px')
         } else {
-            if (r === null) {
+            if (  r === null ) {
                 ui.css('right', '')
             }
         }
 
-        if (b != null) {
+        if (  b != null ) {
             ui.css('bottom', b + 'px')
         } else {
-            if (b === null) {
+            if ( b === null ) {
                 ui.css('bottom', '')
             }
         }
@@ -352,19 +354,19 @@ function defineUtils() {
         u.position(ui, null, null, b, r)
     }
 
-    uiUtils.makeAbs = function makeAbs(jquery, highPosition) {
+    uiUtils.makeAbs =function makeAbs(jquery, highPosition) {
         jquery.css('position', 'absolute');
-        if (highPosition) {
-            jquery.css('z-index', highPosition + 200);
+        if ( highPosition ){
+            jquery.css('z-index', highPosition+200);
         }
 
-        uiUtils.position(jquery, 0, 0)
+        uiUtils.position(jquery, 0,0)
 
     }
 
     uiUtils.ifFound = function ifFound(id) {
-        if (id.includes('#') == false) {
-            id = '#' + id;
+        if ( id.includes('#') == false ) {
+            id = '#'+id;
         }
         var isFound = $(id).length > 0;
         return isFound;
@@ -385,7 +387,7 @@ function defineUtils() {
         ui.attr('type', 'checkbox')
         ui.html(cfg.text)
 
-        if (cfg.windowProp) {
+        if ( cfg.windowProp) {
             var keyVal = 'store.' + cfg.windowProp;
             var previousVal = uiUtils.getVal(keyVal);
 
@@ -401,9 +403,9 @@ function defineUtils() {
 
             if (previousVal != null) {
                 uiUtils.setVal(keyVal, previousVal);
-                setTimeout(function onLateR() {
+                setTimeout(function onLateR(){
                     callIfDefined(cfg.fxChange, previousVal)
-                }, 500)
+                },500)
 
                 window[cfg.windowProp] = previousVal;
                 var val = eval('window.' + cfg.windowProp);
@@ -412,26 +414,27 @@ function defineUtils() {
         }
 
 
+
         ui.click(onChangeOptions);
         function onChangeOptions(event) {
             console.log('...', cfg.windowProp);
             var val = ui.is(':checked');
-            if (cfg.windowProp) {
-                var val = eval('window.' + cfg.windowProp + '=' + val);
+            if ( cfg.windowProp) {
+                var val = eval('window.'+cfg.windowProp+'='+val );
                 uiUtils.setVal(keyVal, val);
                 //ui.prop('checked', val);
-            }
-            ;
+            };
 
             callIfDefined(cfg.fxChange, val)
 
         }
 
 
+
         //	lbl.css('user-select', 'none');
         u.addUI(cfg, ui);
 
-        if (cfg.label) {
+        if ( cfg.label ) {
             uiUtils.addLabel(cfg.label)
         }
 
@@ -446,18 +449,18 @@ function defineUtils() {
         var ui = u.tag(cfg.tag)
         ui.html(cfg.text)
 
-        if (cfg.options) {
-            $.each(cfg.options, function onAddOtpion(k, v) {
+        if ( cfg.options ) {
+            $.each(cfg.options, function onAddOtpion(k,v) {
 
 
-                if (v.value == null) {
-                    v = {value: v, text: v}
+                if ( v.value == null ) {
+                    v = {value:v, text:v}
                 }
                 console.log('k', v)
                 ui.append($('<option>', /*{
                  value: item.value,
                  text: item.text
-                 }*/v));
+                 }*/v ));
 
             })
         }
@@ -510,9 +513,9 @@ function defineUtils() {
         var lbl = u.tag(cfg.tag)
         lbl.html(cfg.text)
         //$('<span/>')
-        if (cfg.width) {
-            if ($.isNumeric(cfg.width)) {
-                cfg.width = cfg.width + 'px';
+        if (cfg.width){
+            if ( $.isNumeric(cfg.width) ) {
+                cfg.width = cfg.width+'px';
             }
             lbl.css('width', cfg.width);
             lbl.css('display', 'inline-block');
@@ -543,7 +546,7 @@ function defineUtils() {
 
         ui.html(cfg.text)
         u.addUI(cfg, ui);
-        if (cfg.newBaseContainer) {
+        if ( cfg.newBaseContainer ) {
             cfg.lastAddTo = cfg.addTo
             cfg.addTo = ui;
         }
@@ -564,16 +567,15 @@ function defineUtils() {
 
     uiUtils.createA = function addA(typeOrCfg, justCfg) {
         var cfg = typeOrCfg
-        if (justCfg) {
-            if ($.isObject(justCfg) == false) {
+        if ( justCfg ) {
+            if ( $.isObject( justCfg ) == false ) {
                 throw new Error('bad input')
-            }
-            ;
+            };
             cfg = justCfg;
         }
-        if ($.isString(typeOrCfg)) {
+        if ( $.isString(typeOrCfg)) {
             cfg = {};
-            if ($.isObject(justCfg)) {
+            if ( $.isObject(justCfg)) {
                 cfg = justCfg
             }
             cfg.tag = typeOrCfg
@@ -594,6 +596,7 @@ function defineUtils() {
     }
 
 
+
     uiUtils.addDialog = function addFloatingDiv(cfg) {
         var fxRevenrt = u.addRootTemp()
         var cfg = uiUtils.addDiv(cfg)
@@ -604,8 +607,8 @@ function defineUtils() {
         $('body').append(div)
         uiUtils.lastUI = div;
         uiUtils.makeAbs(div);
-        uiUtils.position(10, 10)
-        if (cfg.addDefaultStyles != false) {
+        uiUtils.position(10,10)
+        if ( cfg.addDefaultStyles != false ) {
             //panel.attr('id', u.cfg.getId(cfg.id));
 
             ui.css('position', 'absolute');
@@ -614,16 +617,18 @@ function defineUtils() {
             ui.css('padding', '10px');
             ui.css('border', '1px #666666 solid');
         }
-        if (cfg.class) {
+        if ( cfg.class ) {
             ui.addClass(cfg.class)
         }
-        if (cfg.addPadding != false) {
+        if ( cfg.addPadding != false ) {
             ui.css('padding', '10px');
         }
 
 
         return div;
     }
+
+
 
 
     uiUtils.addSpan = function addSpan(cfg) {
@@ -642,8 +647,7 @@ function defineUtils() {
     }
     uiUtils.addRow = function addRow(id, fx) {
         uiUtils.addDiv(
-            {
-                id: id,
+            {id:id,
                 //width:170
             })
         //uiUtils.addBorder();
@@ -658,7 +662,7 @@ function defineUtils() {
     uiUtils.style = function style(prop, val) {
         uiUtils.flagCfg.addTo.css(prop, val)
     }
-    p.addTitle = function addtitle(cfg) {
+    p.addTitle =function addtitle(cfg) {
         cfg = u.cfg.str(cfg, 'text')
         cfg.tag = 'div'
         u.addLabel(cfg)
@@ -670,7 +674,7 @@ function defineUtils() {
         var cfg = u.addLabel(cfg)
         var span = cfg.ui;
         span.addClass('glyphicon')
-        span.addClass('glyphicon-' + iconName) //+'-circle')
+        span.addClass('glyphicon-'+iconName) //+'-circle')
         return cfg
     }
 
@@ -694,22 +698,21 @@ function defineUtils() {
             $(jq).clearQueue();
             $(jq).stop(true, true);
             $(jq).animate({scrollTop: $(jq).prop("scrollHeight")}, 10);
-            console.log('scrollto', ui.prop('scrollHeight'), ui.scrollTop())
+            console.log('scrollto', ui.prop('scrollHeight'), ui.scrollTop() )
         }
 
         uiUtils.makeScrollable = function makeScrollaboe(div, height) {
             div.css('overflow', 'auto')
-            div.css('max-height', height + 'px')
+            div.css('max-height', height+'px')
             //debugger
         }
-        uiUtils.scrollToTop = function scrollToTop(jq) {
+        uiUtils.scrollToTop = function scrollToTop(jq){
             //$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
             $(jq).clearQueue();
             $(jq).stop(true, true);
-            $(jq).animate({scrollTop: 0}, 10);
+            $(jq).animate({ scrollTop: 0}, 10);
         }
     }
-
     defineScrollable()
 
     uiUtils.addBtn = function addBtn(cfg, fxD) {
@@ -732,15 +735,15 @@ function defineUtils() {
         u.addUI(cfg, btn)
 
         btn[0].onclick = cfg.fxDone
-        if (cfg.fxClick) {
+        if ( cfg.fxClick ) {
             $(btn).on('click', cfg.fxClick)
         }
 
-        if (cfg.data) {
+        if ( cfg.data ){
             btn[0].data = cfg.data
         }
 
-        if (cfg.addSpacer) {
+        if ( cfg.addSpacer ) {
             uiUtils.spacer();
         }
 
@@ -762,27 +765,29 @@ function defineUtils() {
 
         u.addUI(cfg, btn)
         btn[0].onclick = cfg.fxDone
-        if (cfg.fxClick) {
+        if ( cfg.fxClick ) {
             $(btn).on('click', cfg.fxClick)
         }
 
-        if (cfg.data) {
+        if ( cfg.data ){
             btn[0].data = cfg.data
         }
 
-        if (cfg.addSpacer) {
+        if ( cfg.addSpacer ) {
             uiUtils.spacer();
         }
 
 
-        if (cfg.href)
+
+
+        if ( cfg.href )
             btn.attr('href', cfg.href)
 
-        if (cfg.link) {
+        if ( cfg.link ) {
             btn.attr('href', cfg.link)
         }
 
-        if (cfg.blank || cfg.openInBlank)
+        if ( cfg.blank || cfg.openInBlank )
             btn.attr('target', '_blank')
 
 
@@ -803,12 +808,12 @@ function defineUtils() {
         var ui = u.tag(cfg.tag);
         ui.val(cfg.text)
 
-        if (cfg.id) {
+        if ( cfg.id ) {
             ui.attr('id', cfg.id);
         }
 
-        ui.attr('placeholder', cfg.placeholder);
-        if (cfg.onDebounce) {
+        ui.attr('placeholder',cfg.placeholder);
+        if ( cfg.onDebounce ) {
             u.onChangeDebounced(ui, cfg.onDebounce)
         }
 
@@ -828,11 +833,11 @@ function defineUtils() {
         var ui = u.tag(cfg.tag)
         ui.html(cfg.text)
 
-        if (cfg.id) {
+        if ( cfg.id ) {
             ui.attr('id', cfg.id);
         }
         ui.on('change', function onChange() {
-            console.debug('selected from list', this.value);
+            console.debug('selected from list',  this.value );
             u.cid(cfg.fxDone, this.value)
         })
         u.addUI(cfg, ui)
@@ -886,7 +891,7 @@ function defineUtils() {
             }
         }
         uiUtils.color = function color(ui, color) {
-            if (color == null) {
+            if ( color == null ) {
                 color = ui
                 ui = uiUtils.lastUI;
             }
@@ -906,15 +911,15 @@ function defineUtils() {
         uiUtils.tooltip = uiUtils.title;
 
 
+
+
         uiUtils.centerVertically = function centerVertically(l, t, r, b) {
-            var css = {
-                'display': 'flex',
+            var css = {'display': 'flex',
                 'flex-direction': 'row',
                 'flex-wrap': 'nowrap',
                 'justify-content': 'center',
                 'align-content': 'center',
-                'align-items': 'center'
-            }
+                'align-items': 'center'}
             uiUtils.lastUI.css(css)
         }
         uiUtils.bg = function setBgColor(l, ui) {
@@ -924,12 +929,12 @@ function defineUtils() {
 
         uiUtils.opacity = function setOpacity(opacity, _ui) {
             var ui = uiUtils.lastUI;
-            if (_ui) {
+            if ( _ui ) {
                 ui = _ui;
             }
             opacity = opacity.toString();
-            if (opacity.startsWith('.')) {
-                opaicty = '0' + opacity;
+            if ( opacity.startsWith('.') ) {
+                opaicty = '0'+opacity;
             }
             ui.css('opacity', opacity)
         }
@@ -955,43 +960,41 @@ function defineUtils() {
 
 
         uiUtils.reset = function reset() {
-            if (uiUtils.flagCfg) {
+            if ( uiUtils.flagCfg ) {
                 uiUtils.flagCfg.addTo = $('body')
             }
         }
         uiUtils.addRootTemp = function addRootTemp() {
-            if (uiUtils.flagCfg) {
+            if ( uiUtils.flagCfg ) {
                 var addTo = uiUtils.flagCfg.addTo;
                 uiUtils.flagCfg.addTo = $('body')
             }
             function fxRevert() {
-                if (addTo && uiUtils.flagCfg) {
+                if ( addTo && uiUtils.flagCfg ) {
                     uiUtils.flagCfg.addTo = addTo;
                 }
 
             }
-
             return fxRevert
         }
 
         uiUtils.addOverlay = function addOverlay(ui, bgColor) {
             var overlay = $('<div/>');
             uiUtils.makeAbs(overlay, true)
-            if (bgColor) {
+            if ( bgColor ) {
                 overlay.css('background', bgColor)
             }
 
             /*	overlay.css('height', '100%');
              overlay.css('width', '100%');*/
             uiUtils.copyWH(ui, overlay)
-            uiUtils.position(overlay, 0, 0)
+            uiUtils.position(overlay, 0,0)
             //u.opacity(overlay, 0.3)
             overlay.css('opacity', 0.7)
             ui.append(overlay);
         }
 
     }
-
     defineStyles();
 
     uiUtils.br = function addBr(cfg, fxD) {
@@ -1062,15 +1065,16 @@ function defineUtils() {
     }
 
 
+
     uiUtils.waitFor = function waitFor(id, fxD, count) {
         var ui = $(id)
-        if (ui.length == 0) {
-            if (count > 20) {
+        if ( ui.length == 0  ) {
+            if ( count > 20 ) {
                 console.error('timed out')
                 throw new Error('timeoud ')
             }
             count += 1;
-            setTimeout(uiUtils.waitFor, 250, id, fxD, count)
+            setTimeout(uiUtils.waitFor,  250, id, fxD, count)
             return;
         }
 
@@ -1080,52 +1084,51 @@ function defineUtils() {
 
     p.cfg = {};
     p.cfg.str = function ifCfgIsStri(cfg, prop) {
-        if ($.isString(cfg)) {
+        if ( $.isString(cfg) ){
             var _cfg = {};
             _cfg[prop] = cfg;
             cfg = _cfg;
         }
-        if (cfg == null) {
+        if ( cfg == null ) {
             cfg = {};
         }
         return cfg;
     };
 
     p.cfg.addToCfg = function addToCfg(cfg, prop, val) {
-        if (val != null) {
+        if ( val != null ){
             cfg[prop] = val;
-        }
-        ;
+        };
         return cfg;
     }
 
     p.cfg.fixId = function fixId(cfg, prop) {
-        if ($.isString(cfg.id)) {
+        if ( $.isString(cfg.id) ){
 
-            if (cfg.id.includes('#') == false) {
-                cfg.id = '#' + cfg.id;
+            if ( cfg.id.includes('#') == false ) {
+                cfg.id = '#'+cfg.id;
             }
 
         }
         return cfg;
     }
-    p.cfg.getId = function fixId(cfg, propId) {
-        if ($.isString(cfg.id)) {
+    p.cfg.getId = function fixId(cfg, propId ) {
+        if ( $.isString(cfg.id) ){
             cfg = cfg.id;
         }
 
-        if ($.isString(cfg)) {
+        if ( $.isString(cfg) ){
             var baseId = cfg;
             var id = baseId;
-            if (baseId.slice(0, 1) == '#') {
+            if ( baseId.slice(0,1) == '#') {
                 id = baseId.slice(1);
             }
         }
 
         return id;
     }
-    p.cfg.getDiv = function fixId(cfg, propId) {
-        if ($.isString(cfg.id)) {
+    p.cfg.getDiv = function fixId(cfg, propId ) {
+        if ( $.isString(cfg.id) ){
             cfg = cfg.id;
         }
         var div = $(cfg);
@@ -1133,29 +1136,25 @@ function defineUtils() {
     }
 
 
-    p.addUI = function addUI(cfg, ui) {
+    p.addUI = function addUI(cfg, ui ) {
         if (cfg.addSpacerBefore) {
             u.spacer();
         }
 
         if (cfg.addTo) {
-            if (u.doNotAdd == true) {
+            if ( u.doNotAdd == true ) {
                 //u.skipNextAdd = false
             }
-            else if (u.skipNextAdd == true) {
+            else if ( u.skipNextAdd == true ) {
                 u.skipNextAdd = false
             }
             else {
-                if (cfg.prepend) {
+                if ( cfg.prepend ) {
                     cfg.addTo.prepend(ui)
                 } else {
                     cfg.addTo.append(ui)
                 }
             }
-        }
-
-        if ( u.collector && u.collector.storeUIs === true ) {
-            u.collector.list.push(ui)
         }
 
         if (cfg.addSpacerAfter || cfg.addSpaceAfter) {
@@ -1180,26 +1179,26 @@ function defineUtils() {
             //lbl.css('display', 'inline-block');
         }
 
-        if (cfg.id) {
+        if ( cfg.id ) {
             cfg.jid = cfg.id;
             ui.attr('id', cfg.id);
-            cfg.id = '#' + cfg.id;
+            cfg.id = '#'+cfg.id;
         }
-        if (cfg.tooltip) {
+        if ( cfg.tooltip ) {
             ui.attr('title', cfg.tooltip)
         }
-        if (cfg.title) {
+        if ( cfg.title ) {
             ui.attr('title', cfg.title)
         }
-        if (cfg.html) {
-            ui.html(cfg.html)
+        if ( cfg.html ) {
+            ui.html( cfg.html)
         }
         cfg.ui = ui;
         u.lastCfg = cfg;
         u.lastUI = ui;
     }
     p.tag = function createTag(type) {
-        return $('<' + type + '/>');
+        return $('<'+type+'/>');
     }
 
 
@@ -1223,14 +1222,14 @@ function defineUtils() {
             ui.prop('disabled', true);
             ui.css('opacity', 0.3);
         }
-        p.ifEmpty = function ifEmpty(id, fx) {
-            throwIfNull(fx, 'need a function for ' + id)
+        p.ifEmpty =function ifEmpty(id, fx) {
+            throwIfNull(fx, 'need a function for ' +  id)
             var ui = $(id)
             console.log('txt', ui.text(), ui.html())
-            if (ui.is('input') && ui.val() == '') {
+            if ( ui.is('input') && ui.val() == '' ) {
                 fx(ui)
             }
-            if (ui.text() == '') {
+            if ( ui.text() == '' ) {
                 fx(ui)
             }
         }
@@ -1240,34 +1239,33 @@ function defineUtils() {
             d = d.split(' GMT')[0]
             d = d.replace(/ /gi, '_');
             d = d.replace(/:/gi, '-');
-            d = '_' + d;
+            d = '_'+d;
             return d;
         }
     }
-
     defineBasicMethods();
 
     function defineSetValues() {
         p.setText = function setText(jq, val) {
             var ui = $(jq)
             //console.log('what is ', jq, ui, val)
-            if (ui.length == 0) {
+            if ( ui.length == 0 ) {
                 console.warn('cannot set', jq, 'to', val, 'empty query set')
             }
             ui.val(val)
-            if (ui.is('span')) {
+            if ( ui.is('span')) {
                 ui.text(val)
             }
         }
         uiUtils.setVal2 = function getVal2(id, val, newOptions) {
             var ui = id;
-            if ($.isString(id)) {
-                if (id.includes('#') == false) {
-                    id = '#' + id;
+            if ( $.isString(id)){
+                if ( id.includes('#') == false ) {
+                    id = '#'+id;
                 }
                 var ui = $(id);
             }
-            if (ui.is('span') || ui.is('div')) {
+            if ( ui.is('span') || ui.is('div')){
                 return ui.html(val);
             }
             return ui.val(val)
@@ -1278,7 +1276,7 @@ function defineUtils() {
             throwIfNull(jq, 'need a jquery for delay');
             delay = dv(3)
             setTimeout(
-                function clearText() {
+                function clearText(){
                     uiUtils.setText(jq, '')
                 }
                 , delay * 1000)
@@ -1287,13 +1285,13 @@ function defineUtils() {
         p.setHtml = function setHtml(jq, val) {
             var ui = $(jq)
             //console.log('what is ', jq, ui, val)
-            if (ui.length == 0) {
+            if ( ui.length == 0 ) {
                 console.warn('cannot set', jq, 'to', val, 'empty query set')
             }
             ui.html(val)
         }
         p.glyph = function addGlyphIcon(iconName, val) {
-            var iconHTML = '<span class="glyphicon glyphicon-' + iconName + '" aria-hidden="true"></span>'
+            var  iconHTML = '<span class="glyphicon glyphicon-'+iconName+'" aria-hidden="true"></span>'
             var icon = $(iconHTML);
             return icon;
         }
@@ -1305,17 +1303,17 @@ function defineUtils() {
 
             ui.empty();
 
-            $.each(vals, function addVal(k, v) {
+            $.each(vals, function addVal(k,v) {
                 var option = $("<option />")
-                if ($.isString(v)) {
+                if ( $.isString(v)) {
                     var val = v;
                     var key = v;
                 }
-                if (keyProp) {
+                if ( keyProp) {
                     key = v[keyProp]
                 }
 
-                if (valProp) {
+                if ( valProp) {
                     val = v[valProp]
                 }
 
@@ -1330,16 +1328,16 @@ function defineUtils() {
         uiUtils.updateSelect = function updateSelect(id, newOptions) {
             var ui = id;
 
-            if ($.isString(id)) {
-                if (id.includes('#') == false) {
-                    id = '#' + id;
+            if ( $.isString(id)){
+                if ( id.includes('#') == false ) {
+                    id = '#'+id;
                 }
 
                 var ui = $(id)
             }
 
             ui.empty(); // remove old options
-            $.each(newOptions, function (key, value) {
+            $.each(newOptions, function(key,value) {
 
                 ui.append($("<option></option>")
                     .attr("value", value).text(key));
@@ -1349,17 +1347,19 @@ function defineUtils() {
 
         uiUtils.getVal2 = function getVal2(id, newOptions) {
             var ui = id;
-            if ($.isString(id)) {
-                if (id.includes('#') == false) {
-                    id = '#' + id;
+            if ( $.isString(id)){
+                if ( id.includes('#') == false ) {
+                    id = '#'+id;
                 }
                 var ui = $(id);
             }
-            if (ui.is('span') || ui.is('div')) {
+            if ( ui.is('span') || ui.is('div')){
                 return ui.html();
             }
             return ui.val()
         }
+
+
 
 
         uiUtils.later = function later(fx, argumentRest) {
@@ -1368,10 +1368,12 @@ function defineUtils() {
             function calledLater() {
                 fx.apply(fx, args)
             }
-
             setTimeout(calledLater, 500);
         }
-        uiUtils.callMethodRepeat = function callMethodRepeat(fx, secs, obj, prop, fxDone) {
+        uiUtils.callMethodRepeat = function callMethodRepeat(
+            fx, secs, obj, prop, fxDone
+
+        ) {
             var cfg = {};
             cfg.fx = fx;
             cfg.secs = secs;
@@ -1385,8 +1387,8 @@ function defineUtils() {
                     return;
                 }
                 cfg.countRepeat++;
-                if (cfg.log != null)
-                    console.info('fxRepeatThing', cfg.log, cfg.fx.name, cfg.secs);
+                if ( cfg.log != null )
+                    console.info('fxRepeatThing', cfg.log, cfg.fx.name,  cfg.secs);
 
                 if (repeat) {
                     setTimeout(fxRepeatThing, cfg.secs * 1000, true)
@@ -1403,7 +1405,9 @@ function defineUtils() {
         }
 
 
-        uiUtils.repeatUntil = function repeatUntil(fxCond, fx2, maxRetry, attemptIndex) {
+
+
+        uiUtils.repeatUntil  = function repeatUntil(fxCond, fx2, maxRetry, attemptIndex) {
             //why: use to repeated call fx, until fxCond is true
             //why:for ui elements that are lazily loaded
             var result = fxCond();
@@ -1428,7 +1432,6 @@ function defineUtils() {
         uiUtils.repeatFxUtils = uiUtils.repeatUntil;
 
     }
-
     defineSetValues();
 
 
@@ -1441,7 +1444,6 @@ function defineUtils() {
                     console.log('keydown')
                 }
             }
-
             function onKeyUp(e) {
                 if (e.keyCode == 16) {
                     //alert(e.which + " or Shift was pressed");
@@ -1462,12 +1464,11 @@ function defineUtils() {
         }
         //	p.setupclickListener()
     }
-
     defineClickHandler();
 
     function defineAnnotationMethods() {
         uiUtils.removeWithClass = function removeWithClass(className) {
-            $('.' + className).remove();
+            $('.'+className).remove();
         }
 
         uiUtils.moveAToB = function moveCursorTo(ui, toHere) {
@@ -1476,21 +1477,21 @@ function defineUtils() {
 
             // position.left += element.width();
 
-            if (position == null) {
+            if ( position == null ){
                 console.warn('failed to cursor to ', toHere, 'position was null')
                 return;
             }
 
             //var dbg = [position.left , $('body').width()]
             //debugger;
-            if (position.left >= $('body').width() * .80) {
+            if ( position.left >= $('body').width() * .80 ) {
                 delete position.left;
                 position.right = 20;
                 console.log('move on left size')
                 //positon.left = $('body').width - 250;
-            } else {
+            } else  {
                 position.left += element.width();
-                position.left -= 0.1 * element.width(); //nudge over so inside component
+                position.left -= 0.1*element.width(); //nudge over so inside component
                 // position.left -= 10;
             }
 
@@ -1504,11 +1505,11 @@ function defineUtils() {
         }
 
 
-        uiUtils.pos.adjust = function adjust(ui, t, r, b, l) {
+        uiUtils.pos.adjust = function adjust(ui, t, r, b, l ) {
             var lefti = ui.css('left');
             lefti = px(lefti)
 
-            function px(pxVal) {
+            function px(pxVal){
                 pxVal = pxVal.replace('px');
                 pxVal = parseInt(pxVal);
                 return pxVal;
@@ -1524,98 +1525,93 @@ function defineUtils() {
             var bottomi = ui.css('bottom');
             bottomi = px(bottomi)
 
-            if (l != null) {
+            if (  l != null ) {
                 ui.css('left', (lefti + l) + 'px')
             } else {
-                if (l === null) {
+                if (  l === null ) {
                     ui.css('left', '')
                 }
             }
 
-            if (t != null) {
-                console.log(ui.css('top'), (topi + t) + 'px')
+            if (  t != null ) {
+                console.log( ui.css('top'),  (topi + t) + 'px' )
                 ui.css('top', (topi + t) + 'px')
             } else {
-                if (t === null) {
+                if (  t === null ) {
                     ui.css('top', '')
                 }
             }
 
-            if (r != null) {
+            if (  r != null ) {
                 ui.css('right', (righti + r) + 'px')
             } else {
-                if (r === null) {
+                if (  r === null ) {
                     ui.css('right', '')
                 }
             }
 
-            if (b != null) {
-                ui.css('bottom', (bottomi + b) + 'px')
+            if (  b != null ) {
+                ui.css('bottom',(bottomi + b) + 'px')
             } else {
-                if (b === null) {
+                if ( b === null ) {
                     ui.css('bottom', '')
                 }
             }
         }
     }
-
     defineAnnotationMethods();
 
     p.utils = {};
-    p.utils.mergeIn = function mergeIn(a, b, overwriteVals) {
-        if (a == null) {
-            return
-        }
-        if (b == null) {
-            return
-        }
+    p.utils.mergeIn = function mergeIn(a, b, overwriteVals ) {
+        if ( a == null ) { return }
+        if ( b == null ) { return }
         //function copyProps(from, to) {
-        $.each(a, function (k, v) {
-            var existingVal = b[k];
-            if (existingVal && overwriteVals !== true) {
+        $.each(a, function(k,v){
+            var existingVal  = b[k];
+            if ( existingVal && overwriteVals !== true ) {
                 return;
             }
-            b[k] = v;
+            b[k]=v;
         });
         //	}
     }
 
 
     p.utils.addIfDoesStartWith = function addIfDoesStartWith(u, strStrasWith) {
-        var charStr = u.slice(0, 1);
+        var charStr = u.slice(0,1);
 
         if (charStr == strStrasWith) {
             return u
         }
 
-        return strStrasWith + u;
+        return strStrasWith+u;
     }
 
     p.utils.loadScripts = function loadScripts(listScripts, fxDone) {
         var loadScript2 = function loadScript2(_scripts2, preamble) {
-            if (_scripts2.length == 0) {
+            if ( _scripts2.length == 0 ) {
                 console.log('finished');
                 callIfDefined(fxDone)
                 return;
             }
             var url = _scripts2.shift();
-            if (preamble == null) {
+            if ( preamble == null ) {
                 preamble = '';
             }
             url = preamble + url;
             jQuery.getScript(url)
                 .done(function () {
                 })
-                .always(function doneLoadingFile() {
+                .always(function doneLoadingFile () {
                     loadScript2(_scripts2);
                 })
-                .fail(function (a, b, c, d) {
-                    console.error('failed to load', url, a == null, b, c, d);
+                .fail(function (a,b,c,d) {
+                    console.error('failed to load', url, a==null,b,c,d);
                     console.error(c.stack)
                 });
         }
 
-        if ($.isString(listScripts)) {
+        if ( $.isString(listScripts)) {
             listScripts = [listScripts]
         }
         loadScript2(listScripts)
@@ -1624,26 +1620,27 @@ function defineUtils() {
     p.utils.loadScript = p.utils.loadScripts;
 
 
+
     p.utils.getParams = function getParams() {
         function getQueryObj() {
             var query_string = {};
             //console.debug('search', window.location.search);
             var query = window.location.search.substring(1);
-            if (query == '' && window.location.hash.indexOf('?') != 0) {
+            if ( query == '' && window.location.hash.indexOf('?') != 0 ) {
                 query = window.location.hash.split('?')[1];
             }
-            if (query == null) {
+            if ( query == null ) {
                 return {};
             }
             var vars = query.split("&");
-            for (var i = 0; i < vars.length; i++) {
+            for (var i=0;i<vars.length;i++) {
                 var pair = vars[i].split("=");
                 // If first entry with this name
                 if (typeof query_string[pair[0]] === "undefined") {
                     query_string[pair[0]] = decodeURIComponent(pair[1]);
                     // If second entry with this name
                 } else if (typeof query_string[pair[0]] === "string") {
-                    var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+                    var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
                     query_string[pair[0]] = arr;
                     // If third or later entry with this name
                 } else {
@@ -1676,8 +1673,8 @@ function defineUtils() {
 
     function defineEffects() {
         uiUtils.fadeIn = function fadeIn(_ui, duration) {
-            var cfg = {ui: _ui, duration: duration}
-            if (_ui.length == null) {
+            var cfg = {ui:_ui, duration:duration}
+            if ( _ui.length == null )  {
                 var cfg = _ui;
             }
             cfg.ui.show();
@@ -1689,8 +1686,8 @@ function defineUtils() {
                     opacity: cfg.opacity
                 },
                 {
-                    duration: duration,
-                    complete: function onEnd() {
+                    duration:duration,
+                    complete:function onEnd() {
                         // _ui.hide();
                     }
                 });
@@ -1750,11 +1747,11 @@ function defineUtils() {
 
     function defineUrlMethods() {
         p.inUrl = function inUrl(dlg) {
-            if (window.location.search.indexOf(dlg) != -1) {
+            if ( window.location.search.indexOf(dlg)!= -1 ) {
                 return true;
             }
-            if (window.location.hash &&
-                window.location.hash.indexOf(dlg) != -1) {
+            if ( window.location.hash &&
+                window.location.hash.indexOf(dlg)!= -1 ) {
                 return true;
             }
             return false;
@@ -1764,7 +1761,7 @@ function defineUtils() {
             window.location.reload();
         }
 
-        p.addToUrl = function addToUrl(key, val, doNotSetIfValIsNull) {
+        p.addToUrl = function addToUrl(key, val, doNotSetIfValIsNull ) {
             /*
              1: hash is present
              2: ? is present ... so parse vars
@@ -1775,65 +1772,64 @@ function defineUtils() {
 
             var dbg = false;
             //dbg = true
-            if (dbg)
-                console.debug('addToUrl', 'params', window.location.hash,
+            if ( dbg )
+                console.debug('addToUrl','params', window.location.hash,
                     window.location.search, params)
             if (val) {
                 val = val.toString()
             }
-            if (params[key] == val) {
+            if ( params[key] == val ) {
                 return;
             }
-            if (doNotSetIfValIsNull && val == null) {
+            if ( doNotSetIfValIsNull && val == null ) {
                 console.debug('did not set val', key, 'val is null')
                 return;
             }
 
-            params[key] = val;
-            if (val == null) {
+            params[key]=val;
+            if ( val == null ) {
                 delete params[key]
-            }
-            ;
+            };
 
-            var str = jQuery.param(params);
+            var str = jQuery.param( params );
 
             var hash = window.location.hash;
             var urlFinal = '';
             urlFinal = location.href
-            if (urlFinal.includes('?')) {
+            if ( urlFinal.includes('?')) {
                 urlFinal = urlFinal.split('?')[0];
             }
-            if (urlFinal.includes('#')) {
+            if ( urlFinal.includes('#')) {
                 urlFinal = urlFinal.split('#')[0];
             }
-            if (dbg)
+            if ( dbg )
                 console.debug('addToUrl', 'start', urlFinal)
-            var isEmptyHash = hash.slice(0, 2) == '#?';
-            if (dbg)
-                console.debug('addToUrl', 'hash', hash)
-            if (isEmptyHash) {
+            var isEmptyHash = hash.slice(0,2) == '#?';
+            if ( dbg )
+                console.debug('addToUrl','hash', hash)
+            if ( isEmptyHash ) {
                 //urlFinal +=  ''
-                urlFinal += '#'
-            } else if (hash != '') {
+                urlFinal +=  '#'
+            } else if ( hash != ''  ) {
                 var hashOnly = hash;
-                if (hashOnly.includes('?')) {
+                if ( hashOnly.includes('?')) {
                     hashOnly = hashOnly.split('?')[0];
                 }
                 urlFinal += hashOnly;
             } else {
                 urlFinal += '#'//'empty has to prevent reload
             }
-            urlFinal += '?' + str;
+            urlFinal += '?'+str;
             document.location = urlFinal
-            if (dbg) {
+            if ( dbg ) {
                 console.debug('addToUrl', urlFinal, document.location, window.location.search)
             }
-            if (dbg) {
+            if ( dbg ) {
                 console.debug('addToUrl', 'endwith', urlFinal)
             }
         }
 
-        p.setUrlVal = p.addToUrl;
+        p.setUrlVal = p.addToUrl ;
 
         p.getUrlVal = function getUrlVal(val) {
             var params = uiUtils.utils.getParams();
@@ -1844,13 +1840,13 @@ function defineUtils() {
 
         p.getSearch = function getSearchParam() {
             var urlFinal = location.href;
-            if (urlFinal.includes('?') == false) {
+            if ( urlFinal.includes('?') == false ) {
                 return null;
             }
-            if (urlFinal.includes('#')) {
+            if ( urlFinal.includes('#')) {
                 urlFinal = urlFinal.split('#')[1];
             }
-            if (urlFinal.includes('?')) {
+            if ( urlFinal.includes('?')) {
                 urlFinal = urlFinal.split('?')[1];
             }
             //console.log('getSearch', urlFinal)
@@ -1862,13 +1858,13 @@ function defineUtils() {
         p.getHash = function getHash() {
             //why: get has only, not the search
             var urlFinal = location.href;
-            if (urlFinal.includes('#') == false) {
+            if ( urlFinal.includes('#') == false ) {
                 return null;
             }
             //if ( urlFinal.includes('#')) {
             urlFinal = urlFinal.split('#')[1];
             //	}
-            if (urlFinal.includes('?')) {
+            if ( urlFinal.includes('?')) {
                 urlFinal = urlFinal.split('?')[0];
             }
             // console.log('getHash', urlFinal)
@@ -1878,10 +1874,10 @@ function defineUtils() {
 
         p.getUrl = function getUrl() {
             var urlFinal = location.href;
-            if (urlFinal.includes('#')) {
+            if ( urlFinal.includes('#')) {
                 urlFinal = urlFinal.split('#')[0];
             }
-            if (urlFinal.includes('?')) {
+            if ( urlFinal.includes('?')) {
                 urlFinal = urlFinal.split('?')[0];
             }
             //console.log('getUrl', urlFinal)
@@ -1890,18 +1886,18 @@ function defineUtils() {
         }
 
         p.setHash = function setHash(hash) {
-            var urlX = window.location.href;
+            var  urlX = window.location.href;
             hash = uiUtils.utils.addIfDoesStartWith(hash, '#')
             var url = self.getUrl()
-                + hash;
+                +hash;
             var search = self.getSearch();
             var params = uiUtils.utils.getParams();
-            var str = jQuery.param(params);
-            if (str) {
-                url += '?' + str
+            var str = jQuery.param( params );
+            if ( str ) {
+                url += '?'+str
             }
             var debug = false;
-            if (debug) {
+            if ( debug ) {
                 console.error('starting', urlX);
                 console.error('setting hash to', hash, url);
             }
@@ -1911,7 +1907,7 @@ function defineUtils() {
              }*/
 
             window.location.href = url;
-            if (debug) {
+            if ( debug ) {
                 console.error('end', window.location.href);
             }
 
@@ -1919,21 +1915,20 @@ function defineUtils() {
 
 
     }
-
     defineUrlMethods();
 
 
     function defineUI() {
         p.utils.loadPage = function loadPage(cfg) {
             var div = $(cfg.div)
-            if (div && div.empty() && cfg.id) {
+            if ( div && div.empty() && cfg.id ) {
                 //var id = cfg.id;
-                if (cfg.id.startsWith('#') == false) {
-                    cfg.id = '#' + cfg.id;
+                if ( cfg.id.startsWith('#') == false ) {
+                    cfg.id = '#'+ cfg.id;
                 }
-                div = u.cfg.getDiv(cfg.id);
+                div = u.cfg.getDiv( cfg.id);
             }
-            if (div.length == 0) {
+            if ( div.length == 0 ){
                 throw new Error('could not find area ' + cfg.div);
             }
             //debugger
@@ -1954,17 +1949,17 @@ function defineUtils() {
 
                     callIfDefined(cfg.fxDone, data)
                 },
-                error: function (a, b, c) {
+                error: function (a,b,c) {
                     //debugger;
                     console.error('cannot get loadPage info');
-                    uiUtils.remoteFailed(a, b, c)
+                    uiUtils.remoteFailed(a,b,c)
                 }
             });
         }
 
 
-        uiUtils.remoteFailed = function remoteFailed(a, b, c) {
-            console.error(a, b, c)
+        uiUtils.remoteFailed = function remoteFailed(a,b,c) {
+            console.error(a,b,c)
             debugger
         }
 
@@ -1972,8 +1967,8 @@ function defineUtils() {
         p.utils.parseBodyHTML = function parseBodyHTML(d) {
             // replace the `HTML` tags with `NOTHTML` tags
             // and the `BODY` tags with `NOTBODY` tags
-            d = d.replace(/(<\/?)html( .+?)?>/gi, '$1NOTHTML$2>', d);
-            d = d.replace(/(<\/?)body( .+?)?>/gi, '$1NOTBODY$2>', d);
+            d = d.replace(/(<\/?)html( .+?)?>/gi,'$1NOTHTML$2>',d);
+            d = d.replace(/(<\/?)body( .+?)?>/gi,'$1NOTBODY$2>',d);
             // select the `notbody` tag and log for testing
             //console.log($(d).find('notbody').html())
             var output = {};
@@ -1991,7 +1986,6 @@ function defineUtils() {
             return output;
         }
     }
-
     defineUI()
     p.makeUIDict = function makeUIDict(name, why) {
         function UIDict() {
@@ -2020,9 +2014,9 @@ function defineUtils() {
 
             p.getAllUI = function getAllUI() {
                 var results = [];
-                $.each(self.data, function onAdd(k, v) {
+                $.each(self.data, function onAdd(k,v){
                     var ui2 = ui.ui;
-                    if ($.isString(ui2)) {
+                    if ( $.isString(ui2)){
                         ui2 = $(ui2)
                     }
                     results.push(ui2)
@@ -2037,9 +2031,9 @@ function defineUtils() {
 
     }
 
-    p.t = function setTimeoutShorten() {
+    p.t = function setTimeoutShorten(){
         var args = convertArgumentsToArray(arguments);
-        if (args.length == 1)
+        if ( args.length == 1 )
             args.push(500);
         //debugger
         setTimeout.apply(null, args)
@@ -2052,7 +2046,7 @@ function defineUtils() {
             var styleList = ['fontFamily', 'fontSize',
                 //	'transform',
                 'color', 'fontStyle', 'fontWeight']
-            $.each(styleList, function copyProp(k, v) {
+            $.each(styleList, function copyProp(k,v){
                 var val = from.css(v)
                 to.css(v, val);
                 //console.info('copy prop', v, val)
@@ -2061,17 +2055,17 @@ function defineUtils() {
             to.attr(prop, from.attr(prop))
         }
 
-        p.utils.stylesDifferent = function stylesDifferent(a, b, dbg) {
+        p.utils.stylesDifferent = function stylesDifferent(a ,b, dbg) {
             var styleList = ['fontFamily', 'fontSize',
                 //	'transform',
                 'color', 'fontStyle', 'fontWeight'];
             var equal = true
-            $.each(styleList, function copyProp(k, v) {
+            $.each(styleList, function copyProp(k,v){
                 var val = a.css(v);
                 var valB = b.css(v)
-                if (val != valB) {
+                if ( val != valB ){
                     equal = false;
-                    if (dbg) {
+                    if ( dbg){
                         console.info('failed on', v, val, valB, b.text())
                         //debugger;
                     }
@@ -2079,44 +2073,43 @@ function defineUtils() {
                 }
             })
             var prop = 'origFont';
-            var val = a.attr(prop);
-            var valB = b.attr(prop);
+            var val  =  a.attr(prop);
+            var valB =  b.attr(prop);
             //console.info('origFont', prop, val, valB, val != valB)
-            if (equal == true && val != valB) {
+            if ( equal == true && val != valB ){
                 equal = false;
-                if (dbg) {
+                if ( dbg){
                     console.info('failed on origFont', prop, val, valB, b.text());
                 }
             }
             return !equal;
         }
     }
-
     defineComparison();
 
     function defineUrl() {
-        p.getLocation = function getLocation(path, port) {
-            if (path.startsWith('/') == false) {
-                path = '/' + path;
+        p.getLocation = function getLocation(path , port) {
+            if ( path.startsWith('/') == false ) {
+                path = '/'+path;
             }
-            if (port == null) {
+            if ( port == null ) {
                 port = ''
             } else {
                 port = ':' + port
             }
-            var url = 'http://' + window.location.hostname + port
+            var url = 'http://'+ window.location.hostname + port
                 + path;
             return url;
         }
         p.getUrl = function getUrl(url, data, fxDone, fxError) {
-            if ($.isFunction(data) && $.isPlainObject(fxDone)) {
+            if ( $.isFunction(data) && $.isPlainObject(fxDone)) {
                 //criss cross
                 var _fxDone = data;
                 data = fxDone;
                 fxDone = _fxDone;
             }
 
-            if ($.isFunction(data)) {
+            if ( $.isFunction(data)) {
                 fxDone = data;
             }
 
@@ -2128,16 +2121,16 @@ function defineUtils() {
                 success: function (data) {
                     callIfDefined(fxDone, data)
                 },
-                error: function (a, b, c) {
-                    console.error(url, 'request failed', a, b, c)
+                error: function (a,b,c) {
+                    console.error(url,'request failed', a,b,c)
                     //gUtils.remoteFailed(a,b,c)
-                    callIfDefined(fxError, a, b, c, url)
+                    callIfDefined(fxError, a,b,c, url)
                 }
             });
         }
 
         p.postUrl = function getUrl(url, data, fxDone) {
-            if ($.isFunction(data)) {
+            if ( $.isFunction(data)) {
                 fxDone = data;
             }
 
@@ -2148,8 +2141,8 @@ function defineUtils() {
                 success: function (data) {
                     callIfDefined(fxDone, data)
                 },
-                error: function (a, b, c) {
-                    console.error('request failed', a, b, c)
+                error: function (a,b,c) {
+                    console.error('request failed', a,b,c)
                     //gUtils.remoteFailed(a,b,c)
                 }
             });
@@ -2163,7 +2156,6 @@ function defineUtils() {
             win.focus();
         }
     }
-
     defineUrl();
 
     function defineCookies() {
@@ -2178,7 +2170,6 @@ function defineUtils() {
             localStorage.setItem(key, json)
         }
     }
-
     defineCookies();
 
 
@@ -2188,7 +2179,7 @@ function defineUtils() {
 
             var ui = $(jquery);
             //console.log('sdf', jquery, ui.length);
-            if (ui.length == 0) {
+            if ( ui.length == 0 ) {
                 throw new Error(['not found', jquery].join(' '))
             }
 
@@ -2205,7 +2196,7 @@ function defineUtils() {
                 }, time)
             }
 
-            ui.keyup(function onKeyUp(e) {
+            ui.keyup(function onKeyUp (e) {
 
                 //console.log('keyup', e)
                 d.debounce(fx, time)
@@ -2215,7 +2206,6 @@ function defineUtils() {
         }
 
     }
-
     defineFX();
     u.debouncer = function debouncer(fx, name, time) {
         //if ( time )
@@ -2227,7 +2217,7 @@ function defineUtils() {
             //console.log('waiting', fx.name)
             //d.waiting = true;
             d.waiting = setTimeout(function onDebounced() {
-                if (fx2) {
+                if(fx2) {
                     fx2();
                     return;
                 }
@@ -2286,18 +2276,16 @@ function defineUtils() {
         }
 
     }
-
     defineDebounce();
 
     function ifHelpers() {
         u.ifFxReplace = function ifFxReplace(potFx, fxShoudlBeNull) {
-            if ($.isFunction(potFx) && fxShoudlBeNull) {
+            if ( $.isFunction(potFx) && fxShoudlBeNull ) {
                 return potFx;
             }
             return fxShoudlBeNull;
         }
     }
-
     ifHelpers()
 
 
@@ -2306,7 +2294,7 @@ function defineUtils() {
         $(ui).hover(
             function onHover() {
                 $(ui).animate({
-                    opacity: 1
+                    opacity:1
                 }, 300);
                 //console.log('fade in')
             },
@@ -2324,7 +2312,7 @@ function defineUtils() {
             $(jq).html('')
         }
         uiUtils.addTo = function setLastUI(jq) {
-            var ui = $(jq);
+            var ui  =   $(jq);
             //uiUtils.lastUI =   $(jq);
             //uiUtils.flagCfg.lastAddTo = cfg.addTo
             uiUtils.flagCfg.addTo = ui;
@@ -2338,20 +2326,19 @@ function defineUtils() {
             uiUtils.lastUI.attr('id', id)
         }
     }
-
     defineAppendHelperMethods();
 
 
     function defineLookAt() {
         var gUtils = uiUtils
         gUtils.setLocationHash = function setLocationHash(newHashVal) {
-            setTimeout(function setLocationLater() {
+            setTimeout(function setLocationLater(){
                 //window.location.hash = e;// '#listDialog';
                 uiUtils.setHash(newHashVal);
             }, 0);
         }
         gUtils.setFocus = function setFocus(e) {
-            setTimeout(function setFocus() {
+            setTimeout(function setFocus(){
                 $(e).focus();
             }, 0);
         }
@@ -2362,7 +2349,7 @@ function defineUtils() {
             $(jq).show()
         }
         gUtils.ifShow = function show(exp, jq) {
-            if (exp) {
+            if ( exp ) {
                 //console.error('addi', exp, 'show')
                 $(jq).show();
             } else {
@@ -2371,7 +2358,7 @@ function defineUtils() {
             }
         }
         gUtils.ifHide = function ifExpIsTrueHide(exp, jq) {
-            gUtils.ifShow(!exp, jq);
+            gUtils.ifShow(!exp,jq);
         }
         gUtils.off = function off(jq) {
             $(jq).off()
@@ -2382,13 +2369,11 @@ function defineUtils() {
         }
 
         gUtils.addToken = function addToken(jq) {
-            if (jq == null) {
-                return
-            }
+            if ( jq == null ){ return }
             var uiHolder = $(jq);
             uiHolder.html('');
             var token = uiUtils.tag('span');
-            token.attr('id', uiHolder.attr('id') + 'Token');
+            token.attr('id', uiHolder.attr('id')+'Token');
             uiHolder.append(token);
         }
 
@@ -2413,8 +2398,8 @@ function defineUtils() {
         }
         gUtils.onClick = function onClick(jquery, fx, gY) {
 
-            throwIfNull(fx, 'need a function for ' + jquery)
-            throwIfNull(jquery, 'need a jquery for ' + jquery, fx.name)
+            throwIfNull(fx, 'need a function for ' +  jquery)
+            throwIfNull(jquery, 'need a jquery for ' +  jquery, fx.name)
             $(jquery).click(function onClick(e) {
                 fx();
             });
@@ -2423,41 +2408,42 @@ function defineUtils() {
             $(jquery).attr('title', tooltip);
             $(jquery).css('cursor', 'pointer')
         }
-        gUtils.makeRolloverPopup = function makeRolloverPopup(yyy, yy, btnHoverClass) {
+        gUtils.makeRolloverPopup = function makeRolloverPopup(
+            yyy, yy, btnHoverClass) {
             var h = {}
             h.dialog = yy;
             h.dropdown = h.dd = yy;
-            h.btnTrigger = yyy;
-            yyy.on('mouseenter', function onMouseOver() {
+            h.btnTrigger= yyy;
+            yyy.on('mouseenter', function onMouseOver(){
                 h.mouseOverBtn = true;
-                if (btnHoverClass)
+                if ( btnHoverClass )
                     h.btnTrigger.addClass(btnHoverClass);
                 yy.show();
             })
 
-            yyy.on('mouseleave', function onMouseOut(delayed) {
+            yyy.on('mouseleave', function onMouseOut(delayed){
                 h.mouseOverBtn = false;
-                if (delayed != true) {
+                if ( delayed != true ) {
                     setTimeout(onMouseOut, 500, true)
                     return;
                 }
-                if (h.mouseOverDialog == true) {
+                if (  h.mouseOverDialog == true) {
                     return;
                 }
-                if (btnHoverClass)
+                if ( btnHoverClass )
                     h.btnTrigger.removeClass(btnHoverClass);
                 yy.hide();
             })
 
-            yy.on('mouseenter', function onMouseOverDropDown() {
+            yy.on('mouseenter', function onMouseOverDropDown(){
                 h.mouseOverDialog = true;
             })
 
-            yy.on('mouseleave', function onMouseOverDropDown() {
+            yy.on('mouseleave', function onMouseOverDropDown(){
                 h.mouseOverDialog = false;
-                if (h.mouseOverBtn == false) {
+                if ( h.mouseOverBtn == false ) {
                     h.dropdown.hide();
-                    if (btnHoverClass)
+                    if ( btnHoverClass )
                         h.btnTrigger.removeClass(btnHoverClass);
                 }
             })
@@ -2467,46 +2453,47 @@ function defineUtils() {
         }
 
 
-        gUtils.makeRolloverPopup2 = function makeRolloverPopup2(uiHoverInit, yy, btnHoverClass) {
+        gUtils.makeRolloverPopup2 = function makeRolloverPopup2(
+            uiHoverInit, yy, btnHoverClass) {
             var h = {}
             h.dialog = yy;
             h.dropdown = h.dd = yy;
-            h.btnTrigger = uiHoverInit;
+            h.btnTrigger= uiHoverInit;
             var closeOrig = false;
-            uiHoverInit.on('mouseenter', function onMouseOver() {
+            uiHoverInit.on('mouseenter', function onMouseOver(){
                 h.mouseOverBtn = true;
-                if (btnHoverClass)
+                if ( btnHoverClass )
                     h.btnTrigger.addClass(btnHoverClass);
-                if (closeOrig) {
+                if ( closeOrig ) {
                     yy.show();
                 }
             })
 
-            uiHoverInit.on('mouseleave', function onMouseOut(delayed) {
+            uiHoverInit.on('mouseleave', function onMouseOut(delayed){
                 h.mouseOverBtn = false;
-                if (delayed != true) {
+                if ( delayed != true ) {
                     setTimeout(onMouseOut, 500, true)
                     return;
                 }
-                if (h.mouseOverDialog == true) {
+                if (  h.mouseOverDialog == true) {
                     return;
                 }
-                if (closeOrig) {
+                if ( closeOrig ) {
                     if (btnHoverClass)
                         h.btnTrigger.removeClass(btnHoverClass);
                     yy.hide();
                 }
             })
 
-            yy.on('mouseenter', function onMouseOverDropDown() {
+            yy.on('mouseenter', function onMouseOverDropDown(){
                 h.mouseOverDialog = true;
             })
 
-            yy.on('mouseleave', function onMouseOverDropDown() {
+            yy.on('mouseleave', function onMouseOverDropDown(){
                 h.mouseOverDialog = false;
-                if (h.mouseOverBtn == false) {
+                if ( h.mouseOverBtn == false ) {
                     h.dropdown.hide();
-                    if (btnHoverClass)
+                    if ( btnHoverClass )
                         h.btnTrigger.removeClass(btnHoverClass);
                 }
             })
@@ -2518,51 +2505,51 @@ function defineUtils() {
 
         uiUtils.toggleContainer = function toggleContainer(jq) {
             var ui = $(jq)
-            if (ui.hasClass('hide')) {
+            if ( ui.hasClass('hide')) {
                 ui.removeClass('hide')
-            } else {
+            }else {
                 ui.addClass('hide')
             }
         }
 
 
         uiUtils.putToLeftOfLastDialog = function putToLeftOfLastDialog(ui, ui2) {
-            if (ui == null) {
-                var overrideOffset = {top: 60, left: 20};
+            if ( ui == null ) {
+                var overrideOffset = {top:60, left:20 };
                 ui = $('<div />');
             }
             if (ui2 == null)
                 return;
-            if (uiUtils.putToLeftOfLastDialog.rowMaxHeight == null) {
+            if ( uiUtils.putToLeftOfLastDialog.rowMaxHeight == null ) {
                 uiUtils.putToLeftOfLastDialog.rowMaxHeight = 0;
             }
 
             var position = $(ui).offset();
-            if (overrideOffset) {
+            if ( overrideOffset ){
                 position = overrideOffset;
             }
             position.left += 10;
             // position.top += 6
             //   debugger;
             position.left += ui.width();
-            if (position.left + ui2.width() > $('body').width() - 50) {
+            if ( position.left + ui2.width() > $('body').width() - 50 ) {
 
                 position.top += uiUtils.putToLeftOfLastDialog.rowMaxHeight
                 uiUtils.putToLeftOfLastDialog.rowMaxHeight = 0
-                console.log('\t', 'put new row', position.top, uiUtils.putToLeftOfLastDialog.rowMaxHeight)
-                position.left = 0;
+                console.log('\t', 'put new row',   position.top, uiUtils.putToLeftOfLastDialog.rowMaxHeight)
+                position.left = 0 ;
             }
 
-            if (ui2.height() > uiUtils.putToLeftOfLastDialog.rowMaxHeight) {
+            if ( ui2.height() > uiUtils.putToLeftOfLastDialog.rowMaxHeight ) {
                 uiUtils.putToLeftOfLastDialog.rowMaxHeight = ui2.height();
             }
 
-            console.log('put', ui.attr('id'), '--', ui2.attr('id'), position, uiUtils.putToLeftOfLastDialog.rowMaxHeight)
+            console.log('put', ui.attr('id'),'--',   ui2.attr('id'), position,   uiUtils.putToLeftOfLastDialog.rowMaxHeight)
             ui2.css(position)
         }
     }
-
     defineLookAt();
+
 
 
     function defineSockets() {
@@ -2595,13 +2582,9 @@ function defineUtils() {
 
 
         uiUtils.socket.addListener = function addListener(type, fxDone, retryCount) {
-            if (self.data.socket == null) {
-                if (retryCount == null) {
-                    retryCount = 0;
-                }
-                if (retryCount > 10) {
-                    console.error('failed to ', this.name, type, fxDone)
-                }
+            if ( self.data.socket == null ) {
+                if ( retryCount == null ) { retryCount = 0; }
+                if ( retryCount > 10 ) { console.error('failed to ', this.name, type, fxDone)}
                 setTimeout(function onRetry() {
                     retryCount++
                     addListener(type, fxDone, retryCount)
@@ -2620,11 +2603,12 @@ function defineUtils() {
     defineSockets();
 
 
+
     uiUtils.makeDict = function makeDict(arr, prop) {
         var dict = {};
-        $.each(arr, function n(k, v) {
+        $.each(arr, function n(k,v) {
             var val = v[prop]
-            dict[val] = v;
+            dict[val]=v;
         })
         return dict;
     }
@@ -2653,13 +2637,9 @@ function defineUtils() {
         }
 
         socket.addListener2 = function addListener(type, fxDone, retryCount) {
-            if (socket == null) {
-                if (retryCount == null) {
-                    retryCount = 0;
-                }
-                if (retryCount > 10) {
-                    console.error('failed to ', this.name, type, fxDone)
-                }
+            if ( socket == null ) {
+                if ( retryCount == null ) { retryCount = 0; }
+                if ( retryCount > 10 ) { console.error('failed to ', this.name, type, fxDone)}
                 setTimeout(function onRetry() {
                     retryCount++
                     addListener(type, fxDone, retryCount)
@@ -2679,7 +2659,7 @@ function defineUtils() {
             var args = convertArgumentsToArray(args);
             ui = $(id)
             console.log('waitforcomp')
-            if (ui.length == 0) {
+            if ( ui.length == 0 ) {
                 setTimeout(function onRetry() {
                     console.log('onRetry')
                     //retryCount++
@@ -2694,14 +2674,17 @@ function defineUtils() {
         }
 
 
+
+
+
         socket.listenForStatus = function listenForStatus(divId, fxDone, retryCount, type) {
             var h = {};
 
-            divId = '#' + divId;
+            divId = '#'+divId;
             socket.divId = divId;
             var ui = $(divId)
 
-            if (uiUtils.waitForComp(divId, socket.asdf, arguments)) {
+            if ( uiUtils.waitForComp(divId, socket.asdf, arguments) ) {
                 console.log('block')
                 return;
             }
@@ -2715,7 +2698,7 @@ function defineUtils() {
 
 
             console.log('listening to', socket)
-            socket.on('updateStatus', function onRecieveStatusMsg(data) {
+            socket.on('updateStatus', function onRecieveStatusMsg(data){
                 /*if (msg.indexOf('eval-')==0) {
                  msg = msg.replace('eval-', '')
                  eval(msg);
@@ -2749,45 +2732,13 @@ function defineUtils() {
 
         }
     }
+}
 
-
-
-
-    function defineCC() {
-        function BasicClass() {
-            var p = BasicClass.prototype;
-            p = this;
-            var self = this;
-            p.method1 = function method1(url, appCode) {
-            }
-
-            p.proc = function debugLogger() {
-                if ( self.silent == true) {
-                    return
-                }
-                sh.sLog(arguments)
-            }
-
-
-        }
-
-        u.collector = {};
-        u.collector.start = function start() {
-            u.collector.list = []
-            u.collector.storeUIs = true;
-        }
-
-
-        u.collector.stop = function stop() {
-            u.collector.storeUIs = false;
-            return u.collector.list
-        }
-    }
-    defineCC();
-
+defineSockets();
 }
 
 defineUtils();
+
 
 window.restartTest = function restartTest() {
     window.location.href =

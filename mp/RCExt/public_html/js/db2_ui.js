@@ -106,20 +106,43 @@ function onInitDB() {
 
             self.isConnected()
 
-
             self.getPreviousTasks();
-
 
             self.render()
 
 
-            self.getFileList(); 
+            //self.getFileList(); 
             // uiUtils.setText(self.data.ui.txtTaskNameOverride, 'listIds_ls051393312.json');
         }
 
 
         function defineRemote() {
 
+
+            p.getUrlR = function getUrlR(route) {
+                var url = 'http://'+ window.location.hostname + ':' + 6007
+                    + '/'+route;
+                // var str = ''
+                return url
+            }
+
+
+            p.getInitDbVars = function getInitDbVars() {
+                var data = {} ;
+                data.otherSide = self.data.baseDataUrl;
+
+                var url = self.getUrlR('initDBVars')
+                uiUtils.getUrl(url,
+                    data,
+                    function onGotRecentList(sdf){
+                        console.log('onGotRecentList', sdf)
+                        debugger
+                        uiUtils.setSelect(self.data.ui.recentPages,
+                            sdf, 'name', 'name');
+                        callIfDefined(fxDone);
+                    }
+                );
+            }
             p.connectSocket = function connectSocket() {
                 //if ( self.data.socket !+ null )
                 //whyat?
@@ -354,7 +377,7 @@ function onInitDB() {
 
             uiUtils.spacer();
 
-           // uiUtils.br()
+            // uiUtils.br()
             uiUtils.addTextInput({
                 text:self.data.url,
                 id:'txtIpHostpost',
@@ -406,6 +429,16 @@ function onInitDB() {
                     return;
                 }
 
+
+                if ( e.type == 'dlRemoteFileList' && e.initGFFRM ) {
+                    if ( e.fileExists ) {
+                       // self.data.fileFileList = true;
+                    }
+                    self.render();
+                    return;
+                }
+
+
                 var defV = self.data.forwardOutputType[e.type]
                 if ( defV ) {
                     //TODO: Remove stuff when u start ... restart sockets ...
@@ -438,10 +471,10 @@ function onInitDB() {
                     addSpaceAfter:true,
                     text:'TM'})
                 /*
-                recent list
-                name override
-                settings list
-                save button
+                 recent list
+                 name override
+                 settings list
+                 save button
                  */
 
                 uiUtils.addSelect({
@@ -1231,8 +1264,6 @@ function onInitDB() {
             )
 
 
-
-
             uiUtils.spacer();
 
 
@@ -1286,6 +1317,17 @@ function onInitDB() {
             self.data.forwardOutputType = {};
             self.types.dlRemoteFileList = 'dlRemoteFileList';
 
+
+            var initData =   {
+                url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                    ip:self.data.ip,
+                    port:self.data.portHoist2,
+                    ///howh to get this?
+                    //fileManifest:self.getFxVal(self.data.utils.getManifestName),
+                    //url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                    cmd: self.types.dlRemoteFileList
+            }
+
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
@@ -1293,17 +1335,17 @@ function onInitDB() {
                     text: 'Status',
                     html: uiUtils.glyph('cloud-download'),
                     fxClick: self.onServerTask,
-                    data: {
-                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-                        ip:self.data.ip,
-                        port:self.data.portHoist2,
-                        ///howh to get this?
-                        //fileManifest:self.getFxVal(self.data.utils.getManifestName),
-                        //url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-                        cmd: self.types.dlRemoteFileList
-                    }
+                    data:initData
                 }
             )
+
+
+            initData.initGFFRM = true;
+            self.onServerTask(null, initData)
+
+
+
+
             uiUtils.spacerSlim();
             uiUtils.addBtn({
                     title:'Dl',
@@ -1323,6 +1365,8 @@ function onInitDB() {
             self.data.ui.txtDlRemoteFileListStatus = uiUtils.lastId();
             u.br()
 
+            
+            uiUtils.collector.start() 
 
             self.types.checkProgressLite = 'checkProgressLite';
             uiUtils.addBtn({
@@ -1358,27 +1402,27 @@ function onInitDB() {
 
             self.types.sanitizeFileList = 'sanitizeFileList';
             uiUtils.addBtn({
-                    title:'Dl',
-                    text: '~',
-                    title: 'Santize file list - Gerneate santize report',
-                    text: 'Status',
-                    html: uiUtils.glyph('compressed'),
-                    fxClick: self.onServerTask,
-                    data: {
-                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-                        ip:self.data.ip,
-                        port:self.data.portHoist2,
-                        cmd: self.types.sanitizeFileList
-                    }
-                })
+                title:'Dl',
+                text: '~',
+                title: 'Santize file list - Gerneate santize report',
+                text: 'Status',
+                html: uiUtils.glyph('compressed'),
+                fxClick: self.onServerTask,
+                data: {
+                    url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                    ip:self.data.ip,
+                    port:self.data.portHoist2,
+                    cmd: self.types.sanitizeFileList
+                }
+            })
             uiUtils.spacerSlim();
             uiUtils.addBtn({
-                    title:'Dl',
-                    text: '~',
-                    title: 'View Sanitized files',
-                    text: 'Status',
-                    html: uiUtils.glyph('info-sign')
-                }  )
+                title:'Dl',
+                text: '~',
+                title: 'View Sanitized files',
+                text: 'Status',
+                html: uiUtils.glyph('info-sign')
+            }  )
             uiUtils.addLabel({id:'txt_'+self.types.sanitizeFileList });
             self.data.ui.txt_sanitizeFileList = uiUtils.lastId();
             self.data.forwardOutputType[self.types.sanitizeFileList] = self.data.ui.txt_sanitizeFileList
@@ -1415,6 +1459,13 @@ function onInitDB() {
 
 
 
+            var uiElements = uiUtils.collector.stop()
+
+            //idRequires
+            self.renderHelper.idRequires(uiElements, 'self.data.fileFileList2')
+
+
+            self.render();
 
             return;
 
@@ -1598,7 +1649,7 @@ function onInitDB() {
 
             //get list from server ....?
 
-            self.renderHelper.render(); 
+            self.renderHelper.render();
         }
 
         function createUtils() {
@@ -1847,11 +1898,18 @@ function onInitDB() {
                     return;
                 }
 
-                p.onServerTask = function onServerTask(e) {
+                p.onServerTask = function onServerTask(e, dataOverride) {
                     // console.error(e)
-                    var target = $(e.target)
+
+                    if ( dataOverride == null ) {
+                        var target = $(e.target)
+                        var targetData = e.target.data;
+                    } else {
+                        targetData = dataOverride;
+                    }
+
                     // console.log('d', target.attr('data'), e.target.data);
-                    var data = self.utils.processDARK(e.target.data);
+                    var data = self.utils.processDARK(targetData);
                     console.log('onServerTask', data);
                     var title = self.getTaskTitle();
                     //   uiUtils.disable(self.data.ui.btnCreateDM_query);
@@ -1859,7 +1917,7 @@ function onInitDB() {
 
 
                     data.title = title;
-                    self.data.fileFileList = self.data.hostname+'.list.files.txt'
+                    //self.data.fileFileList = self.data.hostname+'.list.files.txt'
                     data.fileFileList = self.data.fileFileList;
                     self.data.fileManifest = title;
                     data.fileManifest = self.data.fileManifest;

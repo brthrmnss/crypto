@@ -95,9 +95,20 @@ window.fxInvoke = function (classToUpdate) {
     }
 
 
+    var didNotMatchFileter = false
     if ( reloader.filter && classToUpdate.includes(reloader.filter) == false ) {
+        didNotMatchFileter = true
+    }
+
+    if ( reloader.fxFilter && reloader.fxFilter(classToUpdate)) {
+        didNotMatchFileter = false
+    }
+
+    if ( didNotMatchFileter ) {
         return;
     }
+
+
     var reloadFile = classToUpdate.replace('/Users/user2/Dropbox/projects/delegation/Reader/TTS-Reader/www/', '')
 
     if ( reloader.dictRemappingReloadFileUrls ) {

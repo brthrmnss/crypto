@@ -15,7 +15,7 @@ function splitStrIntoArray(str, splitOnChar, allowNull) {
     //ignore if split
     if (str instanceof Array) {
         return str;
-    }
+    }   
     //allow user to seopcify char to split
     if (splitOnChar != null) {
         if (str.indexOf(splitOnChar) != -1) {

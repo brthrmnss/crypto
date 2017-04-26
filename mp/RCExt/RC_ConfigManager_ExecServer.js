@@ -29,7 +29,7 @@ function RCConfigExecServer() {
         config.port = sh.dv(config.port, 6008);
         self.proc('go to ', 'http://localhost:'+ config.port);
         self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'index.html'+indexPageSecurityEnding);
-        
+
         config.port2 = config.port;
         config.port += 2; //express can use any available port, we will forward to it 
         self.runServer();
@@ -59,7 +59,7 @@ function RCConfigExecServer() {
             res.header("Access-Control-Allow-Credentials", "true");
             res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
             next();
-        }); 
+        });
 
         var bodyParser  = require("body-parser");
         //var multer = require('multer');
@@ -74,6 +74,11 @@ function RCConfigExecServer() {
         app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
         app.use(express.static(__dirname + '/'+'public_html'));
+        app.get('/C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js', function onReadFile (req, res) {
+            var content = sh.readFile('C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js')
+            res.send(content);
+        });
+
 
         /*return;
          var dirSaves = __dirname+'/'+'saves/';
@@ -102,7 +107,7 @@ function RCConfigExecServer() {
         app.get('/goToFile', function onReadFile (req, res) {
             var name = req.query.file;
             name = name.replace('/media/sf_Dropbox', 'G:/Dropbox/')
-           console.log(name)
+            console.log(name)
             var opened = false;
             if ( sh.fs.exists(name) ) {
                 if ( sh.fs.isDir(name)) {
@@ -140,7 +145,7 @@ function RCConfigExecServer() {
         sh.defineExitware(self.app)
 
         var JSONFileHelper = require('shelpers').JSONFileHelper;
-        
+
         function defineResumeMethods() {
 
             //var j = new JSONFileHelper();
@@ -150,7 +155,7 @@ function RCConfigExecServer() {
             config.file = __dirname + '/'+'recent_files.json';
             j.init(config);
             self.data.j = j;
-            
+
             app.post('/saveFile', function onSaveFile (req, res) {
                 var body = req.body;
                 var name = body.name;
@@ -216,14 +221,14 @@ function RCConfigExecServer() {
 
                 var dirs = []
 
-                
-                var dir3 = 
-                
-                sh.async(dirs, function onEachDir(dir,fx) {
 
-                }, function onEachDirsDione(){
-                    res.send('onGetFiles');
-                })
+                var dir3 =
+
+                    sh.async(dirs, function onEachDir(dir,fx) {
+
+                    }, function onEachDirsDione(){
+                        res.send('onGetFiles');
+                    })
 
                 return
             });
@@ -317,7 +322,7 @@ function RCConfigExecServer() {
             socket.on('getLocalFiles', function onGetLocalFiles(data){
                 self.proc('what is command', data.cmd, sh.toJSONString(data) )
 
-                 socket.emit('getLocalFiles_results', 'cool');
+                socket.emit('getLocalFiles_results', 'cool');
 
                 return
             });
@@ -381,8 +386,11 @@ function RCConfigExecServer() {
 
     function defineCmds() {
         p.cmds = {}
-        p.cmds.sendStatus = function sendStatus(msg,type) {
+        p.cmds.sendStatus = function sendStatus(msg,type,data1) {
             var data = {};
+            if ( data1 ) {
+                data = data1;
+            }
             data.msg = msg;
             data.type = type;
             self.appSocket.emit('updateStatus', data);
@@ -479,13 +487,12 @@ function RCConfigExecServer() {
                 console.log(sh.n)
                 //display info
 
- 
                 cb();
             }
 
             self.utils.storeConfig = function storeConfig(name, file) {
                 //var fileConfig = sh.fs.makePath(__dirname, /*'../',*/ 'configs', name+'')
-               // sh.fs.copy(file, fileConfig, true)
+                // sh.fs.copy(file, fileConfig, true)
 
                 var fileConfig = sh.fs.makePath(__dirname,  'manifests', name);
                 sh.fs.copy(file, fileConfig, true);
@@ -505,11 +512,11 @@ function RCConfigExecServer() {
             var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/'+
                 'wrappers/imdb_app_v3_wrapper.js'
             var ConvertXToIMDB_PB_List = require(dirScript).ConvertXToIMDB_PB_List
-            
+
             fH.dlLists = function dlLists(token, cb) {
                 self.proc('dlLists');
 
-               // return;
+                // return;
                 if (cmd.wrapType == 'ttIds') {
                     ConvertXToIMDB_PB_List.downloadIds(fx.data.listIds, true, fx.data.taskName, onSavedFile);
                     return;
@@ -561,7 +568,7 @@ function RCConfigExecServer() {
                 //.log()
                 .end();
             self.cmds.sendStatus('msg ... starting search')
-            
+
             return;
 
 
@@ -569,7 +576,7 @@ function RCConfigExecServer() {
             var dirScript = dirCrypto + '/ritv/distillerv3/utils/SearchPB.js'
             var SearchPB = require(dirScript).SearchPB
 
-         
+
 
             var token = {};
             token.query = data.query;
@@ -645,7 +652,7 @@ function RCConfigExecServer() {
             urls.notes = {};
             urls.reload = t.utils.createTestingUrl('reload')
             urls.file = cmd.url;
-           // t.settings.baseUrl = baseUrl;
+            // t.settings.baseUrl = baseUrl;
             t.settings.silent = true;
 
             var fileFileList = cmd.url.split('/').slice(-1)[0];
@@ -664,7 +671,7 @@ function RCConfigExecServer() {
 
                         fx();
                         // console.log('body', body)
-                       // t.assert(body.id>0, 'post-verify did not let me do a search');
+                        // t.assert(body.id>0, 'post-verify did not let me do a search');
                         t.cb();
                     }
                 }
@@ -684,7 +691,7 @@ function RCConfigExecServer() {
             urls.notes = {};
             urls.reload = t.utils.createTestingUrl('reload')
             urls.file = cmd.url;
-           // t.settings.baseUrl = baseUrl;
+            // t.settings.baseUrl = baseUrl;
             t.settings.silent = true;
 
             var fileFileList = cmd.url.split('/').slice(-1)[0];
@@ -703,7 +710,7 @@ function RCConfigExecServer() {
 
                         fx();
                         // console.log('body', body)
-                       // t.assert(body.id>0, 'post-verify did not let me do a search');
+                        // t.assert(body.id>0, 'post-verify did not let me do a search');
                         t.cb();
                     }
                 }
@@ -736,25 +743,32 @@ function RCConfigExecServer() {
 
             var instance = new GetFileListFromRemote();
             var config = {};
-            config.ip = '127.0.0.1'
-            config.port = '6014'
+            //config.ip = '127.0.0.1'
+            //config.port = '6014'
 
             config.socket = self.data.socketBreed;
             config.ip = data.ip;
             config.port = data.port;
+            if ( data.initGFFRM ) {
+                self.proc('data.initGFFRM', '... ... ...')
+                config.initGFFRM = data.initGFFRM;
+            }
             //config.localTest = true
-            config.fxDone = function fxDone(file) {
+            config.fxDone = function fxDone(file, data) {
                 //console.log('...', 'y')
                 self.proc('sending a result back.....')
                 // self.cmds.sendStatus('done dlRemoteFileList '+ file);
 
                 if ( instance.data.socket && self.data.socketBreed == null ) {
                     self.data.socketBreed = instance.data.socket;
-
                 }
 
                 /// self.cmds.sendStatusType('dlRemoteFileList')
                 self.cmds.sendStatus('done dlRemoteFileList '+ file,  type);
+
+                if ( data.initGFFRM ) {
+                    self.cmds.sendStatus('done dlRemoteFileList '+ file,  'initGFFRM', data);
+                }
             }
             instance.init(config)
 
@@ -895,8 +909,8 @@ exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict, clas
 if (module.parent == null) {
 
     function runServer() {
-       //  sh.get('127.0.0.1:6010/exitQuit')
-         sh.get('127.0.0.1:6008/exitQuit')
+        //  sh.get('127.0.0.1:6010/exitQuit')
+        sh.get('127.0.0.1:6008/exitQuit')
         setTimeout(function startup() {
             if  (RCConfigExecServer.oldServer) {
                 RCConfigExecServer.oldServer.active_server.close();
@@ -906,9 +920,9 @@ if (module.parent == null) {
 
 
 
-   /*     setTimeout(function onReload() {
-            exports.reloadServer(RCConfigExecServer.oldServer)
-        }, 1500)*/
+        /*     setTimeout(function onReload() {
+         exports.reloadServer(RCConfigExecServer.oldServer)
+         }, 1500)*/
     }
     runServer()
 
@@ -928,7 +942,7 @@ if (module.parent == null) {
             sh.throwIf(output.foundCount != 2, 'did not match write count of items');
         });
     }
-  //  testScript()
+    //  testScript()
 
 }
 
