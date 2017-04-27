@@ -15,6 +15,18 @@ function RenderHelper() {
     }
 
 
+    p.pushData = function pushDataToUIElement(dataStr, idOrUI) {
+        var inst = {};
+
+        if ( idOrUI == null ) {
+            idOrUI = uiUtils.lastUI;
+        }
+        inst.id = idOrUI;
+        inst.evalFx = dataStr;
+        inst.type = pushDataToUIElement.name;
+        self.data.insts.push(inst)
+    }
+
     p.blockIfNull = function blockIfNull(id, evalFx) {
         var inst = {};
         inst.id = id;
@@ -45,7 +57,8 @@ function RenderHelper() {
                     ui = x;
                 //    debugger
                 } else {
-                    if (inst.id.startsWith('#') == false) {
+                    if ( $.isString(inst.id) &&
+                        inst.id.startsWith('#') == false) {
                         inst.id = '#' + inst.id
                     }
                     var ui = $(inst.id)
@@ -81,6 +94,17 @@ function RenderHelper() {
 
                 }
             }
+
+            if (inst.type == p.pushData.name) {
+                var valOfX = eval(evalFx)
+                //ui.val(valOfX)
+                uiUtils.setText(ui, valOfX)
+                //ui.text('sdfsdf..sd.fs.df.sd.fs.df.sd..fs.df.s.df.sd.fs.dfsdsdfsdf')
+                //debugger
+                //asdf.g
+            }
+
+
             //console.debug('y', y)
             //console.debug('ui', ui, ui.css('opacity'))
 

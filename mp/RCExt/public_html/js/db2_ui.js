@@ -430,10 +430,14 @@ function onInitDB() {
                 }
 
 
-                if ( e.type == 'dlRemoteFileList' && e.initGFFRM ) {
+               // debugger
+                if ( e.type == 'initGFFRM' /*'dlRemoteFileList'*/
+                    && e.initGFFRM ) {
                     if ( e.fileExists ) {
-                       // self.data.fileFileList = true;
+                       self.data.fileFileList = e.file;
+                    //  debugger
                     }
+                   // debugger
                     self.render();
                     return;
                 }
@@ -505,14 +509,15 @@ function onInitDB() {
                 self.data.ui.txtTaskName2 = uiUtils.lastId();
 
 
-                u.br()
+                /*u.br()
                 uiUtils.addLabel({
                     width:self.settings.lblWidth+0,
                     addSpaceAfter:true,
                     text:'V'})
                 uiUtils.addLabel({id:'txtCurrentTaskValues',
                     text:'{}'})
-                self.data.ui.txtCurrentTaskValues = uiUtils.lastId();
+                self.data.ui.txtCurrentTaskValues = uiUtils.lastId();*/
+
 
 
                 self.utils.addRowLbl = function addLblForForm(txtLbl) {
@@ -522,6 +527,19 @@ function onInitDB() {
                         addSpaceAfter:true,
                         text:txtLbl})
                 }
+
+
+
+
+                self.utils.addRowLbl('File List');
+                uiUtils.addLabel({id:'txt.fileFileList',
+                    text:''})
+                self.renderHelper.pushData('self.data.fileFileList');
+
+                self.utils.addRowLbl('Dl List');
+                uiUtils.addLabel({id:'txt.listDlManifest',
+                    text:''})
+                self.renderHelper.pushData('self.data.listDlManifest');
 
                 self.utils.addRowLbl();
                 u.addBtn({
@@ -1462,7 +1480,7 @@ function onInitDB() {
             var uiElements = uiUtils.collector.stop()
 
             //idRequires
-            self.renderHelper.idRequires(uiElements, 'self.data.fileFileList2')
+            self.renderHelper.idRequires(uiElements, 'self.data.fileFileList')
 
 
             self.render();
@@ -1650,6 +1668,9 @@ function onInitDB() {
             //get list from server ....?
 
             self.renderHelper.render();
+
+
+
         }
 
         function createUtils() {
@@ -2003,7 +2024,7 @@ function onInitDB() {
     var t = new Db2()
     t.init()
 
-
+    window.t = t;
 
 }
 
