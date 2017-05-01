@@ -25,7 +25,7 @@ function scrap() {
         type:'a', text:'Search',
         blank:true,
         href:function makeRef(o) {
-            debugger 
+        //    debugger
         return 'https://www.google.com/search?q=amazon '+o.name + ' ' + o.author
     }
     })

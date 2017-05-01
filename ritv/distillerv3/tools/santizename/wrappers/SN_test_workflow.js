@@ -34,7 +34,7 @@ function SanitizeList_FileWorkflow() {
 
         sh.throwIfNull(self.settings.fileList, 'need a list of files')
         sh.throwIfNull(self.settings.fileManifest, 'need a fileManifest')
-        console.log('verifyComplete%', self.settings.fileManifest, self.settings.fileList);
+        console.log('-verifyComplete%', self.settings.fileManifest, self.settings.fileList);
 
         //sh.exit('howmany')
 

@@ -29,10 +29,17 @@ function callIfDefined(fx) {
     if (fx == undefined)
         return args[0];
 
+    if ( fx == null ) {
+        return;
+    }
+
+    if ( $.isFunction(fx) == false ) {
+        return;
+    }
 
     // console.debug('args', tojson(args))
     return fx.apply(null, args)
-    //return;
+    //return; 
 }
 
 function convertArgumentsToArray(_arguments) {
@@ -733,7 +740,11 @@ function defineUtils() {
 
         btn[0].onclick = cfg.fxDone
         if (cfg.fxClick) {
-            $(btn).on('click', cfg.fxClick)
+            $(btn).on('click', function fx_onClickForward(e) {
+                //debugger
+                cfg.fxClick(e, cfg.data)
+
+            })
         }
 
         if (cfg.data) {
@@ -1234,6 +1245,16 @@ function defineUtils() {
                 fx(ui)
             }
         }
+
+        p.secs = function howManySecodsHavePastSince(a, b, ms) {
+            if (b == null) {
+                b = new Date();
+            }
+            var diff = b.getTime() - a.getTime()
+            diff = diff / 1000;
+            return diff;
+        };
+        
         p.getTimestamp = function getTimestamp() {
             var d = new Date();
             d = d.toString()
@@ -1243,6 +1264,27 @@ function defineUtils() {
             d = '_' + d;
             return d;
         }
+        p.getTimestamp2 = function getTimestamp2() {
+            var d = new Date();
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+                'Oct', 'Nov', 'Dec'];
+            var dx = [
+                '_'+months[d.getMonth()],
+                d.getDay(),
+                d.getFullYear(),
+                'at',
+                d.getHours(),
+                d.getMinutes(),
+            ].join('_')
+            d = d.toString()
+            d = d.split(' GMT')[0]
+            d = d.replace(/ /gi, '_');
+            d = d.replace(/:/gi, '-');
+            d = '_' + d;
+            return dx;
+        }
+        
+        
     }
 
     defineBasicMethods();
@@ -1876,7 +1918,7 @@ function defineUtils() {
         }
 
 
-        p.getUrl = function getUrl() {
+        p.getUrlVar = function getUrlVar() {
             var urlFinal = location.href;
             if (urlFinal.includes('#')) {
                 urlFinal = urlFinal.split('#')[0];
@@ -1884,7 +1926,7 @@ function defineUtils() {
             if (urlFinal.includes('?')) {
                 urlFinal = urlFinal.split('?')[0];
             }
-            //console.log('getUrl', urlFinal)
+            //console.log('getUrlVar', urlFinal)
             //if ? is before # warn user ...
             return urlFinal;
         }
@@ -1892,7 +1934,7 @@ function defineUtils() {
         p.setHash = function setHash(hash) {
             var urlX = window.location.href;
             hash = uiUtils.utils.addIfDoesStartWith(hash, '#')
-            var url = self.getUrl()
+            var url = self.getUrlVar()
                 + hash;
             var search = self.getSearch();
             var params = uiUtils.utils.getParams();
@@ -2136,7 +2178,7 @@ function defineUtils() {
             });
         }
 
-        p.postUrl = function getUrl(url, data, fxDone) {
+        p.postUrl = function postUrl(url, data, fxDone) {
             if ($.isFunction(data)) {
                 fxDone = data;
             }
@@ -2572,7 +2614,8 @@ function defineUtils() {
             uiUtils.socket.nextEmitter = t;
         }
 
-        uiUtils.socket.emit = function emit(msg, data, fxDone) {
+        uiUtils.socket.emit =
+        uiUtils.socket.emitAndCatchResult = function emitAndCatchResult(msg, data, fxDone) {
 
             self.data.socket.emit(msg, data)
             var key = null;
@@ -2585,14 +2628,69 @@ function defineUtils() {
                 return; //skip ...
             }
             uiUtils.socket.dict[key] = fxDone;
+            console.info('g-catching', data.cmd)
             self.data.socket.on(data.cmd + '_results', function _onResults(msg) {
-                console.log('msg', msg);
+                console.info('g-catching', 'result', msg);
                 fxDone(msg)
 
             })
 
         }
 
+        if ( typeof sh === 'undefined') {
+            sh = u;
+        }
+        uiUtils.socket.emitOne = function emitOne(msgType, data, fxDone) {
+/*
+create one time lsiter, clear when done if dual exists show an error and remove
+ */
+            sh.throwIfNull(fxDone,'need a callback')
+            sh.throwIfNull(data.cmd, 'need a cmd for result')
+            uiUtils.socket.dictEmitOne = sh.dv(uiUtils.socket.dictEmitOne, {})
+            self.data.socket.emit(msgType, data);
+            var typeResult = data.cmd + '_results'
+            var lastOne = uiUtils.socket.dictEmitOne[typeResult]
+
+
+            var fxName = '\t'+'emitOne'
+
+            if ( lastOne ) {
+                console.warn(fxName, 'failed on last one removing')
+                uiUtils.socket.off(typeResult)
+                uiUtils.socket.dictEmitOne[typeResult] = null;
+            }
+            console.info(fxName, 'send', msgType, sh.paren(typeResult) )
+            self.data.socket.on(typeResult, function _onResults(result) {
+                console.info(fxName, 'result', result);
+                fxDone(result)
+                //u.cid(fxDone, result)
+                self.data.socket.removeListener(typeResult)
+                uiUtils.socket.dictEmitOne[typeResult] = null;
+            })
+
+
+
+            return;
+
+
+            var key = null;
+            if (key == null && uiUtils.socket.nextEmitter != null) {
+                key = uiUtils.socket.nextEmitter
+            }
+            var existingListener = uiUtils.socket.dict[key];
+            if (existingListener != null) {
+                console.warn('u already set this ...')
+                return; //skip ...
+            }
+            uiUtils.socket.dict[key] = fxDone;
+            console.info('g-catching', data.cmd)
+            self.data.socket.on(data.cmd + '_results', function _onResults(msg) {
+                console.info('g-catching', 'result', msg);
+                fxDone(msg)
+
+            })
+
+        }
 
         uiUtils.socket.addListener = function addListener(type, fxDone, retryCount) {
             if (self.data.socket == null) {
@@ -2771,6 +2869,7 @@ function defineUtils() {
 
         }
 
+        //debugger
         u.collector = {};
         u.collector.start = function start() {
             u.collector.list = []
@@ -2784,6 +2883,109 @@ function defineUtils() {
         }
     }
     defineCC();
+
+    uiUtils.debug =
+        uiUtils.dbg = function  bg(txt, obj) {
+            console.debug('dbg', txt)
+            $.each(obj, function onX(k,v) {
+                console.debug('\t', k,v)
+            });
+
+        }
+
+    uiUtils.ripProps = function ripProps(ui){
+
+        var dbg = false;
+        if ( dbg ) {
+
+        }
+        var children = $(ui).find('*')
+        //debugger
+        var props = {};
+        $.each(children, function on(k,v){
+            var ui = $(v)
+            var val = ui.val();
+            var valText = val;
+            var text = ui.text();
+            if (text) {
+                val = text;
+            }
+            var id = ui.attr('id');
+            if ( ui.is('button')) {
+                return;
+            }
+            //console.debug('...dbg', ui, text, valText)
+            if ( id == null ) {
+                if ( dbg )
+                    console.debug('no id', id)
+                return;
+            }
+            if ( val == null ) {
+                if ( dbg )
+                    console.debug('val', ui.attr('id'), val)
+                return;
+            }
+            //debugger
+            if ( dbg )
+                console.debug('val', ui.attr('id'), val)
+            props[id] = val;
+        })
+
+
+
+        // uiUtils.dbg(props)
+        uiUtils.debug('db', props)
+
+
+        return props;
+    }
+
+
+    uiUtils.ripPropsSet = function ripPropsSet(rippedProps){
+        var dbg = false;
+        if ( dbg ) {
+
+        }
+        var props = {};
+        $.each(rippedProps, function on(id,v){
+            var ui = $('#'+id)
+            ui.val(v);
+            //ui.text(v);
+            return;
+        })
+    }
+
+
+    uiUtils.setTextSD = function setSelDestructingMessage(txt, msg) {
+        uiUtils.setText(txt , msg);
+        //self.data.lastLogText = msg;
+        setTimeout(function onClearStatusText() {
+            var  val = uiUtils.getText(txt);
+            if ( val == msg ) {
+                uiUtils.setText(txt, '');
+            }
+        }, 5000)
+    }
+
+    uiUtils.getText = function getText(jq) {
+        var ui = $(jq)
+        //console.log('what is ', jq, ui, val)
+        if ( ui.length == 0 ) {
+            console.warn('cannot set', jq, 'to', val, 'empty query set')
+        }
+        var val=ui.val()
+        if ( ui.is('span')) {
+            var val = ui.text()
+        }
+        return val;
+    }
+
+    u.selectAction = function selectAction(id) {
+        var ui = $(id)
+        ui.change()
+    }
+
+
 
 }
 

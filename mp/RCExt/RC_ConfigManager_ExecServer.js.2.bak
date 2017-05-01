@@ -39,8 +39,6 @@ function RCConfigExecServer() {
         //   asdf3g.f
         self.data.dirDlManifests = sh.fs.makePath(__dirname,  'manifests')
         self.data.dirFileList = sh.fs.join(__dirname, 'data', 'fileList')
-
-        // asd.g
     }
 
     self.runServer = function runServer() {
@@ -208,63 +206,56 @@ function RCConfigExecServer() {
             var j = new JSONFileHelper();
             var config = {};
             config.file = __dirname + '/'+'recent_tasks.json';
-            config.propUpsert = 'name';
-
-
-
             j.init(config);
-            self.data.j2 = j;
+            self.data.j = j;
 
             app.post('/saveTask', function onSaveFile (req, res) {
                 var body = req.body;
-                var name = body.name;
+                var name = body.name; 
                 var contents = body.body;
                 //var name = req.params.name;
                 console.log('why?', name, body);
-
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
-                sh.fs.mkdirp(fileJSON, true)
-                sh.writeJSONFile(fileJSON, contents)
-
                 //var fileJSON = dirSaves+name+'.html';
                 //sh.writeFile(fileJSON, contents);
                 var bookJSON = {
                     contents:contents,
                     name:name
                 }
-                self.data.j2.addRecent(bookJSON, true, 'name');
+                self.data.j.addRecent(bookJSON, true, 'name');
                 res.send('Hello World!');
-            });
-
-            app.get('/getTask', function getTask (req, res) {
-                var body = req.query;
-                var name = body.name;
-                self.proc('removing', name);
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
-                res.sendfile(fileJSON);
-                //res.send('removed');
             });
 
             app.get('/removeTask', function onRemoveFile (req, res) {
                 var body = req.query;
                 var name = body.name;
+                var fileJSON = dirSaves+name+'.html';
                 self.proc('removing', name)
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
 
                 var bookJSON = {
-                    name:name  }
-                removedresult = self.data.j2.removeRecent(bookJSON, 'name');
-                if ( removedresult ) {
-                    sh.fs.delete(fileJSON, true)
+                    file:fileJSON,
+                    name:name
                 }
+                self.data.j.removeRecent(bookJSON, 'file');
+
                 res.send('removed');
             });
 
             app.get('/listTasks', function onSaveFile (req, res) {
+
                 var files = [];//self.utils.getfilesInDir();
-                files = self.data.j2.readFile();
+
+                files = self.data.j.readFile();
                 res.json(files)
+
                 return;
+                var body = req.body;
+                var name = body.name;
+                var contents = body.body;
+                //var name = req.params.name;
+                console.log(req.body)
+                sh.writeFile(dirSaves+name+'.html', contents)
+
+                res.send('Hello World!');
             });
 
         }
@@ -275,8 +266,8 @@ function RCConfigExecServer() {
 
         var OpenFileInWebstorm = sh.require('mp/SpeakerJava2/SpeakServer/public_html/powershell/goto/OpenFileInWebstorm.js').OpenFileInWebstorm
         self.data.openFile = new OpenFileInWebstorm();
-
-
+       
+        
         app.get('/openFile', function openFile (req, res) {
             var body = req.query;
             var file = body.file;
@@ -292,7 +283,7 @@ function RCConfigExecServer() {
 
             res.send('opened ....');
         });
-
+        
 
         function defineVerifyStep() {
             //move to other server
@@ -334,8 +325,6 @@ function RCConfigExecServer() {
         }
         defineVerifyStep();
 
-        //asdf.g
-
         self.active_server = app.listen(self.settings.port, function () {
             console.log('Listening on ' +  self.settings.port)
         });
@@ -373,20 +362,13 @@ function RCConfigExecServer() {
 
             socket.on('runcmd', function onRunCmd(data){
                 self.proc('what is command', data.cmd, sh.toJSONString(data) )
-                //  self.proc('cmd no match', data)
-
-
+//  self.proc('cmd no match', data)
                 self.handleSocket(data, function onFinished (a,b,c) {
                     var result = {}
-
-                    result.a = a;
-                    /* if  ( sh.isObject(a) )  {
-                     result = a; 
-                     }*/
-                    result.b = b; result.c = c;
+                    result.a = a; result.b = b; result.c = c;
                     if ( data.noreturn != true  ) {
                         var str = data.cmd + '' + '_results'
-                        self.proc('socket handled ... str', str)
+                        console.log('str', str)
                         io.emit(str, result);
                     };
                 })
@@ -450,11 +432,8 @@ function RCConfigExecServer() {
                 if ( data.tor ) {
                     var tors = [data.tor]
                 }
-                var fileDLManifest = sh.fs.join(dirManifest,data.title+'.json')
-                sh.writeJSONFile(fileDLManifest, tors)
-                self.proc('makemani', 'storing file here', fileDLManifest)
-
-                fx({fileDLManifest:fileDLManifest})
+                sh.writeJSONFile(dirManifest + data.title, tors)
+                fx('ok')
             }
             if ( data.cmd == 'dlFileList'){
                 self.cmds.dlFileList(data, fx)
@@ -470,11 +449,11 @@ function RCConfigExecServer() {
             if ( data.cmd == 'taskCheckProgressLite'){
                 self.cmds.taskCheckProgressLite(data, fx)
             }
-
+            
             if ( data.cmd == 'sanitizeFileList'){
                 self.cmds.sanitizeFileList(data, fx)
             }
-
+          
             return;
         };
     }
@@ -562,6 +541,7 @@ function RCConfigExecServer() {
         console.log('...sdfxsdf......')
         p.cmds.listids = function listids(cmd, fx) {
 
+
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
             var fxHelper = {}
             var fH = fxHelper;
@@ -586,14 +566,13 @@ function RCConfigExecServer() {
                 cb();
             }
 
-            self.utils.storeConfig = function storeConfig_ForRecent(name, file) {
+            self.utils.storeConfig = function storeConfig(name, file) {
                 //var fileConfig = sh.fs.makePath(__dirname, /*'../',*/ 'configs', name+'')
                 // sh.fs.copy(file, fileConfig, true)
 
-                var fileConfig = sh.fs.makePath(__dirname,  'manifests', name+'.json');
-                self.proc('copy', file, 'to', fileConfig);
+                var fileConfig = sh.fs.makePath(__dirname,  'manifests', name);
                 sh.fs.copy(file, fileConfig, true);
-
+                self.proc('copy', file, 'to', fileConfig);
 
                 var bookJSON = {
                     file:fileConfig,
@@ -636,7 +615,7 @@ function RCConfigExecServer() {
                 function onSavedFile(file) {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
-                    fx.data.fileDLManifest = file;
+
                     self.cmds.sendStatus('file is ' + file)
                     self.cmds.sendStatus('finished making manifest')
                     cb();
@@ -646,8 +625,8 @@ function RCConfigExecServer() {
 
             }
             fH.storeInFile = function storeInFile(token, cb) {
-                self.proc('storeInFile', fx.data.fileDLManifest)
-                fx({fileDLManifest:fx.data.fileDLManifest});
+                self.proc('storeInFile')
+                fx(fx.data.taskName, 'size');
                 //create manifest and return manifest name
                 cb();
             }
@@ -891,12 +870,7 @@ function RCConfigExecServer() {
 
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
 
-            var fileDlManifest = cmd.fileManifest
-            //  var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
-            if ( fileDlManifest.includes('/') == false &&  fileDlManifest.includes('\\') == false  ) {
-                var fileDlManifest = sh.fs.join(self.data.dirDlManifests,  cmd.fileManifest);
-            }
-
+            var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
             var fileFileList = cmd.fileFileList
             console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
             if ( fileFileList.includes('/') == false &&  fileFileList.includes('\\') == false  ) {
@@ -914,7 +888,7 @@ function RCConfigExecServer() {
                 output.itemsValid = null;
                 output.itemsFound = null;
                 output.lines = output.lines.length
-                output.result = 'found '+output.foundCount;
+                output.result = 'found '+output.foundCount; 
                 // sh.throwIf(output.foundCount != 2, 'did not match write count of items');
                 fx(output);
                 self.cmds.sendStatus('done with  ' +
@@ -926,8 +900,6 @@ function RCConfigExecServer() {
 
 
 
-
-
         p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
@@ -936,20 +908,14 @@ function RCConfigExecServer() {
             //var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
 
 
-            //var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
-            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
-            var fileFileList = self.utils.appendDirIfRelative(self.data.dirFileList, cmd.fileFileList)
-            /*
-
-             var fileFileList = cmd.fileFileList
-
-
-             if ( fileFileList.includes('/') == false &&  fileFileList.includes('\\') == false  ) {
-             var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
-             }
-             */
-
+            var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+            var fileFileList = cmd.fileFileList
             console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
+            if ( fileFileList.includes('/') == false &&  fileFileList.includes('\\') == false  ) {
+                var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+            }
+
+
 
             self.cmds.sendStatus('running tool');
 
@@ -961,16 +927,10 @@ function RCConfigExecServer() {
                 console.log('found how many?', output.foundCount);
                 output.itemsValid = null;
                 output.itemsFound = null;
-               // output.lines = output.lines.length
-                //sh.throwIf(output.foundCount != 2, 'did not match write count of items');\
-                var outputLite = self.utils.flatten(output)
-                outputLite.output = JSON.stringify(outputLite)
-
-
-                console.log('xoutput', outputLite)
-
+                output.lines = output.lines.length
+                //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
                 fx(output);
-                self.cmds.sendStatus('done with sanitizeFileList '+ output.foundCount, type, outputLite);
+                self.cmds.sendStatus('done with sanitizeFileList '+ output.foundCount, type);
             });
 
             return;
@@ -982,26 +942,6 @@ function RCConfigExecServer() {
 
     function defineUtils() {
         p.utils = {}
-        p.utils.appendDirIfRelative = function appendDirIfRelative(dir, file) {
-            var fileOutput = file;
-            if ( file.includes('/') == false &&  file.includes('\\') == false  ) {
-                var fileOutput = sh.fs.join(dir,  file);
-            }
-
-            return fileOutput;
-        }
-        p.utils.flatten = function flatten(output, file) {
-            var lite = sh.clone(output)
-            var outputLite = {}
-            sh.each(output, function copyOrCondense(k,v) {
-                var val = v;
-                if ( sh.isArray(v) ) {
-                    val = v.length;
-                }
-                outputLite[k] = val;
-            })
-            return outputLite;
-        }
     }
 
     defineUtils();
@@ -1018,11 +958,50 @@ exports.RCExtV = 1;
 exports.RCConfigExecServer = RCConfigExecServer;
 exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict, classFx) {
 
+
     console.log(sh.n, 'reloadServer', count, oldServer!= null, sh.n)
     exports.RCExtV = count
+    if ( oldServer) {
+        //  asdf.g
+        var yyy =  oldServer.active_server2.close()
+        var oldS = oldServer.active_server.close();
 
-    var t = new RCConfigExecServer()
-    t.loadConfig({});
+        //return;
+        ///console.log('output',null!=oldServer, yyy, oldS)
+        setTimeout(function onReloadLater () {
+            if ( dict && dict.count != count ) {
+                console.error('warn', 'bad count', count, '!=', dict.count)
+                return;
+            }
+            console.log('\t','onReloadLater', count)
+            exports.reloadServer(null, fxFin, count, dict, classFx);
+        }, 1500);
+        return;
+    }
+    if ( classFx == null )
+        var t = new RCConfigExecServer()
+    else
+        t = new classFx.RCConfigExecServer(); //maybe ned to get reloaded version not orignal versoin?
+
+    console.error('-->reloading script', 'go', count)
+
+    var options = {}
+    if ( oldServer && oldServer.oldOptions ) {
+        options = oldServer.oldOptions;
+    }
+
+    /*  t.handleSocket({cmd:'searchpb', query:'epub'}, function onGotIt(a,b){
+     console.log('output', a,b)
+     })*/
+
+    t.loadConfig(options);
+
+    RCConfigExecServer.oldServer = t;
+
+    if ( fxFin )
+        fxFin(t)
+
+
     return t;
 }
 if (module.parent == null) {
@@ -1035,7 +1014,7 @@ if (module.parent == null) {
                 RCConfigExecServer.oldServer.active_server.close();
             }
             exports.reloadServer()
-        },1000)
+        },500)
 
 
 

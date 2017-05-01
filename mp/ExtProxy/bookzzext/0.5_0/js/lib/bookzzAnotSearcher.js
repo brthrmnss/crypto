@@ -26,11 +26,11 @@ function scrap() {
         type:'a', text:'Search',
         blank:true,
         href:function makeRef(o) {
-            debugger 
+       //     debugger
         return 'https://www.google.com/search?q=goodread '+o.name + ' ' + o.author
     }
     })
-    debugger
+   // debugger
     instance.test();
 
     window.instance = instance;

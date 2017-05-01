@@ -22,6 +22,21 @@ function RenderHelper() {
             idOrUI = uiUtils.lastUI;
         }
         inst.id = idOrUI;
+        //debugger
+        if ( $.isArray(dataStr) ) {
+            dataStr = dataStr.join('_');
+        }
+        inst.evalFx = dataStr;
+        inst.type = pushDataToUIElement.name;
+        self.data.insts.push(inst)
+    }
+    
+    p.pushData2 = function pushDataToUIElement(dataStr, idOrUI) {
+        var inst = {};
+        if ( idOrUI == null ) {
+            idOrUI = uiUtils.lastUI;
+        }
+        inst.id = idOrUI;
         inst.evalFx = dataStr;
         inst.type = pushDataToUIElement.name;
         self.data.insts.push(inst)
@@ -44,6 +59,10 @@ function RenderHelper() {
     }
 
 
+    p.render2 = function render2() {
+        
+    };
+    
     p.render = function render() {
         $.each(self.data.insts, function onActInst(k, v) {
             var inst = v;
@@ -68,7 +87,7 @@ function RenderHelper() {
 
             var __self = self.data.self;
             var evalFx = inst.evalFx.replace('self', '__self')
-            console.debug('eval', __self,  inst.evalFx, inst.type , p.idRequires.name)
+            //console.debug('eval', __self,  inst.evalFx, inst.type , p.idRequires.name)
             if (inst.type == p.idRequires.name) {
                 var y = eval(evalFx)
                 if (y == null || y == '') {
@@ -96,6 +115,7 @@ function RenderHelper() {
             }
 
             if (inst.type == p.pushData.name) {
+                console.info('p.pushData', evalFx)
                 var valOfX = eval(evalFx)
                 //ui.val(valOfX)
                 uiUtils.setText(ui, valOfX)

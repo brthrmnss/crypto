@@ -106,7 +106,7 @@ function TestVerifyCommandsThroughSocket() {
             var fileOutput = sh.fs.makePath(dirTrash, 'file.list.test.txt')
             RC_HelperFxs.listFilesInDirectories(fileOutput, function onDone(fileOutput, lite) {
                 //console.error(lite)
-                console.log('file output', fileOutput);
+                console.log('@file output', fileOutput);
                 var content = sh.readFile(fileOutput);
                 onResultOfcall(content);
                 //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
@@ -138,7 +138,7 @@ function TestVerifyCommandsThroughSocket() {
             var fileOutput = sh.fs.makePath(dirTrash, 'file.list.test.txt')
             RC_HelperFxs.listFilesInDirectories(fileOutput, function onDone(fileOutput, lite) {
                 //console.error(lite)
-                console.log('file output', fileOutput);
+                console.log('zx3-file output', fileOutput);
                 var content = sh.readFile(fileOutput);
                 onResultOfcall(content);
                 //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
@@ -171,7 +171,7 @@ function TestVerifyCommandsThroughSocket() {
             var fileOutput = sh.fs.makePath(dirTrash, 'file.list.test.txt')
             RC_HelperFxs.listFilesInDirectories(fileOutput, function onDone(fileOutput, lite) {
                 //console.error(lite)
-                console.log('file output', fileOutput);
+                console.log('%file output', fileOutput);
                 var content = sh.readFile(fileOutput);
                 onResultOfcall(content);
                 //sh.throwIf(output.foundCount != 2, 'did not match write count of items');

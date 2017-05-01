@@ -2991,6 +2991,10 @@
         sh.run = function runCommand(cmd, opts) {
 
             console.log('running', cmd)
+            opt = sh.dv(opt, {})
+            opt.maxBuffer =  50000* 1024 * 500
+            
+            
             var child_process = require('child_process');
             var ipAdd = child_process.execSync(cmd, opts)
 
@@ -2999,6 +3003,9 @@
         sh.runAsync = function runCommandAsync(cmd, fxDone, opts) {
             console.log('running', cmd)
             var child_process = require('child_process');
+            opt = sh.dv(opt, {})
+            opt.maxBuffer =  50000* 1024 * 500
+           
             var ipAdd = child_process.exec(cmd, opts, fxDoneRedirect)
             
             function fxDoneRedirect(error, x, output) {

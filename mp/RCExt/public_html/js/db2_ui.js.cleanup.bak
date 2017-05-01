@@ -7,7 +7,6 @@ function onInitDB() {
     function Db2() {
         var self = this;
         self.data = {}
-
         self.data.port = 6012;
         self.data.portHoist = 6012;
         self.data.portHoist2 = 6012+2;
@@ -18,13 +17,10 @@ function onInitDB() {
         self.data.baseUrl = 'http://' + self.data.url;
         self.data.baseDataUrl = 'http://' + self.data.ip + ':'+ self.data.portData;
         self.data.urlHoist =  'http://' + self.data.url;
-
         self.data.ui = {};
         self.data.timeAutosave = 10;
         self.data.timeRecentPages = 10;
         self.data.countAutosave = 0;
-
-        self.data.timeStart = new Date();
 
         self.data.dbg = {};
         self.data.dbg.autosaving = false;
@@ -325,8 +321,6 @@ function onInitDB() {
             console.log('user wants to resume', item);
             //push
             self.tasks.getTask()
-
-            u.setVal2( self.data.ui.txtTaskName2, item)
             //todo show a button to clear this setting
             //todo set the input values back ...
             //self.data.listDlManifest = item;
@@ -360,9 +354,6 @@ function onInitDB() {
             uiUtils.makeBtn(uiUtils.lastId(), 'Test socket');
             uiUtils.onClick(uiUtils.lastId(), self.testSocket)
 
-
-
-
             uiUtils.spacer();
 
             // uiUtils.br()
@@ -371,10 +362,6 @@ function onInitDB() {
                 id:'txtIpHostpost',
                 onDebounce:function onChanged(newName) {
                     console.log('debouched', newName)
-
-                    debgger;
-                    return;
-
                     //return;
                     self.autoSave(false, onSaved_SaveWithNewName)
 
@@ -411,86 +398,13 @@ function onInitDB() {
                 text:''})
             self.data.ui.txtServerStatus = uiUtils.lastId();
 
-
-
-
-
-            function createOtherIpds() {
-                self.data.ui.ddOtherIps = 'ddOtherIps';
-                self.onSwitchIp = function onSwitchIp(eee) {
-                    self.data.url = eee
-                    //  self.data.url = u.getVal2( self.data.ui.ddOtherIps)
-                    u.setVal2(self.data.ui.txtPort, eee)
-                    self.isConnected()
-                }
-                uiUtils.addSelect({
-                    tooltip:'Pick Different Ip this',
-                    id:self.data.ui.ddOtherIps ,
-                    fxDone:self.onSwitchIp
-                })
-                self.data.ui.ddOtherIps = uiUtils.lastId();
-                u.kv = function kv(arr) {
-                    var vals = {};
-                    sh.each(arr, function xk(k,v) {
-                        var val = {}
-                        vals[v]=v
-
-                        //  vals.push(val)
-                    })
-                    console.error('vals', vals)
-                    return vals;
-                }
-                uiUtils.updateSelect(self.data.ui.ddOtherIps,
-                    u.kv([
-                        'localhost'+':'+self.data.portHoist,
-                        '192.168.1.654'+':'+self.data.portHoist,
-                        '29.56.58.23'+':'+self.data.portHoist
-                    ])
-                );
-                return;
-                self.getTasks(function initTaskListSelectionForFirst() {
-
-                    uiUtils.selectAction(self.data.ui.ddPrevTaskList)
-
-                })
-            }
-            createOtherIpds()
-
-
-
-
-
-
-
-
-
             uiUtils.socket.addListener('updateStatus', function onStatusUpdated(e) {
-                console.log('updateStatus', e)
+                console.log('e', e)
                 var msg = e.msg;
-
-
-                if ( e.result ) {
-                    var val = e.result;
-                    var outputType = e.type + '_'+'output'
-                    self.data[outputType] = val;
-                    console.info('set result', outputType, val)
-                    self.render()
-                }
-
-                if ( e.output ) {
-                    var val = e.output;
-                    var outputType = e.type + '_'+'output'
-                    self.data[outputType] = val;
-                    console.info('set output', outputType, val)
-                    self.render()
-                }
-
-
 
                 if ( e.type == 'dlRemoteFileList') {
                     //TODO: Remove stuff when u start ... restart sockets ...
                     uiUtils.setTextSD(self.data.ui.txtDlRemoteFileListStatus, msg);
-
                     return;
                 }
 
@@ -500,20 +414,17 @@ function onInitDB() {
                     //uiUtils.setTextSD(se)
                     var taskName = e.type+'_output'
                     self.data[taskName] = e.result
-                    self.render()
+                    self.renderHelper.render()
                 }
 
 
 
-                //  debugger
+                // debugger
                 if ( e.type == 'initGFFRM' /*'dlRemoteFileList'*/
                     && e.initGFFRM ) {
                     if ( e.fileExists ) {
                         self.data.fileFileList = e.file;
-                        self.render();
                         //  debugger
-                    } else {
-                        console.warn('what?')
                     }
                     // debugger
                     self.render();
@@ -567,11 +478,7 @@ function onInitDB() {
                 })
                 self.data.ui.ddPrevTaskList = uiUtils.lastId();
                 uiUtils.updateSelect('ddPrevTaskList', [1,2,3,4,5]);
-                self.getTasks(function initTaskListSelectionForFirst() {
-
-                    uiUtils.selectAction(self.data.ui.ddPrevTaskList)
-
-                })
+                self.getTasks()
                 u.addBtn({
                         title: 'Delete Task',
                         text: 'Delete Task',  },
@@ -843,17 +750,15 @@ function onInitDB() {
             divParent.append(div);
             self.data.ui.divParent = uiUtils.lastId();
 
+            uiUtils.br()
+            uiUtils.hr()
 
 
-            //   self.renderHelper.idRequires('txtBEE', 'self.data.listFileList')
-            //  self.renderHelper.blockIfNull( self.data.ui.divParent, 'self.data.listDlManifest')
+         //   self.renderHelper.idRequires('txtBEE', 'self.data.listFileList')
+          //  self.renderHelper.blockIfNull( self.data.ui.divParent, 'self.data.listDlManifest')
             //$('#divSaveArea').html('')
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
-
-
-            uiUtils.br()
-            uiUtils.hr()
 
             uiUtils.addLabel({text:'Input', width:lblWidth, addSpaceAfter:true})
 
@@ -864,19 +769,6 @@ function onInitDB() {
                     uiUtils.setText(self.data.ui.txtConfigServerStatus,
                         msg.msg)
                     uiUtils.clearText(3, self.data.ui.txtConfigServerStatus)
-
-                    var txt = msg.msg
-
-
-                    var time = uiUtils.secs(self.data.timeStart, new Date()).toFixed(1);
-                    txt = '<b>' + time + ':' + '</b> ' + txt;
-
-                    $('#messages').append($('<li>').html(txt));
-
-                    uiUtils.scrollToBottom($('#flexmsg_box'))
-                    // $('#flexmsg_box').text('asdf')
-
-
                 })
             uiUtils.br()
 
@@ -908,6 +800,21 @@ function onInitDB() {
                     } })
                 self.data.ui.txtOneOffQuery = uiUtils.lastId();
 
+                self.getValFrom = function getValFrom(val, fxPost) {
+                    var instruction = {'getValFromId':val};
+                    if ( fxPost ) {
+                        instruction.fxPost = fxPost;
+                    }
+
+                    return instruction
+                }
+
+                self.getValFromData = function getValFromData(val) {
+                    return {'getValFromData':val}
+                }
+
+
+
                 //console.error('what is mag', self.onGetMag)
                 uiUtils.addBtn({
                     text: 'Get Mag',
@@ -926,14 +833,14 @@ function onInitDB() {
                     data:{
                         tor:self.getValFromData('queryTor'),
                         query:self.getValFrom(self.data.ui.txtOneOffQuery),
-                        title:self.utils.combineFields('"1off"','query'),
                         cmd:'makemani'
+
                     },
                     fxClick: self.onCreateDM,
                     enabled:false
                 })
                 self.data.ui.btnCreateDM_query = uiUtils.lastId();
-                uiUtils.disable(self.data.ui.btnCreateDM_query);
+
 
                 uiUtils.addLabel({id:"txtQueryResultInfo", text:''})
                 self.data.ui.txtQueryResultInfo = uiUtils.lastId();
@@ -960,16 +867,12 @@ function onInitDB() {
                 self.data.ui.txtListIds = uiUtils.lastId();
 
                 uiUtils.addBtn({
-                    text: 'Get Lists & Create DM 2',
+                    text: 'Get Lists & Create DM',
                     addSpacerBefore:true,
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
                         //query:self.getValFrom(self.data.ui.txtName),
                         listIds:self.getValFrom(self.data.ui.txtListIds),
-
-                        //query:self.getValFrom(self.data.ui.txtOneOffQuery),
-                        title:self.utils.combineFields('"List ls Ids"','abv:listIds'),
-
                         cmd:'listids'
 
                     }
@@ -997,14 +900,13 @@ function onInitDB() {
                 self.data.ui.txtTTIds = uiUtils.lastId();
 
                 uiUtils.addBtn({
-                    text: 'Create DM 3',
+                    text: 'Create DM',
                     addSpacerBefore:true,
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
                         listIds:self.getValFrom(self.data.ui.txtTTIds),
                         // listMethod:'ttIds',
                         // listStoreMethod:'ttIds',
-                        title:self.utils.combineFields('"ttids"','abv:listIds'),
                         cmd:'listids',
                         wrapType: "ttIds"
                     }
@@ -1112,7 +1014,7 @@ function onInitDB() {
                 }
 
                 uiUtils.addBtn({
-                    text: 'Create DM 4',
+                    text: 'Create DM',
                     addSpacerBefore:true,
                     fxClick: self.onGetListsAndCreateDM,
                     data:{
@@ -1123,12 +1025,7 @@ function onInitDB() {
                         year:self.getValFrom(self.data.ui.ddSearchYearStart),
                         yearEnd:self.getValFrom(self.data.ui.ddSearchYearEnd),
                         cmd:'listids',
-                        wrapType: "imdbSearch",
-                        title:self.utils.combineFields('"imdb"','type',
-                            'sortType',
-                            'year',
-                            'yearEnd',
-                            'maxImdbListSize'),
+                        wrapType: "imdbSearch"
                     }
                 })
 
@@ -1304,6 +1201,7 @@ function onInitDB() {
 
         }
         p.createUI3 = function createUI3() {
+            uiUtils.br(); uiUtils.br();
             var divParent = $('#divSaveArea');
             var div = uiUtils.addDiv('divAreaRun').ui;
             self.data.ui.divAreaRun = uiUtils.lastId();
@@ -1313,10 +1211,8 @@ function onInitDB() {
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
 
-            uiUtils.br()
-            uiUtils.hr()
-
             self.renderHelper.blockIfNull( self.data.ui.divAreaRun, 'self.data.listDlManifest')
+
 
             div.append('Run');
             //once the x is ready, ten u can disable
@@ -1333,10 +1229,7 @@ function onInitDB() {
                     console.log('run with', name);
 
                     var data = {};
-
                     data.taskName = name;
-
-                    data.taskName = t.data.listDlManifest.split('/').slice(-1)
 
                     var url = uiUtils.getLocation('useConfig', 6012);
 
@@ -1349,6 +1242,8 @@ function onInitDB() {
                     return;
                 }
             )
+
+
 
             // uiUtils.spacer();
 
@@ -1400,6 +1295,9 @@ function onInitDB() {
             uiUtils.spacer();
 
 
+
+
+
             uiUtils.addBtn({
                     title:'Dl',
                     text: '~',
@@ -1422,9 +1320,14 @@ function onInitDB() {
                 }
             )
 
+
+
+
+
             return;
         }
         p.createVerifyBlock = function createVerifyBlock() {
+
 
             var divParent = $('#divSaveArea');
             var div = uiUtils.addDiv('divAreaVerify').ui;
@@ -1433,8 +1336,8 @@ function onInitDB() {
             //var div = $('#divSaveArea');
             uiUtils.addDefaultCfg( {addTo:div} );
 
-            uiUtils.br()
-            uiUtils.hr()
+
+            uiUtils.br(); uiUtils.br();
             div.append('Verify');
             uiUtils.br()
 
@@ -1443,7 +1346,7 @@ function onInitDB() {
             self.types.dlRemoteFileList = 'dlRemoteFileList';
 
 
-            var downloadButtonData =   {
+            var initData =   {
                 url:self.getValFrom(self.data.ui.txtBreedServerUrl),
                 ip:self.data.ip,
                 port:self.data.portHoist2,
@@ -1460,12 +1363,11 @@ function onInitDB() {
                     text: 'Status',
                     html: uiUtils.glyph('cloud-download'),
                     fxClick: self.onServerTask,
-                    data:downloadButtonData
+                    data:initData
                 }
             )
 
 
-            var initData = u.clone(downloadButtonData);
             initData.initGFFRM = true;
             self.onServerTask(null, initData)
 
@@ -1504,6 +1406,8 @@ function onInitDB() {
 
             self.types.taskCheckProgressLite = 'taskCheckProgressLite';
             uiUtils.addBtn({
+                    title:'Dl',
+                    text: '~',
                     title: 'Check Progress Lite',
                     text: 'Status',
                     html: uiUtils.glyph('adjust'),
@@ -1544,7 +1448,9 @@ function onInitDB() {
 
             self.types.sanitizeFileList = 'sanitizeFileList';
             uiUtils.addBtn({
-                title: 'Santize file list - Generate sanitize report',
+                title:'Dl',
+                text: '~',
+                title: 'Santize file list - Gerneate santize report',
                 text: 'Status',
                 html: uiUtils.glyph('compressed'),
                 fxClick: self.onServerTask,
@@ -1570,11 +1476,6 @@ function onInitDB() {
             uiUtils.addLabel({id:'txt_'+self.types.sanitizeFileList });
             self.data.ui.txt_sanitizeFileList = uiUtils.lastId();
             self.data.forwardOutputType[self.types.sanitizeFileList] = self.data.ui.txt_sanitizeFileList
-
-            //
-            uiUtils.addLabel({id:['txt',self.types.sanitizeFileList,'output']});
-            self.renderHelper.pushData( 'self.data.'+ [self.types.sanitizeFileList, 'output'].join('_') );
-
 
             u.br()
 
@@ -1769,10 +1670,9 @@ function onInitDB() {
                     + '/listTasks';
                 uiUtils.getUrl(url, function getTasks_OK(taskList){
                     console.log('getTasks_OK', taskList)
-                    //TODO: Ensure curent list is selected
                     uiUtils.setSelect(self.data.ui.ddPrevTaskList,
                         taskList, 'name', 'name');
-
+                    uiUtils.selectAction(self.data.ui.ddPrevTaskList)
                     callIfDefined(fxDone);
                 }, null, function onError(){
                     alert('could not list srv')
@@ -1786,9 +1686,22 @@ function onInitDB() {
 
                  */
 
-
-                //  debugger
                 var task = {}
+
+
+                self.taskXName = function tasXName() {
+                    var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
+                    //debugger
+                    if ( name == null || name == '') {
+                        var defaultName = 'Task'+'_'+uiUtils.getTimestamp2(true);
+                        var ui = uiUtils.setVal2(self.data.ui.txtTaskName2, defaultName);
+                        //  debugger
+                    }
+                    //debugger
+                    var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
+                    return name;
+
+                }
 
                 self.taskXName()
 
@@ -1818,7 +1731,7 @@ function onInitDB() {
                     });
             }
 
-            // setTimeout(p.saveTask, 1500)
+            setTimeout(p.saveTask, 1500)
             p.removeTask = function removeTask(fxDone) {
                 var url = self.data.baseDataUrl
                     + '/removeTask';
@@ -1848,13 +1761,20 @@ function onInitDB() {
                 uiUtils.getUrl(url, function getPreviousTasksList(task){
 
                     console.info(task)
-
-
-                    self.data.fileFileList =  task.fileFileList
-                    self.data.listDlManifest =  task.listDlManifest
-                    self.render();
                     //debugger;
+
+                    return;
                     uiUtils.ripPropsSet(task.props)
+
+
+                    return;
+
+                    var ui = uiUtils.setVal2(self.data.ui.txtTaskName2, task.name);
+                    self.getPreviousTasks()
+
+
+
+                    //self.getTasks();
                     u.cid(fxDone);
                 }, data, function onError(){
                     alert('server is not running start autoaveserver')
@@ -1940,6 +1860,45 @@ function onInitDB() {
 
 
         function defineRemoteUtils() {
+            p.utils.processDARK = function processDark(s) {
+                if ( s == null ) {
+                    console.error('s is null', s)
+                }
+                var other = {};
+                $.each(s, function (k, v) {
+                    other[k] = v;
+                    if (v.getValFromId) {
+                        var val = $(v.getValFromId).val();
+                        if ( v.fxPost ) {
+                            val = v.fxPost(val)
+                        }
+                        other[k] = val;
+                    }
+                    if ( v.getValFromData) {
+                        var val = self.data[v.getValFromData];
+                        if ( v.getValFromData.startsWith('self.')) {
+                            val = eval(v.getValFromData);
+                        }
+                        other[k] = val;
+                    }
+
+                });
+                return other;
+            }
+
+            p.utils.getUIData = function getUIData(e,dataOverride) {
+                if ( dataOverride == null ) {
+                    var target = $(e.target)
+                    var targetData = e.target.data;
+                } else {
+                    targetData = dataOverride;
+                }
+
+                // console.log('d', target.attr('data'), e.target.data);
+                var data = self.utils.processDARK(targetData);
+//debugger
+                return data;
+            }
 
             p.utils.makeTaskName = function makeTaskName(type, name) {
 
@@ -1978,7 +1937,7 @@ function onInitDB() {
 
             function defineRemotingMethods() {
                 p.onGetMag = function onGetMag(e) {
-                    console.error('e','onGetMag', self.data.socket)
+                    console.error('e', self.data.socket)
                     //console.error(e)
                     var target = $(e.target)
                     console.log('d', target.attr('data'), e.target.data);
@@ -1986,9 +1945,11 @@ function onInitDB() {
                     console.log('yy', data);
 
                     uiUtils.disable(self.data.ui.btnCreateDM_query);
-                    uiUtils.socket.emitOne('runcmd', data, function onResult(data2) {
+                    uiUtils.socket.nextEmit(this);
+                    uiUtils.socket.emit('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
                         uiUtils.enable(self.data.ui.btnCreateDM_query);
+
                         if ( data2.a != null )
                             uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title)
                         else {
@@ -1996,7 +1957,11 @@ function onInitDB() {
                         }
                         self.data.queryTor = data2.a;
                     })
-
+                    return;
+                    // return;
+                    self.data.socket.emit('cmd',
+                        data
+                    )
                 }
 
                 p.onGetListsAndCreateDM = function onGetListsAndCreateDM(e) {
@@ -2034,36 +1999,21 @@ function onInitDB() {
 
                     data.taskName = taskName;
 
-                    if  (data.title) {
-                        var title = data.title;
-                        console.log('title', title, data);
-                        data.title = title;
-                        data.taskName = title;
-                    }
-                    //debugger;
-
                     console.log('going with', this.name, data);
 
                     // return;
                     uiUtils.disable(self.data.ui.btnCreateDM_query);
-                    // uiUtils.socket.nextEmit(this);
-                    uiUtils.socket.emitOne('runcmd', data, function onResult(data2) {
+                    uiUtils.socket.nextEmit(this);
+                    uiUtils.socket.emit('runcmd', data, function onResult(data2) {
                         console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
                         uiUtils.enable(self.data.ui.btnCreateDM_query);
 
-                        if ( data2.a != null ) {
+                        if ( data2.a != null )
                             uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title)
-                            self.data.listDlManifest = data2.a.fileDLManifest;
-                        }
                         else {
                             uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.b)
                         }
                         self.data.queryTor = data2.a;
-
-
-                        self.saveTask();
-                        self.render();
-
                     })
                     return;
                     // return;
@@ -2073,20 +2023,34 @@ function onInitDB() {
                 }
 
                 p.onCreateDM = function onCreateDM(e) {
-                    var data = self.utils.getUIData(e);
+                    // console.error(e)
+                    var target = $(e.target)
+                    // console.log('d', target.attr('data'), e.target.data);
+                    var data = self.utils.processDARK(e.target.data);
                     console.log('onCreateDM', data);
-                    var title = data.title
+
+
+
+                    self.resetTaskTitle('1off_query_'+data.query);
+                    //self.resetTaskTitle2();
+                    var title = self.getTaskTitle();
+
+                    // return;
+                    //   uiUtils.disable(self.data.ui.btnCreateDM_query);
+                    uiUtils.socket.nextEmit(this);
                     console.log('title', title, data);
                     data.title = title;
-                    uiUtils.socket.emitOne('runcmd', data, function onResult(data2) {
-                        console.log('onCreatedDM', data2, data2.a);
 
-                        self.data.listDlManifest = data2.a.fileDLManifest;
-                        self.saveTask();
-                        self.render();
-                        //uiUtils.enable(self.data.ui.btnCreateDM_query);
-                        //uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
+                    uiUtils.socket.emit('runcmd', data, function onResult(data2) {
+                        console.log('obobodf..sdf. .sdf.sd', data2, data2.a);
+                        uiUtils.enable(self.data.ui.btnCreateDM_query);
+                        uiUtils.setHtml(self.data.ui.txtQueryResultInfo, data2.a.title);
                     })
+                    return;
+                    // return;
+                    self.data.socket.emit('cmd',
+                        data
+                    )
                 }
 
                 p.onTestHoistServer = function onTestHoistServer(e) {
@@ -2167,19 +2131,28 @@ function onInitDB() {
 
                 p.onServerTask = function onServerTask(e, dataOverride) {
                     // console.error(e)
-                    var data = self.utils.getUIData(e, dataOverride);
-                    console.log('onServerTask--', data);
-                    //var title = self.getTaskTitle();
-                    var title = self.taskXName();
 
+                    if ( dataOverride == null ) {
+                        var target = $(e.target)
+                        var targetData = e.target.data;
+                    } else {
+                        targetData = dataOverride;
+                    }
+
+                    // console.log('d', target.attr('data'), e.target.data);
+                    var data = self.utils.processDARK(targetData);
+                    console.log('onServerTask--', data);
+                    var title = self.getTaskTitle();
                     //   uiUtils.disable(self.data.ui.btnCreateDM_query);
-                    //uiUtils.socket.nextEmit(this);
+                    uiUtils.socket.nextEmit(this);
+
 
                     data.title = title;
                     //self.data.fileFileList = self.data.hostname+'.list.files.txt'
                     data.fileFileList = self.data.fileFileList;
                     self.data.fileManifest = title;
                     data.fileManifest = self.data.fileManifest;
+
                     data.fileManifest = self.data.listDlManifest
 
                     console.log('title', title, data);
@@ -2207,48 +2180,18 @@ function onInitDB() {
                 }
 
 
-                /*     p.getTaskTitle = function getTaskTitle() {
-                 self.data.txtTaskName =  uiUtils.getVal2(self.data.ui.txtTaskName)
-                 var taskName = self.data.txtTaskName +
-                 uiUtils.getVal2(self.data.ui.txtTaskDate);
+                p.getTaskTitle = function getTaskTitle() {
+                    self.data.txtTaskName =  uiUtils.getVal2(self.data.ui.txtTaskName)
+                    var taskName = self.data.txtTaskName +
+                        uiUtils.getVal2(self.data.ui.txtTaskDate);
 
-                 var txtTaskNameOverride = uiUtils.getVal2(self.data.ui.txtTaskNameOverride)
-                 if ( txtTaskNameOverride ) {
-                 taskName = txtTaskNameOverride;
-                 }
-                 //console.log('..', 'txtTaskNameOverride', txtTaskNameOverride)
-                 return taskName;
-                 }*/
-
-
-                p.getTaskTitle =  p.taskXName = function tasXName() {
-                    var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
-                    //debugger
-                    if ( name == null || name == '') {
-                        var defaultName = 'Task'+'_'+uiUtils.getTimestamp2(true);
-                        var ui = uiUtils.setVal2(self.data.ui.txtTaskName2, defaultName);
-                        //  debugger
+                    var txtTaskNameOverride = uiUtils.getVal2(self.data.ui.txtTaskNameOverride)
+                    if ( txtTaskNameOverride ) {
+                        taskName = txtTaskNameOverride;
                     }
-                    //debugger
-                    var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
-                    return name;
-
+                    //console.log('..', 'txtTaskNameOverride', txtTaskNameOverride)
+                    return taskName;
                 }
-
-                /*
-                 self.taskXName = function tasXName() {
-                 var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
-                 //debugger
-                 if ( name == null || name == '') {
-                 var defaultName = 'Task'+'_'+uiUtils.getTimestamp2(true);
-                 var ui = uiUtils.setVal2(self.data.ui.txtTaskName2, defaultName);
-                 //  debugger
-                 }
-                 //debugger
-                 var name  = uiUtils.getVal2(self.data.ui.txtTaskName2)
-                 return name;
-
-                 }*/
 
                 p.resetTaskTitle = function resetTaskTitle(dv) {
                     var ui = self.data.ui.txtTaskName;
@@ -2267,100 +2210,6 @@ function onInitDB() {
             }
 
             defineRemotingMethods();
-
-
-            function defineutils()  {
-
-                self.getValFrom = function getValFrom(val, fxPost) {
-                    var instruction = {'getValFromId':val};
-                    if ( fxPost ) {
-                        instruction.fxPost = fxPost;
-                    }
-
-                    return instruction
-                }
-
-                self.getValFromData = function getValFromData(val) {
-                    return {'getValFromData':val}
-                }
-
-
-                self.utils.combineFields = function comF() {
-                    var args = u.args(arguments)
-                    return {'combineFields':args}
-                }
-
-
-
-                p.utils.processDARK = function processDark(s) {
-                    if ( s == null ) {
-                        console.error('s is null', s)
-                    }
-                    var other = {};
-                    $.each(s, function processFieldIfHasInstructions (k, v) {
-                        other[k] = v;
-                        if (v.getValFromId) {
-                            var val = $(v.getValFromId).val();
-                            if ( v.fxPost ) {
-                                val = v.fxPost(val)
-                            }
-                            other[k] = val;
-                        }
-                        if ( v.getValFromData) {
-                            var val = self.data[v.getValFromData];
-                            if ( v.getValFromData.startsWith('self.')) {
-                                val = eval(v.getValFromData);
-                            }
-                            other[k] = val;
-                        }
-
-                        if ( v.combineFields) {
-                            var fieldsToCombine = v.combineFields;
-
-                            var resultsOfCombine = [];
-
-                            $.each(fieldsToCombine, function onX(k, v) {
-                                var val = v;
-                                if ( v.startsWith('"') && v.endsWith('"')) {
-                                    val = val.slice(1,-1)
-                                } else if ( v.startsWith('abv' ) ) {
-                                    var field_ = v.split(':')[1];
-                                    var orig = val = other[field_]
-                                    val = val.slice(0,7) +'_'+ val.length
-                                    // debugger
-                                }
-                                else {
-                                    val = other[v]
-                                }
-
-                                resultsOfCombine.push(val)
-                            });
-
-                            var str = resultsOfCombine.join('_');
-                            other[k] = str;
-                        }
-
-                    });
-                    return other;
-                }
-
-                p.utils.getUIData = function getUIData(e,dataOverride) {
-                    if ( dataOverride == null ) {
-                        var target = $(e.target)
-                        var targetData = e.target.data;
-                    } else {
-                        targetData = dataOverride;
-                    }
-
-                    // console.log('d', target.attr('data'), e.target.data);
-                    var data = self.utils.processDARK(targetData);
-//debugger
-                    return data;
-                }
-
-
-            }
-            defineutils()
 
             /* self.data.socket.on('searchpb', function(msg){
              if (msg.indexOf('eval-')==0) {

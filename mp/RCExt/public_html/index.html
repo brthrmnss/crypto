@@ -143,12 +143,20 @@
 <script src="js/shz.js" ></script>
 
 <!--<script src="js/ui_utils.js" ></script>-->
+
+
 <script src="js/lib/ui_utils.js" ></script>
-<script src="http://localhost:10110/ui_utils.js" ></script>
+<script src="http://localhost:10110/ui_utils.js" ></script> <!-- unavail in prod -->
+
+
+
+<script src="js/lib/shelpers-mini.js" ></script>
+<script src="http://localhost:10110/shelpers-mini.js" ></script> <!-- unavail in prod -->
 
 
 <script src="js/db2_ui.js" ></script>
 
+<script src="js/RemoteList.js" ></script>
 
 <!--
 <script src="http://localhost:10110/lib/bootstrap.min.css" ></script>
@@ -177,7 +185,6 @@
 
     })
 
-
     reloader.reloadWhenFx('RenderHelper.js', function onTestOneJs(a, b, c) {
       console.log('reload it', a,b,c);
       setTimeout(function () {
@@ -185,6 +192,14 @@
       }, 500)
 
     })
+
+    reloader.reloadWhenFx('RC_ConfigManager_ExecServer.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      setTimeout(function () {
+        window.onInitDB()
+      }, 500)
+    })
+
     /*reloader.reloadWhenFx('db2_ui.js', function onTestOneJs(a, b, c) {
       console.log('reload it', a,b,c);
       setTimeout(function () {

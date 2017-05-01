@@ -289,8 +289,13 @@ function ConvertXToIMDB_PB_List() {
                 self.settings.fileOutputDlMagsList;
 
             self.settings.fileOutputDlMagsList = fileName;
+            self.proc('changing name to', fileName, self.settings.fileOutputDlMagsListOrig )
             //sh.callIfDefined(fxDone, fileName);
+        } else {
+            self.proc('changing name to-->', fileOutput, self.settings.fileOutputDlMagsListOrig )
+
         }
+
         //G:\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
         self.chain.cb()
         sh.callIfDefined(self.settings.fxDone, self.data.fileOutputDlMagsList, self)
@@ -420,6 +425,7 @@ ConvertXToIMDB_PB_List.downloadLists = function downloadLists(listIdsInput, skip
             var content = sh.toJSONString(fileContent);
             sh.writeJSONFile(fileName, fileContent)
 
+
             sh.callIfDefined(fxDone, fileName);
         }
         //asdf.g
@@ -452,6 +458,7 @@ ConvertXToIMDB_PB_List.downloadIds = function downloadIds(ttList, skipIfListExis
     function onDone_CombineInto1DlList(listZ) {
         var fileContent = [];
         var aFile = '';
+        aFile = listZ;
         var index = 0;
         var dictIds = {};
         var skippedCount = 0;
@@ -473,7 +480,7 @@ ConvertXToIMDB_PB_List.downloadIds = function downloadIds(ttList, skipIfListExis
             item.genIndex = index;
         })
 
-        console.log('asdf length of listWr', index, skippedCount)
+        console.log('asdf length of listWr', index, skippedCount, listZ)
 
         if ( nameOfOutput ){
             var fileName = aFile.replace('/mags/', '/dlListsWrapC/')
@@ -484,13 +491,12 @@ ConvertXToIMDB_PB_List.downloadIds = function downloadIds(ttList, skipIfListExis
 
             var content = sh.toJSONString(fileContent);
             sh.writeJSONFile(fileName, fileContent)
-
+            console.log('fileName listWr', fileName)
             sh.callIfDefined(fxDone, fileName);
         }
         //asdf.g
         //C:\Users\user1\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
     }
-
 }
 
 
