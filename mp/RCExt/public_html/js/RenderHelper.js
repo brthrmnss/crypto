@@ -30,7 +30,7 @@ function RenderHelper() {
         inst.type = pushDataToUIElement.name;
         self.data.insts.push(inst)
     }
-    
+
     p.pushData2 = function pushDataToUIElement(dataStr, idOrUI) {
         var inst = {};
         if ( idOrUI == null ) {
@@ -59,10 +59,41 @@ function RenderHelper() {
     }
 
 
+
+    p.idRequiresVal = function idRequiresVal(id, idValMustBeDefined) {
+        var inst = {};
+        inst.id = id;
+        inst.idValMustBeDefined = idValMustBeDefined;
+        inst.type = idRequiresVal.name;
+        self.data.insts.push(inst)
+        uiUtils.addChange(idValMustBeDefined, function onChangeIt(a,b,c) {
+            console.log('change', a,b,c)
+            self.testVal( a, id)
+        })
+    }
+
+
+    p.testVal = function testVal(val, setUI) {
+        var disabled = false;
+        if ( val == null || val == ''){
+            disabled = true
+        }
+
+        var uiSet = u.getUI(setUI)
+
+        console.log(uiSet, val, disabled)
+
+        if (disabled) {
+            uiSet.css('opacity', '0.3')
+        } else {
+            uiSet.css('opacity', '1')
+        }
+    }
+
     p.render2 = function render2() {
-        
+
     };
-    
+
     p.render = function render() {
         $.each(self.data.insts, function onActInst(k, v) {
             var inst = v;
@@ -74,7 +105,7 @@ function RenderHelper() {
                     var x = $();  // empty jQuery object
                     $.each(ui, function(i, o) {x = x.add(o)});
                     ui = x;
-                //    debugger
+                    //    debugger
                 } else {
                     if ( $.isString(inst.id) &&
                         inst.id.startsWith('#') == false) {
@@ -86,7 +117,8 @@ function RenderHelper() {
             }
 
             var __self = self.data.self;
-            var evalFx = inst.evalFx.replace('self', '__self')
+            if ( inst.evalFx )
+                var evalFx = inst.evalFx.replace('self', '__self')
             //console.debug('eval', __self,  inst.evalFx, inst.type , p.idRequires.name)
             if (inst.type == p.idRequires.name) {
                 var y = eval(evalFx)
@@ -111,6 +143,16 @@ function RenderHelper() {
                 } else {
                     ui.css('opacity', '1')
 
+                }
+            }
+
+            if (inst.type == p.idRequiresVal.name) {
+                var ui = uiUtils.getUI(inst.idValMustBeDefined)
+                var y = u.getVal2(ui)
+                if (y == null || y == '') {
+                    ui.css('opacity', '0.3')
+                } else {
+                    ui.css('opacity', '1')
                 }
             }
 

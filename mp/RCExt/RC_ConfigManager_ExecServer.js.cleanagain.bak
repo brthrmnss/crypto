@@ -853,14 +853,6 @@ function RCConfigExecServer() {
             config.socket = self.data.socketBreed;
             config.ip = data.ip;
             config.port = data.port;
-
-            if ( cmd.url ) {
-                self.proc('port ip set')
-                var split = cmd.url.split(':')
-                config.ip = split[0];
-                config.port = split[1];
-            }
-
             if ( data.initGFFRM ) {
                 self.proc('data.initGFFRM', '... ... ...')
                 config.initGFFRM = data.initGFFRM;
@@ -884,7 +876,19 @@ function RCConfigExecServer() {
             }
             instance.init(config)
 
+            return;
 
+            RCScripts.verifyComplete(fileDlManifest, fileFileList, function onDone(output) {
+                console.log('found how many?', output.foundCount);
+                output.itemsValid = null;
+                output.itemsFound = null;
+                output.lines = output.lines.length
+                sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+                fx(output);
+            });
+
+
+            return;
         }
 
 

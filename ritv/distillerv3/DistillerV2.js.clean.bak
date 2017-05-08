@@ -1,0 +1,2186 @@
+/**
+ * Created by user1 on 2/7/14.
+ *
+ *
+ * 1 find content on piratebay
+ * 2 download content via put.io to blasdf
+ * 3 iterate over content, add rotten tomato information
+ * 4 add new content to db
+ *
+ * insight:  seperate rotten as a later step
+ * get content first
+ */
+
+/**
+ *
+ * pb get from name
+ * pb get from names
+ *
+ * put io download file
+ * mega upload upload file (delete afterwards)
+ *
+ * sync folder
+ * connect to mega
+ * download missing content
+ * import to ritv-db
+ *
+ * idempotence , have db
+ */
+
+var request = require('request');
+//require('request-debug')(request);
+var cheerio = require('cheerio');
+var sh = require('shelpers').shelpers
+var PromiseHelper = require('shelpers').PromiseHelper;
+var OptionsHelper = require('shelpers').OptionsHelper
+var fs = require("fs")
+var async = require('async');
+var request = require('request');
+var request = request.defaults({jar: true})
+var mkdirp = require("mkdirp")
+var progress = require('request-progress');
+var AxelDownloader = require('./utils/AxelDownloader').AxelDownloader;
+
+var FileExtractor = require('./utils/FileExtractor').FileExtractor;
+
+/*
+ wiht new promise helpers
+ spromos
+
+ search for content, query==>url
+ */
+function DistillerV2() {
+
+    var p = DistillerV2.prototype;
+    p = this
+    var types = {}
+    types.busyServer = 'busyServer'
+    types.tooSlow = 'tooSlow'
+    types.urlParseFailure = 'urlParseFailure'
+
+    var consts = {}
+    consts.slowKBSpeed =1000
+    consts.maxETATime = 60*1000 //1 hour (not sure how)
+    consts.maxETATime = 5*1000 //5 mins
+
+    consts.timeCheckTransfers = 10 * 1000
+    consts.timeRetryAction = 10*1000
+
+
+
+
+    var bookmarks = {}
+    var self = this;
+
+    self.data = {};
+    self.data.userToken = 'sg';
+
+    //var requestOld = request;
+    /* var request = function rewWriteRequest() {
+
+     var args = sh.convertArgumentsToArray(arguments)
+     if ( self.fxAddToken != null )
+     self.fxAddToken(args[0])
+     sh.callIfDefined(requestOld, args);
+     //request(req)
+
+
+     }*/
+
+    self.redirectRequestsForTesting = function () {
+        var fxOldRequest = request;
+        request = function requestWrapper(opt, cb, fakeData) {
+
+
+            function cbRedirect(error, response, body ) {
+                console.log('output:')
+
+                //console.log(error)
+                // console.log(response)
+                // console.log(body)
+
+                cb(error, response, body)
+            }
+
+
+            if ( fakeData ) {
+                var response = fakeData;
+                var body = fakeData;
+
+                if ( fakeData.errorResponse ) {
+                    var error  = fakeData.errorResponse
+                    var response = fakeData.response;
+                    var body = fakeData.body;
+                }
+
+                cb(error, response, body)
+                return;
+            }
+
+
+
+
+
+            fxOldRequest(opt, cbRedirect)
+        };
+        return request
+    }
+    request = self.redirectRequestsForTesting();
+
+    self.go = function go(options) {
+
+
+        self.settings = {}
+
+        self.options = options;
+        self.status('.... starting it');
+
+        self.settings.waitSlowServerSpeeds = 3*60;
+        if ( options.fxSetupDirsForBaseDir == null ) {
+            // sh.throw('pass this in') //i need to modify the dirs
+        }
+
+        //load options
+        var paramsHelper = new OptionsHelper();
+        paramsHelper.loadOptions(options)
+        var fxCallback = paramsHelper.addOption('callback', 'completion callback', true)
+        var query = paramsHelper.addOption('query',
+            'what torrent to look for', false)
+        var test = paramsHelper.addOption('test',
+            'go into test mode', false)
+        var downloadFiles = paramsHelper.addOption('downloadFiles',
+            'download files', false)
+
+        //create work token
+        var token = {}
+        sh.mergeObjects(options,token) //tired of copying properties over
+        //token.options = options;
+        token.putioUsername = paramsHelper.addOption('putioUsername',
+            'go into test mode', false, 'trevmoreano')
+        token.putioPassword = paramsHelper.addOption('putioPassword',
+            'download files', false, '12121212')
+
+        token.extractFiles = paramsHelper.addOption('extractFiles',
+            'extractFiles', false, true)
+        token.dirExtractFiles = paramsHelper.addOption('dirExtractFiles',
+            'dirExtractFiles', true )
+
+        self.settings.maxTransfersCount = paramsHelper.addOption('maxTransfersCount',
+            'how many times can we check transfers before giving up on a file', false, 10 )
+        //self.settings.maxTransfersCount =0 ; //why would this be 0? to test failing locally
+
+        self.token = token
+        self.token.showFileList = true;
+        self.token.showFileList = false;
+        //self.token.showTransfers = false
+        self.token.showTransfers = paramsHelper.addOption('showTransfers',
+            'showTransfers ...', false )
+        token.query=query
+        //TODO fix this, it should not be called all over ...
+        //only at the end of processing ...
+        token.fxCallback=fxCallback;
+        //token.bail = false; // = asdf;
+        token.bail = false
+        token.test = options.test
+        //placeholders
+        token.match = null
+
+
+        token.settings = {}
+
+
+        var urlTorrent = paramsHelper.addOption('urlTorrent',
+            'urlTorrent of torrent to download', false)
+        token.urlTorrent = urlTorrent;
+
+
+
+
+        if ( token.urlTorrent == null && token.query == null ) {
+            throw ['Need either a urlTorrent, or a query', options].join(' ') //'dddddd'
+            return
+        }
+
+        var downloadFile = paramsHelper.addOption('downloadFile',
+            'should file be downloaded?', false, false)
+        if ( downloadFile ) {
+            var downloadFileDir = paramsHelper.addOption('downloadFileDir',
+                'where to store downloaded file', true, null)
+        }
+        token.settings.downloadFile = downloadFile;
+        token.settings.downloadFileDir = downloadFileDir;
+
+        token.rewriteExisting = paramsHelper.addOption('rewriteExisting',
+            'rewrite file if it already exists', false, false )
+
+        token.fxBail = paramsHelper.addOption('fxBail',
+            'callback to leave method', false )
+
+
+        self.settings = sh.clone(token)
+        self.utils.copySentToken()
+
+        //self.token.addTorrentLinks=[]
+        //self.token.addTorrentLinks.push('magnet:?xt=urn:btih:97414f92446a95d142c7e87621735cb645a6ff8e&dn=The+5th+Element%281997%29.720P.BRRip.H264.%5BResource+RG%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337')
+        //create work chain
+
+        var work = new PromiseHelper();
+        token.silentToken = true
+        work.wait = token.simulate==false;
+        //work.
+        work.startChain(token)
+            .add(self.determineDirSize)
+            .add(self.loginPutio)
+            //.add(self.putioDownloadToken)
+            //.add(self.authenticatePutio)
+            //.log()
+            //.add(self.searchPutIO_ForTorrentByName) //TODO: B/c not very reliable ... little functionality lst
+            .add(self.searchPutIO_YourFiles_forTorrentV2)
+            //.add(self.searchPutIO_YourFiles_forTorrentV2)asd
+            //return; a
+
+            //.add(self.searchPutIO_Transfers_forTorrent)
+            //.add(self.searchPutIO_YourFiles_forTorrent)
+            //     .add(self.utils.clearTransfers)
+            //.add(self.act_clearAllTransfers)
+            .add(self.logic.act_BailIfFileInLibrary)
+            .log()
+            //get files ....
+            //make sure file is valid
+            //.add(self.listUserFiles)
+            // .add(self.getTransfersInfo)
+            .add(self.getTransfersInfo)
+            //... //...
+            //... ... | ....
+            .add(self.downloadTorrentToPutIO_addToTransfers)
+            .add(self.logic.act_waitForTransferToComplete)
+            //.add(self.downloadFile)
+            .utils.wait3Secs()
+            .add(self.logic.getDownloadName)
+            .add(self.logic.downloadCompletedTransfer)
+            .add(self.listTransfers)
+            .add(self.putio.removeDownloadFileFromTransfers)
+            .add(self.putio.removeDownloadFileFromMyFiles)
+            .add(self.putio.verifyFileDeleted)
+            .add(self.logic.extractFile)
+            .add(self.exitChain)
+            .end();
+    }
+
+    p.exitChain = function exitChain(token, cb) {
+        self.status('get zip')
+        cb()
+        if ( token.fxCallback != null ) {
+            self.proc('passed on ')
+            token.fxCallback(token.pathDownload, token)
+        }
+
+    }
+
+    p.status = function status(d){
+        if ( self.options && self.options.fxStatus ) {
+            self.data.startTime = sh.dv(self.data.startTime, new Date());
+            var timeDelayed = sh.time.secs(self.data.startTime);
+            self.options.fxStatus(timeDelayed+ ' ' + d);
+        }
+    }
+
+    p.logic= {}
+    /**
+     * if the token has a matching item on .... proceed to the next task
+     * if not, return the file url on the callback
+     * @param token
+     * @param cb
+     */
+    p.logic.act_BailIfFileInLibrary = function act_BailIfFileInLibrary(token, cb) {
+
+
+        if ( token.completedFileInLibrary != null ) {
+            cb()
+            return;
+        }
+
+        if ( token.bail == false ) {
+            cb();
+            return;
+        }
+
+        if ( token.match == null ) {
+            cb()
+            return;
+        }
+
+        if ( token.match != null ) {
+            asdf.g
+            self.proc('found a match for query')
+            self.putio.getDownloadLink(token.match.id, token.fxCallback)
+            //cb()
+        }
+
+    }
+
+    /**
+     * Iterate over the transfers
+     * If there is as matching transfer ...that is complete ... let's return thatr file
+     *
+     * @param token
+     * @param cb
+     */
+    p.logic.act_waitForTransferToComplete = function act_waitForTransferToComplete(token, cb) {
+
+        if ( token.completedFileInLibrary != null ) {
+            self.proc('token.completedFileInLibrary')
+            cb()
+            return;
+        }
+
+        var intervalObject = null;
+        var matchingTransfer = null
+        function  checkTransfers () {
+            if ( self.countCheckTransfers == null ) {
+                self.countCheckTransfers = 0
+            }
+            self.countCheckTransfers++;
+            if ( self.settings.showTransfersInfo != false ) {
+                self.proc('countCheckTransfers', self.countCheckTransfers,token.query );
+            }
+            if ( self.settings.maxTransfersCount != null &&
+                self.countCheckTransfers > self.settings.maxTransfersCount ) {
+                self.proc('cannot get transfers to move .... skipping file dbput.io may be broken', self.countCheckTransfers,token.query );
+                self.bail('too many attempts checking transfer ...bailing',
+                    self.countCheckTransfers, self.token.query)
+                return;
+            }
+            //check transfers
+            var opts = {}
+            opts.callback = function processTransfers(json) {
+                if ( self.token.bailed == true ) {
+                    clearInterval(self.token.intervalID)
+                    self.proc('bailed, but still here', self.token.query);
+                    return;
+                }
+                //looking fot a complete transfer
+                var completedTransfer = null
+
+                if ( self.settings.showTransfersInfo != false ) {
+                    self.proc('checking transfers', token.query)
+                }
+
+                if ( json.transfers == null ) {
+                    self.proc(types.busyServer, 'transfers were null')
+                    return;
+                }
+
+
+                function removeSeedingTransfer_toConserveTransfers() {
+
+                    sh.each(json.transfers, function (itemIndex, transfer) {
+                        var num = itemIndex + 1
+                        num += '.'
+                        var isSeeding = transfer.status == 'SEEDING'
+                        if (completed == false) {
+                            completed = transfer.status == 'SEEDING'
+                        }
+                        var completed = transfer.status == 'COMPLETED'
+                        if (completed == false) {
+                            completed = transfer.status == 'SEEDING'
+                        }
+                        bookmarks.cleanupcode
+                        if (true == true && isSeeding) {
+                            //cancel this transfer
+                            self.putio.cancelTransfer(transfer.id, transfer.name)
+                            //json.transfers = []
+                            //return false;
+                        }
+                    })
+                }
+
+                removeSeedingTransfer_toConserveTransfers()
+
+                json.transfers = json.transfers.reverse(); //flip transfers so you get most recent one first
+
+
+
+                sh.each(json.transfers, function (itemIndex, transfer) {
+                    var num = itemIndex + 1
+                    num += '.'
+                    var completed = transfer.status == 'COMPLETED'
+                    if ( completed == false ) {
+                        completed = transfer.status == 'SEEDING'
+                    }
+                    var sameFileWeAreDownloading = transfer.magneturi == token.urlTorrent
+                    if ( transfer.source ) {
+                        // sameFileWeAreDownloading = sh.startsWith(token.urlTorrent, transfer.source, true)
+                        transfer.magneturi = transfer.source
+                    }
+                    if ( token.magneturi ) {
+                        sameFileWeAreDownloading = sh.startsWith(token.urlTorrent, transfer.magneturi, true)
+                    }
+                    //more complete search
+                    if (sameFileWeAreDownloading == false) { //bookmark: waiting for transfer to finish
+                        if ( transfer.magneturi == null ) {
+                            console.error('error about to happen ... asdf', transfer.magneturi )
+                        }
+
+                        var preamble = transfer.magneturi.split("=")[0]
+                        /*
+                         transfer.magneturi
+                         magnet:?xt=urn:btih:7ee94e8203b37f4acf946a5d40a5b40dee7e077b&dn=Ray+Donovan+S01E02+REPACK+HDTV+x264-ASAP+%5Beztv%5D
+
+                         token.urlTorrent
+                         magnet:?xt=urn:btih:b9140f268f5246aa8e94d7471311f032f113fce8&dn=Brian%5C%27s+Song+Dvdrip+H264+Bookerdog.mp4&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337
+                         */
+                        if ( sh.startsWith(token.urlTorrent,preamble, true) ) { //torrent link
+                            sameFileWeAreDownloading = token.urlTorrent == transfer.magneturi
+                            //compare second part of strings
+                            try {
+                                var split1 = transfer.magneturi.split("=")[1]
+                                var split2 = token.urlTorrent.split("=")[1]
+                                sameFileWeAreDownloading = split1 == split2
+                            } catch ( e) {
+                                self.proc(types.urlParseFailure, 'cannot determine if files are the same .... missing 2 = signs')
+                            }
+
+                        } else {
+                            self.proc(tag.diagnostic, 'we do not have the same type of urls')
+                        }
+
+                    }
+                    //console.log(transfer.name, token.urlTorrent, transfer.magneturi)
+                    if ( completed && sameFileWeAreDownloading) {
+                        completedTransfer = transfer;
+                        self.proc('found completedTransfer');
+                        return false;
+                    }
+                    if ( sameFileWeAreDownloading ) {
+                        token.transfer = transfer
+                    }
+                    //bookmark: show all active downloads
+                    // console.log(num,   transfer.name, completed)
+                    if ( completed ) { return  }
+
+                    bookmarks.verboseOutputFromLogs
+                    //console.log(num,   transfer.name, completed, transfer.percent_done,'%', transfer.down_speed)
+
+                    if ( sameFileWeAreDownloading ) {
+                        var  timeRemaining = 'unknown';
+                        try {
+                            timeRemaining = (transfer.estimated_time / 60)
+                            timeRemaining = timeRemaining.toFixed(2)
+                        } catch ( e ) {
+                            timeRemaining
+                        }
+                        console.log("\t", 'found file >>>', num,   transfer.status_message, 'timeRemaining', timeRemaining)
+                        if ( transfer.estimated_time == -1  ) {
+                            //see if transfer has moved at all in the last 60 seconds
+                            if ( self.token.trasnferActive != null ) {
+                                var elapsedSecs = sh.timeElapsed(self.token.trasnferActive)
+                                self.proc(types.tooSlow, 'server moving slow, ... waiting', elapsedSecs)
+                                if ( elapsedSecs > 60+30 ) {
+                                    self.proc(types.tooSlow, 'server moving slow, bail')
+                                    self.bail();
+                                }
+                            } else {
+                                self.token.trasnferActive = new Date();
+                            }
+                            /*
+                             if (self.token.runTime() > 20) {
+                             self.proc(types.tooSlow, 'server moving slow, bail')
+                             self.bail();
+                             }
+                             */
+                        } else {
+                            //store the current size
+                            self.token.trasnferActive = new Date();
+                        }
+                        //↓ 2.0 K/s, ↑ 0.0 B/s | 5 peers, 0 leechers | downloaded: 2.6 M / 133.4 M, uploaded: 0.0 B | availability: 100%
+                        //check for slow download times
+                        if ( transfer.estimated_time > consts.maxETATime  ) { //1 hour
+                            //see if transfer has moved at all in the last 60 seconds
+                            if ( self.token.timerTransferSlow != null ) {
+                                var elapsedSecs = sh.timeElapsed(self.token.timerTransferSlow)
+                                self.proc(types.tooSlow, 'server moving slow, ... waiting', elapsedSecs)
+                                if ( elapsedSecs > self.settings.waitSlowServerSpeeds ) {
+                                    self.proc(types.tooSlow, 'server moving slow, bail')
+                                    self.bail();
+                                }
+                            } else {
+                                self.token.timerTransferSlow = new Date();
+                            }
+                            /*
+                             if (self.token.runTime() > 20) {
+                             self.proc(types.tooSlow, 'server moving slow, bail')
+                             self.bail();
+                             }
+                             */
+                        } else {
+                            //store the current size
+                            self.token.timerTransferSlow = new Date();
+                        }
+
+                    }
+
+
+                    if ( self.settings.showTransfers )
+                        console.log(num, 'transfer:', transfer.name, transfer.status)
+                })
+
+                if ( completedTransfer != null ) {
+                    self.proc('completed the transfer');
+                    clearInterval(token.intervalID)
+                    token.intervalID = null
+                    token.finishedTransfer = completedTransfer;
+                    cb()
+                }
+            }
+
+
+            //opts.
+            p.putio.listTransfers(opts)
+            //  cb()
+
+        }
+
+        clearInterval(token.intervalID)
+        token.intervalID =  setInterval( checkTransfers, consts.timeCheckTransfers )
+
+        checkTransfers();
+
+
+    }
+
+    p.bail = function bail(msg){
+        if ( self.token.bailed ) {
+            self.proc('attempting to bail, but i have already bailed')
+            return;
+        }
+        console.error(self.proc(msg))
+        console.log('error', msg)
+        self.token.msg = msg;
+        self.token.fxBail(self.token);
+        self.token.bailed=true;
+        if ( self.token.intervalID != null  )
+            clearInterval(self.token.intervalID)
+    }
+
+    /**
+     * Get name/size of file to download by using HEAD request
+     * @param token
+     * @param cb
+     */
+    p.logic.getDownloadName = function getDownloadName(token, cb) {
+
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+
+
+        if ( token.contentFileSize != null ) {
+            self.proc('already have download name so skipping step')
+            cb()
+            return;
+        }
+
+        var finishedTransfer = token.finishedTransfer;
+        var file_id = finishedTransfer.file_id
+
+        var fxGetDownloadLink = function fxTransferComplete(url) {
+            token.urlDownload = url;
+
+            var headRequestOptions = {}
+            headRequestOptions.url = url
+            headRequestOptions.method = "HEAD"
+
+            function fxGotFileInfoCallback(error, response, body) {
+                if ( response == null /*|| self.token.r!= true*/) {
+                    self.proc('putio cannot get download link', '...retry?', body)
+                    if ( error ) {
+                        console.error(error.message)
+                    }
+                    self.token.r = true;
+                    if (self.utils.retryHelper(null, self.token, 'getFileDownload link',
+                            self.logic.getDownloadName,[token, cb],
+                            'putio download link',6)) {return;}
+                    //self.bail();
+
+                    return;
+                }
+                var contentDownloadName =  self.utils.getFileNameFromHeaders(response.headers)
+
+                token.contentDownloadName = contentDownloadName
+                var contentLength =  self.utils.getContentLengthFromHeaders(response.headers)
+                token.contentFileSize = contentLength
+
+
+                var fileSizeGB = contentLength/(1000*1000*1000);
+
+                self.token.dir_downloads
+
+
+
+                if ( self.token.dir_downloads ) { //override with a search for drive
+                    var dir = sh.fs.findPathWithFreeSpaceSync(self.token.dictDirs, fileSizeGB * 2);
+                    if ( dir == null )  {
+                        self.bail('do not have enough space to download this file' + fileSizeGB * 2 + ' gb ')
+                        return;
+                    }
+                    var isDirDifferent = dir != token.settings.downloadFileDir;
+                    var isDirNoTIn = sh.includes(token.settings.downloadFileDir,dir , false ) == false
+                    if ( isDirNoTIn ) {
+                        self.proc('had to change dl drive  to ' + dir )
+                        token.changedDownloadDir = dir;
+                        token.changedDownloadDirFrom = token.settings.downloadFileDir;
+                        token.fxSetupDirsForBaseDir(dir, token.settings)
+                        token.fxSetupDirsForBaseDir(dir, token)
+                        token.settings.downloadFileDir = token.settings.dirDownload; //why the two names?
+                        token.downloadFileDir = token.dirDownload;
+                    }
+
+
+                }
+
+                bookmarks.getNameOfFileDownload
+                //override name
+                if ( token.downloadFileName == null ) {
+                    token.pathDownload =  token.settings.downloadFileDir + '/' +contentDownloadName
+                    if ( contentDownloadName == null ) {
+                        self.bail('cannot get a proper pathDownload....', token.contentDownloadName)
+                        return;
+                    }
+                    self.proc('will download file to', token.pathDownload)
+
+                    bookmarks.skipFile_BC_AlreadyInMega // are cookies good enough ? ....
+                    if ( token.fxSkipDownloadBCMega ) {
+                        token.fxSkipDownloadBCMega(token.pathDownload)
+                    } else {
+                        self.proc('cant skip file on mega b/c have no check to verify existing file in mega')
+                    }
+                }
+
+
+
+
+
+
+                cb()
+            }
+            self.fxAddToken(headRequestOptions)
+            request(headRequestOptions, fxGotFileInfoCallback)
+
+
+        }
+
+        self.putio.getDownloadLink(file_id,fxGetDownloadLink)
+
+
+
+    }
+
+
+
+    p.logic.downloadCompletedTransfer = function downloadCompletedTransfer(token, cb) {
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+        var finishedTransfer = token.finishedTransfer;
+        var file_id = finishedTransfer.file_id;
+
+
+
+        //console.log('token', token)
+        //exit before download
+        //process.exit()
+
+
+        var fileDest =  token.pathDownload
+
+        //TODO: question, can this be done sooner? p:-2,
+        if ( fileDest && self.settings.skip_doNotCheckDownloadsEarly != true ){
+            if ( fs.existsSync(fileDest)) {
+                //var isFileSameSize = false;
+                var isFileSameSize = self.utils.compareFileSize(fileDest, token.contentFileSize);
+                if ( self.settings.skip_doNotCheckDownloadsEarly_alwaysPassIfExistingFile ) {
+                    self.proc(token.query, 'skip_doNotCheckDownloadsEarly_alwaysPassIfExistingFile')
+                    isFileSameSize = true;
+                }
+                if ( isFileSameSize ) {
+                    if ( token.rewriteExisting != true ) {
+                        //bookmark: how do we skip existing files?
+                        self.proc(token.query, 'This file, already exists',
+                            'did not attempt to download transfer',
+                            'will not override', fileDest, 'rewriteExisting')
+                        cb();
+                        return;
+                    }
+                }
+                self.proc('warning ... file exists', 'but not the right size', token.query, fileDest )
+
+
+
+                if ( self.settings.deleteUnzipPrev != false ) {
+                    //if ( sh.fileExists(token.pathDownload))
+                    // {
+                    self.proc('deleteUnzipPrev')
+                    //
+                    self.token.deletedTheOldFile = true;
+                    var y = sh.fs.getFileSize(token.pathDownload);
+                    self.token.deletedTheOldFile = true;
+
+                    self.proc('deleteUnzipPrev', 'old size was', y, 'GB')
+                    if ( self.settings.deleteUnzipPrevStopProcess ) {
+                        process.exit()
+                    }
+
+                    sh.deleteFile(token.pathDownload)
+                    //process.exit()
+                    //}
+
+                }
+            }
+        }
+
+
+
+
+        var fxTransferComplete = function fxTransferComplete(url) {
+            if ( token.settings.downloadFile != true  ) {
+                token.fxCallback(url)
+            } else {
+                var http = require('http');
+                var fs = require('fs');
+                mkdirp.sync(token.settings.downloadFileDir)
+                var fileDest =  token.pathDownload
+                if ( fs.existsSync(fileDest)) {
+                    if ( self.utils.compareFileSize(fileDest, token.contentFileSize) ) {
+                        if ( token.rewriteExisting != true ) {
+                            //bookmark: how do we skip existing files?
+                            self.proc(token.query, 'This file, already exists', 'will not override', fileDest, 'rewriteExisting')
+                            cb();
+                            return;
+                        }
+                    }
+                    self.proc('warning ... file exists', token.query, fileDest )
+                }
+                token.timer = new sh.newTimer()
+
+                function fxDoneSavingFile(msg) {
+                    cb(msg)
+                }
+
+                //downloadFx(url, fileDest, fxDoneSavingFile )
+                self.status('downloading')
+
+                var n = new AxelDownloader()
+                var downloadSettings = {}
+                downloadSettings.a = null;
+                downloadSettings.n = 16;
+                downloadSettings.username = token.putioUsername
+                downloadSettings.password = token.putioPassword
+
+                downloadSettings.url = url;//"https://s11.put.io/zipstream/2535971.zip?token=01606bb68b7011e3b864002481265109"
+
+                downloadSettings.renameFileTo = fileDest;
+
+                downloadSettings.fxCallback = function fxCallback(ok) {
+                    self.proc('ok')
+                    fxDoneSavingFile(ok); //TODO verify file downloaded
+                }
+                downloadSettings.fxStatus = function fxStatus(dl) {
+                    self.status('Dl@'+dl)
+                }
+                n.get(downloadSettings)
+
+
+            }
+
+        }
+        self.putio.getDownloadLink(file_id,fxTransferComplete)
+        //cb()
+    }
+
+
+    p.logic.extractFile = function extractFile(token, cb) {
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+        if ( token.extractFiles == false  ) {
+            self.proc(' token.extractFile',  token.extractFiles)
+            cb()
+            return;
+        }
+        if ( token.dirExtractFiles == null  ) {
+            throw 'need extraction dir'
+            return;
+        }
+        self.status('extracting')
+        var extractSettings = {}
+        extractSettings.callback = function onDone_ZipFileExtracted(dirExtract, extractionToken){
+            self.proc('done', 'dirExtract:', dirExtract)
+            token.dirExtract   = dirExtract
+
+            if ( extractionToken.error ) {
+                self.proc('')
+                self.proc('extraction failed ... bailing')
+                self.proc('')
+                var y = sh.fs.getFileSizeInBytes(extractionToken.fileToExtract);
+                console.error('what is size of file', extractionToken.fileToExtract, (y/1000/1000) )
+
+
+                if ( self.settings.stopAtUnZipError) {
+                    self.proc('stopAtUnZipError')
+                    process.exit();
+                }
+
+
+                self.bail(extractionToken.fileToExtract + sh.newline
+                    + extractionToken.error);
+                return;
+            }
+
+            //what is template?
+            token.dirFullExtractionDir = dirExtract
+            //9/16/2014 put this in combine script ... do this at very end to avoid
+            //having to redownload files from putio
+            //if ( token.deleteFileAfterExtracting != false )
+            //     fs.unlinkSync(token.pathDownload)
+            cb();
+        }
+        extractSettings.dirExtract = 'dirExtractionTarget'
+        extractSettings.fileToExtract = '/home/user/trash/downloads/Wiz Khalifa - No Sleep.mp3.zip'
+
+        extractSettings.dirExtract = token.dirExtractFiles;
+        extractSettings.fileToExtract = token.pathDownload; // '/home/user/trash/downloads/Wiz Khalifa - No Sleep.mp3.zip'
+
+
+        var go = new FileExtractor()
+        go.go(extractSettings);
+
+        return;
+    }
+
+
+
+    //holder for putio singleton functions
+    p.putio = {}
+    /**
+     * Sadly put.io has added another step. zip_id then get zips. This function should be
+     * split into to
+     * @param file_ids
+     * @param cb
+     */
+    p.putio.getDownloadLink = function getDownloadLink(file_ids, cb ) {
+        //https://api.put.io/v2/files/zip?noredirect&file_ids=202737835
+        bookmarks.safetyhooks
+        if (file_ids == null) {
+            self.proc('....file_ids are null')
+            //TODO: error 9/21/2016 - remove this b/c it will crash app ... just bail ......
+            // throw new Error('file_ids are null')
+            self.bail('....file_ids are null.getDownloadLink' )
+            return;
+        }
+        var form = {}
+        //form.noredirect = ''
+        form.file_ids = file_ids
+        var url = self.utils.makeUrl2('zips/create')///'+query ) //https://api.put.io/login'
+        //url += '&file_ids=' + file_ids
+        var requestOptions = {}
+
+        requestOptions.url = url
+        requestOptions.form = form;
+        requestOptions.method = "POST"
+        self.fxAddToken(requestOptions)
+        request(requestOptions, getDownloadLink_fxCallback)
+
+        function getDownloadLink_fxCallback(error, response, body) {
+
+            self.proc(url)
+            // return
+            // self.proc(body)
+            //return
+            var json = self.utils.parseJSON(body)
+            var exampleBodyResponse = {
+                "status": "OK",
+                "zip_id": 3823558
+            };
+            self.proc('url', json)
+            self.proc('zip_id', json.zip_id)
+            bookmarks.safetyhooks
+            if (self.utils.retryHelper(json.zip_id, self.token, 'getDownloadZipIdLink-(getDownloadLink)',
+                    self.putio.getDownloadLink, [file_ids, cb],
+                    'cannot download the file, the download zip_id is null')) {
+                return;
+            }
+            ;
+
+            if (json.zip_id == null) {
+                self.proc('....json.zip_id is null');
+                throw new Error('....json.zip_id is null, cannot create zips/ url');
+            }
+
+
+            //sh.exit(json)
+
+            self.putio.getZipFileUrl(json.zip_id, cb);
+        }
+
+    }
+
+    /**
+     * Sadly put.io has added another step. zip_id then get zips. This function should be
+     * split into to
+     * @param file_ids
+     * @param cb
+     */
+    p.putio.getZipFileUrl = function getZipFileUrl(zip_id, cb ) {
+
+        //Use  zip_id to get https://put.io/v2/zips/3823566
+        // function getZipFile(zip_id) {
+
+        var url = self.utils.makeUrl2('zips/'+zip_id);
+        var requestOptions = {};
+        requestOptions.url = url;
+        requestOptions.method = "GET";
+        self.fxAddToken(requestOptions);
+        request(requestOptions, getZipLink_fxCallback);
+        //  }
+
+        /**
+         * Use  zip_id to get https://put.io/v2/zips/3823566
+         * @param error
+         * @param response
+         * @param body
+         */
+        function getZipLink_fxCallback(error, response, body) {
+
+            self.proc(url)
+
+
+
+            self.status('get zip')
+            // return
+            // self.proc(body)
+            //return
+            var json = self.utils.parseJSON(body)
+            //{ size: 2190137530,
+            //    status: 'OK',
+            //    url: 'https://s09.put.io/zipstream/2315741.zip?token=509a1dca03ad11e486cb001018321b64' }
+            self.proc('url', json.url )
+            if ( json.error_message ) {
+                console.error('dl error', json.error_message)
+            }
+            if ( json.error_msg ) {
+                console.error('dl error', json.error_msg)
+            }
+            if ( json.status =='OK' && json.url == null ) {
+                console.error('why r u ok but have no status?', json.error_msg)
+            }
+            console.error('output', json)
+            if ( json.url == false ) {
+                self.proc('json.url is false (zip server not ready yet) ... so invalid zipurl link')
+                json.url = null;
+            };
+            var fileSizeGB =  json.size/(1000*1000*1000).toFixed(3);
+            self.proc('size according to putio', fileSizeGB );
+            var match = null;
+            var retryCount = 10;
+
+
+            bookmarks.safetyhooks
+            //asdf fail it
+            if ( self.settings.fail_GetJSONLink ) {
+                //asdf.g
+                json.url = null;
+                retryCount = -1;
+            }
+            //  dfg.h
+
+
+            //want to call getZipFile only
+            //it is common for this call to fail 6-7 times
+            if (self.utils.retryHelper(json.url, self.token,
+                    'getDownloadLink',
+                    self.putio.getZipFileUrl,[zip_id, cb],
+                    'cannot download the file, the download url is null'
+                    ,retryCount, 4000)) {return;}
+            if ( json.size < 100 ) {
+                self.proc('file is too small', json)
+                self.bail('issue with file is too small', json.size )
+                return;
+
+            }
+
+            if (cb) { cb(json.url)};
+        }
+    }
+
+    /**
+     * Converts santizied torrent links into putio transfers
+     * @param token
+     * @param cb
+     */
+    p.putio.verifyFileDeleted = function verifyFileDeleted(token, cb) {
+        if (token.test) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+
+        //call that search transfers method ...
+
+        cb();
+    }
+    /**
+     * Converts sanitized torrent links into putio transfers
+     * @param token
+     * @param cb
+     */
+    p.putio.removeDownloadFileFromTransfers = function removeDownloadFileFromTransfers(token, cb) {
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+        if ( token.doNotRemoveFromMyFiles ) {
+            self.proc('token.doNotRemoveFromTransfers')
+            cb()
+        }
+        //todo: make this a util that takes the url snippect and the form ifnromaton ....
+        //https://api.put.io/v2/transfers/cancel
+        var url = self.utils.makeUrl('transfers/cancel')
+        var form = {}
+        //form.noredirect=''
+        if (token.transfer != null) {
+            form.transfer_ids = token.transfer.id; //question: are there times when match is not valid?
+        } else {
+            form.transfer_ids = token.finishedTransfer.id; //question: are there times when match is not valid?
+            //    self.proc('transfer is null')
+            // cb();//
+            // return;
+        }
+        function fxCanceldTranfers() {
+
+            cb()
+
+        }
+        self.utils.makePutIORequest('transfers/cancel', form, null, fxCanceldTranfers)
+    }
+
+
+
+    /**
+     * Converts santizied torrent links into putio transfers
+     * @param token
+     * @param cb
+     */
+    p.putio.removeDownloadFileFromMyFiles = function removeDownloadFileFromMyFiles(token, cb) {
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+        if ( token.doNotRemoveFromMyFiles ) {
+            self.proc('token.doNotRemoveFromMyFiles')
+            cb()
+            return;
+        }
+        //var url = self.utils.makeUrl('files/delete')
+        var form = {}
+        //form.noredirect=''
+        if (token.transfer != null) {
+            form.file_ids = token.transfer.file_id; //question: are there times when match is not valid?
+        } else {
+            form.file_ids = token.finishedTransfer.file_id; //question: are there times when match is not valid?
+        }
+
+        //this should be the only way as we always transfer the file.
+        if ( form.file_ids == null ) {
+            form.file_ids = token.finishedTransfer.file_id;
+        }
+
+        if ( form.file_ids == null ) {
+            self.proc('cannot delete file, do not have valide file_id')
+        }
+        //token.match.id //question: are there times when match is not valid?
+        self.utils.makePutIORequest('files/delete', form, fxCanceledTransfer)
+
+        function fxCanceledTransfer(body) {
+            cb()
+        }
+    }
+
+    p.loginPutio = function loginPutio(token, cb) {
+        //self.proc('here')
+
+        var url = 'https://api.put.io/login'
+        var requestOptions = {}
+
+        requestOptions.method = 'POST'
+        requestOptions.url = url
+
+        var form = {}
+        form.name = token.putioUsername;//'trevmoreano'
+        form.password = token.putioPassword; //'12121212'
+        form.next = '/your-files?'
+        requestOptions.form = form
+
+        request(requestOptions, fxCallback, self.settings.requestLogin)
+
+        function fxCallback(error, response, body) {
+
+            //self.proc('body', body)
+            sh.x(body)
+            
+            var msg = 'You should be redirected automatically to target URL'
+            var success = sh.includes(body, msg )
+            if ( error )
+                self.proc('error?:', error)
+            if ( success == false ) {
+                if ( error == null && body == null ) {
+                    success = true
+                    self.proc('status', response.statusCode)
+                }
+                self.proc('error?:', error)
+            }
+            /*  if ( success == false ) {
+             msg = "<title>"//302 found"
+             success = sh.includes(body, msg )
+             }*/
+            if ( success == false ) {
+                self.proc('cannot log-in')
+                self.proc('body:', body, error)
+
+                setTimeout(function errorX(){
+                    self.bail('no login .... did we crash putio?');
+                    //throw 'no login, did we crash putio?'
+                }, 3000)
+
+
+                return;
+
+            }
+            var json = {}
+            try {
+                json = JSON.parse(body)
+            } catch (e  ) {
+                self.proc('cant make json', 'login')
+                self.proc('cant make json',error,  body)
+            }
+
+            var y = {}
+            var cookies_ = response.headers['set-cookie'];
+            sh.each(cookies_, function (i, cookie ) {
+                var str = cookie.split(';')
+                str = str[0].split('=')
+                y[str[0]] = str[1];
+            })
+            y
+            self.loginToken2 = y['login_token2'];
+
+
+            if ( self.loginToken2 == null ) {
+                self.loginToken2 = 'asdf'
+            }
+
+            self.fxAddToken = function fxAddToken(x) {
+                x.headers = sh.dv(x.headers, {});
+                x.headers['X-Putio-LoginToken'] = self.loginToken2;
+                var token = 'HRWRFQZB';
+                token = 'LXXXEVSL'
+
+
+
+                //asdf.g
+                //token += 'asdf'
+                //var token = 'HRWR3QZB';
+                token = 'DMOFFFQT'
+                x.headers['authorization'] = 'token '+token;
+                console.log('.............', token)
+            }
+            //X-Putio-LoginToken
+            cb()
+        }
+
+
+        //cb()
+    }
+
+    p.putioDownloadToken = function putioDownloadToken(token, cb) {
+        //self.proc('here')
+        //https://put.io/v2/account/info?download_token=1&sharing=1&intercom=1&plan=1
+        var url = 'https://put.io/v2/account/info?download_token=1&sharing=1&intercom=1&plan=1'
+        var requestOptions = {}
+
+        requestOptions.method = 'GET'
+        requestOptions.url = url
+
+        var form = {}
+        form.name = token.putioUsername;//'trevmoreano'
+        form.password = token.putioPassword; //'12121212'
+        form.next = '/your-files?'
+        requestOptions.form = form
+
+        request(requestOptions, fxCallback, self.settings.requestLogin)
+
+        function fxCallback(error, response, body) {
+
+            //self.proc('body', body)
+
+            var msg = 'You should be redirected automatically to target URL'
+            var success = sh.includes(body, msg )
+            if ( error )
+                self.proc('error?:', error)
+            if ( success == false ) {
+                if ( error == null && body == null ) {
+                    success = true
+                    self.proc('status', response.statusCode)
+                }
+                self.proc('error?:', error)
+            }
+            /*  if ( success == false ) {
+             msg = "<title>"//302 found"
+             success = sh.includes(body, msg )
+             }*/
+            if ( success == false ) {
+                self.proc('cannot log-in')
+                self.proc('body:', body, error)
+
+                setTimeout(function errorX(){
+                    self.bail('no login .... did we crash putio?');
+                    //throw 'no login, did we crash putio?'
+                }, 3000)
+
+
+                return;
+
+            }
+            var json = {}
+            try {
+                json = JSON.parse(body)
+            } catch (e  ) {
+                self.proc('cant make json', 'login')
+                self.proc('cant make json',error,  body)
+            }
+
+            var y = {}
+            var cookies_ = response.headers['set-cookie'];
+            sh.each(cookies_, function (i, cookie ) {
+                var str = cookie.split(';')
+                str = str[0].split('=')
+                y[str[0]] = str[1];
+            })
+            y
+            self.loginToken2 = y['login_token2'];
+
+            cb()
+        }
+
+
+        //cb()
+    }
+
+
+    p.authenticatePutio = function authenticatePutio(token, cb) {
+        //self.proc('here')
+
+        var url = 'https://api.put.io/authenticate'
+
+        var requestOptions = {}
+
+        requestOptions.method = 'POST'
+        requestOptions.url = url
+
+        var form = {}
+        form.name = token.putioUsername;//'trevmoreano'
+        form.password = token.putioPassword; //'12121212'
+        form.next = '/your-files?'
+        requestOptions.form = form
+
+
+        request(requestOptions, fxCallback, self.settings.requestLogin)
+
+        function fxCallback(error, response, body) {
+
+            //self.proc('body', body)
+
+
+            var msg = 'You should be redirected automatically to target URL'
+            var success = sh.includes(body, msg )
+            if ( error )
+                self.proc('error?:', error)
+            if ( success == false ) {
+                if ( error == null && body == null ) {
+                    success = true
+                    self.proc('status', response.statusCode)
+                }
+                self.proc('error?:', error)
+            }
+            /*  if ( success == false ) {
+             msg = "<title>"//302 found"
+             success = sh.includes(body, msg )
+             }*/
+            if ( success == false ) {
+                self.proc('cannot log-in')
+                self.proc('body:', body, error)
+
+                setTimeout(function errorX(){
+                    self.bail('no login .... did we crash putio?');
+                    //throw 'no login, did we crash putio?'
+                }, 3000)
+
+
+                return;
+
+            }
+            var json = {}
+            try {
+                json = JSON.parse(body)
+            } catch (e  ) {
+                self.proc('cant make json', 'login')
+                self.proc('cant make json',error,  body)
+            }
+
+            var y = {}
+            var cookies_ = response.headers['set-cookie'];
+            sh.each(cookies_, function (i, cookie ) {
+                var str = cookie.split(';')
+                str = str[0].split('=')
+                y[str[0]] = str[1];
+            })
+            y
+            self.loginToken2 = y['login_token2'];
+
+            self.fxAddToken = function fxAddToken(x) {
+                x.headers = sh.dv(x.headers, {});
+                x.headers['X-Putio-LoginToken'] = self.loginToken2;
+
+                asdf.g
+            }
+            //X-Putio-LoginToken
+            cb()
+        }
+
+
+        //cb()
+    }
+
+
+
+
+    p.determineDirSize = function determineDirSize(token, cb) {
+        var dirsDownload = self.token.dir_downloads;
+        //why: have dirs want to store size available so we can make sure download dir has enough space
+        if ( dirsDownload == null ) {
+            cb();
+            return;
+        }
+
+        var minGBs = 0;
+        sh.fs.findPathWithFreeSpace(dirsDownload, minGBs, function onGoDrive(x,y,dictDirs) {
+            token.dictDirs = dictDirs
+
+            var dir = sh.fs.findPathWithFreeSpaceSync(dictDirs, 100);
+
+            cb()
+        })
+
+
+        //   sh.fs.getFreeSpaceForAllDirs()
+        /*   });*/
+
+        //   sh.fs.getFreeSpaceForAllDirs()
+        /*   });*/
+    }
+
+
+    p.listUserFiles = function getFiles(token, cb) {
+        var url = self.utils.makeUrl('v2/transfers/list') //https://api.put.io/login'
+        var url = self.utils.makeUrl('v2/files/search') //https://api.put.io/login'
+        var url = self.utils.makeUrl('v2/transfers/list')
+        //var url = self.utils.makeUrl('v2/files/list?')
+        //https://put.io/v2/files/list?parent_id=0
+        var requestOptions = {}
+
+        requestOptions.url = url
+
+        requestOptions.headers = {};
+        requestOptions.headers['X-Putio-LoginToken'] = self.loginToken2;
+
+        self.fxAddToken(requestOptions)
+
+        request(requestOptions, onListedFiles_fxCallback)
+
+        function onListedFiles_fxCallback(error, response, body) {
+
+            //self.proc('body', body)
+
+            if ( body.indexOf("The server could not verify that you are authorized to access the URL requested. '" +
+                    +" You either supplied the wrong credentials (e.g. a bad password), or your browser doesn't understand how to supply the credentials required") != -1 ) {
+                // return;
+                self.proc('could not verify credentials')
+            }
+
+            // var content = sh.getArrayContentBetween(body, "var collection = ", "\n")
+
+            //if ( sh.endsWith(content, ';') ) {
+            //    content = content.slice(0, -1)
+            //}
+            var json = {};
+            try {
+                json = JSON.parse(body);
+            } catch (e  ) {
+                self.proc('cant make json', body);
+            }
+
+            if ( json.status == 'ERROR' || response.statusCode.toString().startsWith('4') ) {
+                console.error(json.error_message, url, 'error')
+                self.proc('error')
+                //sh.exit()
+            }
+
+            if ( self.token.showFileList ) {
+                self.proc('file list')
+                sh.each(json, function (itemIndex, file) {
+                    var num = itemIndex + 1
+                    num += '.'
+                    console.log(num,
+                        file.name, null)
+
+                })
+            } else {
+                self.proc('you have', json.length, 'files')
+            };
+
+            self.myFiles=json;
+
+            cb()
+        }
+
+
+        //cb()
+    }
+
+
+    /**
+     * Search is broken
+     * @param token
+     * @param cb
+     */
+    p.searchPutIO_YourFiles_forTorrent = function searchPutIO_YourFiles_forTorrent(token, cb) {
+        if ( token.query == null ) {
+            cb() //only look for matches if query defined ....
+            return;
+        }
+
+        var query = token.query.replace(new RegExp(' ', 'gi'), '+')
+        var url = self.utils.makeUrl2('files/search/'+query+'/page/0') //https://api.put.io/login'
+
+        var query = token.query
+        var fields_ForUploadDir = self.utils.makeUrl2('files/search/'+query ) //https://api.put.io/login'
+        var requestOptions = {}
+
+        requestOptions.url = url
+        //requestOptions.method = "POST"
+
+        request(requestOptions, fxCallback)
+
+        function fxCallback(error, response, body) {
+
+            self.proc(url)
+            // return
+            // self.proc(body)
+            //return
+            var json = self.utils.parseJSON(body)
+
+
+            var match = null;
+
+            self.proc('search results')
+
+            if (self.utils.retryHelper(json.files,
+                    self.token, 'retryGetSearchResults',
+                    self.searchPutIO_YourFiles_forTorrent , [token, cb]
+                ) ) { return; }
+
+            //   if ( self.token.showFileList ) {
+            sh.each(json.files, function (itemIndex, file) {
+                var num = itemIndex + 1
+                num += '.'
+                console.log(num,
+                    file.name, null)
+
+                if ( file.content_type == 'application/x-directory') {
+                    match = file;
+                }
+
+            })
+            // } else {
+            //     self.proc('you have', json.length, 'files')
+            // }
+
+            token.match = match;
+
+            // if ( match != null )
+
+            cb()
+        }
+
+
+        //cb()
+    }
+
+
+
+    /**
+     * Search is broken
+     * Here we are looking through 'your-files' for the file.
+     * Skip this ... we do not have the magnet link, so we do not know .....
+     * tODO: updated other search methods so they skip if 'match' is found
+     * @param token
+     * @param cb
+     */
+    p.searchPutIO_YourFiles_forTorrentV2 = function searchPutIO_YourFiles_forTorrentV2(token, cb) {
+        self.listUserFiles(token, function getAllFiles(){
+            self.myFiles;
+            // self.myFiles=json
+            sh.each(self.myFiles.transfers, function goThroughMyFiles(k,v) {
+
+                if ( v.source == self.token.urlTorrent &&
+                    v.percent_done == 100   ) {
+                    self.token.match = v
+                    self.token.completedFileInLibrary = v;
+                    self.token.matchFileId = v.file_id
+                    self.token.finishedTransfer = v;
+                    //asdf.g
+                    return;
+                }
+                return;
+            })
+
+            cb()
+        })
+        //
+    }
+
+
+
+
+    /**
+     * The your files search is broken ... try the transfers
+     * store on match if found
+     * @param token
+     * @param cb
+     */
+    p.searchPutIO_Transfers_forTorrent = function searchPutIO_Transfers_forTorrent(token, cb) {
+        if ( token.query == null ) {
+            cb() //only look for matches if query defined ....
+            return;
+        }
+
+        if ( token.match != null ) {
+            self.proc('do not need to search for transfer .... file is complete')
+            cb() //only look for matches if query defined ....
+            return;
+        }
+
+        function foundMatchCallback(match) {
+            if ( match != null ) {
+                token.match= match
+            }
+            cb();
+        }
+
+        self.utils.checkTransfersForFile(token, foundMatchCallback);
+    }
+
+
+    p.putio.listTransfers = function listTransfers(opts) {
+        var url = self.utils.makeUrl('v2/transfers/list')
+        var requestOptions = {}
+        requestOptions.url = url
+        self.fxAddToken(requestOptions)
+        request(requestOptions, fxRequestComplete);
+        function fxRequestComplete(error, response, body) {
+            var json = self.utils.parseJSON(body, false, 'could not parse list transfers')
+            if ( json.transfers == null ) {
+                if ( sh.includes(body, 'We are very sorry for making you wait'))
+                {
+                    //doing matiencnes
+                    self.proc('putio having problelms', body)
+                    if (self.utils.retryHelper(null, self.token, 'getTransfersMat',
+                            self.putio.listTransfers,[opts],
+                            'putio matiences',6)) {return;}
+                    //self.bail();
+                    return;
+
+                }
+                if (  error != null )
+                {
+                    //self.proc('putio having problelms', body)
+                    //self.bail();
+                    if (self.utils.retryHelper(null, self.token, 'getTransfers_Error',
+                            self.putio.listTransfers,[opts],
+                            'putio list transfer error',6)) {return;}
+                    return;
+                }
+                //10/23/2014 if transfers null ...?
+                //do not return, as this will cause errors.
+                //transfers can be empty but not nul ....
+
+                if (self.utils.retryHelper(null, self.token, 'getTransfers_trasnfers_null',
+                        self.putio.listTransfers,[opts],
+                        'putio list transfer error',6)) {return;}
+                return;
+
+                self.proc('transfers is empty ..')
+                opts.callback(json)
+                return;
+            }
+
+            self.token.getTransfersMat=0; //reset if response is good
+            self.token.getTransfersError=0; //reset if response is good
+
+            sh.each(json.transfers, function (itemIndex, file) {
+                var num = itemIndex + 1
+                num += '.'
+                file.magneturi
+                file.percent_done
+                var completed = file.status == 'COMPLETED'
+                if ( completed ) {
+                    return
+                }
+                // console.log(num,   file.name, completed, file.percent_done, file.down_speed)
+
+            })
+            opts.callback(json)
+        }
+
+
+        p.putio.cancelTransfer= function cancelPutioTransfer(transfer_id, name) {
+            self.proc('canceling transfer', transfer_id, name)
+            var url = self.utils.makeUrl2('transfers/cancel')
+            var form = {}
+            form.transfer_ids = transfer_id
+            function fxCanceledTransfers() {
+                return;
+            }
+            self.utils.makePutIORequest('transfers/cancel', form, null, fxCanceledTransfers)
+        }
+
+    }
+
+    /**
+     * What does this do?
+     * Check for valid torrent link
+     * @param token
+     * @param cb
+     */
+    p.getTransfersInfo = function getTransfersInfo(token, cb) {
+
+        if ( token.completedFileInLibrary != null ) {
+            cb()
+            return;
+        }
+
+        var url = self.utils.makeUrl('v2/transfers/info');
+
+        var requestOptions = {}
+        requestOptions.method = 'POST'
+        requestOptions.url = url;
+
+        var form = {}
+        form.urls = self.token.urlTorrent
+
+        //REQ: Bail if we do not have a urlTOrrent
+        if (  self.token.urlTorrent== null) {
+            self.proc('nothing to send to put.io');
+            self.bail();
+            return;
+        }
+
+        requestOptions.form = form
+        self.fxAddToken(requestOptions)
+        request(requestOptions, fxCallback_OnGetTransferInfo)
+
+        function fxCallback_OnGetTransferInfo(error, response, body) {
+            self.proc('body', body)
+
+            var json = {}
+            try {
+                json = JSON.parse(body)
+            } catch (e  ) {
+                self.bail();
+
+                self.proc('cant make json', error, body)
+                return;
+            }
+
+            if ( json.ret[0] != null && json.ret[0].error == "invalid") {
+                self.proc('post got back an error...', error, body)
+                self.bail();
+                return;
+            }
+
+            if ( json.ret.length < 0 ) {
+                throw 'could not convert torrent into real file ... so we cannot download it ....'
+            } else {
+                //bookmark: link sanitized
+                var url = json.ret[0].url
+                self.proc('can download torrent', json.ret[0].name, json.ret[0].type_name)
+                self.token.addTorrentLinks = [url]; //make sure this matches
+                self.token.torrentName = json.ret[0].name;
+                self.proc(url, self.token.urlTorrent);
+            }
+            cb()
+        }
+    }
+
+
+    /**
+     * Converts santizied torrent links into putio transfers
+     * @param token
+     * @param cb
+     */
+    p.downloadTorrentToPutIO_addToTransfers = function addMulti(token, cb) {
+        if ( token.completedFileInLibrary != null ) {
+            self.proc('token.completedFileInLibrary')
+            cb()
+            return;
+        }
+        if ( token.test ) {
+            self.proc('test so skipping')
+            cb()
+            return;
+        }
+
+        var url = self.utils.makeUrl('v2/transfers/add-multi')
+        //url = 'https://api.put.io/v2/transfers/add-multi'
+        var requestOptions = {}
+        requestOptions.method = 'POST'
+        requestOptions.url = url
+        var form = {}
+
+        var addTorrentLinks = self.token.addTorrentLinks
+        //'magnet:?xt=urn:btih:97414f92446a95d142c7e87621735cb645a6ff8e&dn=The+5th+Element%281997%29.720P.BRRip.H264.%5BResource+RG%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
+
+        var jsonTorrentRequest = []
+
+        sh.each(addTorrentLinks, function (itemIndex, url) {
+            var jsonUrl = {}
+            jsonUrl = {}
+            // "save_parent_id":"","extract":false,"email_when_complete":false}
+            jsonUrl.url = url
+            jsonUrl.save_parent_id = ""
+            jsonUrl.extract = false
+            jsonUrl.email_when_complete = false
+            jsonTorrentRequest.push(jsonUrl)
+        })
+
+        form.urls = JSON.stringify(jsonTorrentRequest)
+        requestOptions.form = form
+        self.fxAddToken(requestOptions)
+        request(requestOptions, fxCallback)
+
+        function fxCallback(error, response, body) {
+            var json = {}
+            try {
+                json = JSON.parse(body)
+            } catch (e  ) {
+                self.proc('cant make json', body)
+            }
+            self.token.downloadUrls= json;
+            cb()
+        }
+    }
+
+
+    /**
+     * Why do we have 2 of theses ...? self.listTransfers, and self.putio.listTransfers
+     * @param token
+     * @param cb
+     */
+    p.listTransfers = function listTransfers(token, cb) {
+        var url = self.utils.makeUrl('v2/transfers/list')
+        var requestOptions = {}
+
+        requestOptions.url = url
+        self.fxAddToken(requestOptions)
+        request(requestOptions, fxCallback)
+
+        function fxCallback(error, response, body) {
+
+            //self.utils.extractJSONFromHTMLPage(body, "var collection = ", "\n")
+            var json = self.utils.parseJSON(body, false, 'could not parse list transfers')
+
+            if ( json == null || json.transfers == null ) {
+                self.proc('put.io had a problem getting a tranfser', error, body)
+                if (self.utils.retryHelper(null, self.token, 'getTransfers__self__',
+                        self.listTransfers,[token,cb],
+                        'putio is getting the tranfers',6)) {return;}
+                return;
+            }
+
+            //...
+            if ( self.token.showTransfers ) {
+                sh.each(json.transfers, function (itemIndex, file) {
+                    var num = itemIndex + 1
+                    num += '.'
+                    file.magneturi
+                    file.percent_done
+                    var completed = file.status == 'COMPLETED'
+                    console.log(num, file.name, completed)
+                })
+            }
+            //  } else {
+
+            cb()
+        }
+
+
+        //cb()
+    }
+
+    p.getFirstQueryResult = function getFirstQueryResult(token, cb) {
+
+        self.proc('here')
+        cb()
+    }
+
+
+    function createUtilityFunctions() {
+        p.utils = {}
+        /**
+         * Receive log commands in special format
+         */
+        p.utils.makeUrl = function makeUrl(url_) {
+            return 'https://api.put.io/'+url_
+        }
+        /**
+         * Receive log commands in special format
+         */
+        p.utils.makeUrl2 = function makeUrl2(url_) {
+            return 'https://api.put.io/v2/'+url_
+        }
+
+
+        p.utils.extractJSONFromHTMLPage =
+            function extractJSONFromHTMLPage (body, starter, ender, throwError) {
+                var content = sh.getArrayContentBetween(body, starter, ender)
+
+                //check for terminating semicolon
+                if ( sh.endsWith(content, ';') ) {
+                    content = content.slice(0, -1)
+                }
+                var json = {}
+                try {
+                    json = JSON.parse(content)
+                } catch (e  ) {
+                    self.proc('cant parse json')
+                    if ( throwError ) {
+                        throw e;
+                    }
+                }
+                return json
+            }
+
+        p.utils.parseJSON =
+            function parseJSON (jsonStr, throwError, errorMessage) {
+                var json = {}
+                try {
+                    json = JSON.parse(jsonStr)
+                } catch (e  ) {
+
+                    if (  throwError  ) {
+                        console.error(errorMessage)
+                        throw e;
+                    } else {
+                        self.proc('cant parse json', errorMessage)
+                        if ( jsonStr && jsonStr.indexOf('401 Unauthorized') != -1 ) {
+                            self.proc('unauthorized...')
+                        }
+                    }
+
+
+
+
+
+                }
+                return json
+            }
+
+
+        /**
+         * Content-dispotion uses a filename= property
+         * @param headers
+         * @param callback
+         */
+        p.utils.getFileNameFromHeaders =
+            function getFileNameFromHeaders(headers, callback) {
+                //attachment; filename="The 5th Element(1997).720P.BRRip.H264.ResourceRG by Dusty.zip"
+                var contentDownloadName = headers['content-disposition']
+                if ( contentDownloadName != null ) {
+                    contentDownloadName = contentDownloadName.split("filename=")[1]
+                    contentDownloadName = sh.unquote(contentDownloadName)
+                    //callback(contentDownloadName)
+                }
+                return contentDownloadName
+            }
+
+
+        /**
+         * content-length uses a filename= property
+         * @param headers
+         * @param callback
+         */
+        p.utils.getContentLengthFromHeaders =
+            function getFileNameFromHeaders(headers, callback) {
+                //content-length = 257513065
+                var contentLength = headers['content-length']
+                if ( contentLength != null ) {
+                }
+                return contentLength
+            }
+
+
+        /**
+         * IS file same size in bytes as the bytes?
+         * @param filename
+         * @returns {*}
+         */
+        p.utils.compareFileSize = function compareFileSize(filename, compareToFileSize) {
+            var stats = fs.statSync(filename)
+            var fileSizeInBytes = stats["size"];
+            compareToFileSize = parseInt(compareToFileSize);
+            if ( compareToFileSize == fileSizeInBytes) {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * If prop is null on object, then call callback, and
+         * increment prop.
+         * This is will enable api calls to fail a certain number of times
+         * before bailing on this script
+         * @param filename
+         * @returns {*}
+         */
+        p.utils.retryHelper = function retryHelper(objectComparison,
+                                                   obj, propStoreCount,
+                                                   fxRetry,
+                                                   fxRetryArgs, msg,
+                                                   numRetries,
+                                                   retryDelay) {
+            if ( objectComparison != null ) {
+                return false;
+            }
+            if ( fxRetry == null ) {
+                throw new Error('fxRetry Fx is null....')
+            }
+
+            /*if ( obj.retryConfig == true ) {
+             var config = obj;
+             obj = config.obj
+             propStoreCount = config.propStoreCount;
+
+             }*/
+
+            numRetries = sh.dv(numRetries,3);
+            retryDelay= sh.dv(retryDelay, consts.timeRetryAction);
+
+            obj[propStoreCount] = sh.dv(obj[propStoreCount], 0)
+            obj[propStoreCount]++
+            if ( obj[propStoreCount] > numRetries) {
+                msg = sh.dv(msg, '')
+                self.bail('issue with '+propStoreCount + ' ' + msg, self.token.query)
+            } else {
+                setTimeout(function retry(){
+                    fxRetry.apply(this, fxRetryArgs)
+                }, retryDelay);
+            }
+
+            return true;
+        }
+
+
+
+
+        self.utils.copySentToken = function copySentToken() {
+            var token = self.settings.token;
+            if ( token == null ) {
+                return;
+            }
+
+
+
+            sh.each(token, function copyProp(k,v) {
+                var val = self.settings[k]
+                if ( sh.isFunction(val)) {
+                    return;
+                }
+                self.token[k] = v;
+            })
+        }
+
+    }
+
+    createUtilityFunctions();
+
+
+    function createDBPutio() {
+        p.utils.checkTransfersForFile =  function  checkTransfersForFile (token, cb) {
+            //check transfers
+            var opts = {}
+            opts.callback = function processTransfers(json) {
+                //looking fot a complete transfer
+                var completedTransfer = null
+
+                self.proc('checking transfers', token.query)
+
+
+                sh.each(json.transfers, function (itemIndex, transfer) {
+                    var num = itemIndex + 1
+                    num += '.'
+                    var completed = transfer.status == 'COMPLETED'
+                    var sameFileWeAreDownloading = transfer.magneturi == token.urlTorrent
+                    sameFileWeAreDownloading = sh.startsWith(token.urlTorrent, transfer.magneturi)
+                    //more complete search
+                    if (sameFileWeAreDownloading == false) { //bookmark: waiting for transfer to finish
+                        var preamble = transfer.magneturi.split("=")[0]
+                        /*
+                         transfer.magneturi
+                         magnet:?xt=urn:btih:7ee94e8203b37f4acf946a5d40a5b40dee7e077b&dn=Ray+Donovan+S01E02+REPACK+HDTV+x264-ASAP+%5Beztv%5D
+
+                         token.urlTorrent
+                         magnet:?xt=urn:btih:b9140f268f5246aa8e94d7471311f032f113fce8&dn=Brian%5C%27s+Song+Dvdrip+H264+Bookerdog.mp4&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337
+                         */
+                        if ( sh.startsWith(token.urlTorrent,preamble) ) { //torrent link
+                            sameFileWeAreDownloading = token.urlTorrent == transfer.magneturi
+                        } else {
+                            self.proc(tag.diagnostic, 'we do not have the same type of urls')
+                        }
+
+                    }
+                    if ( sameFileWeAreDownloading ) {
+                        token.transfer = transfer
+                    }
+                    //console.log(transfer.name, token.urlTorrent, transfer.magneturi)
+                    if ( completed && sameFileWeAreDownloading) {
+                        completedTransfer = transfer;
+                        self.proc('found completedTransfer');
+                        return false;
+                    }
+
+                    //bookmark: show all active downloads
+                    // console.log(num,   transfer.name, completed)
+                    if ( completed ) { return  }
+                    if ( self.token.showTransfers ) {
+                        console.log(num, transfer.name, completed, transfer.percent_done, transfer.down_speed)
+                    }
+                })
+
+                if ( cb != null  ) {
+                    cb(completedTransfer);
+                }
+
+                return;
+                if ( completedTransfer != null ) {
+                    self.proc('completed the transfer');
+                    clearInterval(token.intervalID)
+                    token.intervalID = null
+                    token.finishedTransfer = completedTransfer;
+                    cb()
+                }
+            }
+
+
+            //opts.
+            p.putio.listTransfers(opts)
+
+            //  cb()
+        }
+        /**
+         * If you do not clear the transfers you will pick up stale results
+         * if multiple scripts are running and they both clear transfers ...
+         * we will have bad situation
+         * @param token
+         * @param cb
+         */
+        p.utils.clearTransfers =  function  clearTransfers (token, cb) {
+            //throw 'not implemted....'
+            //https://api.put.io/v2/transfers/clean
+            self.utils.makePutIORequest('transfers/clean', null,null, cb);
+        }
+
+
+
+        p.utils.makePutIORequest = function makePutIORequest(urlEnd, postDataForm, fxCallback, cb , postBody) {
+            //https://api.put.io/v2/files/zip?noredirect&file_ids=202737835
+            var url = self.utils.makeUrl2(urlEnd)
+            // 'files/zip?noredirect')///'+query ) //https://api.put.io/login'
+            var requestOptions = {}
+            self.fxAddToken(requestOptions);
+            requestOptions.url = url
+            if (postDataForm) {
+                requestOptions.form = postDataForm;
+            }
+            if ( postBody ) {
+                requestOptions.form = null ;
+                requestOptions.body = postBody;
+            }
+            requestOptions.method = "POST"
+            self.fxAddToken(requestOptions)
+            request(requestOptions, fxRequestCallback)
+            function fxRequestCallback(error, response, body) {
+
+                if ( self.settings.showCallbackCompletion) {
+                    self.proc('complete', url)
+                }
+                if ( response.statusCode == '400') {
+                    self.proc('400 status for', url)
+                }
+                if ( fxCallback != null ) {
+                    fxCallback(body, response)
+                }
+                if (cb) {
+                    cb()
+                }
+            }
+        }
+    }
+
+    createDBPutio()
+
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        var args = sh.convertArgumentsToArray(arguments)
+        args.unshift(sh.paren(sh.qq(self.token.query)))
+        return sh.sLog(args)
+    }
+}
+
+if (module.parent == null) {
+
+    var options = {}
+    options.callback = function onDone(url){
+        console.log('done', url)
+    }
+
+    options.downloadFile = true;
+    var urlTorrent = 'magnet:?xt=urn:btih:97414f92446a95d142c7e87621735cb645a6ff8e&dn=The+5th+Element%281997%29.720P.BRRip.H264.%5BResource+RG%5D&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
+    urlTorrent = 'magnet:?xt=urn:btih:fdc599a6f498b93752479925062726e27de99cb9&dn=The+Simple+Guide+to+a+Minimalist+Life+-+Leo+Babuata&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
+    urlTorrent = 'magnet:?xt=urn:btih:11e8b03aa31caa1272cd03d25dbf24df3dc44f55&dn=Mach3+by+Artsoft+%2B+Crack+-+CNC+CAD+CAM&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole.it%3A6969&tr=udp%3A%2F%2Fopen.demonii.com%3A1337'
+    options.urlTorrent = urlTorrent
+    options.downloadFileDir = 'c:/trash/downloads'
+    var go = new DistillerV2()
+    go.go(options);
+}
+
+exports.DistillerV2 = DistillerV2;

@@ -47,8 +47,24 @@ function ChromeExtMod() {
                 bbC = $('#buyBoxCustom')
             }
             bbC.html('')
-            bbC.html(data.toString())
+            //uiUtils.toJSONString(data)
+            //uiUtils.toJ(data)
+            //bbC.html(JSON.stringify(data))
+            uiUtils.flagCfg = {};
+            uiUtils.flagCfg.addTo = bbC;
+            // uiUtils.flagCfg.addSpacerAfter = true;
 
+            uiUtils.addSpan({text:'ZZ', title:'How Many macthes'})
+            var u = uiUtils;
+            u.addSpace()
+            u.addLink({text:data.readableLength})
+
+            u.addSpace()
+            u.addLink({text:data.pdfLength, title:'PDF length', blank:true, href:data.url})
+
+
+            u.addSpace()
+            u.addLink({text:'-', title:'Search any', blank:true, href:data.url.replace('&e=1', '')})
 
         })
     }
@@ -256,78 +272,69 @@ function ChromeExtMod() {
 
     p.getWTF = function getWTF() {
 
-        //alert('boo')
-        //firstly check if "read on any device" image is present, hence this is a kindle page,
-        // #this might change if the amazon redesign their page of course
-        if ($('#udpKcpAppAdImage').length > 0) {
 
-            //get current URL from current tab on this amazon kindle page
-            var currentUrl = window.location.href;
 
-            //  debugger
-            var bookName = $('#ebooksProductTitle').text()
-            if ( bookName.includes(':')) {
-                bookName = bookName.split(':')[0]
-            }
-            bookName = bookName.replace(/[^\w\s]/gi, '')
 
-            var url = 'http://localhost:10110/searchpb/'//?query=what%20if
-            //now we send this URL to ebooks.wtf to check if this book exists there
-            $.ajax({
-                type: "get",
-                dataType: "json",
-                url: url,
-                data: {
-                    "d": currentUrl,
-                    query:bookName
-                },
-                success: function (data, textStatus, xhr) {
+        if ( self.utils.isKindle()  == false ) {
+            return;
+        }
+        //get current URL from current tab on this amazon kindle page
+        var currentUrl = window.location.href;
 
-                    if ( data.status == 'ok' || data.linkz != null ) {
-                        var btn = $('<button/>')
-                        var c = $('#buybox').find('a-box-inner')
+        //  debugger
+        var bookName = $('#ebooksProductTitle').text()
 
-                        console.log('c', c)
-                        c.append(
-                            btn
-                        )
-                        var div = $('<div style="background-color: #006600;text-align: center;"><br />' +
-                            '<a style="font-size: 200%; color: #ffffff;" href="https://ebooks.wtf/?q=find:submit&searchQuery=' + data.asin + '">This ebook is available on ebooks.pb!</a>' +
-                            '<br /><br /></div>');
+        console.log('getWTF', 'bookname', bookName)
 
-                        div.append(data.linkz.length)
-                        var a = $('<a/>')
-                        a.attr('href', data.url)
-                        a.text('listing')
-                        div.append(a)
-                        $("body").prepend(div)
-                        //check response has a valid asin (hence exists on ebook.farm)
-                        if( data.asin != 0 ){
+        if ( bookName.includes(':')) {
+            bookName = bookName.split(':')[0]
+        }
+        bookName = bookName.replace(/[^\w\s]/gi, '')
 
-                            //add a green bar with a link to ebook.farm
-                            // $("body").prepend('<div style="background-color: #006600;text-align: center;"><br /><a style="font-size: 200%; color: #ffffff;" href="https://ebooks.wtf/?q=find:submit&searchQuery=' + data.asin + '">This ebook is available on ebooks.wtf!</a><br /><br /></div>');
-                        }
-                        else{
+        var url = 'http://localhost:10110/searchpb/'//?query=what%20if
+        //now we send this URL to ebooks.wtf to check if this book exists there
+        //get current URL from current tab on this amazon kindle page
+        var currentUrl = window.location.href;
 
-                            //do nothing
-                        }
+        //now we send this URL to ebooks.wtf to check if this book exists there
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: 'https://ebooks.wtf/?q=combineharvester',
+            data: {
+                "d": currentUrl
+            },
+            success: function (data, textStatus, xhr) {
+
+                //console.log('go')
+
+                if ( data.status == 'ok' ) {
+
+                    //check response has a valid asin (hence exists on ebook.farm)
+                    if( data.asin != 0 ){
+
+                        //add a green bar with a link to ebook.farm
+                        $("body").prepend('<div style="background-color: #006600;text-align: center;"><br /><a style="font-size: 200%; color: #ffffff;" href="https://ebooks.wtf/?q=find:submit&searchQuery=' + data.asin + '">This ebook is available on ebooks.wtf!</a><br /><br /></div>');
                     }
-                    else if (data.status == 'error') {
+                    else{
 
                         //do nothing
                     }
-                    else {
-
-                        //do nothing
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
+                }
+                else if (data.status == 'error') {
 
                     //do nothing
                 }
-            });
-        }
+                else {
 
+                    //do nothing
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+
+                //do nothing
+            }
+        });
     }
 
 
@@ -347,9 +354,9 @@ function ChromeExtMod() {
                 dataType: "json",
                 url: url,
                 /*data: {
-                    "d": currentUrl,
-                    query:bookName
-                },*/
+                 "d": currentUrl,
+                 query:bookName
+                 },*/
                 success: function onSuccess(data, textStatus, xhr) {
                     if ( fxDone ) { fxDone(data) };
                 },
@@ -473,13 +480,16 @@ if ( window.what == null  ) {
 }
 
 
+if ( typeof uiUtils == 'undefined') {
+    alert('uiutils')
+}
 
 
 var i = new ChromeExtMod();
 i.init();
 i.processAmazon();
 i.getEbookFromBookzz();
-//i.getWTF();
+i.getWTF();
 /*
 
  G:/Dropbox/projects/crypto/mp/ExtProxy/ggnampgigkndjmbbjlodenmpbamidgeo/0.5_0/js/hijack.js

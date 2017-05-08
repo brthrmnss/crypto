@@ -7,6 +7,36 @@
 
 function scrap() {
 
+
+    $('.top-stories-section').remove()
+    $('.nv-FRONTPAGE').remove()
+    //right side
+    $('.section-BREAKING_NEWS_BOX').remove()
+    $('.gadget-wrapper.gsid-WTH').remove();
+    $('.gadget-wrapper.gsid-LCL').remove();
+    $('.gadget-wrapper.gsid-EPG').remove();
+
+    $('.goog-inline-block.goog-flat-menu-button.edition-select').remove();
+    $('#view-filter-select').remove();
+
+    //image attributions
+    $('.esc-thumbnail-image-source-wrapper').remove()
+
+    //
+    $('.goog-inline-block.kd-appname').remove()
+
+
+    $('[title=News]').remove()
+    $('.esc-thumbnail-image').css('opacity', 0.6)
+    $('.browse-sidebar').css('opacity', 0.6)
+
+
+    $('.basic-title').css('background-color', 'white')
+
+
+    $('.title-text').css('color', '#34495E')
+    return;
+
     var instance = new ListExtractorScraper();
     var config = {};
 //config.file = 'example_bookzz.html';

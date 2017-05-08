@@ -19,6 +19,7 @@ XY.startBreed = function startBreed(filePath_orConfig, ignoreMissing) {
 //var dl_putio_app = require('./../dl_putio_app').dl_putio_app;
 
     var Step2 = rch.getBreed();
+    var DistillerV2 = rch.getDistiller();
     var config = rch.getConfig();
 
 //var args = sh.getNodeArguments();
@@ -43,48 +44,38 @@ XY.startBreed = function startBreed(filePath_orConfig, ignoreMissing) {
         }
     }
 
-    if ( sh.isString(filePath_orConfig) ) {
-        var queries = sh.readJSONFile(filePath_orConfig)
+
+
+    //var DistillerV2 = require('./DistillerV2').DistillerV2
+    var distillerOptions = {}
+    sh.mergeObjects(breedConfig.innerSettingsMixin, distillerOptions)
+    distillerOptions.downloadFile = true;
+//    distillerOptions.downloadFileDir = token.dirDownload;
+ //   distillerOptions.dir_downloads = token.dir_downloads;
+
+
+    distillerOptions.dirExtractFiles = 'x::SDF?SDFSdf'
+    distillerOptions.urlTorrent = 'x::SDF?SDFSdf'
+    distillerOptions.downloadFileDir = 'x::SDF?SDFSdf'
+    distillerOptions.query = 'clear-transfers'
+
+    distillerOptions.clearTransfers = true
+    distillerOptions.fxBail = function fxBail(o) {
+     //   asdf.g
+        console.log('did not work', o.msg)
+    }
+    //console.log(breedConfig)
+
+    distillerOptions.callback = function onDoneClear()  {
+        console.log('don clear')
     }
 
-    //config.multiplyAddItems = 10
 
-    console.log('queries length', queries.length)
-    config.queries = queries;
+    var go = new DistillerV2()
+    go.go(distillerOptions);
 
-    sh.each(queries, function onQueries(k,query) {
 
-        var qO = query;
-        if ( qO.skip == true ) {
-            return;
-        }
-        if ( query.dirRemoteMega == null ) {
-            query.dirRemoteMega =  "/Root/movies/Toy_Story_3_2010/tt0435761/"
-
-            query.dirRemoteMega =  "/Root/dls/"+qO.title+'/'
-        }
-        if ( qO.urlMagnet ) {
-            qO.urlTorrent = qO.urlMagnet;
-        }
-        if ( qO.urlTorrent == null) {
-            if ( ignoreMissing != true ) {
-                console.log('skipping', qO.name, 'no torrent')
-                return;
-            }
-            console.error('issue with', query)
-            sh.throw('need a magnet link for ', query);
-        }
-        var size = qO.size;
-        if ( sh.isString(size) && size.includes('MB')) {
-            size = size.replace('MB', '')
-            size = parseFloat(size)/1000;
-        }
-        qO.size = size
-    })
-
-//config.file_list = fileTestJSON;
-
-    return Step2.breed(config, false);
+    //return Step2.breed(config, false);
 
     /*
      http://localhost:8888/callbackurl

@@ -208,7 +208,8 @@ function PIDServer() {
             desc: "text",
             user_id: 0,
         }
-        fields = sh.dv(fields, defaultFields)
+        //fields = sh.dv(fields, defaultFields)
+        fields = defaultFields; 
         self.tags = RestHelperSQLTest.createHelper(tableName,
             server,  {
                 name: tableName,

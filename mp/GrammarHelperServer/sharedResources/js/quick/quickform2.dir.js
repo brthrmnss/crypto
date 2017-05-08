@@ -295,6 +295,7 @@
         return;
       }
 
+      console.debug('onSaveFormData')
       //remove transient properties ....
 
       if ( $scope.vm.fxSave != null ){

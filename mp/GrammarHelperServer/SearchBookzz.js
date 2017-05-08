@@ -21,6 +21,7 @@ function SearchBookzz() {
     var self = this;
 
     self.settings = {}
+    self.data = {};
 
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
@@ -36,6 +37,8 @@ function SearchBookzz() {
             url += '&e=1'
         }
 
+
+        self.data.url = url;
         var options = {}
         options.url = url
         options.encoding = null
@@ -71,6 +74,9 @@ function SearchBookzz() {
             } else {
                 // callback(body);
             }
+
+
+
 
             self.processTorrentLinks(body);
 
@@ -115,6 +121,7 @@ function SearchBookzz() {
                 }
 
 
+                data.url = self.data.url;
                 sh.callIfDefined(self.settings.fxDone, result, data)
             }
             //= 'example_bookzz.html';

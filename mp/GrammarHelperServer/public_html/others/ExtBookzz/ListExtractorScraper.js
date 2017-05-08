@@ -95,8 +95,7 @@ function ListExtractorScraper() {
         if ( self.settings.maxItems )
             items = items.slice(0,self.settings.maxItems)
 
-
-        debugger
+        // debugger
 
         var listItems = [];
         sh.each(items, function onProcessItem(k,v) {
@@ -173,17 +172,22 @@ function ListExtractorScraper() {
         }
 
         p.props.addItem = function addItem(typeA) {
-            //var fields = self.settings.fields;
-            var t = self.data.lastField
-            sh.throwIfNull(t, 'lastField not set, this is modifier, add field first')
-            sh.copyProps(typeA,t);
-            t.action = 'makeui'
-            //fields.push(t)
-            //self.data.lastField = t;
-            return t;
+            var fields = self.settings.fields;
+            var fieldDef =   self.data.lastField
+            sh.throwIfNull(fieldDef, 'lastField not set, this is modifier, add field first')
+            //fields.push(fieldDef)
+            //self.data.lastField = fieldDef;
+
+            sh.copyProps(typeA,fieldDef);
+            fieldDef.action = 'makeui'
+
+            return fieldDef ;
         }
         p.props.actions = {}
         p.props.actions.makeUI = function actOnMakeUI(def, liOutput) {
+
+
+            debugger
 
             //  console.debug('def', def.ui)
             var uiOrig = def.ui;
@@ -203,15 +207,26 @@ function ListExtractorScraper() {
                 }
                 def.link = uiUtils.runIfFx(def.href, liOutput)
 
+
                 console.debug('sdf', def.href  )
                 var cfg = uiUtils.addLink(def)
                 var ui = cfg.ui;
                 if ( self.settings.defaultAnnotation ) {
                     ui.addClass(self.settings.defaultAnnotation)
                 }
+
+                if ( def.addStyles) {
+                    $.each(def.addStyles, function addStyle(k,v) {
+                        ui.css(k,v)
+                    })
+
+                }
+
                 //   console.debug('new ui', ui)
                 //   ui.text('dfsdfsdfsd')
                 uiOrig.after(ui)
+
+                uiOrig.after('<span> </span>')
                 // uiOrig.css('color', 'red')
             }
             // uiOrig.ui.css('background', 'red')

@@ -35,7 +35,7 @@
             console.log('issue', tH2 )
             tH2.setupTransclution(reload_name, scope, $compile, element, html, attrs);
             scope.render(tH2);
-            
+
             return;
             utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
             utils.$compile = $compile;
@@ -62,8 +62,8 @@
       TransclutionHelper2.addInitStuff(reload_name, tElem, attrs)
 
       console.error('what is -element', 'par', tElem[0].outerHTML.length )
-     // utilsParent.storeTemplate(tElem, attrs);
-     // debugger
+      // utilsParent.storeTemplate(tElem, attrs);
+      // debugger
 
       function defineDirectiveDefaults() {
         if ( attrs.selectedIndex === null  ) {
@@ -78,8 +78,8 @@
         };
       }
       defineDirectiveDefaults();
-     // utilsParent.defaultAttr('testAttr', '5', attrs)
-    //  utilsParent.storeUserContent(tElem);
+      // utilsParent.defaultAttr('testAttr', '5', attrs)
+      //  utilsParent.storeUserContent(tElem);
       //console.log('fxCompile','url',attrs);
       return {
         pre: function(scope, element, attrs, controller){
@@ -138,8 +138,8 @@
 
           tH2.resetTemplate()
 
-         // utils.renderAttempt($scope)
-         // utils.showElements(element)
+          // utils.renderAttempt($scope)
+          // utils.showElements(element)
 
           var config = scope.vm.config;
 
@@ -287,7 +287,14 @@
             };
 
 
-          } 
+
+
+            scope.quickFormConfig.fxSave = function onFxSave(o) {
+              console.log('what i s it ??>... ', o)
+              $scope.saveFormObject(o);
+            }
+
+          }
 
 
           $scope.createWatchers(tH2);
@@ -301,7 +308,7 @@
 
           return;
 
-         // utils.finishContent(html)
+          // utils.finishContent(html)
           // element.append($compile(html)(scope));
           scope.element = element;
 

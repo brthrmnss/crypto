@@ -71,6 +71,9 @@ function onInitDB() {
 
             self.createUI();
 
+
+            //return;
+
             self.createUI.taskManagement();
             self.createUI1();
 
@@ -133,25 +136,29 @@ function onInitDB() {
                 uiUtils.socket.upgradeSocket(socket)
                 uiUtils.data.socket = self.data.socket;
 
-
-
-
-
                 var portHoist = (parseInt(self.data.port)+2)
                 console.log('portHoist', portHoist)
 
-                var socket = io( 'http://'+self.data.ip + ':'+ portHoist );
-                socket.on('chat message', function(msg){
+                var socketAddress  = self.data.ip + ':'+ portHoist
+                if ( window.socketAddress ) {
+                    console.info('window socketaddress')
+                    var socketAddress  =  window.socketAddress;
+                }
+
+                var socket2 = io( 'http://'+socketAddress );
+
+                socket2.on('chat message', function onGotChatMessage(msg){
                     if (msg.indexOf('eval-')==0) {
                         msg = msg.replace('eval-', '')
                         eval(msg);
                     }
+
                     console.log('chat')
                     $('#messages').append($('<li>').text(msg));
                     h.scrollToBottom();
                 });
-                uiUtils.socket.upgradeSocket(socket)
-                self.data.socketHoist = socket;
+                uiUtils.socket.upgradeSocket(socket2)
+                self.data.socketHoist = socket2;
                 uiUtils.data.socketHoist = self.data.socketHoist;
             }
 
@@ -356,11 +363,9 @@ function onInitDB() {
             uiUtils.br(); uiUtils.br();
             uiUtils.addLabel({text:"Server Brd",
                 width:lblWidth+0,
-                id:"txtServer"})
+                id:"lblTestServer"})
             uiUtils.makeBtn(uiUtils.lastId(), 'Test socket');
             uiUtils.onClick(uiUtils.lastId(), self.testSocket)
-
-
 
 
             uiUtils.spacer();
@@ -368,11 +373,11 @@ function onInitDB() {
             // uiUtils.br()
             uiUtils.addTextInput({
                 text:self.data.url,
-                id:'txtIpHostpost',
+                id:'txtIpHostport',
                 onDebounce:function onChanged(newName) {
                     console.log('debouched', newName)
 
-                    debgger;
+                    debugger;
                     return;
 
                     //return;
@@ -415,6 +420,8 @@ function onInitDB() {
 
 
 
+
+
             function createOtherIpds() {
                 self.data.ui.ddOtherIps = 'ddOtherIps';
                 self.onSwitchIp = function onSwitchIp(eee) {
@@ -422,6 +429,9 @@ function onInitDB() {
                     //  self.data.url = u.getVal2( self.data.ui.ddOtherIps)
                     u.setVal2(self.data.ui.txtPort, eee)
                     self.isConnected()
+
+                    window.socketAddress = eee;
+                    window.onInitDB();
                 }
                 uiUtils.addSelect({
                     tooltip:'Pick Different Ip this',
@@ -442,11 +452,18 @@ function onInitDB() {
                 }
                 uiUtils.updateSelect(self.data.ui.ddOtherIps,
                     u.kv([
-                        'localhost'+':'+self.data.portHoist,
-                        '192.168.1.654'+':'+self.data.portHoist,
-                        '29.56.58.23'+':'+self.data.portHoist
+                        'localhost'+':'+(self.data.portHoist+2),
+                        '192.168.1.159'+':'+(self.data.portHoist+2),
+                        '9'+'5.21'+''+'1.13'+''+'7.1'+'45'+':'+(self.data.portHoist+2),
+                        '8'+'5.21'+''+'1.13'+''+'7.1'+'45'+':'+(self.data.portHoist+2),
                     ])
                 );
+
+                if ( window.socketAddress ) {
+                    uiUtils.setVal2(self.data.ui.ddOtherIps, window.socketAddress)
+                    u.setVal2(self.data.ui.txtPort, window.socketAddress)
+                }
+
                 return;
                 self.getTasks(function initTaskListSelectionForFirst() {
 
@@ -886,14 +903,18 @@ function onInitDB() {
             var h = {}
             h.create1Off = function create1Off(){
 
-                uiUtils.addRadio = function addRadio() {
-
-                }
 
 
-                uiUtils.addRow();
+                uiUtils.addRow(function onAdd1ff() {
 
-                uiUtils.addRadio()
+                });
+
+                uiUtils.addRadio({name:'searchType', value:'1off', addSpacerAfter:true}, 'radioSearchType')
+                uiUtils.addChange(function onBook(e, ui, val){
+                    console.error('ok', e, ui, val)
+                    self.data.searchType = e;
+                }, null, true)
+                self.data.ui.txtUIRadio = uiUtils.lastId();
                 uiUtils.addLabel({text:"1 Off",
                     width:lblWidth,
                     title: 'Search for 1 item'})
@@ -947,6 +968,7 @@ function onInitDB() {
 
             }
             h.createListIds = function createListIds(){
+                uiUtils.addRadio({name:'searchType', value:'listLsIds', addSpacerAfter:true})
                 uiUtils.addLabel({text:"List ls Ids", width:lblWidth})
                 // div.append('1 Off');
                 uiUtils.spacer();
@@ -958,6 +980,11 @@ function onInitDB() {
                         console.log('debouched', newName)
                     } })
                 self.data.ui.txtListIds = uiUtils.lastId();
+
+
+                var btn = u.lastUI;
+                console.log('max1', btn.text())
+                //debugger;
 
                 uiUtils.addBtn({
                     text: 'Get Lists & Create DM 2',
@@ -975,10 +1002,17 @@ function onInitDB() {
                     }
                 })
 
+                var btn = u.lastUI;
+                console.log('max', btn.text())
+
+                self.renderHelper.idRequiresVal(u.getLast(), self.data.ui.txtListIds)
+
+
                 uiUtils.br()
             }
 
             h.createListOfTt_Ids = function createListOfTt_Ids(){
+                uiUtils.addRadio({name:'searchType', value:'listTTIds', addSpacerAfter:true})
                 uiUtils.addLabel({text:"List tt Ids", width:lblWidth})
                 // div.append('1 Off');
                 uiUtils.spacer();
@@ -1040,13 +1074,14 @@ function onInitDB() {
                         // listMethod:'ttIds',
                         // listStoreMethod:'ttIds',
                         cmd:'listids',
-                        wrapType: "ttIds"
+                        wrapType: "ttIds" 
                     }
                 })
 
                 uiUtils.br()
             }
             h.create_dlConfigList = function create_dlConfigList(){
+                uiUtils.addRadio({name:'searchType', value:'imdbSearch', addSpacerAfter:true})
                 uiUtils.addLabel({text:"IMDB Search", width:lblWidth-0})
                 uiUtils.spacer();
 
@@ -1517,18 +1552,19 @@ function onInitDB() {
                 }
             )
             uiUtils.spacerSlim();
-            uiUtils.addBtn({
-                    title:'Dl',
-                    text: '~',
-                    title: 'View Sanitized files',
-                    text: 'Status',
-                    html: uiUtils.glyph('info-sign'),
-                    fxClick: self.openThings,
-                    data:{
-                        file:self.getValFromData('self.data.fileT2_CheckProgressList'),
-                    }
-                }
-            )
+            /*uiUtils.addBtn({
+             title:'Dl',
+             text: '~',
+             title: 'View Sanitized files',
+             text: 'Status',
+             html: uiUtils.glyph('info-sign'),
+             fxClick: self.openThings,
+             data:{
+             file:self.getValFromData('self.data.fileT2_CheckProgressList'),
+             }
+             }
+             )*/
+            uiUtils.spacer({width:'25'});
             uiUtils.spacerSlim();
             //self.types.checkProgressLite = 'checkProgressLite';
             uiUtils.addLabel({id:'txt_'+self.types.taskCheckProgressLite });
@@ -1556,17 +1592,35 @@ function onInitDB() {
                 }
             })
             uiUtils.spacerSlim();
+            /* uiUtils.addBtn({
+             title:'Dl',
+             text: '~',
+             title: 'View Sanitized files',
+             text: 'Status',
+             html: uiUtils.glyph('info-sign'),
+             fxClick: self.openThings,
+             data:{
+             file:self.getValFromData('self.data.fileT3_SantiziedFileList'),
+             }
+             }  )
+             */
+            function onX(){
+                var y = self.data.listDlManifest+'.recipet.json'
+                return y
+            }
             uiUtils.addBtn({
-                title:'Dl',
-                text: '~',
-                title: 'View Sanitized files',
-                text: 'Status',
-                html: uiUtils.glyph('info-sign'),
-                fxClick: self.openThings,
-                data:{
-                    file:self.getValFromData('self.data.fileT3_SantiziedFileList'),
-                }
-            }  )
+                    title:'Dl',
+                    text: '~',
+                    title: 'View File List',
+                    text: 'Status',
+                    html: uiUtils.glyph('info-sign'),
+                    fxClick: self.openThings,
+                    data:{
+                        file:self.getFx(onX),
+                    }
+                },
+            )
+
             uiUtils.addLabel({id:'txt_'+self.types.sanitizeFileList });
             self.data.ui.txt_sanitizeFileList = uiUtils.lastId();
             self.data.forwardOutputType[self.types.sanitizeFileList] = self.data.ui.txt_sanitizeFileList
@@ -1576,36 +1630,64 @@ function onInitDB() {
             self.renderHelper.pushData( 'self.data.'+ [self.types.sanitizeFileList, 'output'].join('_') );
 
 
+            /*     u.br()
+
+
+             uiUtils.addBtn({
+             title:'Tell Box to run import scriopt',
+             text: '~',
+             title: 'Remote Import files',
+             text: 'Status',
+             html: uiUtils.glyph('transfer')
+             },
+             function onOpenDb(){
+             console.log('...')
+             var url = u.getVal2(self.data.ui.txtPort)
+             u.changePort = function changePort(url, portTo) {
+             if ( url.includes(':')) {
+             url = url.split(':')[0]
+             }
+
+             if ( url.startsWith('http')==false) {
+             url = 'http://'+url;
+             }
+             var output = url + ':'+ portTo
+
+             return output;
+             }
+             url = uiUtils.changePort(url, 5600)
+             url += '/index.html567.html'
+             console.log(url, '')
+             uiUtils.openNewWindow(url)
+             }
+             )
+
+             */
             u.br()
 
-
-            uiUtils.addBtn({
-                    title:'Tell Box to run import scriopt',
-                    text: '~',
-                    title: 'Remote Import files',
-                    text: 'Status',
-                    html: uiUtils.glyph('transfer')
-                },
-                function onNew(){
-                }
-            )
-
-
-            u.br()
-
+            self.types.importRecFile = 'importRecFile';
             uiUtils.addBtn({
                     title:'Push Sanitized Files to Server',
                     text: '~',
                     title: 'Upload back to server',
                     text: 'Status',
-                    html: uiUtils.glyph('cloud-upload')
-                },
-                function onNew(){
-                    //only non override files ... that match the same name
+                    html: uiUtils.glyph('cloud-upload'),
+                    fxClick: self.onServerTask,
+                    data: {
+                        url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                        ip:self.data.ip,
+                        port:self.data.portHoist2,
+                        cmd: self.types.importRecFile
+                    }
                 }
             )
+            uiUtils.spacerSlim();
+            uiUtils.addLabel({id:'txt_'+self.types.importRecFile });
+            self.data.ui.txt_importRecFile = uiUtils.lastId();
+            self.data.forwardOutputType[self.types.importRecFile] = self.data.ui.txt_importRecFile
 
-
+            uiUtils.addLabel({id:['txt',self.types.importRecFile,'output']});
+            self.renderHelper.pushData( 'self.data.'+ [self.types.importRecFile, 'output'].join('_') );
 
 
             var uiElements = uiUtils.collector.stop()
@@ -2149,7 +2231,7 @@ function onInitDB() {
 
                 p.openThings = function openThings(e, dataOverride) {
                     var data = {}
-                    var targetData = self.utils.getUIData(e);
+                    var targetData = self.utils.getUIData(e,dataOverride);
                     data.file = targetData.file;
 
                     url = self.utils.getPath('/openFile')
@@ -2284,6 +2366,9 @@ function onInitDB() {
                     return {'getValFromData':val}
                 }
 
+                self.getFx = function getFx(fx) {
+                    return {'getFx':fx}
+                }
 
                 self.utils.combineFields = function comF() {
                     var args = u.args(arguments)
@@ -2311,6 +2396,11 @@ function onInitDB() {
                             if ( v.getValFromData.startsWith('self.')) {
                                 val = eval(v.getValFromData);
                             }
+                            other[k] = val;
+                        }
+
+                        if ( v.getFx) {
+                            var val = v.getFx()
                             other[k] = val;
                         }
 

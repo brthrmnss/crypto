@@ -9,6 +9,9 @@ Send !f
 Send o
 Sleep, 1000
 
+; Send {Space}
+Sleep, 500
+
 SendRaw =FILE=
 Sleep, 400
 

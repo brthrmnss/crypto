@@ -153,6 +153,7 @@
         sh.errors = {}
 
 
+
         /**
          * Simple log, show prototype (class) and method name
          */

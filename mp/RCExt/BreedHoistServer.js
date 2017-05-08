@@ -20,10 +20,11 @@ var express = require('express')
 
 var HoistServer = require('./HoistServer').HoistServer
 var RC_HelperFxs = require('./supporting/TestRCScripts.js').RC_HelperFxs
+var Workflow_ImportVidsAgain = require('./supporting/Workflow_ImportVidsAgain.js').Workflow_ImportVidsAgain
 
 
 function DLHoistServer() {
-
+ 
     var p = DLHoistServer.prototype;
     p = this;
     var self = this;
@@ -339,7 +340,26 @@ function DLHoistServer() {
                     
                     return
                 });
-                
+
+
+                socket.on('importRecFile', function onImportRecFiles(data){
+                    self.proc('what is command', data.cmd, data.length )
+                   // var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
+                 //   var dirOutput = sh.fs.getDir(fileOutput)
+                   // sh.fs.mkdirp(dirOutput)
+                    Workflow_ImportVidsAgain.importRecFile(data, function onDone(fileOutput, lite) {
+                        //console.error(lite)
+                        self.proc('file output', fileOutput);
+                       // var content = sh.readFile(fileOutput)
+                        // onResultOfcall(content)
+                        socket.emit('importRecFile_results', fileOutput);
+                        //socket.broadcast.emit('window.invoke', x);
+                    }, null);
+
+                    return
+                });
+
+
 
                 socket.on('window.invoke', function (x) {
                     console.log('window invoke')
@@ -478,7 +498,11 @@ exports.reloadServer = function reloadServer(delayed ) {
     instance.lastConfig = config;
 
     //instance.testLocally()
-    instance.testRemotely();
+    var testRemoteDownload = false;
+    //testRemoteDownload = true
+    if ( testRemoteDownload ) {
+        instance.testRemotely();
+    }
     /* return;
 
      instance.testLocally()
