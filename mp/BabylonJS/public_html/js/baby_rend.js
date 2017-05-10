@@ -1,4 +1,40 @@
 //console.log('boo..x.')
+
+
+if ( window.sh == null || window.shIsNew ) {
+    var sh = {}
+    window.sh = sh;
+
+    sh.each = $.each;
+    sh.each.times = function times(number, fx, startAt0) {
+        var numbers = [];
+        var number = parseInt(number);
+        var numStart = 1;
+        if (startAt0 == true) { //by default 10 times give syou 0-1, here we use 1- 10
+            numStart = 0;
+        }
+        if ( sh.isNumber(startAt0) ) {
+            numStart = startAt0
+        }
+        for (var i = 0; i < number; i++) {
+            var num = i;
+            num += numStart
+            numbers.push(num);
+        }
+
+        if (fx != null) {
+            sh.each(numbers, fx)
+        }
+        else {
+            return numbers;
+        }
+    }
+
+    sh.isNumber = $.isNumeric
+    window.shIsNew = true;
+
+}
+
 function BabyRend() {
     var self = this;
     var p = self;
@@ -99,6 +135,38 @@ function BabyRend() {
 
         b.pos(-8,1,0)
 
+        self.layout = {}
+        self.layout.putItemsInACircle = function putItemsInACircle() {
+
+            var numCircles = 24
+            var dist = 12
+            var fxName = 'xName'
+            sh.each.times(numCircles, function g(i) {
+                console.log(fxName, i);
+                b.create.square(0.2);
+               // b.pos(5,1+(i*2),0);
+                var deg = (360/numCircles)*i;
+                var rad = deg * Math.PI / 180;
+                var adj = adjacent = Math.cos(rad)*dist
+                var opp = Math.sin(rad)*dist
+                console.log(fxName,deg, 'z', opp, 'x', adj )
+                b.pos(adj,opp,-5);
+
+
+               // b.pos(adj,1+(i*2),opp);
+
+                //console.log(fxName, '...', )
+            })
+
+        }
+
+            self.layout.putItemsInACircle();
+
+        setTimeout(function () {
+            //return;
+            BabyLib.zoomToFit(self.data.x.camera, 10)
+        }, 500)
+
         // return the created scene 
         return scene;
     }
@@ -125,7 +193,7 @@ function BabyRend() {
 
 
         uiUtils.makeAbs(div)
-        uiUtils.addBtn({text:'boob2'}, function onF() {
+        uiUtils.addBtn({text:'testOnOff'}, function onF() {
             console.log(
                 'onF'
             )
@@ -136,6 +204,8 @@ function BabyRend() {
                 'onF'
             )
 
+            BabyLib.zoomToFit(self.data.x.camera)
+            return;
         /*    var bounds = box.getBoundingInfo();
             var min = bounds.minimum;
             var max = bounds.maximum;*/
