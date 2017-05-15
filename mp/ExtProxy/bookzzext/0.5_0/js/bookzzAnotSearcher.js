@@ -20,7 +20,7 @@ function scrap() {
     instance.setupLiField('author', instance.utils.prop('itemprop', 'author'))
 
 
-
+ 
     instance.setupLiField('searchGood', instance.utils.prop('itemprop', 'name'))
     instance.props.doNotStore()
     instance.props.addItem({

@@ -32,6 +32,9 @@ function DLHoistServer() {
 
     self.data.filePathTestConfig =  __dirname+'/'+'testData/' + 'test_dl_manifest.json'
 
+    var dirManifest = __dirname+'/'+'manifests/'
+    sh.makePathIfDoesNotExist(dirManifest);
+
   //  console.error(self.data.filePathTestConfig)
     //sh.exit(self.data.filePathTestConfig)
 
@@ -70,10 +73,12 @@ function DLHoistServer() {
         self.app.get('/useConfig', function onUseConfig (req, res) {
             var taskName = req.query.taskName;
             var fileManifest = sh.fs.makePath(__dirname, 'manifests', taskName)
+            console.log('---')
             self.proc('run config with', fileManifest);
             sh.fs.exists(fileManifest, 'manifest must exists')
-            console.log('what', fileManifest);
+            console.log('waht file?', fileManifest);
             if ( sh.fs.notFound(fileManifest)  ) {
+                console.error('error','dude')
                 res.send(sh.json.error('not found '+ taskName));
                 return;
             }
@@ -357,6 +362,18 @@ function DLHoistServer() {
                     }, null);
 
                     return
+                });
+
+
+                socket.on('uploadAndRun', function onUploadAndRun(data){
+                    sh.throwIf(data.name == null, 'need a name for file')
+                    sh.throwIfNull(data.contents, 'need contents for file')
+                    self.proc('what is command', data.cmd, data.length )
+                    // var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
+                    var fileManifest = sh.fs.join(dirManifest, data.name)
+                    sh.writeFile(fileManifest, data.contents);
+                    socket.emit('uploadAndRun'+'_results', 'it was written');
+                    return;
                 });
 
 

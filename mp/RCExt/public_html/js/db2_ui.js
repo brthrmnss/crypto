@@ -8,6 +8,8 @@ function onInitDB() {
         var self = this;
         self.data = {}
 
+        self.types = {};
+
         self.data.port = 6012;
         self.data.portHoist = 6012;
         self.data.portHoist2 = 6012+2;
@@ -432,6 +434,12 @@ function onInitDB() {
 
                     window.socketAddress = eee;
                     window.onInitDB();
+
+                    var url = self.data.baseDataUrl
+                        + '/resetSockets';
+                    uiUtils.getUrl(url, function getPreviousTasksList(sdf){
+                      console.log('sockets reset');
+                    })
                 }
                 uiUtils.addSelect({
                     tooltip:'Pick Different Ip this',
@@ -1074,7 +1082,7 @@ function onInitDB() {
                         // listMethod:'ttIds',
                         // listStoreMethod:'ttIds',
                         cmd:'listids',
-                        wrapType: "ttIds" 
+                        wrapType: "ttIds"
                     }
                 })
 
@@ -1357,34 +1365,64 @@ function onInitDB() {
             //once the x is ready, ten u can disable
             uiUtils.br()
 
+
+            self.types.uploadAndRun = 'uploadAndRun'
+            var _UploadAndRun =   {
+                url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                ip:self.data.ip,
+                port:self.data.portHoist2,
+                cmd: self.types.uploadAndRun
+                //fileManfiest is added automatically ..
+            }
+
+            /*       uiUtils.addBtn({
+             title:'Dl',
+             text: '~',
+             title: 'Download File List',
+             text: 'Status',
+             html: uiUtils.glyph('cloud-download'),
+             */
+
             uiUtils.addBtn(
                 {
                     text: 'Upload & Run',
                     html:  uiUtils.glyph('play'),
-                    tootlip: 'uploads and runs current file, will end current file running'
-                },
-                function onUploadAndRun(){
-                    var name = self.getTaskTitle();
-                    console.log('run with', name);
-
-                    var data = {};
-
-                    data.taskName = name;
-
-                    data.taskName = t.data.listDlManifest.split('/').slice(-1)
-
-                    var url = uiUtils.getLocation('useConfig', 6012);
-
-                    // return;
-                    uiUtils.getUrl(url, function onGotRecentList(sdf){
-                        console.log('onGotRecentList', sdf)
-
-                    }, data);
-
-                    return;
+                    tootlip: 'uploads and runs current file, will end current file running',
+                    fxClick: self.onServerTask,
+                    data:_UploadAndRun
                 }
             )
+            /*,
 
+             function onUploadAndRun(){
+             var name = self.getTaskTitle();
+             console.log('run with', name);
+
+             var data = {};
+
+             data.taskName = name;
+
+             data.taskName = t.data.listDlManifest.split('/').slice(-1)
+
+             var url = uiUtils.getLocation('useConfig', 6012);
+
+             if ( window.socketAddress ) {
+             var ip = window.socketAddress.split(':')[0];
+             url = url.replace(window.location.hostname, ip)
+             debugger
+             }
+
+
+             // return;
+             uiUtils.getUrl(url, function onGotRecentList(sdf){
+             console.log('onGotRecentList', sdf)
+
+             }, data);
+
+             return;
+             }
+             )
+             */
             // uiUtils.spacer();
 
             uiUtils.addBtn(
@@ -1473,7 +1511,7 @@ function onInitDB() {
             div.append('Verify');
             uiUtils.br()
 
-            self.types = {};
+
             self.data.forwardOutputType = {};
             self.types.dlRemoteFileList = 'dlRemoteFileList';
 
@@ -1793,7 +1831,7 @@ function onInitDB() {
                     fxClick: self.onServerTask,
                     data: {
                         url:self.getValFrom(self.data.ui.txtBreedServerUrl),
-                        ///howh to get this? 
+                        ///howh to get this?
                         //fileManifest:self.getFxVal(self.data.utils.getManifestName),
                         //url:self.getValFrom(self.data.ui.txtBreedServerUrl),
                         cmd: 'sanitizeFileList'
@@ -2265,6 +2303,32 @@ function onInitDB() {
                     data.fileManifest = self.data.listDlManifest
 
                     console.log('title', title, data);
+                    data.url = self.getValFrom(self.data.ui.txtBreedServerUrl)
+
+                    u.contentAfter = function contentAfter(str, find) {
+                        if ( str.includes(find)) {
+                            str = str.split(find)[1]
+                        }
+                        return str;
+                    }
+
+                    u.contentBefore = function contentBefore(str, find) {
+                        if ( str.includes(find)) {
+                            str = str.split(find)[0]
+                        }
+                        return str;
+                    }
+
+                    uiUtils.getIp =  function getIP(url) {
+                        url = u.contentAfter(url, '://')
+                        url = u.contentBefore(url, ':')
+                        return url; 
+                    }
+
+                    //uiUtils.getIp(data.url)
+                    data.url = uiUtils.getVal2(self.data.ui.txtBreedServerUrl)
+                    data.ip = uiUtils.getIp(data.url)
+                        //data.port =
 
                     //return;
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {

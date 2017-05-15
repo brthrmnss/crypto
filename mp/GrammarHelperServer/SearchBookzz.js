@@ -11,7 +11,10 @@ var cheerio = require('cheerio');
 
 var SearchPBCachedRequest = sh.require('ritv/distillerv3/utils/SearchPBCachedRequest.js').SearchPBCachedRequest;
 
-var d = 'mp/ExtProxy/ggnampgigkndjmbbjlodenmpbamidgeo/0.5_0/js/ListExtractorScraper.js'
+//G:\Dropbox\projects\crypto\mp\GrammarHelperServer\public_html\others\ExtBookzz\ListExtractorScraper.js
+var d = 'mp/ExtProxy/ggnampgigkndjmbbjlodenmpbamidgeo/0.5_0/js/extras_maybe/ListExtractorScraper.js'
+//G:\Dropbox\projects\crypto\mp\ExtProxy\ggnampgigkndjmbbjlodenmpbamidgeo\0.5_0\js\extras_maybe\ListExtractorScraper.js
+//var d = 'mp/GrammarHelperServer/public_html/others/ExtBookzz/ListExtractorScraper.js'
 var ListExtractorScraper = sh.require(d).ListExtractorScraper
 
 

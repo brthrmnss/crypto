@@ -17,6 +17,8 @@ var RCScripts = require(fileScript).RCScripts;
 
 var Workflow_ImportVidsAgain = require('./supporting/Workflow_ImportVidsAgain.js').Workflow_ImportVidsAgain
 
+var Workflow_UploadAndRun = require('./supporting/Workflow_UploadAndRun.js').Workflow_UploadAndRun
+
 
 //console.log('got a new one ..d..')
 function RCConfigExecServer() {
@@ -334,6 +336,23 @@ function RCConfigExecServer() {
                 res.send('Hello World!');
             });
 
+
+
+            app.get('/resetSockets', function resetSockets (req, res) {
+                var body = req.query;
+                var name = body.name;
+                self.proc('removing', name);
+                if (self.data.socketBreed) {
+                    self.data.socketBreed.disconnect()
+                }
+                self.data.socketBreed = null;
+                if (self.data.socketBreed2) {
+                    self.data.socketBreed2.disconnect()
+                }
+                self.data.socketBreed2 = null;
+                res.send('reset');
+            });
+
         }
         defineVerifyStep();
 
@@ -480,6 +499,10 @@ function RCConfigExecServer() {
 
             if ( data.cmd == 'importRecFile'){
                 self.cmds.importRecFile(data, fx)
+            }
+
+            if ( data.cmd == 'uploadAndRun'){
+                self.cmds.uploadAndRun(data, fx)
             }
 
             return;
@@ -1013,6 +1036,43 @@ function RCConfigExecServer() {
                 output.result = 'fxed' +output.count
                 fx(output);
                 self.cmds.sendStatus('done with importRecFile ', type, output);
+            });
+
+            return;
+        }
+        
+        p.cmds.uploadAndRun = function uploadAndRun(cmd, fx) {
+            self.proc('.....!@uploadAndRun#d$', exports.RCExtV, self.data.id)
+            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
+            //var fileDlRecManifest=fileDlManifest+'.recipet.json'
+
+            console.log('fileFileList', '<<<<<<<<<<<', fileDlManifest)
+
+            self.cmds.sendStatus('running tool');
+
+            var type = 'uploadAndRun'
+            self.cmds.sendStatus('running uploadAndRun', type);
+
+            if ( sh.fs.exists(fileDlManifest ) == false) {
+                self.cmds.sendStatus('FAILED .... do the import first ', type);
+                return;
+            }
+
+            var cfg = sh.clone(cmd)
+            cfg.fileManifest = fileDlManifest;
+            cfg.ip = cmd.ip;
+            cfg.port = cmd.port;
+            delete cfg.url;
+            cfg.socket = self.data.socketBreed2;
+            console.log('111what is socket', cfg.socket)
+
+            Workflow_UploadAndRun.uploadAndRun(cfg,  function onDone(output) {
+                console.log('found how many?', output);
+                output.complete = true;
+                output.result = 'fxed' +output.count;
+                fx(output);
+                self.data.socketBreed2 = cfg.socket
+                self.cmds.sendStatus('done with '+type, type, output);
             });
 
             return;

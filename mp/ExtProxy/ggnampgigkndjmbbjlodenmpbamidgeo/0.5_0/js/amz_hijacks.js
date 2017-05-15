@@ -28,7 +28,7 @@ function ChromeExtMod() {
         console.log('bookname', bookname)
 
         if ( self.utils.isKindle()  == false ) {
-            return;
+            //    return; //trying this anyway...
         }
 
         var request = 'http://localhost:10110/searchBookzz/?query='+
@@ -40,7 +40,7 @@ function ChromeExtMod() {
             if ( bbC.length > 0 ) {
 
             } else {
-                var innerBox = $('#buybox').find('.a-box-inner')
+                var innerBox = $('#buybox')//.find('.a-box-inner')
                 var bbC = $('<div/>')
                 bbC.attr('id', 'buyBoxCustom')
                 innerBox.append(bbC)
@@ -369,6 +369,9 @@ function ChromeExtMod() {
 
         u.getBookName = function isKindle() {
             var bookName = $('#ebooksProductTitle').text()
+            if ( bookName == '' ) {
+                var bookName = $('#productTitle').text()
+            }
             if ( bookName.includes(':')) {
                 bookName = bookName.split(':')[0]
             }

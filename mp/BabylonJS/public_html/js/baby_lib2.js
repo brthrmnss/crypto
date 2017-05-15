@@ -84,41 +84,24 @@ BabyLib.create = function defineCreation() {
         if ( b.cursorMode ) {
             b.pos(b.last, blueBox)
             //blueBox.position.x += b.last.getBoundingInfo().boundingBox.extendSize.x;
-/*
 
             var vectorsWorld = blueBox.getBoundingInfo().boundingBox.vectorsWorld;
             width = Number(vectorsWorld[1].x-(vectorsWorld[0].x))
-            height = Number(vectorsWorld[1].y-(vectorsWorld[0].y))
-            depth = Number(vectorsWorld[1].z-(vectorsWorld[0].z))
+            blueBox.position.x += width
 
-            blueBox.position.x += width;
-
-            blueBox.position.y += height;
-            //debugger  
-            blueBox.position.z += depth;*/
+            blueBox.position.y += b.last.getBoundingInfo().boundingBox.extendSize.y;
+            //debugger
+            blueBox.position.z += b.last.getBoundingInfo().boundingBox.extendSize.z;
             if ( b.cursorModePosition ) {
                 b.pos(b.cursorModePosition)
                 b.cursorModePosition = null;
             }
         }
 
-        b.last2 = b.last;
         b.last = blueBox;
 
         BabyLib.items.push(b.last)
     }
-
-        b.up = function up(nudge) {
-            var blueBox = b.last2;
-            var vectorsWorld = blueBox.getBoundingInfo().boundingBox.vectorsWorld;
-            width = Number(vectorsWorld[1].x-(vectorsWorld[0].x))
-            height = Number(vectorsWorld[1].y-(vectorsWorld[0].y))
-            depth = Number(vectorsWorld[1].z-(vectorsWorld[0].z))
-            //blueBox.position.x += width;
-            var targetMesh = b.last;
-            nudge = uiUtils.dv(nudge, 0)
-            targetMesh.position.y += height + nudge;
-        }
 
 }
 BabyLib.create()
@@ -456,7 +439,6 @@ BabyLib.defineLayoutMethods = function defineLayoutMethods() {
             console.log(fxName, b.last.getBoundingInfo().boundingBox.extendSize)
             // b.pos(5,1+(i*2),0);
 
-            b.up(0.1);
             var deg = (360/numCircles)*i;
             var rad = deg * Math.PI / 180;
             var adj = adjacent = Math.cos(rad)*radius
@@ -621,7 +603,7 @@ BabyLib.defineLayoutMethods = function defineLayoutMethods() {
         camera.setTarget(position);
 
         console.log('moved camear to', camera.position)
-
+ 
     }
 }
 BabyLib.defineLayoutMethods()

@@ -714,6 +714,8 @@
 
           $scope.vm.config.selectedItem = yyy;
           $scope.vm.config.selectedItemOrig = item;
+          
+          yyy.selected = true; 
 
           console.error('---what is config?',  $scope.vm.config.quickFormConfig)
           //debugger;

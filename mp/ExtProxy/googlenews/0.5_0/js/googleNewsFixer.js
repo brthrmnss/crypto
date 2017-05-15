@@ -35,33 +35,97 @@ function scrap() {
 
 
     $('.title-text').css('color', '#34495E')
-    return;
 
-    var instance = new ListExtractorScraper();
-    var config = {};
-//config.file = 'example_bookzz.html';
-    config.jquery = true;
 
-    //config.maxItems = 2;
+    var self = scrap
+    scrap.data = {}
+    self.data.rtColHidden = false;
+
+
+    var style=document.createElement('style');
+    document.head.appendChild(style);
+    stylesheet=style.sheet;
+    function css(selector,property,value)
+    {
+        try{ stylesheet.insertRule(selector+' {'+property+':'+value+'}',stylesheet.cssRules.length); }
+        catch(err){}
+    }
+    window.css = css;
+
+
+    scrap.hidePersonalizeColumn = function hidePersonalizeColumn() {
+        self.data.rtColHidden = ! self.data.rtColHidden;
+        var ui =  $('.rt-col');
+        if ( self.data.rtColHidden ) {
+            ui.css('width', 'Opx');
+        }
+        else {
+            ui.css('width', '385px');
+        }
+        var width = ui.css('width');
+        console.log('ui', ui, width, self.data.rtColHidden)
+        // debugger
+
+
+
+
+        css('.rt-col, .rt-col-col', 'width', '0px')
+
+
+    }
+
+    self.hidePersonalizeColumn()
+    $('#settings-button').click(scrap.hidePersonalizeColumn)
+
+
+
+    $('.al-attribution-cell.sharebar-cell').remove()
+
+    css('.esc-separator', 'height',0)
+
+
+
+    css('.esc .esc-lead-article-title', 'font-size','14px')
+    css('.esc .esc-lead-article-title', 'font-weight','normal')
+    css('.titletext', 'font-weight','normal !important')
+
+    window.css('.blended-wrapper','min-height', '25vh')
+    /*
+     '  .basic-title a, .basic-title a:visited {'
+     color: #000;
+     text-decoration: none;
+     font-style: italic;
+     opacity: 0.7;
+     font-size: smaller;
+     }'*/
+    var selector = '.basic-title a, .basic-title a:visited'
+    window.css(selector,'font-style', 'italic')
+    //window.css(selector,'opacity', '0.7')
+    window.css(selector,'font-size', 'smaller')
+    window.css(selector, 'color', '#265C83');
 
     //debugger
-    instance.init(config)
-    instance.setupAreas('#searchResultBox', '.resItemBox')
-    instance.setupLiField('name', instance.utils.prop('itemprop', 'name'))
-    instance.setupLiField('author', instance.utils.prop('itemprop', 'author'))
-    instance.setupLiField('searchAmz', instance.utils.prop('itemprop', 'name'))
-    instance.props.defaultAnnotation('extrasAnnots')
-    instance.props.doNotStore()
-    instance.props.addItem({
-        type:'a', text:'Search',
-        blank:true,
-        href:function makeRef(o) {
-       //     debugger
-        return 'https://www.google.com/search?q=goodread '+o.name + ' ' + o.author
-    }
-    })
-   // debugger
-    instance.test();
+    $('.section-name')/*.find('a').find('span')*/.each(
+        function removeOddChar() {
+            var ui = $(this)
+            var text = ui.text()
+            text = text.replace('»', '');
+            ui.text(text)
+            return;
+            $(this).attr('href', 'http://www.somesitename.com/filter' + this.href);
+        });
+
+    //storeis with no pic, only outer table, no attribution table
+    $('.esc-no-thumbnail').find('table.esc-layout-table').css('padding-left', '85px')
+
+    $('.nav-items').css('padding-top', '12.5px');
+
+
+    window.css('.footer', 'text-align', 'left');
+    window.css('.footer', 'margin-left', '200px');
+    window.css('.footer-disclaimer', 'padding', '0px');
+    window.css('.footer', 'min-width', 'inherit');
+    return;
 
     window.instance = instance;
 }

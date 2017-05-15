@@ -9,6 +9,7 @@
  */
 var sh = require('shelpers').shelpers;
 
+
 function GoToAutoHotKeyQuickWebstorm() {
     var p = GoToAutoHotKeyQuickWebstorm.prototype;
     p = this;
