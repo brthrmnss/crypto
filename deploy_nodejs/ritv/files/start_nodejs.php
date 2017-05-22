@@ -1,5 +1,5 @@
 <?php
-$comando = "sudo /var/www/html/run.sh ";
+$comando = "sudo /var/www/html/start.sh ";
  shell_exec("/usr/bin/nohup ".$comando." >/dev/null 2>&1 &");
 
 

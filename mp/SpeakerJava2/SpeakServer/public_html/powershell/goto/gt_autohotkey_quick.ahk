@@ -1,5 +1,6 @@
 ; template for navigating to a window
 
+; regex SetTitleMatchMode,RegEx
 
 
 If WinExist("=goToWindow=") {
