@@ -2,7 +2,7 @@
 ; rem open file
 ; rem paste file
 
-WinActivate crypto - [
+WinActivate =goToWindow=
 click 20,50
 Send !f
 
@@ -12,7 +12,7 @@ Sleep, 1000
 ; Send {Space}
 Sleep, 500
 
-SendRaw =FILE=
+SendRaw =filePathOrName=
 Sleep, 400
 
 Send {Enter}

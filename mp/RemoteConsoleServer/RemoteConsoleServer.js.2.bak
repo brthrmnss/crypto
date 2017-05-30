@@ -1,0 +1,711 @@
+/**
+ * Created by user on 8/2/15.
+ */
+
+/**
+ * This is a mini server, that allows users to
+ * append to notes
+ *
+ * Expects everest to be running.
+ */
+
+
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+
+var express = require('express');
+var config = global.config;
+
+var express = require("express");
+var app = express();
+
+var bodyParser = require('body-parser');
+
+app.use(bodyParser());
+
+var open = require('open')
+
+var requestIp = require('request-ip');
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+
+
+/**
+ * Created by user on 7/30/15.
+ */
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+var EasyRemoteTester = shelpers.EasyRemoteTester;
+
+
+function BrowserEvalServer() {
+    var p = BrowserEvalServer.prototype;
+    p = this;
+    var self = this;
+
+    var indexPageSecurityEnding = '567.html'
+
+    //specify url of everest folder
+    var baseUrl = 'http://127.0.0.1';
+
+    //create urls
+    var t = EasyRemoteTester.create('Test evenote basics',{})
+    t.settings.baseUrl = baseUrl
+    var urls = {};
+    urls.notes = {};
+    urls.reload = t.utils.createTestingUrl('reload')
+    urls.getFile = t.utils.createTestingUrl('getFile')
+    urls.notes.update = t.utils.createTestingUrl('notes')
+    urls.notes.get = t.utils.createTestingUrl('notes')
+
+
+    var dirPotentialRoots = ['/media/sf_projects/crypto',
+        '/media/psf/Dropbox/projects/crypto',
+    sh.fs.join(__dirname, sh.fs.up(2)),
+        sh.rootDir]
+
+    sh.each(dirPotentialRoots, function testRoot(k,dirRoot) {
+        var dirPrjRoot = sh.fs.join(dirRoot, 'deploy_nodejs');
+        if ( sh.fileExists(dirPrjRoot))
+            self.dirPrjRoot = dirPrjRoot
+    })
+    //  self.dirPrjRoot = '/media/sf_projects/crypto/deploy_nodejs'
+    //   if ( sh.fileExists())
+    //  self.dirPrjRoot = '/media/psf/Dropbox/projects/crypto/deploy_nodejs'
+
+    /**
+     * Setup middleware and routes
+     * @param url
+     * @param appCode
+     */
+    p.start = function start(url, appCode) {
+
+        app.use(sh.blockIndexPage(indexPageSecurityEnding, __dirname))
+        //Add middleware for cross domains
+        app.use(function(req, res, next) {
+            //console.log(req.originalUrl, req)
+            /*
+            var clientIp = requestIp.getClientIp(req);
+            //console.log(req.originalUrl, clientIp)
+          if ( req.originalUrl == '/' || req.originalUrl == '/index.html') {
+                console.error('matc')
+                if ( clientIp.includes('127.0.0.1') == false ) {
+                    res.status = 404
+                    res.end('404 Page not found')
+                    return;
+                }
+            }*/
+
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+/*
+            if ( req.originalUrl == '/index.html'+indexPageSecurityEnding) {
+                res.sendfile('public_html/'+'index.html')
+                return;
+            }*/
+            next();
+        });
+
+
+        self.settings = {};
+        self.settings.port = 5558
+        self.settings.port2 = 3000
+
+        self.settings.port = 5600
+        self.settings.port2 = 3001
+        baseUrl += ':' + self.settings.port;
+
+        // app.post('/append_named',   self.appendNoteNamed);
+        //self.setupSession();
+        //var port = 3000
+        http.listen(self.settings.port, function () {
+            console.log('started')
+            console.log('go to ', baseUrl +'/index.html'+ indexPageSecurityEnding)
+            console.log('go to 2', baseUrl.replace('127.0.0.1', sh.getIpAddress()))
+        })
+
+        // open('http://localhost:5557')
+        // http://localhost:5557/index.html
+        var server = app.listen(self.settings.port2);
+        // var io = require('socket.io').listen(server, { log: true });
+
+        console.log('path', __dirname)
+        app.use(express.static(__dirname + '/public_html'))
+        app.use(express.static(__dirname + '/testFiles'));
+        //app.use(express.static(__dirname + '/testFileds'));
+        var path = __dirname + '/../../node_modules/shelpers/lib'
+        path = sh.fs.resolve(path)
+        console.log('path', path)
+        app.use(express.static(path))
+        //app.use(express.static(__dirname ) );// + '/public_html'))
+        self.appSocket = io
+        io.sockets.on('connection', function (socket) {
+            console.log('new connnnn')
+            self.pSocket = socket;
+            socket.emit('news', { hello: 'world' });
+            socket.on('my other event', function (data) {
+                console.log(data);
+            });
+            /*socket.on('chat message', function (data) {
+             console.log(data);
+             });*/
+            socket.on('chat message', function(msg){
+                io.emit('chat message', msg);
+            });
+
+
+            socket.on('window.invoke', function (x) {
+                console.log('window invoke')
+                socket.broadcast.emit('window.invoke', x);
+            })
+
+            socket.on('cmd', function (data) {
+                console.log('data', data);
+
+                if ( self.cmd ) {
+                    if ( sh.isWin() == false )
+                        self.cmd.kill();
+                    // self.cmd.kill();
+                    //self.cmd.kill();
+                }
+
+                var CommandRunner = sh.CommandRunner
+
+                //var self = {}
+
+                var dir_nodejs = '/home/user/.nvm/versions/node/v0.12.5/bin/'
+                var altVersion = '/home/user/.nvm/versions/node/v6.2.1/bin/'
+                var altVersion = '/home/user/.nvm/versions/node/v6.4.0/bin/'
+                var altVersions = ['/home/user/.nvm/versions/node/v6.4.0/bin/',
+                    '/home/user/.nvm/versions/node/v6.9.5/bin/']
+
+
+                if ( sh.fileExists(altVersion)){
+                    dir_nodejs = altVersion;
+                }
+
+                sh.each(altVersions, function testIfAltVersionsExists(k,fileAltVersion) {
+                    if ( sh.fileExists(fileAltVersion)){
+                        dir_nodejs = fileAltVersion;
+                        // asdf.g
+                    }
+                })
+
+                var dirCrypto = __dirname+'/../../'
+
+                var dir_shipit = dir_nodejs+'shipit';
+
+                if ( sh.isMac() ) {
+
+                }
+                else if ( data.data ) {
+                    //why: if data, it is new type
+                    console.log('p', data)
+                    if (data.cmd == 'speakevernote') {
+
+                        data.cmd = 'ruby'
+                        data.args = ['C:/Users/user1/Dropbox/projects/soundboard/automate_android_store/autoit/evernote_speak_note_link.rb',
+                            data.data]
+                    }
+
+                    if (data.cmd == 'evernote') {
+
+                        //cmd /k "cd c:\myfolder & startbatch.bat"
+                        data.cmd = 'cmd'
+                        data.args = [
+                            "/k",
+                            'start',
+                            data.data]
+                    }
+
+
+
+                    if (data.cmd == 'evernotesearch') {
+
+                        //cmd /k "cd c:\myfolder & startbatch.bat"
+                        data.cmd = 'cmd'
+                        data.args = [
+                            //"/k",
+                            'C:/"program files (x86)"/Evernote/Evernote/ENScript.exe ',
+                            "showNotes",
+                            '/q',
+                            data.data]
+
+                        var args = data.args.join(' ')
+                        /* if ( data.data.indexOf(' ') != -1 ) {
+                         data.data = data.data.split( ' ')
+                         }*/
+                        if ( sh.isArray(data.data)) {
+                            data.args.pop()
+                            data.args = data.args.concat(data.data)
+                        }
+
+
+
+                        var filename = __dirname + '/' + 'tmp.bat';
+                        var contents = '';
+                        contents = [
+                            "echo '"+args+"'",
+                            args
+                        ]
+                        /*,
+                         ,
+                         'cd /media/psf/Dropbox/projects/crypto/deploy_nodejs/ritv/']
+                         */
+                        contents.push(dir_nodejs+ data.cmd);
+                        sh.writeFile(filename, contents.join(sh.n));
+                        data.args = [filename]
+                        data.cmd = filename
+
+                    }
+
+                    if (data.cmd == 'evernote') {
+
+                        //cmd /k "cd c:\myfolder & startbatch.bat"
+                        data.cmd = 'cmd'
+                        data.args = [
+                            "/k",
+                            'start',
+                            data.data]
+                    }
+                }
+                else {
+
+                    if ( data.cmd == 'stopallnodejs') {
+                        //data.cwd = self.dirPrjRoot+'/ritv';
+                        var filename = __dirname + '/' + 'tmp.sh'
+                        var contents = '';
+                        contents = [
+                            '(sleep 2 ; ' + dir_nodejs+'node ' +
+                            sh.fs.join(__dirname, 'RemoteConsoleServer.js ) &')
+                            ,
+                            'killall -9 node',
+                            ]
+                       /* contents = [
+                            'sleep 5 ; /home/user/.nvm/versions/node/v6.9.4/bin/node /media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer/RemoteConsoleServer.js | at now'
+                        'killall -9 node''
+                        ]*/
+                        //contents.push(dir_nodejs+ data.cmd);
+                        console.log(contents)
+                        sh.writeFile(filename, contents.join(sh.n))
+                        sh.fs.makeExec = function makeExecutable(filename) {
+                            sh.run('chmod +x ' + filename);
+                        }
+                        sh.fs.makeExec(filename)
+
+                        data.cmd = filename;
+                        data.args = [];
+                        data.type = '```';
+                    }
+
+                    if ( data.type  == 'shipit' ) {
+
+                        //data.cwd = self.dirPrjRoot+'/ritv';
+                        var filename = __dirname + '/' + 'tmp.sh'
+                        var contents = '';
+                        contents = ['##!/bin/bash',
+                            "echo '"+data.cmd+"'",
+                            'PATH=$PATH:'+dir_nodejs,
+                            //'node="'+dir_nodejs+'node'+'"',
+                            //  '. ~/.nvm/nvm.sh',
+                            //   'env node',
+                            'echo $PATH',
+                            ,
+                            '#cd /media/psf/Dropbox/projects/crypto/deploy_nodejs/ritv/',
+                            'cd '+dirCrypto+'/deploy_nodejs/ritv/',
+                            /*'echo "hi"',
+                             'echo "hi4"',
+                             'echo "hi5"',
+                             */
+                        ]
+                        contents.push(dir_nodejs+ data.cmd);
+                        sh.writeFile(filename, contents.join(sh.n))
+                        sh.fs.makeExec = function makeExecutable(filename) {
+                            sh.run('chmod +x ' + filename);
+                        }
+                        sh.fs.makeExec(filename)
+
+                        data.cmd = filename;
+                        data.args = [];
+                    }
+
+                    if ( data.type  == 'shipit_breed' ) {
+
+                        data.cwd = self.dirPrjRoot+'/breedv2';
+                        data.cmd = dir_shipit;
+                        //data.args = [];
+
+
+
+                        data.cwd = self.dirPrjRoot+'/breedv2';
+                        var filename = __dirname + '/' + 'tmp.sh'
+                        var contents = '';
+                        contents = ['#!/bin/bash',
+                            "echo '"+data.cmd+"'",
+                            'cd '+dirCrypto+'deploy_nodejs/breedv2/',
+
+
+                        ]
+                        data.cmd = 'shipit'
+                        contents.push(dir_nodejs + data.cmd + ' '  + data.args.join(' '));
+                        sh.writeFile(filename, contents.join(sh.n))
+                        sh.fs.makeExec = function makeExecutable(filename) {
+                            sh.run('chmod +x ' + filename);
+                        }
+                        sh.fs.makeExec(filename)
+
+                        data.cmd = filename;
+                        data.args = [];
+                    }
+
+                    if ( data.type  == 'ritv' ) {
+                        data.cwd = '/media/psf/Dropbox/projects/crypto/ritv/imdb_movie_scraper/' //mega2list_wrapper.js
+                        if ( data.overrideJSON ) {
+                            //create override file
+                            data.args.push("overrideJSON")
+                            data.args.push( data.overrideJSON )
+                        };
+                    }
+
+                    //why: open a terminal and run a command
+                    if ( data.type  == 'terminal3' ) {
+                        //create file based on newtab.sh
+                        var cmd = data.cmd +   '; echo this sh works ; /bin/bash;'
+                        if ( data.cmd == '') {
+                            var cmd = data.cmd +   'echo this sh works ; /bin/bash;'
+                        }
+                        cmd = sh.replace(cmd, 'shipit', dir_shipit)
+                        var cwd = self.dirPrjRoot+'/breedv2';
+                        if ( data.dir == 'RITV') {
+                            cwd = self.dirPrjRoot+'/ritv'
+                        }
+                        var contents =
+                            [
+                                '#!/bin/bash',
+                                'lxterminal  -l  --working-directory="'+cwd+'" ' +
+                                " -t 'go' -e '"+cmd+"'"
+
+                            ]
+
+                        var filename = __dirname + '/' + 'tmp.sh'
+                        sh.writeFile(filename, contents.join(sh.n))
+                        sh.fs.makeExec = function makeExecutable(filename) {
+                            sh.run('chmod +x ' + filename);
+                        }
+                        sh.fs.makeExec(filename)
+                        data.cmd = filename;
+                        data.args = [];
+                    }
+
+                    sh.writeShFile = function writeShFile (filenameTmpSh, contents ) {
+                        if ( sh.isArray(contents)){
+                            contents = contents.join(sh.n);
+                        }
+                        sh.writeFile(filenameTmpSh, contents);
+                        sh.fs.makeExec = function makeExecutable(filenameTmpSh) {
+                            sh.run('chmod +x ' + filenameTmpSh);
+                        }
+                        sh.fs.makeExec(filenameTmpSh)
+                    }
+
+                    var filenameTmpSh = __dirname + '/' + 'tmp.sh'
+
+                    if ( data.type  == 'open.bash' ) {
+                        //run a bash command from cmd line
+                        if ( data.dir == null )
+                            data.dir = self.dirPrjRoot+'/ritv';
+                        data.cmd = sh.replace(data.cmd, 'shipit', dir_shipit );
+                        //'/home/user/.nvm/versions/node/v0.12.5/bin/shipit')
+
+                        if ( data.dir == 'RITV') {
+                            data.dir = self.dirPrjRoot+'/ritv'
+                        }
+                        if ( data.dir == 'SEED') {
+                            data.dir = self.dirPrjRoot+'/breedv2'
+                        }
+
+                        var contents = [];
+                        contents = ['#!/bin/bash',
+                            "echo '"+data.cmd+"'",
+                            'PATH=$PATH:'+dir_nodejs,
+                            'cd ' + data.dir,
+                            data.cmd
+                        ]
+                        sh.writeShFile(filenameTmpSh, contents.join(sh.n))
+                        data.cmd = filenameTmpSh;
+                        data.args = [];
+                    }
+                }
+
+
+                self.proc('what is command', sh.toJSONString(data) )
+
+
+                function fxDone () {
+
+                }
+
+                var cmd = new CommandRunner()
+                var settings = data
+                delete settings.cwd;
+                settings.silent = self.silent
+                settings.fxCallback =
+                    function commandFinished() {
+                        console.log(cmd.log.output)
+                        sh.callIfDefined(fxDone);
+                    }
+
+                settings.fxEcho = function onOutput(line){
+                    console.log('fxEcho', line)
+                    io.emit('cmdout', line);
+                    socket.broadcast.emit('cmdout', line);
+                }
+                settings.fxError = function onOutput(line){
+                    console.log('fxEcho', line)
+                    io.emit('cmdout', line);
+                    socket.broadcast.emit('cmdout', line);
+                }
+
+
+                self.cmd = cmd;
+
+                //settings.cmd = cmdtxt
+                //settings.args = args;
+                cmd.execute(settings)
+                //console.log('run', args)
+
+            });
+        });
+
+        self.server = app;
+        self.newRoutes();
+    }
+
+    self.newRoutes = function newroutes() {
+        self.server.get('/getFile', function (req, res) {
+            var fileName = req.query.file;
+            console.log(req.query.file, 'file....');
+
+            function LoadFile () {
+                var self = this;
+                var p = this;
+                p.init = function init() {
+
+                };
+
+                p.loadTestFile = function loadTestFile(file) {
+                    var contents = sh.readFile('testFiles/'+file)
+                    var addTo = []
+                    var config = {}
+                    config.ignore = ['data: WARNING: Skip: ',
+                        'WARNING: Skipping FS',
+                        'data: ERROR: Can',
+                        'child process '
+                    ]
+                    config.ignoreComments = true;
+                    config.fxProc = function parseCmd(item){
+                        var fields = item.split(',')
+                        var fixed = [];
+                        sh.each(fields, function x(i,f){
+                            f=f.trim()
+                            fixed.push(f);
+                        });
+                        fields = fixed;
+
+                        function CmdConvertor() {
+                            var self = this;
+                            var p = this;
+                            p.init = function init(d) {
+                                self.output = {};
+                                self.output.orig  =d;
+                                var firstField = d[0];
+                                var second = d[1];
+
+                                var helper = {};
+
+                                helper.typeIs = function isType(type) {
+                                    type = type.toLowerCase();
+                                    if ( type == firstField.toLowerCase())
+                                        return true;
+                                    return false;
+                                };
+
+                                helper.makeQuery = function makeQuery(asdf) {
+                                    if ( asdf.indexOf(' ')==-1) {
+                                        return '#'+asdf;
+                                    }
+                                    return asdf;
+                                };
+
+                                self.orig = d;
+
+                                if ( helper.typeIs('click')) {
+                                    var template = "$('#query').click();"
+                                    var query = second;
+                                    query = helper.makeQuery(query)
+                                    template = template.replace('#query', query);
+                                    self.output.eval = template;
+                                }
+
+                                return  self.output;
+                            };
+                        }
+
+
+                        var y  = new CmdConvertor();
+
+                        return y.init(fields)
+                        return fixed;
+                    }
+                    var lines = sh.each.lines(contents, config)
+                    self.lines = lines;
+                    return lines;
+                };
+            }
+
+
+            var l = new LoadFile();
+            self.lines = l.loadTestFile(fileName);
+            console.log('loaded', l.lines.length)
+            //console.log(sh.toJSONString(l.lines));
+            setTimeout(function () {
+                self.sendNext();
+            }, 400);
+            //process.exit();
+            res.json({status:'ok'});
+        });
+
+
+        self.server.get('/next', function (req, res) {
+                var fileName = req.query.file;
+                console.log( 'next', 'file....');
+                setTimeout(function () {
+                    self.sendNext();
+                }, 400)
+                res.end('ok');
+            }
+        )
+    }
+
+    self.sendNext = function sendNextCommand() {
+        if ( self.lines.length == 0 ) {
+            console.log('all work is done');
+            return;
+        }
+        var cmd = self.lines.shift();
+        if ( self.pSocket == null ) {
+            self.proc('pSocket is null')
+            return;
+        }
+        self.proc('sent')
+        self.appSocket.emit('runcmd', cmd);
+        self.appSocket.emit('chat message', "llllllllllllllllllllllll");
+    }
+
+    self.setupSession = function setupSession() {
+        var t = EasyRemoteTester.create('Test evenote basics',{});
+        var data = {};
+
+        t.settings.baseUrl = baseUrl;
+
+
+        t.xadd(function reload() {
+                t.quickRequest( urls.reload,
+                    'get', onResult )
+                function onResult(body) {
+                    // console.log('body', body)
+                    t.assert(body.id>0, 'post-verify did not let me do a search');
+                    t.cb();
+                }
+            }
+        );
+
+        t.add(function getFiles() {
+                t.quickRequest( urls.getFile,
+                    'get', onResult, {file:'a.txt'} )
+                function onResult(body) {
+                    // console.log('body', body)
+                    t.assert(body.status=='ok', 'did not parse file');
+                    t.cb();
+                }
+            }
+        );
+    }
+
+    function defineRoutes() {
+    }
+    defineRoutes();
+
+    p.test = function test() {}
+
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return;
+        }
+        sh.sLog(arguments)
+    }
+
+
+}
+
+exports.BrowserEvalServer = BrowserEvalServer;
+
+if (module.parent == null) {
+    var e = new BrowserEvalServer()
+    e.start();
+
+
+
+    e.test();
+
+}
+
+/*
+ Command Runner
+
+ Command
+ name
+ description
+ getComponentFx
+ actionFx
+ timeout
+ settings
+
+ send command
+
+ client side runner
+ recieve command send it back
+ check url to ask for new command (means start new one)
+
+ server
+ start, will send back first command
+ --support multiple tests
+
+ test parser
+ \ - i do not want to write tests manually want high level code
+ this is most useful but can be waste of time
+
+
+ click
+ goToUrl
+ enter text
+ buttonLike
+ waitFor
+ pause
+
+ conditionals
+ load test
+ fill in vars
+ getVal
+ setVal
+
+ dictionary
+ storeComponent - i can perform action on component
+ storeValueFromComponent
+
+
+ */
+

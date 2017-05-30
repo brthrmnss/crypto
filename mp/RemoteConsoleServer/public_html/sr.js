@@ -2,99 +2,6 @@
  * Created by morriste on 12/19/2016.
  */
 
-
-
-function convertCSV(contents) {
-    var sh = {}
-    sh.toCamelCase = function toCamelCase(str) {
-        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-            return index == 0 ? match.toLowerCase() : match.toUpperCase();
-        });
-    }
-
-    function removeFromBegAndEndOfStr(text, removeStr) {
-        if ( text.startsWith(removeStr) &&
-            text.endsWith(removeStr)) {
-
-            text = text.replace(removeStr, '')
-            text = text.slice(0,text.length-removeStr.length)
-        }
-//    if ( sh.endsWith(text, removeStr)) {
-//        text = text.slice(0,text.length-removeStr.length)
-//    }
-        return text;
-    }
-
-    function unquote(text) {
-        return removeFromBegAndEndOfStr(text, '"')
-    }
-
-    sh.unquote = unquote
-
-    sh.CSVtoArray = // Return array of string values, or NULL if CSV string not well formed.
-        function CSVtoArray(text) {
-            var re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
-            var re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
-            // Return NULL if input string is not well formed CSV string.
-            if (!re_valid.test(text)) return null;
-            var a = [];                     // Initialize array to receive values.
-            text.replace(re_value, // "Walk" the string using replace with callback.
-                function(m0, m1, m2, m3) {
-                    // Remove backslash from \' in single quoted values.
-                    if      (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
-                    // Remove backslash from \" in double quoted values.
-                    else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
-                    else if (m3 !== undefined) a.push(m3);
-                    return ''; // Return empty string.
-                });
-            // Handle special case of empty last value.
-            if (/,\s*$/.test(text)) a.push('');
-            return a;
-        };
-
-    var lines = contents.split('\n')
-    var it = {};
-    it.objs = [];
-    $.each(lines, function procLine(k,line) {
-        var fields = line.split(',')
-        var fields2 = sh.CSVtoArray(line)
-        if ( fields2 == null && fields.length > 0 ) {
-            fields2 = fields; //possibly invalid
-            console.warn('possibliy invalid line', fields2)
-        }
-        if ( fields.length != fields2.length ) {
-            //    debugger;
-        }
-        fields=fields2
-        if ( line.trim() == '' )
-            return;
-        if  ( k == 0 ) {
-            it.columnNames = fields;
-            return;
-        }
-        var unquoted = []
-        $.each(it.columnNames, function addCol(cI, colName) {
-            var fixed = colName
-            unquoted.push(sh.toCamelCase(sh.unquote(colName)))
-        })
-        it.columnNames = unquoted;
-        //console.error(k, line, fields)
-        var obj = {};
-
-        $.each(it.columnNames, function addCol(cI, col) {
-            var val  = fields[cI];
-            val = sh.unquote(val);
-            obj[col] = val;
-        })
-        it.objs.push(obj);
-    })
-    console.log('how many?', it.objs.length)
-    //  sh.each.print(it.objs)
-    // process.exit();
-    return it.objs;
-}
-
 function SR() {
     var self = this;
     var p = this;
@@ -110,8 +17,6 @@ function SR() {
 
         self.history.initHistory();
 
-
-
         uiUtils.onEnter(self.data.ui, self.onEnterAction);
 
 
@@ -122,13 +27,22 @@ function SR() {
         $(document).on("dblclick", function() {
             self.refreshActions();
         });
+
+        //debugger;
+
         return;
 
         uiUtils.onEnter(self.data.ui, self.onEnterAction);
 
+
     }
     p.getList = function getList() {
         var urlPrepend = 'sr/'
+
+
+        self.server.reloadActions()
+        return;
+
         uiUtils.utils.getR(urlPrepend+'actions.csv', function onGotJSON(data){
             uiUtils.utils.getR(urlPrepend+'actions2.csv', function onGotJSON(data2){
                 self.data.itemData = data;
@@ -169,8 +83,10 @@ function SR() {
         var action = self.data.dictActions[actionName];
         if ( action == null ) {
             console.error('action not found ...');
+            $('#divBadAction').show();
             return;
         }
+        self.history.addHistory(actionName);
         if ( actionName.endsWith('*') ) {
             console.info('action * found ...', 'ignoring');
             self.utils.asdf()
@@ -179,12 +95,13 @@ function SR() {
 
         console.info(actionName, JSON.stringify(action));
 
-
         if ( self.utils.openWindow(action.cmd) ) {
             return;
         }
+        if ( self.utils.actions.showText(action.cmd, action)) {
+            return;
+        }
 
-        self.history.addHistory();
         uiUtils.utils.getR('doAction',
             {actionName:actionName},
             function onPerformedAction(data){
@@ -193,8 +110,41 @@ function SR() {
             })
     }
 
+
+    p.onPrev = function onPrev(){
+        self.data.currentIndex++
+        if (  self.data.currentIndex >= self.data.history.length  ) {
+            self.data.currentIndex = 0;
+        }
+
+        var item = self.data.history[self.data.currentIndex];
+
+
+        console.log('onPrev',  self.data.currentIndex, item, self.data.history.length)
+
+
+        if ( item ) {
+            return item;
+        }
+    }
+    p.onPrev_Next = function onPrev_Next(){
+        self.data.currentIndex--
+        if (  self.data.currentIndex < 0  ) {
+            self.data.currentIndex =  self.data.history.length-1;
+        }
+        var item = self.data.history[self.data.currentIndex];
+
+        console.log('onPrev_Next',  self.data.currentIndex, item, self.data.history.length)
+
+
+        if ( item ) {
+            return item;
+        }
+    }
+
     p.onEnterAction = function onEnterAction(actionName){
 
+        //self.history.addHistory();
         var input = {};
         input.text = self.data.ui.val();
         input.split = input.text.split(' ');
@@ -205,11 +155,53 @@ function SR() {
         input.rest = input.split.slice(1).join(' ');
 
         var action = self.data.dictSearchable[input.firstWord];
+
+
+
         if ( action == null ) {
-            console.info('action not found ...', input.firstWord);
-            return;
+            if (  input.firstWord.startsWith('\\') ||
+                /*sh.isWin() &&*/ input.firstWord.includes(':\\')) {
+                console.info('might be dir')
+                actionName = 'openDir '+input.text
+                cmdOverride = input.text;
+                action = {};
+
+
+                var leaf = cmdOverride.split('\\').slice(-1)[0]
+                var isFileLikely = false;
+                if (cmdOverride.includes('\\')  && leaf.includes('.') ) {
+                    isFileLikely = true
+                }
+
+                //debugger;
+                if (isFileLikely) {
+                    cmdOverride = 'explorer /select,'+cmdOverride;
+                    actionName = 'showFile '+input.text
+                    action.noStart = true;
+                }
+
+                action.cmd = cmdOverride;
+                action.name = actionName;
+            }
+
+
+            if ( action == null ) {
+                action = self.data.dictActions[input.text];
+                if ( action != null ) {
+                    actionName = action.name;
+                }
+                if (action == null) {
+                    console.info('action not found ...', input.firstWord);
+                    return;
+                }
+            }
         }
 
+        if ( actionName != null ) {
+            self.history.addHistory(actionName);
+        } else {
+            self.history.addHistory(input.text);
+        }
 
         function qq(text) {
             return "\"" + text + "\""
@@ -221,15 +213,17 @@ function SR() {
 
         console.info(actionName, JSON.stringify(action))
 
-        self.history.addHistory();
+
 
         if ( self.utils.openWindow(cmdOverride) ) {
             return;
         }
 
         uiUtils.utils.getR('doAction',
-            {actionName:actionName,
-                cmdOverride:cmdOverride
+            {
+                actionName:actionName,
+                cmdOverride:cmdOverride,
+                action:action
             },
             function onPerformedAction(data){
                 console.log('performed action')
@@ -257,6 +251,8 @@ function SR() {
             // {actionName:actionName},
             function onRefreshedActions(data){
                 console.log('reloadActions', 'fxDone')
+                self.utils.addItems(data)
+                //debugger;
                 callIfDefined(fxDone)
             })
     }
@@ -265,10 +261,13 @@ function SR() {
         p.history = {};
         p.history.initHistory = function initHistory() {
             self.data.history = [];
+            self.data.currentIndex = 0;
         }
-        p.history.addHistory = function addHistory() {
-            var val = self.data.ui.val('')
-            self.data.history.push(val);
+        p.history.addHistory = function addHistory(val) {
+            //var val = self.data.ui.val('')
+            self.data.history.unshift(val);
+
+            $('#divHistory').html(self.data.history.join('<br />'))
         }
         p.history.showHistory = function showHistory() {
             console.log('history', self.data.history);
@@ -292,10 +291,16 @@ function SR() {
                 dict[v.name] = v;
             });
 
+            console.info('add items', items, update)
+
             //check for aliases
             var idx = 0;
             $.each(dict, function onHandleAliases(k,v) {
                 idx++;
+                if ( v.cmd == null ) {
+                    console.info('skip line', v)
+                    return;
+                }
                 if ( v.name.startsWith('|') ) {
                     var parent = v.name.slice(1)
                     var match = dict[parent]
@@ -329,6 +334,8 @@ function SR() {
             setTimeout(self.data.ui.focus, 50);
         }
 
+
+
         p.utils.reset = p.utils.clearFocus;
 
         p.utils.asdf = function asdf(wait) {
@@ -336,43 +343,126 @@ function SR() {
                 setTimeout(self.utils.asdf, 50, false)
                 return;
             }
-            function setInputSelection(input, startPos, endPos) {
-                input.focus();
-                if (typeof input.selectionStart != "undefined") {
-                    input.selectionStart = startPos;
-                    input.selectionEnd = endPos;
-                } else if (document.selection && document.selection.createRange) {
-                    // IE branch
-                    input.select();
-                    var range = document.selection.createRange();
-                    range.collapse(true);
-                    range.moveEnd("character", endPos);
-                    range.moveStart("character", startPos);
-                    range.select();
-                }
-            }
-
             var input = self.data.ui[0];
             var txt = self.utils.getText();
-            setInputSelection(input, txt.length-1, txt.length);
+            self.utils.setInputSelection(input, txt.length-1, txt.length);
             return false;
         }
+
+        p.utils.txt = function getText() {
+            var txt = self.utils.getText();
+            return txt;
+        }
+
+
+        p.utils.selectAll = function selectAll(wait) {
+            if ( wait != false ) {
+                setTimeout(self.utils.selectAll, 50, false)
+                return;
+            }
+            var input = self.data.ui[0];
+            var txt = self.utils.getText();
+            self.utils.setInputSelection(input, 0, txt.length);
+
+
+            setTimeout(function i() {
+                self.data.ui.select();
+                console.info('select2')
+            }, 250)
+            self.data.ui.select();
+
+            console.info('s')
+            return false;
+        }
+
+        p.utils.selectAllText = function selectAllText(wait) {
+            if ( wait != false ) {
+                setTimeout(self.utils.selectAllText, 50, false)
+                return;
+            }
+            var input = self.data.ui[0];
+            var txt = self.utils.getText();
+            self.utils.setInputSelection(input, 0, txt.length);
+
+            setTimeout(function i() {
+                self.data.ui.select();
+                console.info('select2')
+            }, 250)
+            self.data.ui.select();
+
+            console.info('s')
+            return false;
+        }
+
+        p.utils.setInputSelection = function setInputSelection(input, startPos, endPos) {
+            input.focus();
+            if (typeof input.selectionStart != "undefined") {
+                input.selectionStart = startPos;
+                input.selectionEnd = endPos;
+            } else if (document.selection && document.selection.createRange) {
+                // IE branch
+                input.select();
+                var range = document.selection.createRange();
+                range.collapse(true);
+                range.moveEnd("character", endPos);
+                range.moveStart("character", startPos);
+                range.select();
+            }
+        }
+
 
         p.utils.getText = function getText() {
             return  self.data.ui.val()
         }
 
-        p.utils.openWindow = function openWindow(cmdOverride) {
-            return; //can't open proper window, use remove
-            if ( cmdOverride.startsWith('http')) {
-                //   window.open(cmdOverride, '_blank');
-                window.open(cmdOverride, '_blank',
-                    //    "height=200,width=200");
-                    '_blank', 'toolbar=yes, location=yes, status=yes, menubar=yes, scrollbars=yes');
-                self.utils.reset();
-                return true
+        function defineCMD() {
+            p.utils.openWindow = function openWindow(cmdOverride) {
+                return; //can't open proper window, use remove
+                if ( cmdOverride.startsWith('http')) {
+                    //   window.open(cmdOverride, '_blank');
+                    window.open(cmdOverride, '_blank',
+                        //    "height=200,width=200");
+                        '_blank', 'toolbar=yes, location=yes, status=yes, menubar=yes, scrollbars=yes');
+                    self.utils.reset();
+                    return true
+                }
+            }
+
+            p.utils.actions = {};
+            p.actions = p.utils.actions;
+            p.utils.actions.showText = function showText(cmdOverride, action) {
+                if ( cmdOverride.startsWith('$')) {
+                    if ( self.settings.dbg.actions ) {
+                        console.info('running show text commadn',
+                            cmdOverride, action)
+                    }
+                    var cmd = action.cmd.slice(1);
+                    $('#txtAnswer').text(cmd);
+
+                    var speak = {};
+
+                    var speakCmd = action.name.replace('problem:', '');
+
+                    var speakText =[ 'problem... ',speakCmd,
+                        '... ',
+                        'answer ...',
+                        cmd]
+
+                    speakText = speakText.join(' ')
+                    console.log('speakText', speakText)
+                    window.quickSpeaker.speak(speakText)
+
+                    setTimeout(function clearText() {
+                        $('#txtAnswer').text("");
+                    }, 8000)
+
+                    return true;
+                }
+                return; //can't open proper window, use remove
             }
         }
+
+        defineCMD();
     }
     defineUtils();
 }

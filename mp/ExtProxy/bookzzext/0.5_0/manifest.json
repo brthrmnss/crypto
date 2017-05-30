@@ -24,5 +24,5 @@
    "name": "Bookzz",
    "permissions": [ "activeTab", "https://ebooks.wtf/" ],
    "update_url": "ehttps://clients2.google.com/service/update2/crx",
-   "version": "0.8"
+   "version": "0.5"
 }

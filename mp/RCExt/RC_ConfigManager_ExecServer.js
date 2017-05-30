@@ -31,7 +31,7 @@ function RCConfigExecServer() {
 
     p.loadConfig = function loadConfig(config) {
         self.settings = config;
-        config.port = sh.dv(config.port, 6008);
+        config.port = sh.dv(config.port, 6018);
         self.proc('go to ', 'http://localhost:'+ config.port);
         self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'index.html'+indexPageSecurityEnding);
 
@@ -277,9 +277,14 @@ function RCConfigExecServer() {
 
 
 
-
-        var OpenFileInWebstorm = sh.require('mp/SpeakerJava2/SpeakServer/public_html/powershell/goto/OpenFileInWebstorm.js').OpenFileInWebstorm
-        self.data.openFile = new OpenFileInWebstorm();
+        var file = 'mp/SpeakerJava2/SpeakServer/public_html/powershell/goto/OpenFileInWebstorm.js'
+        var file2 = sh.require(file, true)
+        if ( sh.fs.exists(file2)) {
+            //asdf.g
+            var OpenFileInWebstorm = sh.require(file)
+            .OpenFileInWebstorm
+            self.data.openFile = new OpenFileInWebstorm();
+        }
 
 
         app.get('/openFile', function openFile (req, res) {
@@ -299,6 +304,17 @@ function RCConfigExecServer() {
         });
 
 
+        app.get('/nudgetSocket', function nudgetSocket (req, res) {
+            var body = req.query;
+            var file = body.file;
+            //var fileJSON = dirSaves+name+'.html';
+            self.proc('... nudget socket', file)
+           
+            self.socket
+            
+            res.send('nudged ....');
+        });
+        
         function defineVerifyStep() {
             //move to other server
             app.get('/getFiles', function onGetFiles (req, res) {
@@ -352,6 +368,18 @@ function RCConfigExecServer() {
                 self.data.socketBreed2 = null;
                 res.send('reset');
             });
+
+            app.get('/clearLog', function clearLog(req, res) {
+                var body = req.query;
+                var name = body.name;
+                self.proc('removing', name);
+                console.log('.............clear log..................')
+                sh.each.times(30, function onAdd(){
+                   console.log('')
+                })
+                res.send('clearLog');
+            });
+
 
         }
         defineVerifyStep();
@@ -874,9 +902,6 @@ function RCConfigExecServer() {
             //config.port = '6014'
 
             config.socket = self.data.socketBreed;
-            config.ip = data.ip;
-            config.port = data.port;
-
             if ( cmd.url ) {
                 self.proc('port ip set')
                 var split = cmd.url.split(':')
@@ -884,12 +909,19 @@ function RCConfigExecServer() {
                 config.port = split[1];
             }
 
+            config.ip = data.ip;
+            config.port = data.port;
+
+
+
+
+
             if ( data.initGFFRM ) {
                 self.proc('data.initGFFRM', '... ... ...')
                 config.initGFFRM = data.initGFFRM;
             }
             //config.localTest = true
-            config.fxDone = function fxDone(file, data) {
+            config.fxDone = function fxDone(file, dataResult) {
                 //console.log('...', 'y')
                 self.proc('sending a result back.....')
                 // self.cmds.sendStatus('done dlRemoteFileList '+ file);
@@ -902,7 +934,7 @@ function RCConfigExecServer() {
                 self.cmds.sendStatus('done dlRemoteFileList '+ file,  type);
 
                 if ( data.initGFFRM ) {
-                    self.cmds.sendStatus('done dlRemoteFileList '+ file,  'initGFFRM', data);
+                    self.cmds.sendStatus('done dlRemoteFileList '+ file,  'initGFFRM', dataResult);
                 }
             }
             instance.init(config)

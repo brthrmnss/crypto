@@ -558,6 +558,8 @@ function defineUtils() {
         ui.attr('value', cfg.value)
 
         ui.css('min-height', '0px')
+        ui.css( 'cursor', 'pointer' );
+
         //$('<span/>')
         /*  if (cfg.width) {
          if ($.isNumeric(cfg.width)) {
@@ -568,9 +570,19 @@ function defineUtils() {
          }
          lbl.css('user-select', 'none');*/
         u.addUI(cfg, ui);
+
+        if ( cfg.selected ) {
+            // debugger
+            $(":radio[name='"+cfg.name+"']").attr('checked', true);
+        }
+
         return cfg;
     }
 
+    u.setRadioVal = function setRadioVal(k,v,val) {
+        $('input:radio[name="'+k+'"]').filter('[value="'+v+'"]').attr('checked', val);
+    }
+    
     uiUtils.addHeadingLabel = function addLabel(cfg) {
         cfg.tag = 'h3'
         uiUtils.addLabel(cfg)
@@ -690,10 +702,17 @@ function defineUtils() {
     uiUtils.popContainer = function popContainer() {
         uiUtils.flagCfg.addTo = uiUtils.flagCfg.lastAddTo;
     }
-    uiUtils.addRow = function addRow(id, fx) {
+    uiUtils.addRow = function addRow(id, fx, asSpan) {
+        
+        var tagName = 'div'
+        if ( asSpan === true  ) {
+            tagName = 'span'
+        }
+        
         uiUtils.addDiv(
             {
                 id: id,
+                tag:tagName
                 //width:170
             })
         //uiUtils.addBorder();
@@ -1476,7 +1495,7 @@ function defineUtils() {
         }
 
 
-        uiUtils.updateSelect = function updateSelect(id, newOptions) {
+        uiUtils.updateSelect = function updateSelect(id, newOptions, empty) {
             var ui = id;
 
             if ($.isString(id)) {
@@ -1487,7 +1506,9 @@ function defineUtils() {
                 var ui = $(id)
             }
 
-            ui.empty(); // remove old options
+            if ( empty != false ) {
+                ui.empty(); // remove old options
+            }
             $.each(newOptions, function (key, value) {
 
                 ui.append($("<option></option>")
@@ -2311,6 +2332,9 @@ function defineUtils() {
             var win = window.open(url, '_blank');
             win.focus();
         }
+
+        p.utils.getR = p.getUrl;
+        p.utils.postR = p.postUrl; 
     }
 
     defineUrl();

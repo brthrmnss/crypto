@@ -42,7 +42,7 @@ function DLHoistServer() {
     //DLHoistServer.prototype;
     p.init = function init(config) {
         config = sh.dv(config, {});
-        config.port = sh.dv(config.port, 6012)
+        config.port = sh.dv(config.port, 6022)
         config.portSocket = sh.dv(config.portSocket,  config.port+2);
         self.settings = config;
 
@@ -486,7 +486,7 @@ exports.reloadServer = function reloadServer(delayed ) {
 
 
     if ( delayed !== true ) {
-        sh.get('127.0.0.1:6012/exitQuit')
+        sh.get('127.0.0.1:6022/exitQuit')
         setTimeout(function a(){
             exports.reloadServer(true)
         }, 500)

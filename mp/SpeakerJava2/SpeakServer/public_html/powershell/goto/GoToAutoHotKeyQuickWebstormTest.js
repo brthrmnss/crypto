@@ -14,9 +14,9 @@ var GoToAutoHotKeyQuickWebstorm = require('./GoToAutoHotKeyQuickWebstorm.js').Go
 if (module.parent == null) {
     var y = new GoToAutoHotKeyQuickWebstorm();
     var cfg = {}; 
-    cfg.goToWindow = 'Extensions';
-    cfg.webstorm = 'crypto = - [';
-    cfg.file = 'baby_rend.js';
+   //cfg.goToWindow = 'Extensions';
+    cfg.goToWindow = 'crypto - [';
+    cfg.filePathOrName = 'G:\\Dropbox\\projects\\crypto\\mp\\BabylonJS\\public_html\\js\\baby_rend.js';
     y.init(cfg);
 }
 

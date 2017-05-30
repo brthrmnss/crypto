@@ -12,7 +12,7 @@ var cheerio = require('cheerio');
 var SearchPBCachedRequest = sh.require('ritv/distillerv3/utils/SearchPBCachedRequest.js').SearchPBCachedRequest;
 
 //G:\Dropbox\projects\crypto\mp\GrammarHelperServer\public_html\others\ExtBookzz\ListExtractorScraper.js
-var d = 'mp/ExtProxy/ggnampgigkndjmbbjlodenmpbamidgeo/0.5_0/js/extras_maybe/ListExtractorScraper.js'
+var d = 'mp/ExtProxy/amazonAnots/0.1_0/js/extras_maybe/ListExtractorScraper.js'
 //G:\Dropbox\projects\crypto\mp\ExtProxy\ggnampgigkndjmbbjlodenmpbamidgeo\0.5_0\js\extras_maybe\ListExtractorScraper.js
 //var d = 'mp/GrammarHelperServer/public_html/others/ExtBookzz/ListExtractorScraper.js'
 var ListExtractorScraper = sh.require(d).ListExtractorScraper
@@ -34,7 +34,7 @@ function SearchBookzz() {
     p.searchBookzz = function searchBookzz(query, fxDone) {
 
         var url = 'http://bookzz.org/s/?q='+query+'&yearFrom=&yearTo=&language=&extension=&t=0'
-
+        var url = 'http://book4you.org/s/?q='+query+'&yearFrom=&yearTo=&language=&extension=&t=0'
         var exactMatching = true
         if ( exactMatching ) {
             url += '&e=1'

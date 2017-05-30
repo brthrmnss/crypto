@@ -1,0 +1,903 @@
+/**
+ * Created by user on 7/7/15.
+ */
+
+var sh = require('shelpers').shelpers;
+
+
+function each(object, callback, args) {
+
+    var name, i = 0, length = object.length;
+
+    if (args) {
+        if (length === undefined) {
+            for (name in object)
+                if (callback.apply(object[ name ], args) === false)
+                    break;
+        } else
+            for (; i < length;)
+                if (callback.apply(object[ i++ ], args) === false)
+                    break;
+
+        // A special, fast, case for the most common use of each
+    } else {
+        if (length === undefined) {
+            for (name in object)
+                if (callback.call(object[ name ], name, object[ name ]) === false)
+                    break;
+        } else
+            for (var value = object[0];
+                 i < length && callback.call(value, i, value) !== false; value = object[++i]) {
+            }
+    }
+
+    return object;
+}
+
+var strSplit = '~|~'; //str unlikely to occur in a command
+var utils = {}
+utils.strSplit = strSplit;
+utils.inSeries = function (input){
+    var last = null;
+
+    //each
+    var shipit = utils.shipit;
+
+    last = shipit.local('echo create inSeries chain...')
+
+    if  ( input.cmds != null ) {
+        input = input.cmds;
+    }
+    //console.log(input, 'what?')
+    //for (var i = 0; i < input.length; i++) {
+    each(input, function processCmd(inx, cmd ) {
+        /*if ( inx == 0 ) {
+         last = shipit.remote(cmd)
+         return;
+         }//'|'*/
+        last = last.then(
+            function () {
+                //console.log('cmd', cmd, cmd.fx, cmd.options)
+                var fx = cmd.fx;
+                var options = cmd.options
+                var cmdObj = cmd;
+                if ( cmdObj.cmd != null ) {
+                    cmd = cmdObj.cmd;
+                };
+                if ( cmd.join != null ){
+                    //console.log('cmd',cmd );
+                    cmd = cmd.join(strSplit);
+                };
+
+
+                console.log(cmdObj);
+                if ( cmdObj.type != null ) {
+                    type = cmdObj.type;
+                    if ( cmdObj.fxCmd != null ) {
+                        cmd = cmdObj.fxCmd()
+                    }
+                    args = [cmd]
+                } else {
+                    var type = cmd.split(strSplit)[0];
+                    var split = cmd.split(strSplit);
+                    var args = cmd.split(strSplit).slice(1);
+                }
+                if ( cmdObj.type == 'remote' && cmdObj.cmd != null ) {
+                    return shipit.remote(cmd, options, fx );
+                }
+                if ( cmdObj.type == null && split.length == 1 ) {
+                    //console.log(cmd, options, fx)
+                    return shipit.remote(cmd, options, fx );
+                } else {
+                    console.log('no remote-type',type, args );
+                    //shipit.log('type',type, args );
+                    return shipit[type].apply(shipit, args);
+                }
+            }
+        );
+
+    })
+
+
+
+}
+
+utils.exists = function fileExists(file ) {
+    var fs = require('fs');
+    try {
+        // Query the entry
+        var stats = fs.lstatSync(file);
+
+        // Is it a directory?
+        if (stats.isDirectory()) {
+            // Yes it is
+        }
+        return true;
+    }
+    catch (e) {
+        // ...
+        return false;
+    }
+}
+
+
+utils.each = each;
+
+/**
+ * Writes a file locally
+ * @param fileName
+ * @param contents
+ * @returns {string}
+ */
+utils.writeFile = function writeFile(fileName, contents) {
+    fileName
+
+    var cmd = 'echo \''+contents+'\'>'+
+        fileName+'';
+    return cmd;
+}
+
+utils.local = function local(cmd) {
+    return ['local', cmd];
+}
+
+
+
+exports.utils = utils;
+
+var sutils = utils;
+
+
+exports.nvm = 'source ~/.nvm/nvm.sh; nvm use 0;  ';
+sutils.nvm = 'source ~/.nvm/nvm.sh; nvm use 0;  ';
+
+
+
+function CommandList() {
+    var self = this;
+    var p = this;
+    self.cmds = [];
+    self.add = function add(cmd, fx, fxCmd) {
+        //cmd.fx = fx;
+        var cmdObj = {};
+        cmdObj.cmd = cmd;
+        cmdObj.fxCmd = fxCmd;
+        cmdObj.fx = fx;
+        cmdObj.type = 'remote'
+
+        console.log('add cmd', cmdObj)
+        //console.log('fx', cmd, fx, cmd.fx)
+        self.cmds.push(  cmdObj  );
+    }
+    self.remote = self.add;
+
+    self.push = function legacyPUsh() {
+        var asdf = sh.convertArgumentsToArray(arguments)
+        self.cmds.push.apply(self.cmds,  asdf)
+    }
+
+    /**
+     * Send method, will resolve commandString async
+     * @param fxCmd
+     * @param fx
+     */
+    self.remoteDeffered = function remoteDeffered(fxCmd, fx) {
+        console.log('remove deferred')
+        self.remote(null, fx, fxCmd)
+    }
+    self.remoteD = self.remoteDeffered;
+
+    self.localD = function localD(fxCmd, fx) {
+        var cmdObj = {};
+        cmdObj.type = 'local';
+        cmdObj.fxCmd = fxCmd;
+        cmdObj.fx = fx;
+        //console.log('fx', cmd, fx, cmd.fx)
+        self.cmds.push(  cmdObj  );
+    }
+    self.local = function local(cmd, fx) {
+        cmd.fx = fx;
+        self.cmds.push( ['local', cmd] );
+    }
+
+    self.runLocal = function runLocal(cmd ) {
+        return ['local', cmd];
+    }
+
+    /**
+     * Run shipit task locally
+     * @param task_name
+     */
+    self.runTask = function runTask(task_name) {
+        var shipit = CommandList.shipit;
+        var cmd = 'shipit ' +
+            shipit.options.environment + ' ' + task_name;
+        self.cmds.push(self.runLocal( cmd) );
+    };
+
+    self.defineWorkflow = function () {
+        var args = sh.convertArgumentsToArray(arguments);
+        if ( sh.isArray(args[0]) ) {
+            args = args[0];
+        };
+        sh.each(args, function addNewLocalTask(i,task){
+            self.runTask(task);
+        });
+    };
+
+    self.downloadFile = function (from, to ) {
+        cmds.push( "rsync -chavzP --stats "+shipit.config.servers+
+            ":"+fileOutput+' ' +  fileTo );
+    }
+
+    self.getCommands = function () {
+        return  utils.inSeries(self.cmds);
+    }
+    self.c = self.getCommands;
+}
+
+sutils.CommandList= CommandList;
+
+sutils.createUtils = function createUtils(shipit) {
+    function defineUtils() {
+        shipit.task('utils.speed_test', function () {
+            var cmds = [];
+            cmds.push('wget -O speedtest-cli https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py');
+            cmds.push('chmod +x speedtest-cli');
+            cmds.push('./speedtest-cli');
+            return utils.inSeries(cmds);
+        })
+
+        /**
+         * Used to see what shipit knows
+         * Q: Can parameters be past in with task? No
+         * Solution: make a shipit wrapper that can run from node
+         * that will save the config file ...
+         */
+        shipit.task('utils.test_task', function () {
+            var cmds = [];
+            console.log(shipit.config,
+                shipit.options.environment,
+                JSON.stringify(shipit.config))
+            // cmds.push('wget -O speedtest-cli https://raw.github.com/sivel/speedtest-cli/master/speedtest_cli.py');
+            //  cmds.push('chmod +x speedtest-cli');
+            // cmds.push('./speedtest-cli');
+            return utils.inSeries(cmds);
+        })
+    }
+    defineUtils();
+
+
+    function defineUtilsGeneric() {
+        shipit.task('cmd.pwd', function () {
+            return shipit.remote('pwd');
+        });
+
+        shipit.task('cmd.gosudo', function () {
+            return shipit.remote("echo 'password' | sudo -k");
+        });
+
+        shipit.task('utils.test.inseries_method', function () {
+            var cmds = [];
+            cmds.push('ls');
+            cmds.push('pwd');
+            cmds.push('ls');
+            return utils.inSeries(cmds)
+
+            //return shipit.remote("echo 'password' | sudo -k");
+        });
+    }
+
+    defineUtilsGeneric()
+
+    function runNodeScript(nodeScript, forever, runOnce) {
+        var cmd = nvm + ' node ' +nodeScript;
+        if (forever == true) {
+            cmd = 'forever ';
+            if (runOnce == true) {
+                cmd +=   ' ' +  '-m 1 ';
+            };
+            cmd +=   ' ' +  nodeScript;
+            cmd = 'bash -l -c ' + sh.qq(cmd);
+        };
+
+        return cmd;
+    }
+    shipit.runNodeScript = runNodeScript;
+
+    var taskList = {};
+    taskList.desc = {}
+    var listTasks = [];
+    var fxOldNewTask = shipit.task;
+    shipit.task = function ( name ) {
+        listTasks.push(name);
+        if ( taskList.nextDesc != null ) {
+            taskList.desc[name] =  taskList.nextDesc;
+            taskList.lastNextDesc = taskList.nextDesc;
+            taskList.nextDesc = null;
+        }
+        var args = sh.convertArgumentsToArray(arguments);
+        //sh.callIfDefined(fxOldNewTask, args );
+        fxOldNewTask.apply(shipit, args );
+        shipit.lastTaskArgs = args;
+        return shipit;
+    }
+    function nextTask(desc, name) {
+        taskList.nextDesc = desc;
+    }
+    shipit.nextTask = nextTask
+    shipit.aliasLastTask = function(name) {
+        var args = shipit.lastTaskArgs.concat();
+        args.shift();
+        args.unshift(name);
+        taskList.nextDesc=taskList.lastNextDesc;
+        shipit.task.apply(shipit, args)
+    }
+    shipit.taskX = function skipTask() {};
+    shipit.taskx = shipit.taskX;
+
+
+
+    nextTask('lists all tasks. I feel clever');
+    shipit.task('tasks.list', function listTask() {
+        var cmds = [];
+        cmds.push('echo listing tasks');
+        var cmdStr = '';
+        listTasks = listTasks.sort();
+        sh.each(listTasks, function listTask(i,taskName){
+            //cmds.push('echo ' + x);
+            //cmds.push( ['local', 'echo ' + x] )
+            var desc = taskList.desc[taskName];
+            if ( desc ) { desc = ' - '+desc; };
+            desc = sh.dv(desc, '');
+            var number = i + 1; number += '. ';
+            cmdStr += "echo "+ number + "shipit staging "+taskName+desc+'; '+"\n"
+        });
+        //sh.each(listTasks, function listTask(i,x){
+        //cmds.push('echo ' + x);
+        cmds.push( ['local', cmdStr] );
+        //});
+        return utils.inSeries(cmds)
+    });
+    shipit.aliasLastTask('list');
+
+
+
+    CommandList.shipit = shipit;
+
+    utils.createTransport(shipit)
+}
+
+sutils.deployApp = function deployApp(settings) {
+    var shipit = utils.shipit;
+
+    settings.task_name = sh.dv(settings.task_name, 'app.deploy');
+
+    var appName= settings.app_name;
+    //'movie_search'
+    //var dirDeploy = '/opt/nodejs/'+appName;
+    settings.dirBase = sh.dv(settings.dirBase, '/opt/nodejs/');
+    dirDeploy = settings.dirBase + appName;
+    //store for later. Other tasks can resuse this value
+    settings.dir_deploy = dirDeploy+ '/';
+
+
+    var commonVars = {};
+    commonVars.environment = shipit.options.environment
+    commonVars.str = shipit.config.servers;
+    //console.log('...')
+    //console.log('shipit', shipit)
+    console.log('commonVars', commonVars)
+
+    //sh.exit()
+
+    shipit.task(settings.task_name, function createFullDeployTask() { //define task
+        var dirLocalNodeApp =  settings.dir_local_app;
+
+        if ( settings.replace_dir != null ) {
+            dirLocalNodeApp = dirLocalNodeApp.replace(settings.replace_dir[0],
+                settings.replace_dir[1]);
+        };
+
+        var dirRemoteNodeApp = dirDeploy; // + '/public_html';;
+
+        //var fileApp = dirRemoteNodeApp + '/slickrun/' + 'Portfolio_SparkServer.js';
+
+        var cmds = [];
+
+        if ( settings.fxPre ) {
+            settings.fxPre(cmds)
+        }
+
+        //cmds.push('sdf');
+
+
+        cmds.push('sudo mkdir -p ' + dirDeploy);       //make deploy dir
+        cmds.push('echo j; sudo sudo chown -R $USER:$USER ' + dirDeploy + '; echo ok');
+
+        //deploy config
+        if ( settings.deploy_config && utils.exists('config.json')) {
+            cmds.push(['remoteCopy','config.json', dirDeploy]);
+        }
+
+        console.log('copying pairs')
+        sh.each ( settings.copyPairs , function copyPair(i,x) {
+            console.log('copyPair ', i);
+
+            var dirTo = x[1];
+            if ( sh.startsWith(dirTo, '/') == false ) {
+                dirTo = dirDeploy +'/' + dirTo
+            }
+            var dirFrom = x[0]
+            if ( settings.replace_dir != null ) {
+                dirFrom = dirFrom.replace(settings.replace_dir[0], settings.replace_dir[1]);
+            }
+            cmds.push('sudo mkdir -p ' + dirTo);
+            cmds.push('echo itscool; sudo chown -R user:user ' + dirTo + '; echo okdontfail-copypairs');
+            //cmds.push('echo h; sudo sudo chown -R $USER:$USER  > /dev/null  ' + dirTo);
+            //cmds.push(['remoteCopy',sh.q(dirFrom), dirTo]);
+
+            //--ignore-missing-args
+
+
+            /*
+             rsync -azP --ignore-missing-args '/media/sf_Dropbox/projects/crypto/node_modules/shelpers'  user@localhost:/opt/nodejs/breedv2/node_modules"
+             */
+            var cmd = sh.join(
+                'echo itscool;',
+                'rsync -azP --ignore-missing-args',
+                sh.q(dirFrom),'',commonVars.str+':'+dirTo+';',
+                'echo itscool;'
+            )
+
+            // console.log(cmd)
+            // asdf.g
+            // sh.exit(cmd)
+            cmds.push( cmd );
+        })
+
+        cmds.push(['remoteCopy', dirLocalNodeApp, dirRemoteNodeApp]);
+
+        cmds.push('pwd');
+
+        if ( settings.start_app_forever != ''  &&  settings.start_app_forever != null )
+        {
+            //start node app
+            cmds.push(sutils.nvm + 'forever stopall');
+            cmds.push(sutils.nvm + 'forever start ' + dirDeploy + '/'+settings.start_app );
+
+        }
+        if ( settings.start_app != '' &&  settings.start_app != null )
+        {
+            //start node app
+            cmds.push(sutils.nvm + 'killall node');
+            cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app );
+
+        }
+
+        cmds.push('echo done');
+
+        if ( settings.fxPost ) {
+            settings.fxPost(cmds)
+        }
+        return utils.inSeries(cmds)
+    });
+
+
+    shipit.task('app.start', function () {
+        var cmds = [];
+        if ( settings.start_app_forever != ''  )
+        {
+            //start node app
+            cmds.push(sutils.nvm + 'forever stopall');
+            cmds.push(sutils.nvm + 'forever start ' + dirDeploy + '/'+settings.start_app );
+
+        }
+        if ( settings.start_app != ''  )
+        {
+            //start node app
+            cmds.push(sutils.nvm + 'killall node');
+            cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app );
+
+        }
+
+        cmds.push('echo done');
+        return utils.inSeries(cmds)
+    });
+
+
+    shipit.task('app.start.debug', function () {
+        var cmds = [];
+        if ( settings.start_app != ''  ) {
+            //start node app
+            cmds.push(sutils.nvm + 'killall node; echo ok;');
+            cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app
+                + " '' " +  'debug dfg' );
+
+        }
+
+        // cmds.push('echo done');
+        return utils.inSeries(cmds)
+    });
+
+    //find a delete task...
+}
+
+
+
+sutils.deployMiniApp = function deployMiniApp(settings) {
+    var shipit = utils.shipit;
+
+    var appName= settings.app_name;
+    settings.dirBase = sh.dv(settings.dirBase, '/opt/nodejs/');
+    var dirDeploy = settings.dirBase + appName;
+    var fileNodeScript = dirDeploy + '/'+settings.start_app
+    var taskNameAppend = '.'+appName
+
+    settings.task_name = sh.dv(settings.task_name, 'app.deploy'+taskNameAppend);
+
+    //'movie_search'
+    //var dirDeploy = '/opt/nodejs/'+appName;
+
+    //store for later. Other tasks can resuse this value
+    settings.dir_deploy = dirDeploy+ '/';
+
+
+    var commonVars = {};
+    commonVars.environment = shipit.options.environment
+    commonVars.str = shipit.config.servers;
+    //console.log('...')
+    //console.log('shipit', shipit)
+    console.log('commonVars', commonVars)
+    console.log('define miniappsettings.task_name ', settings.task_name )
+    console.log('settings', settings )
+    console.log('fileNodeScript', fileNodeScript )
+    // sh.exit()
+    settings.fileOtherScripts = sh.dv(settings.fileOtherScripts, [])
+    
+    var h = {};
+    h.createFullDeployTask =   function createFullDeployTask(liteMode) { //define task
+        var dirLocalNodeApp =  settings.dir_local_app;
+
+        if ( settings.replace_dir != null ) {
+            dirLocalNodeApp = dirLocalNodeApp.replace(settings.replace_dir[0],
+                settings.replace_dir[1]);
+        };
+
+
+
+        var dirRemoteNodeApp = dirDeploy; // + '/public_html';;
+
+        var cmds = [];
+
+        if ( settings.fxPre ) {
+            settings.fxPre(cmds)
+        }
+
+        cmds.push('sudo mkdir -p ' + dirDeploy);       //make deploy dir
+        cmds.push('echo j; sudo sudo chown -R $USER:$USER ' + dirDeploy + '; echo ok');
+
+        //deploy config
+        if ( settings.deploy_config && utils.exists('config.json')) {
+            cmds.push(['remoteCopy','config.json', dirDeploy]);
+        }
+
+        cmds.push('echo of files copying pairs')
+        sh.each ( settings.copyPairs , function copyPair(i,x) {
+            if ( liteMode ) {
+                console.log(
+                    'lite mode ... no coyp pairs'
+                )
+                return;
+            }
+            console.log('copyPair ', i);
+
+            var dirTo = x[1];
+            if ( sh.startsWith(dirTo, '/') == false ) {
+                dirTo = dirDeploy +'/' + dirTo
+            }
+            var dirFrom = x[0]
+            if ( settings.replace_dir != null ) {
+                dirFrom = dirFrom.replace(settings.replace_dir[0], settings.replace_dir[1]);
+            }
+            cmds.push('sudo mkdir -p ' + dirTo);
+            cmds.push('echo itscool; sudo chown -R user:user ' + dirTo + '; echo okdontfail-copypairs');
+            //cmds.push('echo h; sudo sudo chown -R $USER:$USER  > /dev/null  ' + dirTo);
+            //cmds.push(['remoteCopy',sh.q(dirFrom), dirTo]);
+
+            //--ignore-missing-args
+
+
+            /*
+             rsync -azP --ignore-missing-args '/media/sf_Dropbox/projects/crypto/node_modules/shelpers'  user@localhost:/opt/nodejs/breedv2/node_modules"
+             */
+            var cmd = sh.join(
+                'echo itscool;',
+                'rsync -azP --ignore-missing-args',
+                sh.q(dirFrom),'',commonVars.str+':'+dirTo+';',
+                'echo itscool;'
+            )
+
+            // console.log(cmd)
+            // asdf.g
+            // sh.exit(cmd)
+            cmds.push( cmd );
+        })
+
+        console.log(['remoteCopy', dirLocalNodeApp, dirRemoteNodeApp])
+        cmds.push(['remoteCopy', dirLocalNodeApp, dirRemoteNodeApp]);
+        //   sh.exit();
+
+        //copy config
+        /*
+         why: copy config from dir ito the remote machine using this name
+         if ( settings.config_name
+         //chedk for a local config
+         //if found copy to folder
+         */
+        /*
+         Copies local config to remote server. Keeps server and local env config uptodate
+         Why: Called before running any remote scripts to make sure
+         */
+        /*
+         function newTask_deployConfig_as_defaultConfigJSON(addToCmds) {
+         //copy config
+         var fileConfig = __dirname+'/'+shipit.options.environment+'.json';
+
+         var cmds = new  utils.CommandList();
+         if ( addToCmds ) {
+         cmds.cmds = addToCmds;
+         }
+         //read local config for vars
+         //run remote cmd
+         // cmds.cmds.push(['remoteCopy',sh.q(fileConfig), settingsDeployTask.dir_deploy+
+         // 'imdb_movie_scraper/defaultConfig.json']);
+
+         cmds.push(['sudo mkdir -p', settingsDeployTask.dir_deploy+''].join(' ')); //create dir if does not exist (first time)
+         //cmds.push(['sudo mkdir -p', settingsDeployTask.dir_deploy+''].join(' ')); //create dir if does not exist (first time)
+         cmds.push('echo itscool; sudo chown -R $USER:$USER ' + settingsDeployTask.dir_deploy + '; echo okdontfail');
+         cmds.push('echo itscool; sudo chown -R user:user ' + settingsDeployTask.dir_deploy + '; echo okdontfail');
+         //#remove parent permissions for local host
+
+         cmds.cmds.push(['remoteCopy',sh.q(fileConfig), settingsDeployTask.dir_deploy+
+         'defaultConfig.json']);
+         //TODO: script should go up one dir to get config ...
+         //cmds.cmds.push(['remoteCopy',sh.q(fileConfig), settingsDeployTask.dir_deploy+
+         //'distillerv3/megatools/defaultConfig.json']);
+         return cmds;
+         }
+         //clonning ruins this line
+         settings.newTask_deployConfig_as_defaultConfigJSON = newTask_deployConfig_as_defaultConfigJSON;
+
+         //console.error('what are newTask_deployConfig_as_defaultConfigJSON?', newTask_deployConfig_as_defaultConfigJSON,
+         //    settings.newTask_deployConfig_as_defaultConfigJSON)
+         */
+
+        cmds.push('echo alll files copied, starting app');
+        cmds.push('pwd');
+
+        /* if ( settings.start_app_forever != ''  &&  settings.start_app_forever != null )
+         {
+         //start node app
+         cmds.push(sutils.nvm + 'forever stopall');
+         cmds.push(sutils.nvm + 'forever start ' + dirDeploy + '/'+settings.start_app );
+
+         }
+         if ( settings.start_app != '' &&  settings.start_app != null )
+         {
+         //start node app
+         cmds.push(sutils.nvm + 'killall node');
+         cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app );
+
+         }
+         */
+        cmds.push('echo finished deploying mini-app:' + settings.task_name );
+
+        if ( settings.fxPost ) {
+            settings.fxPost(cmds)
+        }
+        return utils.inSeries(cmds)
+
+    }
+
+    shipit.task(settings.task_name, function createFullDeployTast() {
+
+
+        h.createFullDeployTask()
+
+    }     );
+
+
+    shipit.task(settings.task_name+'.lite', function createFullDeployTast() {
+
+
+        h.createFullDeployTask(true)
+
+    }     );
+
+    sutils.opt = ' ; echo ok'
+
+    shipit.task('app.start'+taskNameAppend, function () {
+        var cmds = [];
+        //   if ( settings.start_app_forever != ''  )
+        //  {
+        //start node app
+        //cmds.push(sutils.nvm + 'forever stopall');
+        cmds.push(sutils.nvm + 'forever stop ' + fileNodeScript + sutils.opt );
+        cmds.push(sutils.nvm + 'forever start ' + fileNodeScript );
+
+        sh.each(settings.fileOtherScripts, function on(k,v) {
+            fileNodeScript= dirDeploy + '/' + v;
+            cmds.push(sutils.nvm + 'forever stop ' + fileNodeScript + sutils.opt );
+            cmds.push(sutils.nvm + 'forever start ' + fileNodeScript );
+        })
+        //    }
+
+        cmds.push('echo done');
+        return utils.inSeries(cmds)
+    });
+
+
+    shipit.task('app.start.debug'+taskNameAppend, function () {
+        var cmds = [];
+        // if ( settings.start_app != ''  ) {
+        //start node app
+        cmds.push(  '  echo ok1' )
+       // cmds.push(  ' sudo pkill -f '+sh.q(settings.start_app)   + ' | echo ok' ) //+ sutils.opt );
+        cmds.push(  '  echo ok2' )
+        cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app
+            + " '' " +  'debug dfg' );
+
+
+        sh.each(settings.fileOtherScripts, function on(k,v) {
+            fileNodeScript= dirDeploy + '/' + v;
+          //  cmds.push( ' sudo pkill -f '+sh.q(fileNodeScript) ) //+ sutils.opt );
+            cmds.push(sutils.nvm + 'node ' + fileNodeScript
+                + " '' " +  'debug dfg' );
+        })
+        //  }
+
+        // cmds.push('echo done');
+        return utils.inSeries(cmds)
+    });
+
+
+
+    shipit.task('app.stop'+taskNameAppend, function () {
+        var cmds = [];
+        // if ( settings.start_app != ''  ) {
+        //start node app
+        cmds.push(sutils.nvm + 'sudo pkill -f '+sh.q(settings.start_app)+ sutils.opt );
+      //  cmds.push(sutils.nvm + 'node ' + dirDeploy + '/'+settings.start_app
+       //     + " '' " +  'debug dfg' );
+        cmds.push(sutils.nvm + 'forever stop ' + fileNodeScript + sutils.opt );
+
+        sh.each(settings.fileOtherScripts, function on(k,v) {
+            fileNodeScript= dirDeploy + '/' + v;
+            cmds.push(sutils.nvm + 'sudo pkill -f '+sh.q(fileNodeScript)+ sutils.opt +" | echo ok;");
+            //cmds.push(sutils.nvm + 'node ' + fileNodeScript
+            //    + " '' " +  'debug dfg' );
+            cmds.push(sutils.nvm + 'forever stop ' + fileNodeScript + sutils.opt );
+        })
+        //  }
+
+        // cmds.push('echo done');
+        return utils.inSeries(cmds)
+    });
+
+    //find a delete task...
+}
+
+
+sutils.installPackages = function installPackages(settings) {
+    var shipit = sutils.shipit;
+    settings.task_name = sh.dv(settings.task_name, 'install_packages')
+
+    shipit.task(settings.task_name, function () {
+        var cmds = [];
+        sh.each(settings.lines, function playbackLine(i,line){
+            cmds.push(line);
+        })
+        sh.each(settings.packages, function installpackage(i,pkg){
+            cmds.push('sudo apt-get -y install '+ pkg);
+        })
+        cmds.push('#done installing packages');
+        return utils.inSeries(cmds)
+    })
+}
+
+
+
+
+
+
+//shipit stating stopall #ends all nodejs forever apps
+sutils.createTransport = function createTransport(settings) {
+    var shipit = sutils.shipit;
+    settings.task_name = sh.dv(settings.task_name, 'install_packages')
+
+    shipit.task('app.stop', function () {
+        var cmds = [];
+        cmds.push(sutils.nvm + 'forever stopall')
+        return utils.inSeries(cmds)
+    })
+    shipit.task('node.stop', function () {
+        var cmds = [];
+        cmds.push(sutils.nvm + 'killall node')
+        return utils.inSeries(cmds)
+    })
+
+}
+
+/**
+ * Zips the application directoy to prevent having to git on a
+ * testing VM.
+ * @param sttgs
+ * @param dir
+ * @param dirStore
+ */
+sutils.createPackageTasks= function createPackageTasks(sttgs,
+                                                       dir,
+                                                       dirStore) {
+    var shipit = sutils.shipit;
+    shipit.task('utils.package.zip', function () {
+        var cmds = new CommandList();
+        var file_zip = sttgs.app_name+".zip "
+        cmds.local(
+            "zip -r "+file_zip+ " "+sttgs.dir_local_app + " " +
+            ' > /dev/null '
+        )
+        if ( sttgs.dirStore != null ) {
+            cmds.local(
+                "cp "+file_zip+" "+dirStore
+            )
+        };
+        return cmds.c();
+    });
+    shipit.task('utils.package.unzip', function () {
+        var cmds = new CommandList();
+        var file_zip = sttgs.app_name+".zip "
+        /*if ( sttgs.dirStore != null ) {
+         cmds.local(
+         "cp "+dirStore+'/'+file_zip+" "+ __dirname
+         )
+         };*/
+        cmds.local(
+            // "cd /; unzip "+__dirname+'/'+file_zip //+ " //
+            "sudo unzip -n "+file_zip+ " -d /" +
+            ' > /dev/null '//+sttgs.dir_local_app
+        )
+
+        return cmds.c();
+    })
+    shipit.task('utils.package.unzip.overwrite', function () {
+        var cmds = new CommandList();
+        var file_zip = sttgs.app_name+".zip "
+        cmds.local(
+            "sudo unzip -o "+file_zip+ " -d / " +
+            ' > /dev/null ' //+sttgs.dir_local_app
+        )
+
+        return cmds.c();
+    })
+}
+
+
+
+sutils.loadFile = function (fileName, store) {
+    var json = JSON.parse(sh.readFile(fileName))
+    //console.log(fileName, json)
+    if ( store != null ) {
+        sutils.files = sh.dv(sutils.files, {});
+        sutils.files[store] = json
+    };
+}
+
+
+
+
+
+/*
+ var shipit = {};
+ shipit.task = function () {}
+ sutils.createUtils(shipit);*/

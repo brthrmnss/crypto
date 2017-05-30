@@ -37,6 +37,7 @@
 <script src="js/lib/ui_utils.js" ></script>
 <script src="js/baby_rend.js" ></script>
 <script src="js/baby_lib.js" ></script>
+<script src="js/baby_lib_extended.js" ></script>
 <script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
 <script src="http://localhost:10110/reloader.js" ></script>
 <script>
@@ -82,6 +83,7 @@
   window.addEventListener('DOMContentLoaded', createB )
   function createB(){
 
+    window.u = uiUtils;
     var br = new BabyRend();
     br.init();
     br.setupStage()

@@ -6,7 +6,7 @@ $comando = "sudo /var/www/html/start.sh ";
 
 
 
- //$output = shell_exec('sudo /var/www/html/run.sh'." > /var/www/html/debug.log 2>&1");
+ //$output = shell_exec('sudo /var/www/start/run.sh'." > /var/www/html/debug.log 2>&1");
  //echo "<pre>$output</pre>";
 
 ?>

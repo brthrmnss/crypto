@@ -34,8 +34,7 @@ function GetFileListFromRemote() {
 
         if ( self.settings.url ) {
         }
-        else
-        {
+        if ( self.settings.ip )  {
             self.settings.url = 'http://'+self.settings.ip+':'+self.settings.port + '/'
         }
 
@@ -78,16 +77,21 @@ function GetFileListFromRemote() {
     p.step1_setupSocket = function step1_setupSocket() {
         //  if ( self.data.skipToDl ) {
         self.data.socket = self.settings.socket
-        if ( self.data.socket ) {
 
+
+        if ( self.data.socket ) {
+            self.proc('resumed connection to:', self.settings.url )
             self.chain.nextLink();
             return;
         }
         //self.settings.url = 'http://127.0.0.1:14002/'
-
+        self.proc('connecting too...', self.settings.url )
         var socket = require('socket.io-client')(self.settings.url );
         socket.on('connect', function onConnectToSocket(){
             self.data.socket = socket;
+            self.data.socket = self.settings.socket = socket;
+            self.data.connectedToSrv1x = true
+
             self.proc('connected')
             self.chain.nextLink();
         });
@@ -96,6 +100,10 @@ function GetFileListFromRemote() {
             self.proc('lost the mirror')
         });
         //socket.emit('my other event', __filename + ' is listening')
+
+
+        self.setTimer()
+
 
         return;
         // }
@@ -142,11 +150,25 @@ function GetFileListFromRemote() {
 
     p.test = function test(config) {
     }
+ 
 
     function defineUtils() {
         var utils = {};
         p.utils = utils;
 
+        p.setTimer = function setTimer(config) {
+            var currentId = Math.random();
+            self.data.currentId = currentId;
+            self.data.connectedToSrv1x = false;
+            setTimeout(function testIfConnected() {
+                if ( self.data.currentId == currentId &&
+                    self.data.connectedToSrv1x == false ) {
+                    self.proc('did not connect we have an issue')
+                    sh.cid(self.settings.fxDone, 'what is this.... we failed on the url '+self.settings.url)
+                }
+            }, 3510)
+        }
+        
         p.proc = function debugLogger() {
             if ( self.silent == true) {
                 return;

@@ -87,11 +87,14 @@ function Workflow_UploadAndRun () {
             return;
         }
         //self.settings.url = 'http://127.0.0.1:14002/'
- 
+
         self.proc('setup....', self.settings.url )
         var socket = require('socket.io-client')(self.settings.url );
         socket.on('connect', function onConnectToSocket(){
             self.data.socket = socket;
+            self.data.socket = self.settings.socket = socket;
+            self.data.connectedToSrv1x = true
+
             self.proc('connected')
             self.chain.nextLink();
         });
@@ -99,7 +102,10 @@ function Workflow_UploadAndRun () {
         socket.on('disconnect', function(){
             self.proc('lost the mirror')
         });
-        self.data.socket = self.settings.socket = socket;
+
+
+        self.setTimer()
+
         return;
     }
 
@@ -196,6 +202,20 @@ function Workflow_UploadAndRun () {
     function defineUtils() {
         var utils = {};
         p.utils = utils;
+
+        p.setTimer = function setTimer(config) {
+            var currentId = Math.random();
+            self.data.currentId = currentId;
+            self.data.connectedToSrv1x = false;
+            setTimeout(function testIfConnected() {
+                if ( self.data.currentId == currentId &&
+                    self.data.connectedToSrv1x == false ) {
+                    self.proc('did not connect we have an issue')
+                    sh.cid(self.settings.fxDone, 'what is this.... we failed on the url '+self.settings.url)
+                }
+            }, 3510)
+        }
+
 
         p.proc = function debugLogger() {
             if ( self.silent == true) {

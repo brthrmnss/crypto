@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SR</title>
+
+
+    <script src="js/socket.io-1.2.0.js.ignore"></script>
+    <script src="js/jquery-1.11.1.js.ignore"></script>
+    <!--<script src="js/jquery-ui-1.12.1.js"></script>-->
+    <script src="js/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="js/jquery-ui.css">
+
+    <script>
+        $( function() {
+            var availableTags = [
+                "ActionScript",
+                "AppleScript",
+                "Asp",
+                "BASIC",
+                "C",
+                "C++",
+                "Clojure",
+                "COBOL",
+                "ColdFusion",
+                "Erlang",
+                "Fortran",
+                "Groovy",
+                "Haskell",
+                "Java",
+                "JavaScript",
+                "Lisp",
+                "Perl",
+                "PHP",
+                "Python",
+                "Ruby",
+                "Scala",
+                "Scheme"
+            ];
+            $( "#tags" ).autocomplete({
+                source: availableTags,
+                //autoFocus : true
+            });
+
+            // response: function( event, ui ) {}
+
+            $( "#tags" ).on( "autocompleteselect",
+                    function onSelected( event, ui ) {
+                        console.log(event, ui)
+                        console.log('item', ui)
+                        window.sr.onAction(ui.item.label);
+
+                        //   console.log('what', $('#tags').val());
+                    } );
+
+
+            /*  $( "#tags" ).on( "autocompleteopen", function( event, ui ) {
+             console.log('yyy', event, ui, ui.item)
+             } )
+             $( "#tags" ).on( "autocompletesearch", function( event, ui ) {
+             console.log('yyy', event, ui, ui.item)
+             } )*/
+
+            $( "#tags" ).on( "autocompleteopen",
+                    function onAutocompleteopen( event, ui ) {
+                        //console.log('yyy', event, ui, ui.item)
+                        console.info('acopen')
+                        window.sr.data.autoCompleteOpen = true;
+                    } )
+            $( "#tags" ).on( "autocompleteclose",
+                    function onAutocompleteClose( event, ui ) {
+                        //console.log('yyy', event, ui, ui.item)
+                        console.info('acclosed')
+                        window.sr.data.autoCompleteOpen = false;
+
+                        var txt = sr.utils.txt();
+                        console.log('txt', txt)
+                        var select
+
+                    } )
+
+            var last = {};
+
+            $( "#tags" ).on( "autocompleteresponse",
+                    function onAutocompleteResponse( event, ui ) {
+                        // store for later if user presses tab
+                        last.content = ui.content;
+                        console.log('autocompleteresponse', ui.content.length)
+                    } )
+
+
+
+            $('#tags').keydown(function onKeyDown(e) {
+                $('#divBadAction').hide()
+                var sr =  window.sr;
+                var code = e.keyCode || e.which;
+                console.error('downkey', code, sr.data.autoCompleteOpen,
+                        window.sr.data.historyScrollMode)
+                var keys = {}
+                keys.Down = 40
+                keys.Up = 38
+                if ( code != keys.Down && code != keys.Up ) {
+                    sr.data.historyScrollMode= false;
+                }
+
+                if (code === 27) { //ESC
+                    console.info('ESC')
+                    window.sr.data.historyScrollMode = false;
+                    sr.utils.selectAllText();
+                    return;
+                }
+                if (code === 9) {
+                    e.preventDefault();
+                    // myFunction();
+                    // alert('it works!');
+                    var firstItem = last.content[0]
+                    console.debug('testing', code, firstItem)
+
+                    $(this).autocomplete('close');
+                    if ( firstItem )
+                        window.sr.onAction(firstItem.label);
+
+                    $(this).val(firstItem.label)
+                    //console.debug('testing', code, last.content)
+                }
+
+                if  ( sr.data.autoCompleteOpen ) {
+                    if (window.sr.data.historyScrollMode == false) {
+                        console.debug('leave history mode...')
+                        return;
+                    }
+                }
+
+
+                console.log('code', code, sr.data.autoCompleteOpen)
+                if (code == 40 ) {
+                    sr.data.historyScrollMode= true;
+                    // console.log('sdf', 40)
+                    e.preventDefault();
+                    var lastItem =  window.sr.onPrev();
+                    last.content = [{label:lastItem}];
+                    $(this).val(lastItem)
+                }
+                if (code == 38 ) {
+                    sr.data.historyScrollMode= true;
+                    e.preventDefault();
+                    var lastItem =  window.sr.onPrev_Next();
+                    last.content = [{label:lastItem}];
+                    $(this).val(lastItem)
+                }
+
+
+                if  ( sr.data.autoCompleteOpen ) {
+                    if (  window.sr.data.historyScrollMode == true ) {
+                        console.warn('history scroll mode')
+                        console.warn('autocomplete open')
+                        e.preventDefault();
+                        $(this).autocomplete('close');
+                        return;
+                    } else{
+
+                    }
+                }
+
+            });
+
+
+            /* $( "#tags" ).on( "autocompletechange",
+             function onSelected( event, ui ) {
+             console.log(event, ui)
+             console.log('item', ui)
+             console.log('what', $('#tags').val());
+             } );*/
+
+        } );
+
+
+
+        setTimeout(function postInit()  {
+            var sr = window.sr;
+            /*   sr.history.addHistory('aaa')
+             sr.history.addHistory('bbb')
+             sr.history.addHistory('ccc')*/
+
+            sr.history.addHistory('gtactions')
+            sr.history.addHistory('gtreloader')
+            sr.history.addHistory('focus')
+
+            //debugger
+            sr.settings.fxDoneAction = function resetHistoryScrollMode() {
+                sr.data.historyScrollMode = true;
+            }
+        }, 1500)
+
+
+    </script>
+
+    <style>
+        .txt2 {
+            background: #fcfcfc;
+            border: solid 1px gray;
+            padding: 4px;
+            color: #666666;
+            font-size: 14px;
+        }
+        body {
+            font-family: Helvetica, Arial;
+        }
+    </style>
+</head>
+<body>
+<div class="ui-widget">
+    <label for="tags"> </label>
+    <input id="tags" class="txt2">
+    <span id="txtStatus2"></span>
+</div>
+
+<br />
+
+<div id="txtAnswer" ></div>
+
+
+
+<div id="txtAnswerX" ></div>
+<div id="divBadAction"
+     style="
+     display:none;
+     height:2px; width:250px; background-color:#f42343" ></div>
+<div id="divHistory" ></div>
+<!--
+<script src="eval_client.js"></script>
+
+-->
+
+
+<script type="application/javascript" src="js/ui_utils.js"></script>
+
+
+<script type="application/javascript" src="ParseCSV.js"></script>
+<script type="application/javascript" src="sr.js"></script>
+<script type="application/javascript" src="QuickSpeaker.js"></script>
+
+<script src="http://localhost:10110/g/js/reloader.js" ></script>
+<script>
+    if ( window.reloader) {
+        reloader.reloadWhen('sr.html')
+
+        reloader.filter = '/public_html/'
+        //reloader.filter = '\\public_html\\'
+        reloader.reloadWhenFx('drawPB.js', function onTestOneJs(a, b, c) {
+        })
+        //reloader
+    } else {
+        window.sr = new SR();
+        window.sr.init();
+        window.sr.getList();
+    }
+</script>
+
+<script>
+    $(window).focus(function(e) {
+// Do Focus Actions Here
+        console.log('font')
+        window.sr.utils.asdf();
+    });
+
+    $( document ).ready(function onPageReady() {
+        console.log('font')
+        window.sr.utils.asdf();
+        setTimeout(window.sr.utils.asdf, 500)
+    });
+</script>
+
+
+</body>
+</html>

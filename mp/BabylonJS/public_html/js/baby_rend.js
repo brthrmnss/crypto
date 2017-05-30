@@ -55,6 +55,7 @@ function BabyRend() {
 
         // attach the camera to the canvas
         camera.attachControl(canvas, false);
+        BabyLib.camera = camera;
 
         // create a basic light, aiming 0,1,0 - meaning, to the sky
         var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
@@ -74,56 +75,167 @@ function BabyRend() {
 
         window.sss = sphere
 
+        BabyLib.reloadLib();
         BabyLib.items = [];
         //BabyLib
         b.scene = scene;
-        b.create.square(5)
+
+        b.create.square(1)
         b.mat.createMaterial()
+        b.pos(2, 0, 0)
 
-        b.pos(0,0,0)
-/*
-        b.create.square(16)
-        b.mat.createMaterial('red')
-        b.pos(position)*/
-        
-
-        b.scene = scene;
-        b.create.square(5)
-        b.mat.createMaterial()
-
-        b.pos(0,0,1)
+        //self.testBasicGeom()
 
 
-        b.scene = scene;
-        b.create.square(2)
-        b.mat.createMaterial()
+        //b.layout.putItemsInACircle();
+        // b.layout.putItemsInACircle(null, null, 'xz');
 
-        b.pos(5,1,0)
+        // b.layout.putItemsInASquare2();
+        //b.layout.putItemsInASquare(null, null, 'xz');
 
-        b.scene = scene;
-        b.create.square(2)
-        b.mat.createMaterial()
+        //b.layout.makeTileMosaic();
 
-        b.pos(-8,1,0)
+        self.cursorModeTest();
 
+        function zY() {
+            // return;
+            //BabyLib.zoomFront(self.data.x.camera)
 
-        b.layout.putItemsInACircle();
-        b.layout.putItemsInACircle(null, null, 'xz');
-
-
-        b.layout.makeTileMosaic();
-        
-        setTimeout(function () {
-            //return;
-            BabyLib.zoomFront(self.data.x.camera)
-           // BabyLib.zoomTop(self.data.x.camera)
+            BabyLib.zoomToFit(self.data.x.camera)
+            // BabyLib.zoomTop(self.data.x.camera )
+            // BabyLib.zoomTop(self.data.x.camera)
             //BabyLib.zoomToFit(self.data.x.camera, 10)
-        }, 500)
+        }
+        setTimeout(zY, 500)
+        setTimeout(zY, 1500)
+
+
+
 
         // return the created scene 
         return scene;
     }
 
+    p.testBasicGeom = function testBasicGeom() {
+
+        /*
+         b.create.square(16)
+         b.mat.createMaterial('red')
+         b.pos(position)*/
+
+
+        b.scene = scene;
+        b.create.square(5)
+        b.mat.createMaterial()
+
+        b.pos(0, 0, 1)
+
+
+        b.scene = scene;
+        b.create.square(2)
+        b.mat.createMaterial()
+
+        b.pos(5, 1, 0)
+
+        b.scene = scene;
+        b.create.square(2)
+        b.mat.createMaterial()
+
+        b.pos(-8, 1, 0)
+    }
+    //basicGeom();
+
+    p.testMesh = function testMesh() {
+        b.loadMesh('bane', '../data/', 'landlord.obj')
+        b.loadMesh('bane2', '../data/', 'landlord.obj', function onMesh(m) {
+
+                /// m.diffuseTexture = new BABYLON.Texture("../data/LandLord_diffuse.png", scene);
+                //  m.material = new BABYLON.Texture("../data/LandLord_normal.png", scene);
+
+
+                //http://www.babylonjs-playground.com/#EKFLA#13
+
+                var url = '../data/LandLord_normal.png'
+                var url = '../data/LandLord_diffuse.png'
+                var materialSphere3 = new BABYLON.StandardMaterial("texture3", scene);
+                materialSphere3.diffuseTexture = new BABYLON.Texture(url, scene);
+
+                m.material = materialSphere3
+                // .material = new BABYLON.StandardMaterial("texture1", scene);
+                m.position.x += 10
+
+
+                //b.rotateX(m)
+                m.fxRotExt = function roateAboutY(m) {
+                    //  asdf.g
+                    b.rotateAboutY(m, Math.PI)
+                }
+                b.lookAt(m)
+
+
+                //   b.rotateAboutY(m, Math.PI/2)
+                // b.rotateAboutY(m, 0.5)
+                //  b.rotateAboutY(m, 0.5)
+                //b.rotateAboutY(m, Math.PI)
+
+                // BabyLib.zoomTop( )
+            }
+        )
+
+    }
+
+    p.cursorModeTest = function cursorModeTest() {
+        // return;
+        // b.create.cube(5)
+        //  b.create.cube(3,8,0.5)
+        // b.create.cube(3,0.5,8)
+        // return;
+        //ad origin
+
+        /*  b.setCursor(1,0,0);
+         var width = 3+4+3
+         b.create.cube(3,8,0.5)*/
+       // b.setCursor(-3,0,0);
+        b.setCursor(0,0,0);
+        var width = 3+4+3
+        var startingPanel = b.create.cube(3,8,0.5)
+
+        //return;
+        //return;
+        // return;
+        b.c.moveCloser(-0.5)
+        b.c.right()
+        b.create.cube(4,8,0.5)
+
+        b.c.moveCloser(0.5)
+        b.c.right()
+        b.create.cube(3,8,0.5)
+
+
+        b.c.up();
+        b.c.setX(0);
+        b.create.cube(1.8,3,0.5)
+        b.c.leftAlign(b.last, startingPanel);
+
+        b.c.moveCloser(0.1)
+        b.c.right()
+        b.create.cube(width-(2*1.8),3,0.5)
+
+        b.c.moveCloser(-0.1)
+        b.c.right()
+        b.create.cube(1.8,3,0.5)
+
+        b.clearCursor()
+        return;
+
+        b.c.right()
+        b.create.cube(width-(2*1.8),4,0.5)
+        b.c.right()
+        b.create.cube(1.8,4,0.5)
+        b.c.up();
+        b.setX(0);
+        b.create.cube(width,4,1)
+    }
 
     p.createExtrasUI = function createExtrasIU() {
         var container = $('#boxStuff')
@@ -152,7 +264,7 @@ function BabyRend() {
             )
         })
 
-        uiUtils.addBtn({text:'t'}, function onZoomTop() {
+        uiUtils.addBtn({text:'top'}, function onZoomTop() {
             BabyLib.zoomTop(self.data.x.camera)
             return;
         })
@@ -168,9 +280,9 @@ function BabyRend() {
 
             BabyLib.zoomToFit(self.data.x.camera)
             return;
-        /*    var bounds = box.getBoundingInfo();
-            var min = bounds.minimum;
-            var max = bounds.maximum;*/
+            /*    var bounds = box.getBoundingInfo();
+             var min = bounds.minimum;
+             var max = bounds.maximum;*/
 
             var min = null
             var max = null
@@ -181,15 +293,15 @@ function BabyRend() {
                 var minimum = bounds.minimum.add(v.position)
                 var maximum = bounds.maximum.add(v.position)
 
-               /* if ( min == null || minimum < min) { min = minimum; }
-                if ( max == null || max > maximum) { max = maximum; }
+                /* if ( min == null || minimum < min) { min = minimum; }
+                 if ( max == null || max > maximum) { max = maximum; }
 
-                */
-              //  minimum = minimum.length();
-              //  maximum = maximum.length();
+                 */
+                //  minimum = minimum.length();
+                //  maximum = maximum.length();
 
-              //  if ( min == null || minimum < min) { min = minimum; }
-              //  if ( max == null || max > maximum) { max = maximum; }
+                //  if ( min == null || minimum < min) { min = minimum; }
+                //  if ( max == null || max > maximum) { max = maximum; }
 
 
                 if ( min == null ) {
@@ -219,7 +331,7 @@ function BabyRend() {
                 if ( maximum.z > max.z ) {
                     max.z = maximum.z
                 }
-                
+
                 console.log('\t', '---', min, max)
                 console.log('\t', '---', k,minimum,maximum)
             })
@@ -247,7 +359,8 @@ function BabyRend() {
     p.reloadSimpleMode =function  reloadSimpleMode(old) {
         //var old = window.br;
 
-        old.dispose()
+        if ( old )
+            old.dispose()
 
         //console.log(xBabyRend == BabyRend, xBabyRend)
 

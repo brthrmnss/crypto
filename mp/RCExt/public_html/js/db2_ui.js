@@ -1,4 +1,10 @@
 var u = uiUtils;
+uiUtils.select = {};
+uiUtils.select.addOption = function addOption(ui, k,v) {
+    var opt = {};
+    opt[k]=v;
+    uiUtils.updateSelect(ui, opt, false);
+}
 
 
 function onInitDB() {
@@ -10,10 +16,10 @@ function onInitDB() {
 
         self.types = {};
 
-        self.data.port = 6012;
-        self.data.portHoist = 6012;
-        self.data.portHoist2 = 6012+2;
-        self.data.portData = '6008';
+        self.data.port = 6022;
+        self.data.portHoist = 6022;
+        self.data.portHoist2 = 6022+2;
+        self.data.portData = '6018';
         self.data.ip = '127.0.0.1';
         self.data.ip = window.location.hostname
         self.data.url = self.data.ip + ':'+ self.data.port;
@@ -376,10 +382,23 @@ function onInitDB() {
             uiUtils.addTextInput({
                 text:self.data.url,
                 id:'txtIpHostport',
-                onDebounce:function onChanged(newName) {
+                onDebounce:function onUserChangedIpAddressManually(newName) {
                     console.log('debouched', newName)
 
-                    debugger;
+                    var ip = newName;
+                    var port = null
+                    if ( ip.includes(':')) {
+                        var split = ip.split(':')
+                        ip = split[0];
+                        port = split[1];
+                    }
+                    uiUtils.setVal('lastManualIp', ip)
+                    if ( newName == '' ) {
+                        console.info('cleared this')
+                        debugger;
+                    }
+                    self.addNewAddress(ip)
+                    // debugger;
                     return;
 
                     //return;
@@ -438,7 +457,7 @@ function onInitDB() {
                     var url = self.data.baseDataUrl
                         + '/resetSockets';
                     uiUtils.getUrl(url, function getPreviousTasksList(sdf){
-                      console.log('sockets reset');
+                        console.log('sockets reset');
                     })
                 }
                 uiUtils.addSelect({
@@ -462,10 +481,24 @@ function onInitDB() {
                     u.kv([
                         'localhost'+':'+(self.data.portHoist+2),
                         '192.168.1.159'+':'+(self.data.portHoist+2),
+                        '192.168.1.160'+':'+(self.data.portHoist+2),
                         '9'+'5.21'+''+'1.13'+''+'7.1'+'45'+':'+(self.data.portHoist+2),
                         '8'+'5.21'+''+'1.13'+''+'7.1'+'45'+':'+(self.data.portHoist+2),
                     ])
                 );
+
+
+
+                self.addNewAddress = function addNewAddress(ipAdd) {
+                    uiUtils.select.addOption(self.data.ui.ddOtherIps, lastManualIp, lastManualIp)
+                    uiUtils.setVal2(self.data.ui.ddOtherIps, lastManualIp)
+                }
+
+
+                var lastManualIp = uiUtils.getVal('lastManualIp')
+                if ( lastManualIp ) {
+                    self.addNewAddress(lastManualIp);
+                }
 
                 if ( window.socketAddress ) {
                     uiUtils.setVal2(self.data.ui.ddOtherIps, window.socketAddress)
@@ -729,7 +762,7 @@ function onInitDB() {
                     },
                     function onNew(){
                         return
-                        var url = uiUtils.getLocation('getStatus2', 6012);
+                        var url = uiUtils.getLocation('getStatus2', 6022);
                         uiUtils.openNewWindow(url)
 
                         u.error('not implemented yet ')
@@ -791,7 +824,7 @@ function onInitDB() {
                     },
                     function onNew(){
                         return
-                        var url = uiUtils.getLocation('getStatus2', 6012);
+                        var url = uiUtils.getLocation('getStatus2', 6022);
                         uiUtils.openNewWindow(url)
 
                         u.error('not implemented yet ')
@@ -909,113 +942,136 @@ function onInitDB() {
             uiUtils.btnDefaults = {minWidth:100}
 
             var h = {}
-            h.create1Off = function create1Off(){
+            h.create1Off = function create1Off() {
 
+                uiUtils.addRadio({name: 'searchType', value: '1off',
+                    addSpacerAfter:true, selected:true}, 'radioSearchType')
 
-
-                uiUtils.addRow(function onAdd1ff() {
-
-                });
-
-                uiUtils.addRadio({name:'searchType', value:'1off', addSpacerAfter:true}, 'radioSearchType')
-                uiUtils.addChange(function onBook(e, ui, val){
+                uiUtils.addChange(function onBook(e, ui, val) {
                     console.error('ok', e, ui, val)
                     self.data.searchType = e;
+                    window.lastWindowSelection = e;
                 }, null, true)
+
+                if ( window.lastWindowSelection ) {
+                    setTimeout(function asdf() {
+                        console.log('xy', window.lastWindowSelection)
+                        uiUtils.setRadioVal('searchType', window.lastWindowSelection, true)
+                    }, 999)
+                    // uiUtils.setVal2('searchType', window.lastWindowSelection )
+
+                }
+
                 self.data.ui.txtUIRadio = uiUtils.lastId();
-                uiUtils.addLabel({text:"1 Off",
-                    width:lblWidth,
-                    title: 'Search for 1 item'})
-                // div.append('1 Off');
-                uiUtils.spacer();
-                uiUtils.addTextInput({
-                    text:'sia mp3 single',
-                    placeholder:'query',
-                    id:'txtOneOffQuery',
-                    onDebounce:function onChanged(newName) {
-                        console.log('debouched', newName)
-                    } })
-                self.data.ui.txtOneOffQuery = uiUtils.lastId();
 
-                //console.error('what is mag', self.onGetMag)
-                uiUtils.addBtn({
-                    text: 'Get Mag',
-                    addSpacerBefore:true,
-                    fxClick: self.onGetMag,
-                    data:{
-                        query:self.getValFrom(self.data.ui.txtOneOffQuery),
-                        cmd:'searchpb'
-                    }
-                })
 
-                uiUtils.addBtn({
-                    id:'btnCreateDM_query',
-                    text: 'Create DM',
-                    addSpacerAfter:true,
-                    data:{
-                        tor:self.getValFromData('queryTor'),
-                        query:self.getValFrom(self.data.ui.txtOneOffQuery),
-                        title:self.utils.combineFields('"1off"','query'),
-                        cmd:'makemani'
-                    },
-                    fxClick: self.onCreateDM,
-                    enabled:false
-                })
-                self.data.ui.btnCreateDM_query = uiUtils.lastId();
-                uiUtils.disable(self.data.ui.btnCreateDM_query);
+                uiUtils.addRow('searchType_1_off_span',
+                    function onAdd1ff() {
 
-                uiUtils.addLabel({id:"txtQueryResultInfo", text:''})
-                self.data.ui.txtQueryResultInfo = uiUtils.lastId();
 
-                uiUtils.style('margin-bottom', '-1px')
+                        uiUtils.addLabel({
+                            text: "1 Off",
+                            width: lblWidth,
+                            title: 'Search for 1 item'
+                        })
+                        // div.append('1 Off');
+                        uiUtils.spacer();
+                        uiUtils.addTextInput({
+                            text: 'sia mp3 single',
+                            placeholder: 'query',
+                            id: 'txtOneOffQuery',
+                            onDebounce: function onChanged(newName) {
+                                console.log('debouched', newName)
+                            }
+                        })
+                        self.data.ui.txtOneOffQuery = uiUtils.lastId();
+
+                        //console.error('what is mag', self.onGetMag)
+                        uiUtils.addBtn({
+                            text: 'Get Mag',
+                            addSpacerBefore: true,
+                            fxClick: self.onGetMag,
+                            data: {
+                                query: self.getValFrom(self.data.ui.txtOneOffQuery),
+                                cmd: 'searchpb'
+                            }
+                        })
+
+                        uiUtils.addBtn({
+                            id: 'btnCreateDM_query',
+                            text: 'Create DM',
+                            addSpacerAfter: true,
+                            data: {
+                                tor: self.getValFromData('queryTor'),
+                                query: self.getValFrom(self.data.ui.txtOneOffQuery),
+                                title: self.utils.combineFields('"1off"', 'query'),
+                                cmd: 'makemani'
+                            },
+                            fxClick: self.onCreateDM,
+                            enabled: false
+                        })
+                        self.data.ui.btnCreateDM_query = uiUtils.lastId();
+                        uiUtils.disable(self.data.ui.btnCreateDM_query);
+
+                        uiUtils.addLabel({id: "txtQueryResultInfo", text: ''})
+                        self.data.ui.txtQueryResultInfo = uiUtils.lastId();
+
+                        uiUtils.style('margin-bottom', '-1px')
+
+                    }, true);
 
                 uiUtils.leaveRow()
-
-
-                //   uiUtils.br()
+                uiUtils.br()
 
             }
+
+            self.types.radioSearchType = 'searchType'
+
             h.createListIds = function createListIds(){
                 uiUtils.addRadio({name:'searchType', value:'listLsIds', addSpacerAfter:true})
-                uiUtils.addLabel({text:"List ls Ids", width:lblWidth})
-                // div.append('1 Off');
-                uiUtils.spacer();
-                uiUtils.addTextInput({
-                    text:'ls051393312',
-                    placeholder:'list ids seperated by commas/space',
-                    id:'txtListIds',
-                    onDebounce:function onChanged(newName) {
-                        console.log('debouched', newName)
-                    } })
-                self.data.ui.txtListIds = uiUtils.lastId();
+
+                uiUtils.addRow('searchType_listLsIds_span',
+                    function onAdd1ff() {
+                        uiUtils.addLabel({text:"List ls Ids", width:lblWidth})
+                        // div.append('1 Off');
+                        uiUtils.spacer();
+                        uiUtils.addTextInput({
+                            text:'ls051393312',
+                            placeholder:'list ids seperated by commas/space',
+                            id:'txtListIds',
+                            onDebounce:function onChanged(newName) {
+                                console.log('debouched', newName)
+                            } })
+                        self.data.ui.txtListIds = uiUtils.lastId();
 
 
-                var btn = u.lastUI;
-                console.log('max1', btn.text())
-                //debugger;
+                        var btn = u.lastUI;
+                        console.log('max1', btn.text())
+                        //debugger;
 
-                uiUtils.addBtn({
-                    text: 'Get Lists & Create DM 2',
-                    addSpacerBefore:true,
-                    fxClick: self.onGetListsAndCreateDM,
-                    data:{
-                        //query:self.getValFrom(self.data.ui.txtName),
-                        listIds:self.getValFrom(self.data.ui.txtListIds),
+                        uiUtils.addBtn({
+                            text: 'Get Lists & Create DM 2',
+                            addSpacerBefore:true,
+                            fxClick: self.onGetListsAndCreateDM,
+                            data:{
+                                //query:self.getValFrom(self.data.ui.txtName),
+                                listIds:self.getValFrom(self.data.ui.txtListIds),
 
-                        //query:self.getValFrom(self.data.ui.txtOneOffQuery),
-                        title:self.utils.combineFields('"List ls Ids"','abv:listIds'),
+                                //query:self.getValFrom(self.data.ui.txtOneOffQuery),
+                                title:self.utils.combineFields('"List ls Ids"','abv:listIds'),
 
-                        cmd:'listids'
+                                cmd:'listids'
 
-                    }
-                })
+                            }
+                        })
 
-                var btn = u.lastUI;
-                console.log('max', btn.text())
+                        var btn = u.lastUI;
+                        console.log('max', btn.text())
 
-                self.renderHelper.idRequiresVal(u.getLast(), self.data.ui.txtListIds)
+                        self.renderHelper.idRequiresVal(u.getLast(), self.data.ui.txtListIds)
 
 
+                    }, true);
                 uiUtils.br()
             }
 
@@ -1404,7 +1460,7 @@ function onInitDB() {
 
              data.taskName = t.data.listDlManifest.split('/').slice(-1)
 
-             var url = uiUtils.getLocation('useConfig', 6012);
+             var url = uiUtils.getLocation('useConfig', 6022);
 
              if ( window.socketAddress ) {
              var ip = window.socketAddress.split(':')[0];
@@ -1431,7 +1487,7 @@ function onInitDB() {
                     html:  uiUtils.glyph('stop'),
                 },
                 function onStop(){
-                    var url = uiUtils.getLocation('stop', 6012);
+                    var url = uiUtils.getLocation('stop', 6022);
                     uiUtils.getUrl(url, function onStop2(sdf){
                         console.log('onStop2', sdf)
                     }, null);
@@ -1447,7 +1503,7 @@ function onInitDB() {
                     html: uiUtils.glyph('th-list')
                 },
                 function onNew(){
-                    var url = uiUtils.getLocation('getStatus2', 6012);
+                    var url = uiUtils.getLocation('getStatus2', 6022);
                     uiUtils.openNewWindow(url)
 
 
@@ -1464,7 +1520,7 @@ function onInitDB() {
                     html: uiUtils.glyph('list-alt')
                 },
                 function onNew(){
-                    var url = uiUtils.getLocation('getStatus', 6012);
+                    var url = uiUtils.getLocation('getStatus', 6022);
                     uiUtils.openNewWindow(url)
                 }
             )
@@ -1508,9 +1564,40 @@ function onInitDB() {
 
             uiUtils.br()
             uiUtils.hr()
-            div.append('Verify');
-            uiUtils.br()
 
+            div.append('Verify');
+
+            uiUtils.spacerSlim();
+
+            uiUtils.addBtn({
+                    title:'nudge',
+                    text: '~',
+                    title: 'Reset Socket',
+                    text: 'Status',
+                    html: uiUtils.glyph('repeat'),
+                    fxClick: self.onServerTaskNudge,
+                    //  data:downloadButtonData
+                }
+            )
+            u.fadeInOnHover(uiUtils.lastUI)
+
+            uiUtils.spacerSlim();
+
+            uiUtils.addBtn({
+                    title:'clear',
+                    text: '~',
+                    title: 'clear log',
+                    text: 'Status',
+                    html: uiUtils.glyph('blackboard'),
+                    fxClick: self.onServerTaskClear,
+                    //  data:downloadButtonData
+                }
+            )
+            u.fadeInOnHover(uiUtils.lastUI)
+
+
+
+            uiUtils.br()
 
             self.data.forwardOutputType = {};
             self.types.dlRemoteFileList = 'dlRemoteFileList';
@@ -2050,7 +2137,7 @@ function onInitDB() {
                 } else {
                     part = '/'+part;
                 }
-                var url = 'http://'+ window.location.hostname + ':' + 6008
+                var url = 'http://'+ window.location.hostname + ':' + 6018
                     + part;
                 return url;
             }
@@ -2250,7 +2337,7 @@ function onInitDB() {
                             self.data.socketHoist.updateStatus('pussy')
                             self.data.socketHoist.updateStatus('dl file', data2.a)
 
-                            //var url = http://127.0.0.1:6012/desktop_f4o5qnc.list.files.txt
+                            //var url = http://127.0.0.1:6022/desktop_f4o5qnc.list.files.txt
                             var url =self.data.urlHoist + '/' + data2.a;
                             self.data.socketHoist.updateStatus('dl file', url)
 
@@ -2281,6 +2368,30 @@ function onInitDB() {
                             uiUtils.setSelect(self.data.ui.recentPages,
                                 sdf, 'name', 'name');
                             callIfDefined(fxDone);
+                        },
+                        data);
+                }
+                p.onServerTaskNudge = function onServerTaskNudge(e, dataOverride) {
+                    var data = {}
+                    //var targetData = self.utils.getUIData(e,dataOverride);
+                    //data.file = targetData.file;
+
+                    url = self.utils.getPath('/resetSockets')
+
+                    uiUtils.getUrl(url, function onGotRecentList(sdf){
+                            console.log('resetSockets', sdf)
+                            return;
+                        },
+                        data);
+                }
+                p.onServerTaskClear = function onServerTaskClear(e, dataOverride) {
+                    var data = {}
+                    $('#messages').empty();
+                    var url = self.utils.getPath('/clearLog')
+
+                    uiUtils.getUrl(url, function onGotRecentList(sdf){
+                            console.log('resetSockets', sdf)
+                            return;
                         },
                         data);
                 }
@@ -2322,13 +2433,13 @@ function onInitDB() {
                     uiUtils.getIp =  function getIP(url) {
                         url = u.contentAfter(url, '://')
                         url = u.contentBefore(url, ':')
-                        return url; 
+                        return url;
                     }
 
                     //uiUtils.getIp(data.url)
                     data.url = uiUtils.getVal2(self.data.ui.txtBreedServerUrl)
                     data.ip = uiUtils.getIp(data.url)
-                        //data.port =
+                    //data.port =
 
                     //return;
                     uiUtils.socket.emit('runcmd', data, function onResult(data2) {
