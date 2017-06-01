@@ -245,6 +245,36 @@ BabyLib.mat = function defineMAterials() {
         b.last.material = blueMat;
         return blueMat;
     }
+
+    b.mat.makeColor = function makeColor(hex) {
+        if ( hex.startsWith('#')) {
+            hex = hex.replace('#', '0x').toString('hex')
+        }
+        var y = hexToRGB(hex)
+            console.debug('ok', hex,y)
+        // convert a hexidecimal color string to 0..255 R,G,B
+        function hexToRGB(hex){
+            var r = hex >> 16;
+            var g = hex >> 8 & 0xFF;
+            var b = hex & 0xFF;
+            return [r/255,g/255,b/255];
+        }
+        //1, .2, .7
+        var blueMat = new BABYLON.StandardMaterial("ground", b.scene);
+       // blueMat.diffuseColor = new BABYLON.Color3(b[0], b[1], b[2]);
+       // blueMat.specularColor = new BABYLON.Color3(b[0], b[1], b[2]);
+        blueMat.diffuseColor = new BABYLON.Color3(y[0], y[1], y[2]);
+        blueMat.specularColor = new BABYLON.Color3(y[0], y[1], y[2]);
+        blueMat.emissiveColor =new BABYLON.Color3(y[0], y[1], y[2]);
+        //blueMat.emissiveColor = new BABYLON.Color3(1, .2, .7);
+        /*if ( a == 'red' ) {
+            blueMat.emissiveColor = BABYLON.Color3.Red();
+            a =b2 =c = 0.7
+        }*/
+        b.lastMat = blueMat;
+        b.last.material = blueMat;
+        return blueMat;
+    }
 }
 BabyLib.mat()
 

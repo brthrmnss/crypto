@@ -205,7 +205,10 @@ function BabyRend() {
         // return;
         b.c.moveCloser(-0.5)
         b.c.right()
-        b.create.cube(4,8,0.5)
+        b.create.cube(4,8,0.5);
+
+        b.mat.makeColor('#f0f0f0')
+        b.mat.makeColor('#ff0000')
 
         b.c.moveCloser(0.5)
         b.c.right()
@@ -220,6 +223,7 @@ function BabyRend() {
         b.c.moveCloser(0.1)
         b.c.right()
         b.create.cube(width-(2*1.8),3,0.5)
+        b.mat.makeColor('#5C4033')
 
         b.c.moveCloser(-0.1)
         b.c.right()

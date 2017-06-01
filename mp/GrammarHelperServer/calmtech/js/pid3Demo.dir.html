@@ -1,0 +1,79 @@
+<div id="listTester2"
+     pad10 >
+    <h1>Quick CRUD Explorer Pid3. ..</h1>
+    <span>This is a quick test of this</span>
+    <!--
+
+        <quicklist2 config="configList" />
+    -->
+
+    <quickform2 config="configForm"/>
+
+
+    <br/>
+    <!--          <pre>
+                {{configCrud | json}}
+            </pre>-->
+    <!--
+     <pre>
+        {{data | prettyJSON}}
+      </pre>
+    -->
+
+    <quickcrud2 config="configCrud">
+        <list_dark>
+            <ul id="listHolder"
+                class="quick-crud-list" >
+
+                <li ng-repeat="item in vmC.items"  >
+                    <div relative pad10
+                         mw250 mh50
+                         bg-black white >
+                        <div ng-click="goTo(item)"
+                             xclass="sideNavTextRow2">
+                            {{item.name}}
+                            {{item.first_name}}
+                            {{item.last_name}}
+                        </div>
+                        <div
+                                style="font-size:14px;"
+                                right10 top10
+                                tr ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
+                        <div ng-if="item.selected==true">selected</div>
+
+                        <div w100
+                             bottom
+                             bg-white
+                             left0
+                             style="height:2px;"
+                             h2
+                             ng-if="item.selected==true"></div>
+                    </div>
+                </li>
+
+
+            </ul>
+        </list_dark>
+    </quickcrud2>
+
+    <br/>
+    <br/>
+    <ui-hider title="config for form">
+        {{configForm}}
+    </ui-hider>
+
+    <br/>
+
+    <ui-hider title="config for configList">
+        {{configList}}
+    </ui-hider>
+    <br/>
+
+    <ui-hider title="config for configCrud">
+
+      <pre>
+        {{configCrud | prettyJSON}}
+      </pre>
+    </ui-hider>
+
+</div>

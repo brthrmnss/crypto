@@ -12,7 +12,7 @@
     isNode = false
   }
 
-  function QuickUIConvertor() {
+  function QuickUIConvertor() {/**/
     var self = this;
     var p = this;
 
