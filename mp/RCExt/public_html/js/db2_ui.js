@@ -1,10 +1,4 @@
 var u = uiUtils;
-uiUtils.select = {};
-uiUtils.select.addOption = function addOption(ui, k,v) {
-    var opt = {};
-    opt[k]=v;
-    uiUtils.updateSelect(ui, opt, false);
-}
 
 
 function onInitDB() {
@@ -130,7 +124,10 @@ function onInitDB() {
             p.connectSocket = function connectSocket() {
                 //if ( self.data.socket !+ null )
                 //whyat?
-                var socket = io( );
+
+                //var socketAddress  = self.data.ip + ':'+ self.data.port
+
+                var socket = io(); // );
                 socket.on('chat message', function(msg){
                     if (msg.indexOf('eval-')==0) {
                         msg = msg.replace('eval-', '')
@@ -181,7 +178,13 @@ function onInitDB() {
 
                 var url = 'http://'+ port + //window.location.hostname + ':' + 6007 +
                     '/valid';
+
+                var baseBreedUrl = 'http://'+ port
+
                 console.log('what is url', url)
+
+                self.data.baseBreedUrl = baseBreedUrl;
+
                 uiUtils.setText(self.data.ui.txtConnectedStatus, '...loading...')
                 uiUtils.getUrl(url, function onGotConnectedStatus(sdf){
                     console.log('onGotConnectedStatus', sdf)
@@ -1503,7 +1506,7 @@ function onInitDB() {
                     html: uiUtils.glyph('th-list')
                 },
                 function onNew(){
-                    var url = uiUtils.getLocation('getStatus2', 6022);
+                    var url = uiUtils.getLocation('getStatus2', 6022, self.data.baseBreedUrl);
                     uiUtils.openNewWindow(url)
 
 
@@ -1520,7 +1523,7 @@ function onInitDB() {
                     html: uiUtils.glyph('list-alt')
                 },
                 function onNew(){
-                    var url = uiUtils.getLocation('getStatus', 6022);
+                    var url = uiUtils.getLocation('getStatus', 6022, self.data.baseBreedUrl);
                     uiUtils.openNewWindow(url)
                 }
             )

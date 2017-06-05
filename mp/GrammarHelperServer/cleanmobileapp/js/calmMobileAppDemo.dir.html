@@ -1,0 +1,213 @@
+<div id="listTester2"
+     pad10 >
+    <h1>Calm Tech</h1>
+    <span>This is a quick test of this</span>
+
+
+
+    <div abs>
+    <img src="/g/cleanmobileapp/js/attachment.jpg" ></img>
+    </div>
+
+
+    <br/>
+
+    <div relative pad10
+         mw250 mh50
+         bg-black white >
+        ok????
+    </div>
+
+
+    <div abs xpad10 gray-border
+         style="width:315px; height:519px;
+         color:#0D0D0D;
+         left:960px; top:385px; "
+         bg-white  >
+        <!-- ok????-->
+        <div horizontal-layout   >
+            <div class="horizontal-flex-container-flex-item">
+                icon
+            </div>
+            <div center upcase stretch >
+                <center-content   >
+                    5:47PM
+                </center-content>
+
+            </div>
+            <div class="horizontal-flex-container-flex-item">
+                cart
+            </div>
+        </div>
+        <!-- <glyph plus/>-->
+        <div horizontal-layout >
+            <div class="">
+                <btn title="Back to menu">
+                    <glyph align-left/> </btn>
+                <glyph align-left/>
+            </div>
+            <div center-content bold  upcase stretch >
+                <center-content   >
+                    <span red>
+                        shopping bag
+                    </span>
+                </center-content>
+            </div>
+            <div class="">
+                <glyph icon="shopping-cart"></glyph>
+
+            </div>
+        </div>
+        <div lrpad20 w100>
+        <div bg-lightgray   h1    />
+        <div style="background-color:#F5F5F5"   h1    />
+        </div>
+
+        <div w100 bg-llgray pad20
+             style="max-height:442px;"
+             scroll>
+            <!-- sdfdsf-->
+            <quickcrud2 config="configCrud">
+                <list_dark>
+                    <ul id="listHolder"
+                        class="quick-crud-list" >
+
+                        <li ng-repeat="item in vmC.items"  >
+                            <div relative pad10
+                                 mw250 mh50
+                                 bg-black white >
+                                <div ng-click="goTo(item)"
+                                     xclass="sideNavTextRow2">
+                                    {{item.name}}
+                                    {{item.first_name}}
+                                    {{item.last_name}}
+                                </div>
+                                <div
+                                        style="font-size:14px;"
+                                        right10 top10
+                                        tr ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
+                                <div ng-if="item.selected==true">selected</div>
+
+                                <div w100
+                                     bottom
+                                     bg-white
+                                     left0
+                                     style="height:2px;"
+                                     h2
+                                     ng-if="item.selected==true"></div>
+                            </div>
+                        </li>
+
+
+                    </ul>
+                </list_dark>
+            </quickcrud2>
+
+            <!-- <hr2 bg-lightgray />-->
+
+
+        </div>
+
+
+        <!--<span class="glyphicon glyphicon-plus"></span>-->
+
+    </div>
+
+    <div abs xpad10 gray-border
+         hide
+         style="width:315px; height:519px;
+         color:#0D0D0D;
+         top:515px; left:1020px;"
+         bg-white  >
+       <!-- ok????-->
+        <div class="horizontal-flex-container" pad10 >
+            <div class="horizontal-flex-container-flex-item">
+                icon
+            </div>
+            <div center upcase
+                 class="horizontal-flex-container-flex-item-stretch">
+                details
+            </div>
+            <div class="horizontal-flex-container-flex-item">
+                cart
+            </div>
+        </div>
+       <!-- <glyph plus/>-->
+        <div horizontal-layout >
+            <div class="">
+                <btn title="Back to menu">
+                <glyph align-left/> </btn>
+                <glyph align-left/>
+            </div>
+            <div center-content bold  upcase stretch >
+                <center-content   >
+                    <span red>
+                        details
+                    </span>
+                </center-content>
+            </div>
+            <div class="">
+                <glyph icon="shopping-cart"></glyph>
+
+            </div>
+        </div>
+
+        <div w100 bg-llgray pad20
+             style="max-height:442px;"
+             scroll>
+           <!-- sdfdsf-->
+            <div id="currentProduct_pic"
+                 style="max-height:130px;"
+                 is-square
+                 bg-black
+                 mar20
+                mw100
+                 white
+            >
+
+                sdfsdfsdf
+
+            </div>
+
+            <div id="tagList" horizontal-list white >
+            <span style="font-size:8px;" upcase class="tagListItem">
+                handmade
+            </span>
+            </div>
+
+            <spacer/>
+
+            <div id="cP_title" upcase loose
+
+                 style="font-size:24px;
+                 line-height:93%">Marble candle holder</div>
+
+            <div id="cP_price" upcase loose lightgray
+                 style="font-size:15px;">$60.00</div>
+
+            <spacer/>
+
+           <!-- <hr2 bg-lightgray />-->
+            <div bg-lightgray w100 h2 />
+
+            <spacer/>
+
+            <div id="cP_content"
+                 ng-bind-html="gen.productDescription"
+                 style="font-size:10px;">
+
+
+            </div>
+
+
+
+        </div>
+
+
+        <!--<span class="glyphicon glyphicon-plus"></span>-->
+
+    </div>
+
+
+
+</div>

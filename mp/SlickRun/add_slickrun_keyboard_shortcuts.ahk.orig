@@ -5,17 +5,25 @@
      Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
     ; Run "chromeddd"
     Return
-!2::
+!q::
     WinActivate SR - Google Chrome
      Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
     ; Run "chromeddd"
     Return
->!q::
+<!q::
     WinActivate SR - Google Chrome
      Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
-    Run "bobob"
+
+    Return
+>!q::
+    WinActivate SR - Google Chrome
+    Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    ; this is alt q Run "ddddd"
     Return
 #q::
     WinActivate SR - Google Chrome
      Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    Return
+!r::
+    Run "http://127.0.0.1:10100/tinymce.html#/player"
     Return

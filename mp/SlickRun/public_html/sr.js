@@ -261,16 +261,33 @@ function SR() {
         p.history = {};
         p.history.initHistory = function initHistory() {
             self.data.history = [];
-            self.data.currentIndex = 0;
+            self.data.currentIndex = -1;
         }
         p.history.addHistory = function addHistory(val) {
             //var val = self.data.ui.val('')
             self.data.history.unshift(val);
 
             $('#divHistory').html(self.data.history.join('<br />'))
+            $('#divHistory').html('')
+            $.each(self.data.history, function addHistory(k,v) {
+                var tag = uiUtils.tag('span')
+                //debugger
+                tag.click(function onDoHistory(sdf) {
+                    console.log('go history', v)
+                    window.sr.onAction(v);
+                })
+                uiUtils.makeBtn(tag, 'Replay '+v)
+                tag.text(v)
+                $('#divHistory').append(tag);
+                var br = uiUtils.tag('br');
+                $('#divHistory').append(br);
+            })
         }
         p.history.showHistory = function showHistory() {
             console.log('history', self.data.history);
+        }
+        p.history.reset = function reset() {
+            self.data.currentIndex = -1;
         }
         p.showHistory = p.history.showHistory;
     }

@@ -236,11 +236,11 @@
 <script type="application/javascript" src="js/ui_utils.js"></script>
 
 
-<script type="application/javascript" src="ParseCSV.js"></script>
+<xscript type="application/javascript" src="ParseCSV.js"></xscript>
 <script type="application/javascript" src="sr.js"></script>
-<script type="application/javascript" src="QuickSpeaker.js"></script>
+<xscript type="application/javascript" src="QuickSpeaker.js"></xscript>
 
-<script src="http://localhost:10110/g/js/reloader.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>
 <script>
     if ( window.reloader) {
         reloader.reloadWhen('sr.html')
@@ -260,7 +260,8 @@
 <script>
     $(window).focus(function(e) {
 // Do Focus Actions Here
-        console.log('font')
+        console.log('focus')
+        window.sr.history.reset();
         window.sr.utils.asdf();
     });
 

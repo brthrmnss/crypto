@@ -16,6 +16,9 @@
     var self = this;
     var p = this;
 
+    self.data = {}
+    self.data.squares = []
+
     p.getAttributes = function (el) {
       var nodes=[], values=[];
       var attrs = {};
@@ -49,7 +52,7 @@
       $.each(dictAttrs, function checkAttrForInvalidName(name, attr) {
         if ( name.toLowerCase() != name ) {
           console.error('Invalid .... bad name', name, attr, 'angular will dash case names',
-          'contentArea must be content-area')
+              'contentArea must be content-area')
           throw new Error('invalid name '+ name)
         }
       })
@@ -62,8 +65,12 @@
         }
       }
 
-      function transformElement( el, def, type) {
+      var qUS = {};
+
+
+      qUS.transformElement = function transformElement( el, def, type, attrs) {
         var q = $(el);
+        var qOrig = $(el);
         //do before changed by changeTo
         ifx(def, 'addHTML', function(addHTML){
           q.append($(addHTML))}
@@ -95,30 +102,57 @@
         };
         if ( def.replaceWith != null  ) {
           console.log(q, q.html())
+          var qCLone = q.clone();
           // debugger
-          q.replaceWith( def.replaceWith ); //TODO: Keep attributes?
+          var yClone = q.replaceWith( def.replaceWith ); //TODO: Keep attributes?
+
+
+          var attributes = qCLone.prop("attributes");
+//          console.error('as', attributes, q, 't', yClone)
+          //no attrtibutes here
+          $.each(attributes, function copyPro() {
+            q.attr(this.name, this.value);
+            yClone.attr(this.name, this.value);
+
+          });
+
         };
 
+         //console.error('dbg.iput--', el, def, type, attrs)
+
+        ifx(def, 'fxModifyElementRaw', function on_fxModifyElementRaw(fxModifyElementRaw){
+          // debugger
+          fxModifyElementRaw(q, attrs)
+        } );
         //console.debug( 'tpes',type, def, def.wrapContentFx)
         ifx(def, 'wrapContentFx', function wrapContent(wrapContentFx){
-          var content = wrapContentFx()
-          content = $(content);
+
           var children = q.children()
+
+          var html = q.html();
+          // console.error('sdfsdf', q.html(), qOrig.text())
+          //  q.empty();
+          var content = wrapContentFx(children)
+          content = $(content);
+          // console.error('whil', children, 'text', children.html(), q.html())
           // debugger;
-         // q.children().remove()
+          // q.children().remove()
+          q.html('')
           q.append(content)
-          content.append(children);
-         // q.text('sdfsdsdfsdfsd')
+
+          content.html(html)
+          //content.append('zzz');
+          // q.text('sdfsdsdfsdfsd')
         } );
 
 
         return q;
 
-    }
+      }
 
       //debugger
       //todo run jquery to find elements to apply transforms
-      $.each(children, function (i,inputElement) {
+      $.each(children, function onProcessEachElement(i,inputElement) {
         //console.log(i);
         var q = $(inputElement);
         var element = null;
@@ -130,7 +164,7 @@
 
         var typeDef = dictTypes[type];
         if ( typeDef != null ) {
-          el = element = transformElement(el, typeDef, type);
+          el = element = qUS.transformElement(el, typeDef, type, attrs);
         }
 
         var ifxEq = function ifXHasPropCallFxWithVal(x, prop, val) {
@@ -140,7 +174,7 @@
           return false;
         }
 
-       /// debugger
+        /// debugger
         $.each(attrs, function (attrName, val) {
           attrName = attrName.toLowerCase();
           //search for matching attr change definition in dictionary
@@ -153,10 +187,10 @@
               attrName = attrName.replace('!', '')
               q.css(attrName, val)
             }
-           // console.error('attrs', attrName, val)
+            // console.error('attrs', attrName, val)
             if ( attrName == 'faketext' ) {
               if ( val ==  "abc123") {
-               // sdf.g
+                // sdf.g
                 q.text('a b c d e f g h i j k l m n '+
                     'o p q r s t u v w x y z '+'123456789')
               }
@@ -186,6 +220,9 @@
               //$(v).addClass('show-child-containers')
             });
           }
+          if ( attrDef.modifyElementFx ) { //use method to modify children
+            attrDef.modifyElementFx(q, attrs)
+          }
 
           if ( attrDef.wrapContentFx ) { //use method to modify children
             var content = attrDef.wrapContentFx()
@@ -214,7 +251,7 @@
            };*/
           if ( skipAttr == true )
             return;
-          transformElement(el, attrDef);
+          qUS.transformElement(el, attrDef);
 
         })
 
@@ -252,8 +289,8 @@
                 cloneQ.css(att,eval(v));
               }
             })
-           // cloneQ.css("top",((i*45)-200)+'px');
-           // cloneQ.css("left",(-100)+'%');
+            // cloneQ.css("top",((i*45)-200)+'px');
+            // cloneQ.css("left",(-100)+'%');
             //cloneQ.attr("topx",(i*60)+'px');
             //cloneQ.text((i*60)+'px')
             parent.append(cloneQ)
@@ -284,16 +321,90 @@
       dictTypes['navbtn'] = {changeTo: 'div', addHTML: '<checkbox>', addClass: 'navBtn'};
       dictTypes['mini-panel'] = {addClass: 'mini-panel', changeTo: 'div'};
 
+
+      dictTypes['btn'] = {
+        addClass: "btnFake2",
+        changeTo: 'div'
+      };
+      
       dictTypes['center-content'] = {
-        wrapContentFx: function warpContent(child, index, attrs, css) {
-          return '<div class="center_content_item"><!-- auto center --></div>'
+        wrapContentFx: function warpContent(contents, index, attrs, css) {
+          //  debugger
+          return '<div class="center-content-layout-item"><!-- auto center -->'
+          //  +'ddd'+
+          '</div>'
         },
-        addClass: "center_content",
+        addClass: "center-content-container",
         changeTo: 'div'
       };
 
+      //debugger
+      dictTypes['glyph'] = {
+        fxModifyElementRaw: function on__fxModifyElementRaw(q, attrs) {
+          //debugger
+
+          //  if ( attrs.icon )
+
+          var sh = {};
+          sh.length = function length(myObj) {
+            var size = Object.keys(myObj).length;
+            return size;
+          }
+          sh.getAttr = function getAttr(obj, index, keyVal) {
+            var length = 0
+            var val = null;
+            $.each(obj, function onK(k,v) {
+
+              if ( length == index) {
+                val = v;
+                if ( keyVal ) {
+                  val = k;
+                }
+                return false;
+              }
+              length++;
+            })
+            return val;
+          }
+          var attrs2 = JSON.parse(JSON.stringify(attrs));
+          if ( attrs2.$names ) { delete attrs2.$names }
+
+          var l = sh.length(attrs2)
+
+          var attrIcon = sh.getAttr(attrs2, 0, true)
+
+          var icon = null;
+          if ( attrs.icon ) {
+            icon = attrs.icon;
+            delete attrs['icon']
+          }
+          if ( l == 1 ) {
+            icon = attrIcon;
+          }
+          //debugger
+          if ( q[0].attributes.icon ) {
+            var icon2 = q[0].attributes.icon.value
+            icon = icon2;
+          }
+         // console.error('icon?', attrs.icon, icon2, attrs,l, attrIcon)
+         // console.error('\t', 'icon?', q, q.html(),  '|', icon)
+
+          if ( icon ) {
+            q.addClass('glyphicon-' + icon)
+          }
+
+
+
+        },
+        addClass: "glyphicon",
+        changeTo: 'span'
+      };
+
+
+
       dictAttrs['prettybtn'] = {addClass: 'mbButton marty'};
       dictTypes['spacer'] = {replaceWith: '<div style="width:10px;height:10px;"></div>'};
+      dictTypes['hr2'] = {replaceWith: '<div style="width:100%;height:2px;"></div>'};
       dictAttrs['makeredbtn'] = {ifVal: true, addClass: 'redbtn', addHTML: '<span>red btns</span>'};
       dictAttrs['horizontal-layout'] = {
         ifVal: true, addClass: 'horizontal-flex-container',
@@ -307,6 +418,20 @@
         _addHTML: '<span>red btn</span>', alert: true
       }
       ;
+
+
+      dictAttrs['is-square'] = {
+       ifVal: true,
+        //addClass: 'horizontal-flex-container',
+       // addClassToChildren: 'horizontal-flex-container-flex-item pad10',
+        //debugChildren:true,
+        modifyElementFx: function (child, index, attrs, css) {
+          self.data.squares.push(child); // = [child]
+          //debugger
+        },
+      }
+
+
       dictAttrs['add-class-to-children'] = {
         modifyChildrenFx: function (child, index, attrs, css, parentAttrs) {
           var addToClassChildren = parentAttrs['add-class-to-children']
@@ -319,7 +444,16 @@
       dictAttrs['upcase'] = {
         addCSS: {'text-transform': 'uppercase'}
       }
-
+      dictAttrs['tight'] = {
+        addCSS: {'letter-spacing': '-1px'}
+      }
+      dictAttrs['loose'] = {
+        addCSS: {'letter-spacing': '1px'}
+      }
+      dictAttrs['bold'] = {
+        addCSS: {'font-weight': 'bold'}
+      }
+ 
       dictAttrs['absolute'] = {
         addCSS: {'position': 'absolute', top: '0px', left: '0px'}
       }
@@ -350,10 +484,15 @@
         addCSS: {'background-color': '#09FFFF'}
       }
 
-     /* dictAttrs['bg-blue'] = {
-        addCSS: {'background-color': '#2F416C'}
+      dictAttrs['bg-llgray'] = {
+        addCSS: {'background-color': '#FFFAE3'}
       }
-*/
+
+
+      /* dictAttrs['bg-blue'] = {
+       addCSS: {'background-color': '#2F416C'}
+       }
+       */
       dictAttrs['bg-red'] = {
         addCSS: {'background-color': 'red'}
       }
@@ -362,6 +501,16 @@
       }
       dictAttrs['bg-orange'] = {
         addCSS: {'background-color': 'orange'}
+      }
+
+      dictAttrs['gray-border'] = {
+        addCSS: {'border': 'solid 1px #EFEFEF'}
+      }
+      dictAttrs['bg-lightgray'] = {
+        addCSS: {'background-color': '#D6D6D6'}
+      }
+      dictAttrs['lightgray'] = {
+        addCSS: {'color': '#D6D6D6'}
       }
       dictAttrs['bg-black'] = {
         addCSS: {'background-color': 'black'}
@@ -376,8 +525,16 @@
           'height': '50%'
         }
       }
-
+      dictAttrs['mar10'] = {
+        addCSS: {'margin': '10px'}
+      }
+      dictAttrs['mar20'] = {
+        addCSS: {'margin': '20px'}
+      }
       dictAttrs['pad10'] = {
+        addCSS: {'padding': '10px'}
+      }
+      dictAttrs['pad20'] = {
         addCSS: {'padding': '10px'}
       }
       dictAttrs['pad5'] = {
@@ -389,7 +546,11 @@
           'color': 'white',
         }
       }
-
+      dictAttrs['mw100'] = {
+        addCSS: {
+          'max-width': '100%',
+        }
+      }
       dictAttrs['w100'] = {
         addCSS: {
           'width': '100%',
@@ -408,6 +569,25 @@
         }
       }
 
+      dictAttrs['h1'] = {
+        addCSS: {
+          'height': '1px',
+        }
+      }
+      dictAttrs['lrpad20'] = {
+        addCSS: {
+          'padding-left': '20px',
+          'padding-right': '20px',
+        }
+      }
+
+      dictAttrs['lrmar20'] = {
+        addCSS: {
+          'margin-left': '20px',
+          'margin-right': '20px',
+        }
+      }
+
       dictAttrs['wh100'] = {
         addCSS: {
           'width': '100%',
@@ -420,6 +600,13 @@
           'overflow': 'hidden',
         }
       }
+
+      dictAttrs['scroll'] = {
+        addCSS: {
+          'overflow': 'auto',
+        }
+      }
+      
       dictAttrs['w50'] = {
         addCSS: {
           'width': '50%',
@@ -490,6 +677,19 @@
       }
 
       self.process(elStart, dictTypes, dictAttrs);
+
+
+      p.postStuff = function postStuff()  {
+        $.each(self.data.squares, function asdf(k,v) {
+          var ui = $(v)
+          var widthOfChild = ui.width();
+          ui.css({'height':widthOfChild+'px'});
+         // debugger
+        })
+      }
+
+      setTimeout(p.postStuff, 100)
+
     }
   }
 
@@ -541,19 +741,19 @@
 
   }
 
-/*
-  function QuickUIService() {
-    var self = this;
-    var p = this;
+  /*
+   function QuickUIService() {
+   var self = this;
+   var p = this;
 
-    p.init = function init() {
+   p.init = function init() {
 
-    };
+   };
 
-    p.new = function create() {
-      return new QuickUIService();
-    }
-  }*/
+   p.new = function create() {
+   return new QuickUIService();
+   }
+   }*/
 
   //alert('reloaded then')
   //window.QuickUIService != QuickUIService;

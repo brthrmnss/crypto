@@ -1,8 +1,8 @@
 //'use strict';
 (function () {
 
-    var reload_name = 'calmTechDemo'
-    var urlPath = 'g/calmtech/js/';
+    var reload_name = 'calmMobileAppDemo'
+    var urlPath = 'g/cleanmobileapp/js/';
 
     var quickReloadableDir2 = function quickReloadableDir2_($templateRequest,
                                                             $compile, $interpolate,
@@ -135,7 +135,8 @@
                                        quickCrudHelper,
                                        quickListHelper,
                                        angFunc,
-                                       xUI
+                                       xUI,
+                                       dataGen
     ) {
         //alert('...dddh')
         //var pubSub = pubSub.create();
@@ -173,7 +174,12 @@
             config = sh.dv(config, {});
 
             var xUIHelper = xUI.create();
+            //#E9E9E9
 
+            var gen = dataGen.create()
+            $scope.gen = gen; 
+
+           // debugger;
             function fxy( templateContent ) {
                 var utils = {}
                 utils.templateContent = templateContent
@@ -447,10 +453,10 @@
                 cfgCrudEditorForm.fxRender = function fxRender(tH2, config) {
 
                 }
-
+                cfgCrud.useTemplate = 'dark' //force
                 cfgCrud.quickListConfig = {};
                 cfgCrud.quickListConfig.fxRender = function fxRender(tH2, config) {
-                    //debugger
+                   //  debugger
                     console.error('fxRender', tH2, config, cfgCrudEditorForm)
                     if ( cfgCrud.useTemplate ) {
                         console.error('fxRender', 'useTemplate',  cfgCrud.useTemplate )
@@ -508,6 +514,7 @@
                 quickFormHelper.addCheckbox('showFilter', 'Show Filter')
                 quickFormHelper.addRadioGroup('useTemplate', ['Use Template', 'dark'], 'What this?')
                 quickFormHelper.defaultValue('dark')
+                //debugger;
                 quickFormHelper.addTextInput('title', 'List Title')
                 quickFormHelper.addLabel('Test Label')
 
@@ -587,7 +594,7 @@
                 quickCrudHelper.loadConfig(cfg)
                 var h = quickCrudHelper;
                 h.showTitle('List Boost-->');
-
+                h.config.showTitleRow = false;
                 //asdf.g
 
                 x.items = x.items.slice(0, 10)

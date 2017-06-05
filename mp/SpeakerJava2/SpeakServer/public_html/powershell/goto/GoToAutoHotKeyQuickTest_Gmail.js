@@ -26,7 +26,7 @@ if (module.parent == null) {
     function asdf1() {
         var cmd = ''
         cmd = ['node', sh.fs.join(__dirname, 'GoToAutoHotKeyQuick.js'), 'morrisonstephen@gmail.com', 
-            'https://mail.google.com/mail/u/0/#inbox/', 'regex', 'norun']
+            'https://mail.google.com/mail/u/0/#inbox/', 'regex', 'bnorun']
         cmd = cmd.join(' ')
        var output =  sh.run(cmd)
         console.log('output', output.toString())

@@ -1,8 +1,8 @@
 //'use strict';
 (function () {
 
-    var reload_name = 'calmTechDemo'
-    var urlPath = 'g/calmtech/js/';
+    var reload_name = 'pid3Demo'
+    var urlPath = 'g/pid3/js/';
 
     var quickReloadableDir2 = function quickReloadableDir2_($templateRequest,
                                                             $compile, $interpolate,
@@ -13,6 +13,7 @@
                                                             appService,
                                                             quickFormHelper,
                                                             quickCrudHelper,
+                                                            /*angFunc,*/
                                                             xUI) {
 
         reloadableHelper.saveDirectiveCtx(reload_name, arguments)
@@ -133,10 +134,7 @@
                                        appService,
                                        quickFormHelper,
                                        quickCrudHelper,
-                                       quickListHelper,
-                                       angFunc,
-                                       xUI
-    ) {
+                                       quickListHelper) {
         //alert('...dddh')
         //var pubSub = pubSub.create();
 
@@ -171,229 +169,6 @@
             var scope = $scope;
             var config = $scope.vm.config;
             config = sh.dv(config, {});
-
-            var xUIHelper = xUI.create();
-
-            function fxy( templateContent ) {
-                var utils = {}
-                utils.templateContent = templateContent
-                //var utilsParentDict = utils.dictTemplates;
-                /*var utils = transcludeHelper.new();
-                utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
-                utils.$compile = $compile;
-                utils.loadTemplate(html, element, attrs);
-                scope.render(utils);*/
-
-
-                //window.x6 = 0
-                if ( window.x6 == null ) {window.x6 = 0}
-                window.x6++
-                var x = xUIHelper;
-
-                angFunc  = angFunc.getAngFuncRef();
-                if ( window.angInstancesStop ) {
-                    window.angInstancesStop()
-                }
-                //debugger;
-
-                x.startOn('#divOutput2',utils.templateContent)
-                x.size('100%')//, '200px')
-                x.background('gray');
-                x.padding('10px')
-                x.makeInnerDiv('#innerDiv', 'hello world');
-                //x.margin('10px')
-                x.size('100%', '100%');
-                x.background('red');
-
-                x.makeInnerDiv('#output1Val', 'output here')
-                x.setElement();
-                x.makeInnerDiv('#chainOutput', 'chain here')
-                x.a('layout', 'row');
-                x.setElement();
-                x.makeAbsContainer();
-
-                x.makeInnerDiv('#paper', 'chain here')
-
-                function createAngFx2X() {
-                    angFunc.createDS(angFunc.sin(0.1)).decimals(2).abs().logx('sin wave')
-                        .bindToUI('#output1Val', 'html', element, false)
-                        .threshold(0.3, 'gt', false, function toggleLight() {
-                            scope.lb1.toggle();
-
-                        })
-                        .makeCache('lastVals', {
-                            count: 5,
-                            fxOverflow: function removedItem(el) {
-                                var root = element.find('#chainOutput');
-                                $(el).remove();
-                                //  debugger
-                                //  root.remove($(el));
-
-                            },
-                            fxAdd: function addItem(item, h) {
-                                var root = element.find('#chainOutput');
-                                var el = $('<div />')
-                                el.html(item)
-                                root.append(el);
-
-
-                                var x = xUI.create();
-                                x.startOn(el)
-                                x.background('#f7f7f7');
-                                x.padding('10px')
-                                x.margin('10px', null, null, null)
-                                x.size.min('60px');
-                                //h.dataCache.add(el)
-
-                                return el;
-                            }
-                        })
-                        //.fx(function addToCache(val){
-
-                        //})
-                        .addToCache('lastVals')
-
-                }
-
-                function lb() {
-                    var self = this;
-                    var p = this;
-
-                    p.init = function () {
-                        var x = xUI.create();
-                        x.startOn('#divOutput2',utils.templateContent);
-                        x.makeAbsContainer();
-                        x.addImage('scripts/quick_module/bulb_PNG1251.png');
-                        x.makeAbs();
-                        x.size(null,'40px');
-                        x.positionAbs(null, 0, 0,null);
-                        self.x = x;
-                        self.element = x.element;
-                        self.lightOn= true;
-                    }
-                    p.off = function off() {
-                        if ( self.lightOn == false ) {
-                            return
-                        }
-                        self.lightOn = false;
-                        self.x.css('opacity', '0.2')
-                    }
-                    p.on = function on() {
-                        if ( self.lightOn == true ) {
-                            return
-                        }
-                        self.lightOn = true;
-
-                        self.x.css('opacity', '1')
-                    }
-                    p.toggle = function toggle() {
-                        // self.lightOn = ! self.lightOn
-                        if ( self.lightOn == false ) {
-                            self.on();
-                        } else {
-                            self.off();
-                        }
-                    }
-                }
-
-                var lb1 = new lb();
-                lb1.init();
-                scope.lb1 = lb1;
-
-                function testBaconJS() {
-
-                    var up   = $('#up').asEventStream('click');
-                    var down = $('#down').asEventStream('click');
-
-                    var counter =
-                        // map up to 1, down to -1
-                        up.map(1).merge(down.map(-1))
-                        // accumulate sum
-                            .scan(0, function(x,y) { return x + y });
-
-// assign observable value to jQuery pr
-                    var up   = $('#up').asEventStream('click');
-                    var down = $('#down').asEventStream('click');
-
-                    var counter =
-                        // map up to 1, down to -1
-                        up.map(1).merge(down.map(-1))
-                        // accumulate sum
-                            .scan(0, function(x,y) { return x + y });
-
-// assign observable value to jQuery property text
-                    counter.assign($('#counter'), 'text');
-
-                }
-                testBaconJS();
-
-                function testAngFunc() {
-                    angFunc.createDS(angFunc.sin(0.1))//.decimals(2)
-                        .abs().logx('sin wave')
-                        .fx(function(val){
-                           // console.log('x...',  window.x6, val, scope.destroyed)
-                            scope.lb1.x.x(val*100,'%')
-                            $('#divFadeContainerFr').css('opacity', val );//*100+'%')
-                        })
-                    //.endAt(1)
-                    //.oneRun(1);
-                }
-                testAngFunc();
-
-                var x = xUI.create();
-                x.startOn('#divOutput2',utils.templateContent)
-                x.size('100%', '150px')//,'40px');
-
-
-                x.makeInnerDiv('#containerPanel' );
-                x.css({'border-radius': '4px',
-                    'margin-bottom': '16px',
-                    'position': 'relative' })
-                x.class('md-whiteframe-z1')
-                x.storeTop();
-                //x.setElement();
-
-                x.add('md-toolbar')
-                    .div()
-                    .class('md-toolbar-tools')
-                    .content('Title');
-
-                x.goToTop();
-                x.add('md-content')
-                    .attr('flex', null)
-                    // .class('md-toolbar-tools')
-                    .content('Title');
-
-                function Panel() {
-                    var self = this;
-                }
-                Panel.p = Panel.prototype;
-                Panel.p.init = function initPanel(name, content, divId) {
-                    var x = xUI.create();
-                    x.startOn('#divOutput2',utils.templateContent)
-                    x.size('100%')//, '150px')//,'40px');
-                    x.makeInnerDiv('#containerPanel' );
-                    x.css({'border-radius': '4px',
-                        'margin-bottom': '16px',
-                        'position': 'relative' })
-                    x.class('md-whiteframe-z1')
-                    x.storeTop();
-                    //x.setElement();
-
-                    x.add('md-toolbar')
-                        .div()
-                        .class('md-toolbar-tools')
-                        .content(name);
-
-                    x.goToTop();
-                    x.add('md-content')
-                        .attr('flex', null)
-                        .attr('id', divId)
-                        // .class('md-toolbar-tools')
-                        .content(content);
-                }
-
-            }
 
 
             scope.generateListConfig = function generateListConfig() {
@@ -653,7 +428,7 @@
                 //debugger
             }
             scope.addUIEm();
-            fxy(utils.contentOutput)
+
             html = utils.getFinalOutput();
 
             //throw(u)

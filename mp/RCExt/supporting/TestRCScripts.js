@@ -59,6 +59,11 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
 
         var fileStore = sh.fs.makePath(dirTrash, sh.stripBadFiles(dir)+ '.filelist.txt')
 
+        if ( false == sh.fs.exists(dir) ) {
+            console.log('does not exist', dir)
+            fx()
+            return;
+        }
         files.push(fileStore)
         process.chdir(dir)
 

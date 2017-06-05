@@ -25,6 +25,23 @@
   align-self: auto;
 }
 
+
+.center-content-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-content: stretch;
+  align-items: center;
+}
+
+.center-content-layout-item:nth-child(1) {
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+}
+
+
 .show-child-containers:nth-child(1) {
   background-color: #0088cc;
 }
@@ -46,4 +63,16 @@
 
 .pad10 {
   padding: 10px;
+}
+
+.btnFake2 {
+  cursor: pointer;
+}
+
+.tagListItem {
+  background-color: #BECAD0;
+  padding: 5px;
+  padding-left:10px;
+  padding-right:10px;
+  border-radius: 25px;
 }

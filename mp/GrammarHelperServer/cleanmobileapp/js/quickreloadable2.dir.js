@@ -28,47 +28,36 @@
    * @returns {{scope: {title: string, fxItemSelected: string}, controller: string, controllerAs: string, bindToController: boolean, compile: Function}}
    * @private
    */
-  var quickReloadableDir3 = function quickReloadableDir3_($templateRequest,
+  var quickReloadableDir2 = function quickReloadableDir2_($templateRequest,
                                                           $compile, $interpolate,
                                                           transcludeHelper,
                                                           $templateCache,
                                                           reloadableHelperTestService,
-                                                          xUI,
                                                           quickUI,
                                                           appService,
-                                                          quickJSON
-                                                          /*angFunc,*/
 
+                                                          /*angFunc,*/
+                                                          xUI
   ) {
 
-    var args = arguments;
-    //console.error('creating',quickReloadableDir2.name, args);
-    //debugger;
     reloadableHelper.saveDirectiveCtx(reload_name, arguments)
     //window.ddoFxArgs = Array.prototype.slice.call(arguments);
     // debugger; //only invoked 1x
     var utilsParent = transcludeHelper.new(this);
     function link(scope, element, attrs, ctrl, transclude){
-      console.warn('lc', 'l.in.k.1');
-      //debugger;
       var url = '';
-      url = 'g/red/js/quickreloadable2.dir.js'
-      //http://localhost:10110/g/red/js/quickreloadable2.dir.js
-      url = 'scripts/quick_module/quick/quickreloadable.dir.html';
-      url = '***/js/quickreloadable2.dir.html'
+      url = 'g/pid2/js/quickreloadable2.dir.html'
+   //   debugger
+      //alert(document.currentScript)
       $templateRequest(url ).then(
           function(html){
             //reloadableHelperTestService = reloadableHelperTestService.create();
             /*angFunc = angFunc.create();*/
             var xUIHelper = xUI.create();
 
-            var qUI = quickUI.create();
-
-            //var q = quickJSON;
-
             element.on('remove', function(){
               //debugger;
-              // alert('destroyed');
+              //alert('destroyed');
               scope.destroyStreams = true;
               scope.destroyed = true;
               scope.$destroy();
@@ -148,163 +137,15 @@
             lb1.init();
             scope.lb1 = lb1;
 
-
-            function setupCrud3() {
-
-              var qCListPrompts = {} ;
-              qCListPrompts.formWidth = '40%'
-              scope.quickCrud3 = qCListPrompts;
-              qCListPrompts.name = '';
-              qCListPrompts.refresh = false
-              qCListPrompts.help = 'List all of the prompts you have defined'
-
-              qCListPrompts.canCreate = true;
-              qCListPrompts.dataObject =
-              {first_name:'Rachel2'};
-              qCListPrompts.showForm = true;
-
-
-
-              //qCListPrompts.remote = false;
-              var initListData = [
-                {first_name:'Annette', last_name:"Bruce"},
-                {first_name:'Mark', last_name:"Toblin"},
-                {first_name:'John', last_name:"Hook"}
-              ]
-
-              var inMemory = false
-
-              //http://localhost:5002/api/breadcrumbs/4
-              var urlDataServer = 'http://localhost:5002/'
-              var rHC = {}
-              qCListPrompts.restHelperConfig = rHC;
-
-              if ( inMemory ) {
-                var t = $restHelper.createInMemory();
-                t.loadItems(initListData);
-                rHC.dataSrc = t;
-              } else {
-                rHC.url = urlDataServer+'api/breadcrumbs'
-                rHC.flatten = true;
-              }
-
-              //debugger;
-              function createFormObject2() {
-                var formObject2 = {}
-                scope.formObject2 = formObject2
-                /*
-                 formObject2.first_name = {label:'First Name'};
-                 formObject2.start = {
-                 label:'start_date2',
-                 type:'stepper',
-                 min:0,
-                 max:3000
-                 };
-                 formObject2.last_name = {};
-                 */
-                formObject2.name = {label:'Prompt Name'};
-                formObject2.name.required = true;
-
-                formObject2.desc = {label:'Description'};
-                formObject2.prompt_type = {label:'Type',
-                  type:'select',
-                  defaultValue:'checklist',
-                  options: [
-                    'prompt', 'checklist-single', 'checklist'
-                  ]
-                };
-
-                return formObject2;
-              }
-
-
-
-
-              var qC4 = {} ;
-              //debugger;
-              //$scope.quickCrud4 = qC4;
-              //qC4.restHelperConfig = sh.clone(rHC);
-              qC4.name = '';
-              qC4.refresh = false
-              //qC4.title = 'test title';
-              qC4.canCreate = false;
-              qC4.showList = false;
-              qC4.dataObject = {};
-              qC4.noRemote = true;
-              qC4.showNewIndicator = true
-
-
-
-              /* qC4.viewAARouter = appAreaService.
-               createAAReceiver(viewConfig.appArea,
-               viewConfig.Edit, function onLeave(o) {
-               console.log('leaving edit view')
-               } ,
-               function onJoinEdit(e){
-               //TODO: Remove and do this more elegantly
-               if ( $scope.activePreload != null ) {
-               return;
-               }
-               if ( e == null ) {
-               alert('select an item to edit first....')
-               return false;
-               }
-               console.log('leaving edit view')
-               })
-               qC4.formObject = angular.copy(formObject2);
-               */
-              qC4.fxClick = function (o ) {
-                // qC2.dataObject = o;
-              }
-              qC4.fxSave = function(o) {
-                console.log('saved---qc4', o);
-                qCListPrompts.fxSaveCurrentItem(o);
-              }
-
-              var formObject2 = createFormObject2();
-              qCListPrompts.formObject = angular.copy(formObject2);
-              qCListPrompts.fxNew = function onNewPrompt(o ) {
-                qC4.dataObject = o;
-                console.log('fxNew-->---qc4', o)
-                qC4.refresh = Math.random();
-                qC4.name = Math.random();
-                qC4.fxRefresh();
-                //when user presses save, invoke this method
-                //this is passed to qc4
-                qCListPrompts.fxSaveTemp = function ( o ) {
-                  console.log('fxSavetemp', o)
-                  //qCListPrompts.fxRefesh(); //q: why did this not work?
-                  $scope.active = 'List'
-                  $scope.appArea.goTo('List', o);
-                }
-
-                $scope.active = 'Edit'
-                $scope.appArea.goTo('Edit', o);
-
-              }
-              qCListPrompts.fxClick = function (o ) {
-                qC4.dataObject = o;
-                console.log('fxClick-->---qc4', o)
-                qC4.refresh = Math.random();
-                qC4.name = Math.random();
-
-                return;
-                qC4.fxRefresh();
-              }
-            }
-            //setupCrud3();
-
-
-
             function testBaconJS() {
 
               var up   = $('#up').asEventStream('click');
               var down = $('#down').asEventStream('click');
 
               var counter =
-                  // map up to 1, down to -1
+                // map up to 1, down to -1
                   up.map(1).merge(down.map(-1))
-                  // accumulate sum
+                    // accumulate sum
                       .scan(0, function(x,y) { return x + y });
 
 // assign observable value to jQuery pr
@@ -312,9 +153,9 @@
               var down = $('#down').asEventStream('click');
 
               var counter =
-                  // map up to 1, down to -1
+                // map up to 1, down to -1
                   up.map(1).merge(down.map(-1))
-                  // accumulate sum
+                    // accumulate sum
                       .scan(0, function(x,y) { return x + y });
 
 // assign observable value to jQuery property text
@@ -325,10 +166,6 @@
 
             var x = xUI.create();
             x.startOn('#divOutput2',utils.templateContent)
-            //x.makeInnerDiv('txtJSONOutput' );
-            x.add('pre')
-                .attr('id', 'txtJSONOutput')
-            x.makeInnerDiv('txtJSONOutput2' );
             x.size('100%', '150px')//,'40px');
 
             x.makeInnerDiv('#containerPanel' );
@@ -347,7 +184,7 @@
             x.goToTop();
             x.add('md-content')
                 .attr('flex', null)
-                // .class('md-toolbar-tools')
+              // .class('md-toolbar-tools')
                 .content('Title');
 
             function Panel() {
@@ -375,7 +212,7 @@
               x.add('md-content')
                   .attr('flex', null)
                   .attr('id', divId)
-                  // .class('md-toolbar-tools')
+                // .class('md-toolbar-tools')
                   .content(content);
             }
 
@@ -400,180 +237,40 @@
               x.addImage( "images/anime/f_tool.jpg" )
               x.css('max-width', '100%')
 
-              //debugger;
+              var x = xUI.create();
+              x.startOn('#divSlideContent',utils.templateContent)
+              x.makeInnerDiv('#characterHolder')
+              x.addImage( "images/anime/peter_glad.png" );
+              x.attr("id", 'characterAndre')
+              x.css({'max-height': '60%',
+                'top': '0px',
+                'position': 'absolute' })
+              x.margin(60,0)
+              x.shadow();
 
-              function Peter() {
-                var self = this;
-                var p = this;
-                self.settings = {}
-                self.data = {};
-                p.initPeter = function initPeter() {
-
-                  var x = xUI.create();
-                  x.startOn('#divSlideContent', utils.templateContent)
-                  x.makeInnerDiv('#characterHolder')
-                  x.makeAbs()
-                   x.margin(60, 0)
-                  x.shadow();
-                  x.css({
-                    'height': '60%'
-                  })
-
-                  x.addImage("images/anime/peter_glad.png");
-                  x.attr("id", 'characterAndre')
-                  x.css({
-                    'max-height': '100%',
-                    'top': '0px',
-                    'filter': 'none',
-                    'font-smoothing':'antialiased',
-                    'position': 'absolute',
-                    'transform': 'translateZ(0)',
-                    'backface-visibility': 'hidden'
-                  })
-
-                 // x.shadow();
-
-                  x.pop()
-
-                  x.addImage("images/anime/peter_angry.png");
-                  x.attr("id", 'characterAndre2')
-                  x.css({
-                    'max-height': '100%',
-                    'top': '0px',
-                    'filter': 'none',
-                    'font-smoothing':'antialiased',
-                    'position': 'absolute',
-                    'transform': 'translateZ(0)',
-                    'backface-visibility': 'hidden'
-                  })
-                 // x.margin(60, 0)
-                 // x.shadow();
-
-
-                  var pics = ["images/anime/peter_angry.png",
-                    "images/anime/peter_smile.png",
-                    "images/anime/peter_neutral.png",
-                    "images/anime/peter_glad.png"]
-                  self.data.pics = pics;
-
-                  self.settings.id = '#characterAndre'
-                  self.data.uiContainer = $('#characterHolder')
-                  var ui = $(self.settings.id )
-                  self.data.ui = ui;
-
-                  self.rotateImages()
-                  self.shakeChar();
-                  self.charBreath();
+              var pics= ["images/anime/peter_angry.png",
+                "images/anime/peter_smile.png",
+                "images/anime/peter_neutral.png",
+                "images/anime/peter_glad.png"]
+              rotatePics({pics:pics,
+                interval:500,
+                id:'#characterAndre'})
+              function rotatePics(config)
+              {
+                function flipPic() {
+                  var picSrc = config.pics[Math.floor(Math.random()*config.pics.length)];
+                  $(config.id ).attr('src',picSrc);
                 }
 
-                p.rotateImages = function rotateImages() {
-                  rotatePics({pics:self.data.pics,
-                    interval:500,
-                    rotate2:true,
-                    id:'#characterAndre'})
-                  function rotatePics(config)
-                  {
-                    function flipPic() {
-                      var picSrc = config.pics[Math.floor(Math.random()*config.pics.length)];
-                      if ( config.rotate2 ) {
-                        config.last = ! config.last
-                        var picId = config.id
-                        var picId2 = picId + '2'
-                        if ( config.last ) {
-                          picId2 = picId;
-                          picId += 2
-                        }
-                      }
-                      var pic = $(picId)
-                      pic.attr('src',picSrc);
-                      if ( config.rotate2 ) {
-                        var pic2 = $(picId2)
-                        pic2.css('z-index', 1000)
-                        pic.css('z-index', 1001)
-                        //pic2.css('z-index', -1)
-                        //pic.css('z-index', -1)
-                        $(pic).clearQueue();
-                        $(pic).stop(true, true)
-                        //console.error('ok', picSrc, pic, pic.css('opacity'))
-                        uiUtils.fadeIn(pic, 500)
-                      }
-                    }
-
-                    function run() {
-                      flipPic();
-                      if( scope.destroyed ) {
-                        return;
-                      }
-                      setTimeout(run, 1500+Math.random()*1000)
-                    }
-                    run();
+                function run() {
+                  flipPic();
+                  if( scope.destroyed ) {
+                    return;
                   }
+                  setTimeout(run, 1500+Math.random()*1000)
                 }
-
-                p.shakeChar = function shakeChar() {
-                  //return;
-                  function flipPic() {
-                    if ( self.data.posOrig == null ) {
-                      //self.data.uiContainer = self.data.ui;
-                      self.data.posOrig = uiUtils.pos.getPosL(self.data.uiContainer);
-                      //debugger
-                    }
-                    var ok = 7
-
-                    x = -4 + (Math.random()*8)
-                    y = -4 + (Math.random()*8)
-                    var skipIt = false
-                    uiUtils.percentChance(30, function returnHome() {
-                      uiUtils.pos.setPos(self.data.uiContainer, self.data.posOrig, true)
-                      skipIt = true
-                    })
-                    if ( skipIt ) {
-                      return;
-                    }
-                  //  debugger
-                    uiUtils.pos.adjust2(self.data.uiContainer, y, null, null, x, 3000)
-                  }
-
-                  function runFFx() {
-                    flipPic();
-                    if( scope.destroyed ) {
-                      return;
-                    }
-                    var timeShake = (6*1500)+Math.random()*1000
-                    setTimeout(runFFx, timeShake)
-                  }
-                  runFFx();
-                }
-
-                p.charBreath = function charBreath() {
-                  var h = {}
-                  //self.data.uiContainer
-                  function flipPic() {
-                    self.data.uiContainer.transition({ opacity: 0.95 ,duration: h.time3rd});
-                    self.data.uiContainer.transition({ scale: [1.01, 1.00] ,duration: h.time3rd});
-                    setTimeout(function returnback() {
-                      self.data.uiContainer.transition({ scale: [1, 1] ,duration: h.time3rd});
-                      self.data.uiContainer.transition({ opacity: 1 ,duration: h.time3rd});
-                    }, h.time3rd)
-                  }
-
-                  function runFFx() {
-                    flipPic();
-                    if( scope.destroyed ) {
-                      return;
-                    }
-                    h.time =3500+Math.random()*1000
-                    h.timeHalf = h.time/2
-                    h.time3rd = h.time/3
-                    setTimeout(runFFx, h.time)
-                  }
-                  runFFx();
-                }
+                run();
               }
-
-              var pete = new Peter();
-              pete.initPeter();
-              //pete.rotateImages();
 
 
               function TextArea() {
@@ -621,15 +318,8 @@
                     if( scope.destroyed ) {
                       return;
                     }
-                    var ui =  $('#'+self.divId)
-                    /*
-                     if ( scope.origDiv  && scope.origDiv != ui ) {
-                     // debugger
-                     return;
-                     }*/
-                    scope.origDiv = ui;
                     //console.log('newTxt', newTxt, self.divId)
-                    ui.text(newTxt)
+                    $('#'+self.divId).text(newTxt)
                     var extra = 0
                     if ( newTxt.length >= txt_.length ) { extra = 2400 }
                     //console.log('newTxt', newTxt, self.divId)
@@ -663,21 +353,6 @@
 
             }
             renderSlide();
-
-            scope.testJSON = function testJSON() {
-//debugger;
-              console.clear()
-              var qJSON = quickJSON.create();
-              qJSON = qJSON.new();
-              qJSON.slide('intro')
-              qJSON.slide('first act')
-              qJSON.char('Mark')
-              $('#txtJSONOutput').html(sh.toJSONString(qJSON.json()))
-              // $('#txtJSONOutput').html("ddddddd")
-              console.debug('json output', qJSON.json())
-            }
-
-            scope.testJSON();
 
 
             scope.$watch('vm.config',
@@ -749,12 +424,12 @@
     return ddo;
   };
 
-//'Dating SIM version'
+
   console.log('reload', app.reloadableDirective)
   //debugger;
 
   app
-      .reloadableDirective(reload_name, quickReloadableDir3);
+      .reloadableDirective(reload_name, quickReloadableDir2);
 
 
   var QuickReloadablelistController2 = function
@@ -799,8 +474,23 @@
       var scope = $scope;
 
       utils.templateContent = $scope.templateContent.clone()
-      utils.userTemplateContent = $scope.userTemplateContent.clone()
+      utils.userTemplateContent = $scope.userTemplateContent.clone();
 
+      $scope.quickUIProc (utils.templateContent )
+
+      var config = $scope.vm.config;
+      config = sh.dv(config, {});
+
+      if ( scope.vm.config != null ) {
+      }
+
+      html = utils.getFinalTemplate();
+      element.html($compile(html)(scope));
+
+    }
+
+
+    $scope.quickUIProc = function quickUIProc( templateContent ) {
       var dictTypes = {};
       var dictAttrs = {};
 
@@ -810,6 +500,14 @@
       dictTypes['tx']={changeTo:'div', addHTML:'<checkbox>', addClass:'textarea_class'};
       dictTypes['navbtn']={changeTo:'div', addHTML:'<checkbox>', addClass:'navBtn'};
       dictTypes['mini-panel']={ addClass:'mini-panel', changeTo:'div'};
+
+      dictTypes['center-content']={
+        wrapContentFx: function warpContent(child, index, attrs, css ) {
+          return '<div class="center_content_item"><!-- auto center --></div>'
+        },
+        addClass:"center_content",
+        changeTo:'div'};
+
 
       dictAttrs['prettybtn']={addClass:'mbButton marty'};
       dictTypes['spacer']={replaceWith:'<div style="width:10px;height:10px;"></div>'};
@@ -822,7 +520,8 @@
             child.addClass('horizontal-flex-container-flex-item-stretch');
           }
         },
-        _addHTML:'<span>red btn</span>', alert:true};
+        _addHTML:'<span>red btn</span>', alert:true}
+      ;
       dictAttrs['add-class-to-children']={
         modifyChildrenFx: function (child, index, attrs, css , parentAttrs ) {
           var addToClassChildren =  parentAttrs['add-class-to-children']
@@ -839,8 +538,84 @@
       dictAttrs['absolute']={
         addCSS:{'position':'absolute', top:'0px', left:'0px'}
       }
+      dictAttrs['bottom']={
+        addCSS:{'position':'absolute', top:'', bottom:'0px'}
+      }
+      dictAttrs['relative']={
+        addCSS:{'position':'relative'}
+      }
       dictAttrs['aboslute-container']={
         addCSS:{'position':'relative'}
+      }
+      dictAttrs['bg-offwhite']={
+        addCSS:{'background-color':'#EAEAE2'}
+      }
+      dictAttrs['bg-blue']={
+        addCSS:{'background-color':'#09FFFF'}
+      }
+      dictAttrs['bg-red']={
+        addCSS:{'background-color':'red'}
+      }
+      dictAttrs['bg-green']={
+        addCSS:{'background-color':'green'}
+      }
+      dictAttrs['bg-orange']={
+        addCSS:{'background-color':'orange'}
+      }
+      dictAttrs['bg-black']={
+        addCSS:{'background-color':'black'}
+      }
+      dictAttrs['hide']={
+        addCSS:{'display':'none'}
+      }
+
+      dictAttrs['wh5050']={
+        addCSS:{'width':'50%',
+          'height':'50%'}
+      }
+
+      dictAttrs['pad10']={
+        addCSS:{'padding':'10px'  }
+      }
+      dictAttrs['pad5']={
+        addCSS:{'padding':'5px'  }
+      }
+
+      dictAttrs['white']={
+        addCSS:{'color':'white',
+        }
+      }
+
+      dictAttrs['w100']={
+        addCSS:{'width':'100%',
+        }
+      }
+
+      dictAttrs['h100']={
+        addCSS:{'height':'100%',
+        }
+      }
+
+      dictAttrs['wh100']={
+        addCSS:{'width':'100%',
+          'height':'100%'}
+      }
+
+      dictAttrs['clip']={
+        addCSS:{'overflow':'hidden',
+        }
+      }
+      dictAttrs['w50']={
+        addCSS:{'width':'50%',
+        }
+      };
+      dictAttrs['w30']={
+        addCSS:{'width':'30%',
+        }
+      };
+      dictAttrs['h50']={
+        addCSS:{'height':'50%',
+        }
       }
 
       window.dictTypes = dictTypes;
@@ -849,45 +624,12 @@
       quickUI = quickUI.create();
       var q = quickUI;
       //var children = utils.templateContent.find('*');
-      q.process(utils.templateContent, dictTypes, dictAttrs)
-
-      var config = $scope.vm.config;
-
-      config = sh.dv(config, {});
-      $scope.settings = sh.dv(config.settings, {"showSettingsButton":true});
-
-      if ( scope.vm.config != null ) {
-      }
-
-      scope.vm.y = ['yy', 'kddd', 'fff']
-      scope.vm.listData = ['yy', 'kddd', 'fff']
-
-      scope.vm.app = appService;
-      scope.vm.app.tabs = ['aaa', 'bbb', 'ccc', 'ddd'];
-
-
-      var y = appService.gen()
-      //console.error('y', y);
-      /**/
-      var x = new appService.gen();
-      var template = {name:'', date:null, age:0}
-      x.createObjects(template, 10)
-      x.randomizeStr('name')
-      x.randomizeNumber('age', 0,120, 2)
-      x.randomizeDate('date', 365*2)
-      x.show()
-      /**/
-      scope.vm.listData = x.items;
-
-
-      html = utils.getFinalTemplate();
-      element.html($compile(html)(scope));
-
+      q.process(templateContent, dictTypes, dictAttrs)
     }
   }
   app
       .reloadableController(reload_name+'Ctrl',
-          QuickReloadablelistController2);
+      QuickReloadablelistController2);
 
 
 

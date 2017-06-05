@@ -582,7 +582,7 @@ function defineUtils() {
     u.setRadioVal = function setRadioVal(k,v,val) {
         $('input:radio[name="'+k+'"]').filter('[value="'+v+'"]').attr('checked', val);
     }
-    
+
     uiUtils.addHeadingLabel = function addLabel(cfg) {
         cfg.tag = 'h3'
         uiUtils.addLabel(cfg)
@@ -703,12 +703,12 @@ function defineUtils() {
         uiUtils.flagCfg.addTo = uiUtils.flagCfg.lastAddTo;
     }
     uiUtils.addRow = function addRow(id, fx, asSpan) {
-        
+
         var tagName = 'div'
         if ( asSpan === true  ) {
             tagName = 'span'
         }
-        
+
         uiUtils.addDiv(
             {
                 id: id,
@@ -910,6 +910,15 @@ function defineUtils() {
         })
         u.addUI(cfg, ui)
     }
+
+    uiUtils.select = {};
+    uiUtils.select.addOption = function addOption(ui, k,v) {
+        var opt = {};
+        opt[k]=v;
+        uiUtils.updateSelect(ui, opt, false);
+    }
+
+
 
     u.getUI = function getUI (idOrItem) {
         if ( $.isString(idOrItem) &&
@@ -1129,6 +1138,32 @@ function defineUtils() {
         var btn = u.tag('br')
         u.addUI(cfg, btn)
     }
+
+
+    uiUtils.showTemp = function showTemp(cfg) {
+        cfg = dv(cfg, {});
+        u.cfg.fixId(cfg);
+        div = u.cfg.getDiv(cfg.id);
+
+        div.show()
+        u.ifProp(cfg.text, function onSetText(textVal){
+            div.text(textVal)
+        })
+
+        setTimeout(function onHide(){
+            div.hide();
+        },2000)
+    }
+
+
+    p.ifProp = function ifProp(val, fx) {
+        if ( val != null ) {
+            fx(val)
+        }
+    }
+
+
+
 
     uiUtils.addWhitespace = function addWhitespace(cfg, fxD) {
         cfg = dv(cfg, {})
@@ -1439,8 +1474,8 @@ function defineUtils() {
             }
             return ui.val(val)
         }
- 
-        
+
+
 
         p.clearText = function clearText(delay, jq) {
             throwIfNull(jq, 'need a jquery for delay');
@@ -1673,6 +1708,29 @@ function defineUtils() {
             ui.css(position)
         }
 
+        uiUtils.pos.getPos = uiUtils.getPos = function getPos(ui) {
+            if ( ui == null ) {
+                throw 'is null'
+            }
+            var position = $(ui).offset();
+            return position;
+        }
+
+        uiUtils.pos.getPosL = function getPos(ui) {
+            if ( ui == null ) {
+                throw 'is null'
+            }
+            var position = $(ui).position();
+            return position;
+        }
+
+        uiUtils.pos.setPos = uiUtils.setPos = function getPos(ui, pos, animate) {
+            if (animate) {
+                $(ui).animate(pos, 1000);
+            } else {
+                $(ui).offset(pos);
+            }
+        }
 
         uiUtils.pos.adjust = function adjust(ui, t, r, b, l) {
             var lefti = ui.css('left');
@@ -1726,6 +1784,67 @@ function defineUtils() {
                     ui.css('bottom', '')
                 }
             }
+        }
+        uiUtils.pos.adjust2 = function adjust2(ui, t, r, b, l, animate) {
+
+            function px(pxVal) {
+                pxVal = pxVal.replace('px');
+                pxVal = parseInt(pxVal);
+                return pxVal;
+            }
+
+
+            var lefti = ui.css('left');
+            lefti = px(lefti)
+
+            var topi = ui.css('top');
+            topi = px(topi)
+
+            var righti = ui.css('right');
+            righti = px(righti)
+
+            var bottomi = ui.css('bottom');
+            bottomi = px(bottomi)
+
+
+            var finalPos = {};
+            function getPxVal(prop, start, add) {
+                var valFinal = null
+                if (add != null) {
+                    valFinal = (start + add) + 'px'
+                } else {
+                    if (add === null) {
+                        valFinal = ''
+                    }
+                }
+                finalPos[prop] = valFinal
+            }
+
+
+
+            getPxVal('left', lefti, l)
+            getPxVal('top', topi, t)
+            getPxVal('bottom', bottomi, b)
+            getPxVal('right', righti, r)
+
+            //console.log(finalPos, t,r, righti)
+
+            if (animate) {
+                if ( $.isNumeric(animate)) {
+                    duration = animate;
+                } else {
+                    duration = 200
+                }
+
+                $(ui).animate(finalPos, duration);
+            } else {
+                $(ui).offset(finalPos);
+            }
+        }
+
+        uiUtils.percentChance = function percentChance(percent, fx) {
+            if ( Math.random() < percent/100 )
+                fx()
         }
     }
 
@@ -2122,7 +2241,7 @@ function defineUtils() {
 
                     cfg.ui = div;
 
-                    callIfDefined(cfg.fxDone, data)
+                    callIfDefined(cfg.fxDone, data, output.body)
                 },
                 error: function (a, b, c) {
                     //debugger;
@@ -2265,7 +2384,34 @@ function defineUtils() {
     defineComparison();
 
     function defineUrl() {
-        p.getLocation = function getLocation(path, port) {
+        p.getContentAfter = function getContentAfter(url, findStr) {
+            if ( url.includes(findStr)) {
+                var output = url.split(findStr)[1]
+                return output;
+            }
+            return url;
+        }
+
+        p.getContentBefore = function getContentBefore(url, findStr) {
+            if ( url.includes(findStr)) {
+                var output = url.split(findStr)[0]
+                return output;
+            }
+            return url;
+        }
+
+        p.getHostname = function getHostname(url) {
+            var urlOrig = url;
+
+            //debugger
+            var hostname = u.getContentAfter(url, "://")
+            hostname = u.getContentBefore(hostname, '/')
+            hostname = u.getContentBefore(hostname, ':')
+
+            return hostname;
+        }
+
+        p.getLocation = function getLocation(path, port, overrideBaseurl) {
             if (path.startsWith('/') == false) {
                 path = '/' + path;
             }
@@ -2274,7 +2420,11 @@ function defineUtils() {
             } else {
                 port = ':' + port
             }
-            var url = 'http://' + window.location.hostname + port
+            var baseUrl = 'http://' + window.location.hostname;
+            if (overrideBaseurl) {
+                baseUrl = 'http://' + u.getHostname(overrideBaseurl)
+            }
+            var url = baseUrl + port
                 + path;
             return url;
         }
@@ -2334,7 +2484,7 @@ function defineUtils() {
         }
 
         p.utils.getR = p.getUrl;
-        p.utils.postR = p.postUrl; 
+        p.utils.postR = p.postUrl;
     }
 
     defineUrl();
@@ -2457,6 +2607,22 @@ function defineUtils() {
 
             d.debounce()
         }
+
+        uiUtils.debounceOld =
+            function debounce(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
 
     }
 
@@ -3118,8 +3284,72 @@ function defineUtils() {
 
 
 
-}
+    function defineKeyboard() {
+        u.addKeyListener = function addKeyListener() {
 
+        }
+
+        u.onKey = function onKey(va) {
+
+        }
+    }
+
+    defineKeyboard();
+
+    function defineScrollable() {
+        uiUtils.scrollToBottom = function scrollToBottom(jq) {
+
+            var ui = $(jq)
+            //$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
+            $(jq).clearQueue();
+            $(jq).stop(true, true);
+            $(jq).animate({scrollTop: $(jq).prop("scrollHeight")}, 10);
+            console.log('scrollto', ui.prop('scrollHeight'), ui.scrollTop())
+        }
+
+        uiUtils.makeScrollable = function makeScrollaboe(div, height) {
+            div.css('overflow', 'auto')
+            div.css('max-height', height + 'px')
+            //debugger
+        }
+        uiUtils.scrollToTop = function scrollToTop(jq) {
+            //$("body").animate({ scrollTop: $('#messages').prop("scrollHeight")}, 200);
+            $(jq).clearQueue();
+            $(jq).stop(true, true);
+            $(jq).animate({scrollTop: 0}, 10);
+        }
+
+
+        uiUtils.getScrollPosition = function getScrollPosition(ui) {
+            var position = $(ui).prop('scrollHeight');
+            var position = $(ui).scrollTop();
+            return position;
+        }
+
+        uiUtils.setScrollPosition = function setScrollPosition(ui, pos, animate) {
+            ui = $(ui)
+            //debugger
+            if ( animate != false  ) {
+                ui.clearQueue();
+                ui.stop(true, true);
+                ui.animate({scrollTop: pos}, 10);
+            }
+            else {
+                ui.scrollTop(pos)
+            }
+
+
+
+            return;
+            var position = $(ui).offset();
+
+            return position;
+        }
+
+    }
+    defineScrollable()
+
+}
 defineUtils();
 
 window.restartTest = function restartTest() {

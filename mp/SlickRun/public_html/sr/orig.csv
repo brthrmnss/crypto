@@ -1,0 +1,252 @@
+name,cmd
+ccrt,http://ccrt/
+prod,|ccrt
+qa,http://ccrt-qa/
+ccrtqa,http://rr413c1n7.ms.com:10054/ccrt/index.html#/RevenuePT
+dev,http://rr413c1n7.ms.com:10051/ccrt/index.html
+ccrt-dev,|dev
+dev-reloadable,http://rr413c1n7.ms.com:10110/ccrt/index_reloader.html#/reloadablePage
+trunk,http://ccrt-trunk/
+ccrt-trunk,|trunk
+ccrt-reloader,http://rr413c1n7.ms.com:10110/index_reloader.html#
+reloader,|ccrt-reloader
+trunk2,http://rr413c1n7.ms.com:10055/ccrt/index.html
+outlook,outlook
+pt-layouts,\\msad\root\NA\NY\LIB\fid\SPSTRAT\DESK\spgrt\ccrt\siteconfig\rev\morriste,ccrt pivt table layouts
+dirptlayouts,|pt-layouts
+dirc,c:\
+dirp4,q:\
+dirp4v2,Q:\p4v2
+dirsrc,|dirp4v2
+dirQA,Q:\p4v2\spg\spgrt\ui\qa\ccrt
+dirZdev,Z:\dev\morriste\dev2\ui\dev\ccrt
+dirbackup,\\Msad\root\NA\NY\USERS\morriste\My Documents\backup
+dirputty,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell
+pdfplayer,http://localhost:10100/index.html#/player
+dirccrt,Q:\p4\spg\spgrt\ui\dev\
+q,q:\
+mydocs,\\Msad\root\NA\NY\users\morriste\My Documents\
+yahoo,http://yahoo.com
+dirproject,U:\My Documents\projects
+pj,|dirproject
+dirlogs,U:\My Documents\worklogs
+dirtrash,start "trash dir" "U:\My Documents\trash"
+dirMyDocs,|mydocs
+
+
+dirdownloads,\\Msad\root\NA\NY\users\morriste\My Documents\downloads
+calendar,https://calendar.google.com/calendar/render#main_7
+cal,|calendar
+hnsearch *,https://hn.algolia.com/?query=%W%&sort=byPopularity&prefix&page=0&dateRange=all&type=story
+hn,https://news.ycombinator.com/
+pocket,https://getpocket.com/a/queue/
+getpocket,|pocket
+
+--replace gthk|C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuick.js
+--replace nodejsruntime|C:\Users\morriste\node\node.exe
+
+weather,https://www.google.com/search?q=weatherh&oq=weatherh+&aqs=chrome..69i57.745j0j7&sourceid=chrome&ie=UTF-8#q=weather+10036
+#news,https://news.google.com/news?hl=en&pz=1&ftcl=true&zx=4jsatqrgp9xo&pog=false
+news,C:\Users\morriste\node\node.exe "C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuick.js" "Google News" "https://news.google.com/"
+news2,nodejsruntime "gthk" "Google News" "https://news.google.com/"
+
+#comment line
+#> means use many aliases until the end
+#< means this is the command script
+>a,b,c,d,e,g,f,http://alphabet.com
+newspocket,https://getpocket.com/a/recommended/
+tts,http://127.0.0.1:4444/
+speak,|tts//Send
+#group
+init,[tts,speaker]
+readit,http://127.0.0.1:10100/tinymce.html#/player
+speaker,http://127.0.0.1:10100/tinymce.html#/player
+pdfconvertoer,http://127.0.0.1:10100/tinymce.html#/player
+autosave,http://127.0.0.1:10100/tinymce_autosave.html
+gsamz *,https://www.google.com/search?q=%W%+amazon
+gs *,https://www.google.com/search?q=%W%
+kin *,https://www.amazon.com/s/ref=sr_nr_p_72_0?fst=as%3Aoff&rh=n%3A133140011%2Cn%3A154606011%2Ck%3AFAMILY+OFFICE%2Cp_72%3A1248987011&keywords=%W%&ie=UTF8&qid=1493064169&rnid=1248985011
+kin *,https://www.amazon.com/s/ref=nb_sb_noss_1?url=search-alias%3Ddigital-text&field-keywords=%W%&rh=n%3A133140011%2Ck%3A%W%
+amz *,https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=%W%
+
+newtor,https://torrentfreak.com/
+docerr,http://wiki-na.ms.com/CCRT/ErrorsAndNotifications
+docs,http://wiki-na.ms.com/CCRT/
+docsui,http://wiki-na.ms.com/CCRT/UIDeveloperSetup
+ccrt-docs,|docs
+twiki,http://wiki-na.ms.com/CCRT/
+twiki2,|docs
+tap,http://tap.ms.com/appmw/tam-tap-ui/webapp/index.html#/Requests
+docserr,http://wiki-na.ms.com/CCRT/ErrorsAndNotifications
+digg,http://digg.com/
+dbgithub,https://github.com/brthrmnss?tab=repositories
+dbgithubcrypto,https://github.com/brthrmnss/crypto
+ghshelpers,https://github.com/brthrmnss/crypto/blob/master/node_modules/shelpers/lib/shelpers.js
+downgithubtesting,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2Fcrypto%2Ftree%2Fmaster%2Fmp%2FtestingFramework
+downgithubgrammar,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2Fcrypto%2Ftree%2Fmaster%2Fmp%2FGrammarHelperServer
+downgithubshelpers,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2Fcrypto%2Ftree%2Fmaster%2Fnode_modules%2Fshelpers
+downgithub,https://minhaskamal.github.io/DownGit
+downgithubtts,https://minhaskamal.github.io/DownGit/#/home?url=https:%2F%2Fgithub.com%2Fbrthrmnss%2FTTS-ReaderV2
+ghshelpers,https://github.com/brthrmnss/crypto/tree/master/node_modules/shelpers
+ghcrypto,https://github.com/brthrmnss/crypto
+gtrdk,https://github.com/brthrmnss/crypto/blob/master/mp/RDK/
+
+
+
+dbgittrade,https://github.com/brthrmnss/CJS
+dbgittransfer,|dbgittrade
+dbgitreader,https://github.com/brthrmnss/TTS-ReaderV2,
+dirWorking,C:\Users\morriste\train\train_drive\trash\
+dirWorkTrash,C:\Users\morriste\train\train_drive\trash\trash
+dirnodeprj,C:\Users\morriste\train\train_drive\trash\
+tasknewdoc,
+kanban,http://syp.kanbantool.com/boards/177652-ytest
+desktop,Y:\NA\NY\users\morriste\Desktop
+beyondcompare,Y:\NA\NY\users\morriste\Desktop\Beyond Compare 4\BCompare.exe
+capture,\\MSAD\ROOT\NA\NY\USERS\morriste\Desktop\FSCapture.exe
+marytts,C:\Users\morriste\train\train_drive\trash\marytts\marytts-5.2\marytts-5.2\bin\marytts-server.bat
+putty,\\ms\dist\sec\PROJ\putty\prod\common\bin\putty.cmd
+cmd,cmd
+docsnodejs,http://wiki.ms.com/NodeJS/WebHome
+tasktimesheet,https://www.fieldglass.net/?next=%2Ftime_sheet_list.do
+timesheetpassword,$20MFG_Mor2  password4
+putty,\\ms\dist\sec\PROJ\putty\prod\common\bin\putty.cmd
+dashboard,"U:\My documents\dashboard.docx"
+docsdashboard,|dashboard
+docstrunkconfig,"U:\My Documents\projects\pj-ccrt-trunk.docx"
+docsccrttrunkdoc,|docstrunkconfig
+putty6,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\sr\start_putty.bat
+problem:racingthoughts,$have a book read to you, listen to eckart tolle, power of now, listen to mindcalm, mediate 10 minutes, bring it on,close eye for 10mins
+problem:bored,$kill jelf
+q:how to open chrome taskmanager?,shortcut esc + shift
+problem:$moving slow, not focused: broom, listen to youtube rap instrumentals
+problem:$falling asleep at work: listen to youtou music instrumetnals
+what is most important?:$rc, $, moment release,chaning,being self, simplicity
+
+dirlayoutsdev,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\dev\site
+dirlayoutsqa,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\qa\site
+dirlayoutsprod,\\v\region\na\appl\fid\fidstrattools\data\ccrt\Config\prod\site
+
+dirccrtui,Q:\p4vUI.1\fidstrattools\ccrt_ui\trunk\src
+
+readit,http://127.0.0.1:10100/tinymce.html#/player
+focus,http://127.0.0.1:4444/blankwhitepage.html
+platitudes,http://127.0.0.1:4444/platitudes.html
+#task force show completion  - alt -f
+#task bring window to front, command line .. pwoershell if that is what it is ...
+#howto reload grammar
+#howto reload ccrt, ccrt reloader, reloaderServer.js
+#howto reload sr
+i hate myself: more than 100 thoughts? presence can only be felt in the now
+holidays,http://www.calendarpedia.com/holidays/federal-holidays-2017.html
+
+flexbox,http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=row&flex-wrap=nowrap&justify-content=center&align-items=center&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto
+
+nback,http://brainscale.net/dual-n-back/training
+blankwhitepage,http://127.0.0.1:4444/blankwhitepage.html
+
+timer5m,https://www.google.com/search?q=timer+5+mins
+timer10m,https://www.google.com/search?q=timer+10+mins
+timer15m,https://www.google.com/search?q=timer+15+mins
+timer30m,https://www.google.com/search?q=timer+30+mins
+json,http://www.bodurov.com/JsonFormatter/
+ccrt-dashboard,http://hz413c1n7.ms.com:3000/index.html
+
+
+listwishlist, https://www.amazon.com/gp/registry/wishlist/2Y4JZ0RMMKX29/ref=nav_wishlist_lists_1
+listaorders, https://www.amazon.com/gp/css/order-history/ref=nav_nav_orders_first
+listamazonorders,|listaorders
+listaaddresses,https://www.amazon.com/a/addresses
+directions,https://www.google.com/maps/dir/1585+Broadway,+New+York,+NY/282+Cleveland+Ave,+Lyndhurst,+NJ+07071/@40.7918056,-74.1238036,12z/data=!3m1!4b1!4m13!4m12!1m5!1m1!1s0x89c258ff54ab2a67:0xaf7ebce10d9e1c1e!2m2!1d-73.9854187!2d40.7600591!1m5!1m1!1s0x89c25600fb494385:0x82e34c287096ea23!2m2!1d-74.1215!2d40.811117
+
+prog,C:\Program Files
+dirProgramFiles,|prog
+progx32,C:\Program Files (x86)
+db,http://rr413c1n7.ms.com:3000/index.html
+
+helpdeskremote,http://wiki.ms.com/Remote/HelpDesk
+
+gttestccrt,http://rr413c1n7.ms.com:10110/tests.html
+gtccrtY,nodejsruntime gthk "trunk -"
+gtccrt,nodejsruntime gthk "trunk -"
+gtccrtold,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_ccrt.ahk
+gtactions,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-actions.ahk
+editactions,|gtactions
+gtedit,|gtactions
+
+1dollarscan,https://system.1dollarscan.com/tunelablist.php
+
+gtrdk,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-rdk.ahk
+gtdev,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev.ahk
+#editgotos,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editahkgotos.ahk
+#what is editgotos for? i assume edit actions
+editgotos,|gtactions
+gteditgotos,|editgotos
+price,https://www.google.com/search?q=bitcoin+price&oq=bitcoin+price&aqs=chrome..69i57.1964j0j7&sourceid=chrome&ie=UTF-8
+
+buddha,https://www.google.com/search?q=buddha+statue&source=lnms&tbm=isch&sa=X&ved=0ahUKEwi_krHMsPXTAhWLhVQKHcXjCicQ_AUICygC&biw=1139&bih=791&dpr=1.13#tbm=isch&q=buddha+statue++black
+
+gtdesktop,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\general\gtdesktop.ahk
+gtagenda,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto2\gt_agenda.ahk
+gtlog,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_weeklylog.ahk
+=dirGotots=C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\gotos\
+//agenda,{{dirGotos}}gt_agenda.ahk
+weeklog,|agenda
+gtstartupall,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_startupall.ahk
+
+gtp4,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\gtp4.ahk
+p4,"start 'p4' C:\Program Files\Perforce\p4v.exe"
+
+windowspy,C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Applications\AutoHotkey\AutoIt3 Window Spy
+
+
+#gtreloader,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_reloader.ahk
+gtreloader,nodejsruntime "gthk" "CCRT Reloader" "http://rr413c1n7.ms.com:10110/index_reloader.html#/RevenuePT?tabName=Function"
+testtab,nodejsruntime "gthk" "TinyMCE TestTab" "http://127.0.0.1:10100/tinymce_testtab.html#/player"
+
+
+gtccrtdb,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_ccrt_db.ahk
+gtccrtrestart,http://rr413c1n7.ms.com:3000/runDevUI
+ccrtdb,|grccrtdb
+editccrttrunkjs,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editccrtserverjs.ahk
+editccrtdb,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editccrtdbhtml.ahk
+
+gtleela,\\ms\dist\appmw\PROJ\leela\3.3.4\Leela.exe
+leela,|gtleela
+
+stealthisshow,https://player.fm/series/steal-this-show-98879
+
+runccrtcb,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\startccrtserver_in_unix_combined.ahk
+startccrtdb,|runccrtcb
+rundist,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\dist_in_unix_combined.ahk
+runlayoutmanager,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\start_ccrt_layoutManager_in_unix_combined.ahk
+#startccrtdb,|runccrtcb
+
+runccrtuidev,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\unix_scripts\start_ccrt_uiproj_in_unix_combined.ahk
+
+#6gttestccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_editccrt.ahk
+
+
+gtccrtweb,http://rr413c1n7.ms.com:10110/index_reloader.html#/externalRevenuePT
+gtsubsites,http://rr413c1n7.ms.com:10110/index_subsites.html#/externalRevenuePT
+
+dirintellijshortcuts,C:\Users\morriste\.IntellijIdea13\config\plugins
+dirMaryTTS,C:\Users\morriste\train\train_drive\trash\marytts\marytts-5.2\marytts-5.2\bin
+dirAutomateWork,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell
+dirNodeTrash,C:\Users\morriste\train\train_drive\trash
+
+
+devccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\general\gt_window_named.ahk "trunk - ["
+devccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_ccrt_new.ahk
+#4gtccrt,|devccrt
+devreloader,http://rr413c1n7.ms.com:10110/index_reloader.html#/RevenuePT?tabName=Region
+devsubsites,http://rr413c1n7.ms.com:10110/index_subsites.html#/RevenuePT?tabName=Region
+dirdevui,Q:\p4vUI.1\fidstrattools\ccrt_ui\trunk\install\common
+
+
+mptemplate,start "template" "\\Msad\root\NA\NY\users\morriste\My Documents\projects\Template - Project.docx"
+maketemplate *, copy "\\Msad\root\NA\NY\users\morriste\My Documents\projects\Template - Project.docx" "\\Msad\root\NA\NY\users\morriste\My Documents\projects\mp-%W%.docx"
+
+runappwithspace,"\\Msad\root\NA\NY\USERS\morriste\My\ Documents\trash\cameronmoll_bio.pdf"
+sunset2,"\\Msad\root\NA\NY\USERS\morriste\My\ Documents\trash\SunsetScreen.exe"
+dirTrash2,start "dirtrash" "U:\My Documents\trash"

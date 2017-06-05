@@ -1,4 +1,11 @@
 name,cmd
+--replace gthk|C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuick.js
+--replace nodejsruntime|C:\Users\morriste\node\node.exe
+--replace nodejsruntime|node
+--replace gthk|G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuick.js
+--replace gtwebstorm|G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuickWebstorm.js
+
+--replace nodejsruntime|node
 ccrt,http://ccrt/
 prod,|ccrt
 qa,http://ccrt-qa/
@@ -39,6 +46,31 @@ getpocket,|pocket
 
 weather,https://www.google.com/search?q=weatherh&oq=weatherh+&aqs=chrome..69i57.745j0j7&sourceid=chrome&ie=UTF-8#q=weather+10036
 news,https://news.google.com/news?hl=en&pz=1&ftcl=true&zx=4jsatqrgp9xo&pog=false
+
+
+gtbreeddb,nodejsruntime gthk "BDB TT" "http://localhost:6018/index.html567.html"
+editbreeddb,nodejsruntime gtwebstorm "crypto - [G" "partial:db2_ui.js"
+
+runbreeddb,nodejsruntime G:\Dropbox\projects\crypto\mp\RCExt\ReloadAnyRunner.js
+
+nback,nodejsruntime gthk "Dual N-Back Training" "http://brainscale.net/dual-n-back/training#"
+
+gtcalmtech,http://localhost:10110/g/calmtech/index.html
+icons,https://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp
+
+gtritvdb,nodejsruntime gthk "BDB TT" "http://192.168.1.160:5600/index.html567.html"
+editritvdb,nodejsruntime gtwebstorm "crypto - [G" "partial:eval_client.js"
+#runritvdb,nodejsruntime G:\Dropbox\projects\crypto\mp\RCExt\ReloadAnyRunner.js
+
+gtcrypto,nodejsruntime gthk "crypto - [G"
+gttts,nodejsruntime gthk "TTS-Reader - [G"
+
+gmail,nodejsruntime gthk "morrisonstephen@gmail.com" "https://mail.google.com/mail/u/0/#inbox" "regex"
+
+gtdating,http://localhost:10110/g/datingsim/index.html
+
+listbookstoread,evernote:///view/1269954/s11/6cba0ac4-2db0-453a-b34f-c7923942acb7/6cba0ac4-2db0-453a-b34f-c7923942acb7/
+
 
 #comment line
 #> means use many aliases until the end
@@ -115,7 +147,7 @@ holidays,http://www.calendarpedia.com/holidays/federal-holidays-2017.html
 
 flexbox;http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=row&flex-wrap=nowrap&justify-content=center&align-items=center&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto
 
-nback,http://brainscale.net/dual-n-back
+#nback,http://brainscale.net/dual-n-back
 blankwhitepage,http://127.0.0.1:4444/blankwhitepage.html
 
 timer5m,https://www.google.com/search?q=timer+5+mins
@@ -139,6 +171,7 @@ helpdeskremote,http://wiki.ms.com/Remote/HelpDesk
 
 gtccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_ccrt.ahk
 gtactions,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-actions.ahk
+gtactions,nodejsruntime gtwebstorm "crypto - [G" "partial:G:\Dropbox\projects\crypto\mp\SlickRun\public_html\sr\actions2.csv"
 editactions,|gtactions
 gtrdk,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-rdk.ahk
 gtdev,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev.ahk

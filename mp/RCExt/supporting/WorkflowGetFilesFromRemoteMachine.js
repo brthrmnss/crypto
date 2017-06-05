@@ -85,7 +85,7 @@ function GetFileListFromRemote() {
             return;
         }
         //self.settings.url = 'http://127.0.0.1:14002/'
-        self.proc('connecting too...', self.settings.url )
+        self.proc('connecting to...', self.settings.url )
         var socket = require('socket.io-client')(self.settings.url );
         socket.on('connect', function onConnectToSocket(){
             self.data.socket = socket;
@@ -189,6 +189,11 @@ if (module.parent == null) {
     var config = {};
     config.ip = '127.0.0.1'
     config.port = '6014'
+
+
+    config.ip = '192.168.1.160'
+    config.port = '6024'
+
     //config.localTest = true
     config.fxDone = function fxDone() {
         console.log('...', 'y')

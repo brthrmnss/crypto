@@ -2,7 +2,7 @@
 /**
  * Monitor port 3
  */
-var dirMonitored2 = __dirname+'/'+'../'+'../'+'../'+'learn angular/port3/';
+//var dirMonitored2 = __dirname+'/'+'../'+'../'+'../'+'learn angular/port3/';
 var path = require('path')
 
 
@@ -31,6 +31,8 @@ function FileWatcher() {
     var p = FileWatcher.prototype;
     p = this;
     var self = this;
+    self.data = {};
+
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
         if ( self.settings.__filename ) {
@@ -40,6 +42,10 @@ function FileWatcher() {
         self.watchDirs();
         self.setupSocket();
         self.handleInitRunSettings();
+
+        self.data.count = 0;
+
+        console.log('config', self.settings)
     }
 
     p.watchDirs = function watchDirs(config) {
@@ -105,6 +111,7 @@ function FileWatcher() {
             file = self.settings.fxTransformFile(file);
         }
         if ( self.settings.action == 'runFile') {
+           // self.proc('runFile', file, self.settings.__filename)
             if ( self.settings.runAlways != true ) {
                 var leaf = sh.fs.leaf(file);
                 leaf = leaf.trim()
@@ -143,7 +150,7 @@ function FileWatcher() {
             }
             var fileToRun = self.settings.file;
 
-            self.proc('asdf', file, self.settings.__filename)
+            self.proc('dbg.trigger', file, 'filename:', self.settings.__filename)
             if ( self.settings.__filename == file ) {
                 self.proc('same file')
                 return;
@@ -154,7 +161,7 @@ function FileWatcher() {
             }
             if ( sh.fs.exists(file) == false )
             {
-                console.log('no exist')
+                console.log('no exist', file)
                 return
             }
             if ( self.settings.runCurrentFile ) {
@@ -257,18 +264,24 @@ function FileWatcher() {
             });
 
             monitor.on('change', function onChange(changes) {
-                var file = dirMonitored2 + '/' + changes.modifiedFiles[0]
+               // var file = dirMonitored2 + '/' + changes.modifiedFiles[0]
+                var file = /*dirMonitored2 + '/' +*/ changes.modifiedFiles[0]
                 if ( self.settings.dir6) {
                     var file = self.settings.dir6 + '/' + changes.modifiedFiles[0]
                 }
                 //file = sh.fs.norm2(file);
+
+                if ( changes.modifiedFiles.length == 0 ) {
+                    file = changes.addedFiles[0]
+                }
+
                 file = sh.replaceBackslash(file);
 
                 if ( self.settings.debugChanges )
                     console.log(file, changes);
-                if ( changes.modifiedFiles.length == 0 ) {
-                    file = changes.addedFiles[0]
-                }
+
+
+
                 self.trigger(file, changes);
                 // asdf.g
                 return;
@@ -297,7 +310,7 @@ function FileWatcher() {
                 return;
             }
 
-            self.proc('running.runFile', file);
+            //self.proc('running.runFile', file, self.settings.);
 
             var isDir =  sh.fs.isDir(file);
             self.proc('isdir', isDir)
@@ -310,7 +323,14 @@ function FileWatcher() {
             ///var process = var require('process')
             process.chdir(dirFile)
 
-            self.proc('running', fileToRun)
+            if ( self.settings.runParams ) {
+                var runParams = self.settings.runParams;
+                runParams = runParams.join(' ')
+                fileToRun += ' ' + runParams
+            }
+
+            self.data.count ++;
+            self.proc('running', fileToRun, self.data.count)
             var  y = sh.runAsync('node '+ fileToRun)
             //spit stdout to screen
             y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });

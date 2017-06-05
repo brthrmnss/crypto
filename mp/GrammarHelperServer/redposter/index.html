@@ -12,43 +12,52 @@
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
-  <link rel="stylesheet" href="bower_components/videogular-themes-default/videogular.css" />
   <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
-  <link rel="stylesheet" href="bower_components/metisMenu/dist/metisMenu.css" />
   <link rel="stylesheet" href="bower_components/animate.css/animate.css" />
-  <link rel="stylesheet" href="bower_components/sweetalert/lib/sweet-alert.css" />
-  <link rel="stylesheet" href="bower_components/angular-notify/dist/angular-notify.css" />
-  <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css" />
-  <link rel="stylesheet" href="bower_components/summernote/dist/summernote.css" />
-  <link rel="stylesheet" href="bower_components/ng-grid/ng-grid.css" />
-  <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css" />
-  <link rel="stylesheet" href="bower_components/bootstrap-tour/build/css/bootstrap-tour.css" />
-  <link rel="stylesheet" href="bower_components/bootstrap-tour/build/css/bootstrap-tour-standalone.css" />
-  <link rel="stylesheet" href="bower_components/datatables/media/css/jquery.dataTables.css" />
-  <link rel="stylesheet" href="bower_components/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.css" />
-  <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css" />
   <link rel="stylesheet" href="bower_components/ui-select/dist/select.css" />
   <link rel="stylesheet" href="bower_components/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" />
-  <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery.css" />
-  <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery-indicator.css" />
-  <link rel="stylesheet" href="bower_components/blueimp-gallery/css/blueimp-gallery-video.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css"/>
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
-  <linkx rel="stylesheet" href="styles/prod-plan-css.css"/>
-  <!-- endbuild -->
-  <!-- build:css(.tmp) styles/main.css -->
+<!--  <linkx rel="stylesheet" href="styles/prod-plan-css.css"/>
+  &lt;!&ndash; endbuild &ndash;&gt;
+  &lt;!&ndash; build:css(.tmp) styles/main.css &ndash;&gt;
   <linkx rel="stylesheet" href="styles/filemon.css"/>
-  <!-- endbuild -->
-  <!-- #build:css(.tmp) styles/main.css -->
+  &lt;!&ndash; endbuild &ndash;&gt;
+  &lt;!&ndash; #build:css(.tmp) styles/main.css &ndash;&gt;
   <link rel="stylesheet" href="styles/list_styles.css"/>
-  <!-- endbuild -->
-  <!-- #build:css(.tmp) styles/main.css -->
+  &lt;!&ndash; endbuild &ndash;&gt;
+  &lt;!&ndash; #build:css(.tmp) styles/main.css &ndash;&gt;
   <link rel="stylesheet" href="styles/material_styles.css"/>
-  <!-- endbuild -->
+  &lt;!&ndash; endbuild &ndash;&gt;-->
+
+  <script>
+    window.skipDefaultErrorAlerter = true;
+    window.onerror = function onError(errorMsg, url, lineNumber,d,e) {
+      //debugger;
+      if ( errorMsg.includes('app is not defined')) {
+        console.warn('ignore app')
+        return;
+      }
+
+      var msg = [errorMsg, url, lineNumber].join(' ')
+      console.log('error', errorMsg, url, lineNumber)
+      if ( errorMsg.includes('Uncaught SyntaxError:')) {
+        alert(msg, 'syntax error')
+      }
+
+      return;
+
+
+      document.getElementById("p1").innerHTML = [errorMsg, url, lineNumber
+        ,
+        e.stack].join('<br />');
+      //  alert('issue with this page ' + errorMsg + ' ' + lineNumber)
+    }
+  </script>
 </head>
 <body ng-app="74App">
 <!--[if lt IE 7]>
@@ -102,88 +111,29 @@
 -->
 
 
-<!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-<script>
-  !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
-      (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
-    r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
-  }(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-XXXXX-X');
-  ga('send', 'pageview');
-</script>
 
 <!-- build:js(.) scripts/vendor.js -->
 <!-- bower:js -->
-<script src="bower_components/es5-shim/es5-shim.js"></script>
+<!--<script src="bower_components/es5-shim/es5-shim.js"></script>-->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
-<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="bower_components/angular-touch/angular-touch.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
-<script src="bower_components/Chart.js/Chart.js"></script>
 <script src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
-<script src="bower_components/videogular/videogular.js"></script>
-<script src="bower_components/videogular-controls/vg-controls.js"></script>
-<script src="bower_components/videogular-buffering/vg-buffering.js"></script>
-<script src="bower_components/videogular-overlay-play/vg-overlay-play.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/jquery-ui/jquery-ui.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="bower_components/metisMenu/dist/metisMenu.js"></script>
-<script src="bower_components/jquery-flot/jquery.flot.js"></script>
-<script src="bower_components/angular-flot/angular-flot.js"></script>
-<script src="bower_components/flot/jquery.flot.js"></script>
-<script src="bower_components/flot.curvedlines/curvedLines.js"></script>
-<script src="bower_components/iCheck/icheck.min.js"></script>
-<script src="bower_components/jquery.flot.spline/index.js"></script>
-<script src="bower_components/sparkline/index.js"></script>
-<script src="bower_components/chartjs/Chart.min.js"></script>
-<script src="bower_components/angles/angles.js"></script>
-<script src="bower_components/peity/jquery.peity.js"></script>
-<script src="bower_components/angular-peity/angular-peity.js"></script>
-<script src="bower_components/sweetalert/lib/sweet-alert.js"></script>
-<script src="bower_components/angular-notify/dist/angular-notify.js"></script>
 <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
 <script src="bower_components/angular-ui-map/ui-map.js"></script>
 <script src="bower_components/moment/moment.js"></script>
-<script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
-<script src="bower_components/angular-ui-calendar/src/calendar.js"></script>
-<script src="bower_components/summernote/dist/summernote.js"></script>
-<script src="bower_components/angular-summernote/dist/angular-summernote.js"></script>
-<script src="bower_components/ng-grid/build/ng-grid.js"></script>
 <script src="bower_components/slimScroll/jquery.slimscroll.min.js"></script>
-<script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
-<script src="bower_components/bootstrap-tour/build/js/bootstrap-tour.js"></script>
-<script src="bower_components/bootstrap-tour/build/js/bootstrap-tour-standalone.js"></script>
-<script src="bower_components/angular-bootstrap-tour/dist/angular-bootstrap-tour.js"></script>
-<script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
-<script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/colvis/angular-datatables.colvis.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.js"></script>
-<script src="bower_components/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.js"></script>
-<script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-<script src="bower_components/ui-select/dist/select.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-helper.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery-fullscreen.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery-indicator.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery-video.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery-vimeo.js"></script>
-<script src="bower_components/blueimp-gallery/js/blueimp-gallery-youtube.js"></script>
-<script src="bower_components/angular-ui-sortable/sortable.js"></script>
+<!--<script src="bower_components/ui-select/dist/select.js"></script>-->
 <script src="bower_components/angular.pubsub/src/angular-pubsub.js"></script>
 <script src="bower_components/bacon/dist/Bacon.js"></script>
 <!-- endbower -->
@@ -191,7 +141,7 @@
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/quick_module/quick.js"></script>
-<script src="scripts/app.js"></script>
+<script src="scripts/appSimple.js"></script>
 <script src="scripts/controllers/main.js"></script>
 <script src="scripts/controllers/about.js"></script>
 <!-- endbuild -->
@@ -202,19 +152,23 @@
 <!--include everything in scripts/ except files directly inside scripts (without subdirectory) -->
 <script src="/scripts/cc/controllers/mainCCController.js"></script>
 <script src="/scripts/controllers/about.js"></script>
-<script src="/scripts/controllers/appConfigFactory.js"></script>
+<!--<script src="/scripts/controllers/appConfigFactory.js"></script>-->
 <script src="/scripts/controllers/config.js"></script>
-<script src="/scripts/controllers/customersController.js"></script>
+<!--<script src="/scripts/controllers/customersController.js"></script>
 <script src="/scripts/controllers/customersFactory.js"></script>
 <script src="/scripts/controllers/customersFactoryInMemory.js"></script>
 <script src="/scripts/controllers/main.js"></script>
-<script src="/scripts/controllers/mainDialogController.js"></script>
+<script src="/scripts/controllers/mainDialogController.js"></script>-->
 <!--
 12/11/2016
 Quick Fix to ignore these lines ... could have targeted them in GHS .. but didn't feel like it
 <script src="/scripts/quick_module/1st_load/shelpersService.js"></script>
 <script src="/scripts/controllers/transcludeHelper.js"></script>
 -->
+
+<script src="/scripts/quick_module/1st_load/shelpersService.js"></script>
+<script src="/scripts/controllers/transcludeHelper.js"></script>
+
 <script src="/scripts/core/comp/analytics.glance.dir.js"></script>
 <script src="/scripts/core/comp/listFlowUtilsService.js"></script>
 <script src="/scripts/core/comp/listflow.dir.js"></script>
@@ -268,35 +222,14 @@ Quick Fix to ignore these lines ... could have targeted them in GHS .. but didn'
 <script src="/scripts/quick_module/services/workChainService.js"></script>
 <script src="/scripts/quick_module/utils/dataGenService.js"></script>
 <script src="/scripts/quick_module/utils/testBrowserEval.js"></script>
-<script src="/scripts/scripts_homer/app.js"></script>
-<script src="/scripts/scripts_homer/config.js"></script>
-<script src="/scripts/scripts_homer/controllers/alerts.js"></script>
-<script src="/scripts/scripts_homer/controllers/calendar.js"></script>
-<script src="/scripts/scripts_homer/controllers/chartjs.js"></script>
-<script src="/scripts/scripts_homer/controllers/charts_flot.js"></script>
-<script src="/scripts/scripts_homer/controllers/clock.js"></script>
-<script src="/scripts/scripts_homer/controllers/datatables.js"></script>
-<script src="/scripts/scripts_homer/controllers/draggable.js"></script>
-<script src="/scripts/scripts_homer/controllers/editor.js"></script>
-<script src="/scripts/scripts_homer/controllers/forms.js"></script>
-<script src="/scripts/scripts_homer/controllers/googleMap.js"></script>
-<script src="/scripts/scripts_homer/controllers/grid.js"></script>
-<script src="/scripts/scripts_homer/controllers/inline.js"></script>
-<script src="/scripts/scripts_homer/controllers/list.js"></script>
-<script src="/scripts/scripts_homer/controllers/main.js"></script>
-<script src="/scripts/scripts_homer/controllers/modal.js"></script>
-<script src="/scripts/scripts_homer/controllers/timeline.js"></script>
-<script src="/scripts/scripts_homer/controllers/tour.js"></script>
-<script src="/scripts/scripts_homer/controllers/wizard.js"></script>
-<script src="/scripts/scripts_homer/directives/directives.js"></script>
-<script src="/scripts/scripts_homer/directives/touchSpin.js"></script>
-<script src="/scripts/scripts_homer/factories/sweet-alert.js"></script>
-<script src="/scripts/scripts_homer/filters/props.js"></script>
-<script src="/scripts/scripts_homer/homer.js"></script>
 
 <!-- endbuild -->
 
 </div>
+
+	<script src="g/redposter../../../ui_utils.js" ></script>
+
+	<script src="g/redposter../../js/reloaderGH1.js" ></script>
 
 	<script src="g/redposter/../asdf.js" ></script>
 
@@ -316,11 +249,17 @@ Quick Fix to ignore these lines ... could have targeted them in GHS .. but didn'
 
 	<script src="g/redposter/../js/quick/quickListHelperService.js" ></script>
 
+	<script src="g/redposter/../js/quick/quickPaginate2.dir.js" ></script>
+
 	<script src="g/redposter/../js/quick/quickcrud2.dir.js" ></script>
 
 	<script src="g/redposter/../js/quick/quickform2.dir.js" ></script>
 
+	<script src="g/redposter/../js/quick/quickform3.dir.js" ></script>
+
 	<script src="g/redposter/../js/quick/quicklist2.dir.js" ></script>
+
+	<script src="g/redposter/../js/quick/ui/angFuncService.js" ></script>
 
 	<link rel="stylesheet" href="g/redposter/../js/quick/ui/quickUIService.css" />
 
@@ -338,9 +277,13 @@ Quick Fix to ignore these lines ... could have targeted them in GHS .. but didn'
 
 	<link rel="stylesheet" href="g/redposter/../styles/exampleSharedCSS.css" />
 
+	<link rel="stylesheet" href="g/redposter/../styles/humanreadable.css" />
+
 	<script src="g/redposter/../utils/shelpersService.js" ></script>
 
 	<script src="g/redposter/../utils/transcludeHelper.js" ></script>
+
+	<script src="g/redposter/../utils/transcludeHelper2.js" ></script>
 
 	<script src="g/redposter/../zjs/appService.js" ></script>
 
@@ -357,7 +300,5 @@ Quick Fix to ignore these lines ... could have targeted them in GHS .. but didn'
 	<link rel="stylesheet" href="g/redposter/zjs\quickUIService.css" />
 
 	<script src="g/redposter/zjs\quickUIService.js" ></script>
-
-	<script src="g/redposter../../js/reloader.js" ></script>
 </body>
 </html>

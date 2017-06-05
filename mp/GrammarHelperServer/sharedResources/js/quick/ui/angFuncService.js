@@ -114,11 +114,31 @@ sh.x = function () {
 
     self.parent = [];
     self.children = [];
+    self.data = {}; 
 
     self.isChainLink = true
+    if ( window.angInstances == null ) {
+     
+     window.angInstancesStop = function angInstancesStop() {
+       $.each(window.angInstances, function onClose(k,v) {
+         v.data.stop = true; 
+       })
+     }
+      window.angInstances = [];
+    }
 
     p.init = function init(opts){
       self.settings = opts
+      
+      
+      if ( window.AngFunc.stopOn) {
+        window.AngFunc.stopOn.push(self)
+      }
+      
+      
+      window.angInstances.push(self)
+      
+      
     }
 
     p.addParent = function addParent(p, desc) {
@@ -162,6 +182,10 @@ sh.x = function () {
         //handle pauses
         if ( self.paused() )
           return;
+        if ( self.data.stop ) {
+          console.debug('stop', self, 'ok')
+          clearInterval( self.int )
+        }
         fx()
       }
       self.int = setInterval(fx2, int)

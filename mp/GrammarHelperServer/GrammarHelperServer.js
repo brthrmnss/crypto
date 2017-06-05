@@ -407,6 +407,10 @@ function GrammarHelperServer() {
                             var start = cSplit[0]
                             sh.each(files, function onRecurseAllFiles (k,v) {
 
+                                if ( v == null ) {
+                                    self.proc('this is null', k, v)
+                                    return;
+                                }
                                 if (sh.endsWith(v, '.js')) {
                                     var str = '<script src="Placeholder" ></script>'
                                     if (  dbg ) {
@@ -444,6 +448,11 @@ function GrammarHelperServer() {
                             })
                             start += "</body>";
                             start += cSplit[1];
+                            if ( sh.fs.exists(dir) == false ) {
+                                res.status = 404
+                                res.send('missing')
+                                return;
+                            }
                             var filePath  = dir+'/'+leaf
 
 

@@ -165,19 +165,17 @@
             if (config.dataObject != null) {
               scope.dataObject = config.dataObject;
             }
-            ;
+
             if (config.formObject != null) {
               scope.formObject = config.formObject;
             }
-            ;
-
 
             if (config.quickFormConfig != null) {
               scope.quickFormConfig = config.quickFormConfig;
-            } ;
+            }
             if (config.quickListConfig != null) {
               scope.quickListConfig = config.quickListConfig;
-            } ;
+            }
 
             //do not need this, set defaults instead
             //scope.formObject.reload = true;
@@ -242,6 +240,7 @@
           tH2.ifFalse(config.showList, removeLayoutCols);
           tH2.ifFalseHide(config.showList, '#btnRefresh');
           tH2.ifFalseHide(config.canCreate, '#btnNew');
+          tH2.ifFalseHide(config.showTitleRow, '#divTitleRow');
 
           tH2.ifFalseHide(config.showForm, '#colRight');
           tH2.ifFalse(config.showForm, removeLayoutCols);
