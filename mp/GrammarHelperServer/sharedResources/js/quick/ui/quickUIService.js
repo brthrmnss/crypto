@@ -118,7 +118,7 @@
 
         };
 
-         //console.error('dbg.iput--', el, def, type, attrs)
+        //console.error('dbg.iput--', el, def, type, attrs)
 
         ifx(def, 'fxModifyElementRaw', function on_fxModifyElementRaw(fxModifyElementRaw){
           // debugger
@@ -326,7 +326,7 @@
         addClass: "btnFake2",
         changeTo: 'div'
       };
-      
+
       dictTypes['center-content'] = {
         wrapContentFx: function warpContent(contents, index, attrs, css) {
           //  debugger
@@ -386,8 +386,8 @@
             var icon2 = q[0].attributes.icon.value
             icon = icon2;
           }
-         // console.error('icon?', attrs.icon, icon2, attrs,l, attrIcon)
-         // console.error('\t', 'icon?', q, q.html(),  '|', icon)
+          // console.error('icon?', attrs.icon, icon2, attrs,l, attrIcon)
+          // console.error('\t', 'icon?', q, q.html(),  '|', icon)
 
           if ( icon ) {
             q.addClass('glyphicon-' + icon)
@@ -408,11 +408,16 @@
       dictAttrs['makeredbtn'] = {ifVal: true, addClass: 'redbtn', addHTML: '<span>red btns</span>'};
       dictAttrs['horizontal-layout'] = {
         ifVal: true, addClass: 'horizontal-flex-container',
-        addClassToChildren: 'horizontal-flex-container-flex-item pad10',
+        addClassToChildren: 'horizontal-flex-container-flex-item',
         //debugChildren:true,
-        modifyChildrenFx: function (child, index, attrs, css) {
+        modifyChildrenFx: function (child, index, attrs, css, parAttrs) {
           if (attrs.stretch != null) {
             child.addClass('horizontal-flex-container-flex-item-stretch');
+          }
+          //debugger
+          //console.error('attrs', parAttrs)
+          if ( parAttrs['padnochildren'] == null ) {
+            child.addClass('pad10');
           }
         },
         _addHTML: '<span>red btn</span>', alert: true
@@ -421,9 +426,9 @@
 
 
       dictAttrs['is-square'] = {
-       ifVal: true,
+        ifVal: true,
         //addClass: 'horizontal-flex-container',
-       // addClassToChildren: 'horizontal-flex-container-flex-item pad10',
+        // addClassToChildren: 'horizontal-flex-container-flex-item pad10',
         //debugChildren:true,
         modifyElementFx: function (child, index, attrs, css) {
           self.data.squares.push(child); // = [child]
@@ -453,7 +458,7 @@
       dictAttrs['bold'] = {
         addCSS: {'font-weight': 'bold'}
       }
- 
+
       dictAttrs['absolute'] = {
         addCSS: {'position': 'absolute', top: '0px', left: '0px'}
       }
@@ -537,6 +542,11 @@
       dictAttrs['pad20'] = {
         addCSS: {'padding': '10px'}
       }
+      dictAttrs['padlr20'] = {
+        addCSS: {
+          'padding-left': '20px',
+          'padding-right': '20px'}
+      }
       dictAttrs['pad5'] = {
         addCSS: {'padding': '5px'}
       }
@@ -606,7 +616,7 @@
           'overflow': 'auto',
         }
       }
-      
+
       dictAttrs['w50'] = {
         addCSS: {
           'width': '50%',
@@ -684,11 +694,37 @@
           var ui = $(v)
           var widthOfChild = ui.width();
           ui.css({'height':widthOfChild+'px'});
-         // debugger
+          // debugger
         })
       }
 
       setTimeout(p.postStuff, 100)
+
+
+
+
+      p.postStuff2 = function postStuff2()  {
+        var ui = $('[parentWidth]')
+        $.each(ui, function asdf(k,v) {
+          var ui = $(v)
+          var par = ui.parents('.parentWidthWrapper')
+          if ( par.length == 0 ) {
+            console.warn('broken')
+            return;
+          }
+
+          ui.width(par.width())
+
+
+          //var widthOfChild = ui.width();
+          //ui.css({'height':widthOfChild+'px'});
+          // debugger
+        })
+      }
+
+      setTimeout(p.postStuff2, 1500)
+
+
 
     }
   }

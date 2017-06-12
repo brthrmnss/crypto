@@ -228,7 +228,7 @@
 
                         })
                         .makeCache('lastVals', {
-                            count: 5,
+                             count: 5,
                             fxOverflow: function removedItem(el) {
                                 var root = element.find('#chainOutput');
                                 $(el).remove();
@@ -454,6 +454,8 @@
 
                 }
                 cfgCrud.useTemplate = 'dark' //force
+                cfgCrud.useTemplate = null;
+                cfgCrud.useTemplate = 'partial';
                 cfgCrud.quickListConfig = {};
                 cfgCrud.quickListConfig.fxRender = function fxRender(tH2, config) {
                    //  debugger
@@ -600,8 +602,8 @@
                 x.items = x.items.slice(0, 10)
                 //x.items = [];
 
-                //h.connectToInMemory(x.items)
-                h.connectToQuickRest('http://127.0.0.1:6016/api/tags')
+                h.connectToInMemory(x.items)
+                //h.connectToQuickRest('http://127.0.0.1:6016/api/tags')
 
                 h.quickFormHelper.addTextInput('name', 'Name')
                 h.quickFormHelper.addTextInput('desc', 'Desc')

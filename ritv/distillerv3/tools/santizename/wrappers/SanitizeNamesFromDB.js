@@ -20,6 +20,7 @@ function SanitizeNamesFromDB() {
 
     self.settings = {};
     self.settings.logging = false;
+    self.settings.logging = true;
     self.data = {};
     self.data.errors = []
 
@@ -31,6 +32,46 @@ function SanitizeNamesFromDB() {
 
     p.testMode = function testMode() {
         self.settings.testMode = true;
+    }
+
+
+    p.searchRcDbForFile = function searchRcDbForFile(cfg/*imdb, serverName, filePath, fxDone*/) {
+
+        var query = {}; //sh.clone(cfg)
+
+        if (cfg.file) {
+            query.localFilePath = cfg.file;
+        }
+
+        if ( cfg.dirRemoteMega && cfg.nameTorrent ) {
+            //var j = [cfg.dirRemoteMega, cfg.nameTorrent].join('/')
+            var j = cfg.dirRemoteMega
+            j = sh.replace(j, '//', '/')
+            j = sh.fs.clean2(j)
+            query.localFilePath = { $like: '%'+j+'%' }
+            /*  query.localFilePath = { $or: [
+             { $like: '%'+sh.fslash(j)+'%' },
+             { $like: '%'+sh.slash(j)+'%' }
+             ] }*/
+        }
+
+        if ( cfg.serverName )
+            query.serverName = cfg.serverName
+        query.imdb_id = cfg.imdb_id
+        if (cfg.seasonNumber) {
+            query.seasonNumber = cfg.seasonNumber;
+        }
+
+        console.log('==>query', sh.toJSONString(query) )
+        console.log(cfg)
+        //  sh.x()
+        self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
+            console.log('found files in  in new db', objs.length  )
+            //sh.exit('ddd')
+            //self.proc('query', );
+            sh.cid(cfg.fxDone, objs);
+        });
+
     }
 
     function defineTests() {
@@ -55,10 +96,15 @@ function SanitizeNamesFromDB() {
 
 
         p.addNewEpisodeToDatabase = function addNewEpidoeToDatabase_copyFromOldToNew(episodeToSave, fxDoneAddingEpisode) {
+            //asdf.g
             var token = {};
             token.silentToken = true;
             var query = {};
             query.localFilePath = episodeToSave.line;
+
+            if ( self.settings.searchOnServerName ) {
+                query.serverName = self.settings.searchOnServerName;
+            }
 
             //yyy.episodeName = episodeToSave.episode_name;
 
@@ -66,7 +112,8 @@ function SanitizeNamesFromDB() {
 
             helper.getEpisodeFromOldDb = function getEpisodeFromOldDb(t, cb) {
                 self.dbFrom.dbHelper2.search(query, function onGetIt (objs) {
-                    // console.log(objs, 'lll')
+                    //console.log(objs, 'found matching file in old DB')
+
                     if ( objs.length > 0 ) {
                         var oldEpisode = objs[0];
 
@@ -89,7 +136,7 @@ function SanitizeNamesFromDB() {
                             return;
                         }
 
-                        console.warn('no match on ', query)
+                        console.warn('in old DB for file :', query)
                         //why: cannot copy records from original db ... this is issue
                         sh.callIfDefined(cb) //no match nothing to update
                         //cb()
@@ -104,7 +151,7 @@ function SanitizeNamesFromDB() {
                 return;
             };
 
-            helper.updateEpidoe = function updateEpidoe(newEpisode) {
+            helper.updateEpidoe = function update_imdb_Episode(newEpisode) {
                 //why: copy imdb information to file-record
                 sh.mergeObjects(token.oldEpisode, newEpisode) //update current
 
@@ -112,19 +159,42 @@ function SanitizeNamesFromDB() {
                 newEpisode.episodeName = episodeToSave.episodeName;
                 var epi = JSON.parse(episodeToSave.epi)
                 newEpisode.imdb_id = episodeToSave.imdb_id;
+
+                //  console.log('{%P$^..', 'update_imdb_Episode', newEpisode)
+                //sh.x()
+                newEpisode.serverName = self.settings.fileImportServerName
+
                 newEpisode.imdb_series_id = episodeToSave.imdb_series_id;
                 newEpisode.episodeNumber = epi.e;
                 newEpisode.seasonNumber = epi.s;
                 newEpisode.originalFilename = episodeToSave.line; //TODO: fix originalFilename, to be path
                 newEpisode.localFilePath = episodeToSave.line;
 
+                console.log('{%P$^..', 'update_imdb_Episode', newEpisode)
+
+                //asdf.g
+                /*
+                 task:get size, get size from teh fie list
+                 see:  var records =  sh.each.copyArrayItemsToItemProp(files, "localFilePath") //create fake records for game of thones
+
+                 var size = sh.fs.getFileSize(newEpisode.localFilePath)
+                 self.proc('size', size)
+
+
+
+                 if (true) {
+
+                 }*/
+
+                //sh.exit()
             }
 
 
 
             helper.updateEpisodeInNewDb = function updateEpisodeInNewDb(cb) {
                 self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
-                    // console.log(objs, 'lll')
+                    //console.log(objs.length, 'found matching item in new db')
+                    // sh.exit('ddd')
                     //self.proc('query', )
 
                     if ( objs.length > 0 ) {
@@ -201,6 +271,7 @@ function SanitizeNamesFromDB() {
         var DBHelper = require('./../IMDB_DB_Helper').DBHelper
         var dbFrom = new DBHelper();
         //var cfg = i.utils.make()
+
         var cfg = {
             tableName: 'file',
             databasename	: 'oldRCdb',
@@ -209,12 +280,13 @@ function SanitizeNamesFromDB() {
             tableOptions:{
                 freezeTableName: true,
                 tableName: 'file',
-                timestamps:false
+                //timestamps:false
             },
             fields:{
                 episode_name:'',
                 originalFilename:'',
                 localFilePath:'',
+                serverName:'',
                 id:0,
                 fileType:'',
                 extension: '',
@@ -247,7 +319,7 @@ function SanitizeNamesFromDB() {
             tableOptions:{
                 freezeTableName: true,
                 tableName: 'file',
-                timestamps:false,
+                //timestamps:false,
                 indexes: [{unique: true, fields: ['id']}]
             },
             fields:{
@@ -256,13 +328,14 @@ function SanitizeNamesFromDB() {
                 episode_name:'',
                 show_name:'',
                 name:'',
-                localFilePath:'',
+                localFilePath:'longText',
                 imdb_id: "",
                 imdb_series_id: "",
                 seasonNumber: 0, episodeNumber: 0,
                 adminNotes:"",
                 episode:true,
                 series:true,
+                serverName:'',
 
                 //user_id: 0,
                 //year: "",
@@ -279,6 +352,7 @@ function SanitizeNamesFromDB() {
 
 
 
+        cfg.logging = true;
         self.dbTo = dbTo;
         self.dbTo.init(cfg);
         self.dbTo.createRESTHelper();
@@ -306,8 +380,9 @@ function SanitizeNamesFromDB() {
         })
         self.data.filesNormalized = filesNormalized;
 
-        if ( skipDBImport ) {
+        if ( skipDBImport || self.settings.fileImport_ClearAll ) {
             self.proc('skipDBImport')
+            sh.callIfDefined(self.settings.fxDone)
             return;
         }
 
@@ -348,8 +423,11 @@ function SanitizeNamesFromDB() {
             self.data.succOldFilePaths = {};
         }
 
-        var records =  sh.each.copyArrayItemsToItemProp(files, "localFilePath") //create fake records for game of thones
+        var records =  sh.each.copyArrayItemsToItemProp(files, "localFilePath", sh.fs.slash) //create fake records for game of thones
+        //  records = records.map(function convertToSlash(record) { relo sh.fs.slash(record.localFilePath) })
 
+        //console.log('records', records, 'is slash gone?')
+        // asdf.g
         //return
         self.processSetOfRecordFilenames(records, function onEndMega() {
             var errorRows =  self.data.errors;
@@ -596,8 +674,6 @@ function SanitizeNamesFromDB() {
         self.proc('processing dbFileRecords', dbFileRecords.length)
         var i = 0
         sh.async(dbFileRecords, function process_DbFileRecord(record, fxDone) {
-
-
                 i++;
 
                 //console.error(i,';;;', record.localFilePath)
@@ -612,6 +688,12 @@ function SanitizeNamesFromDB() {
                 }
 
                 console.error(i,';;;', record.localFilePath)
+                //console.error(i,';;;--->', record )
+
+
+
+
+
                 function fxFault_CouldNotProcessName(msg, eJSON, fileName) {
 
                     eJSON = sh.dv(eJSON, {})
@@ -635,8 +717,8 @@ function SanitizeNamesFromDB() {
                 var token = {};
                 token.record = record;
 
-                var helper = {};
-                helper.santizeName_convertFileNameToEpiAndSeasonNumber = function santizeName_convertFileNameToEpiAndSeasonNumber(t,cb) {
+                var helperAddFileToDB = {};
+                helperAddFileToDB.santizeName_convertFileNameToEpiAndSeasonNumber = function santizeName_convertFileNameToEpiAndSeasonNumber(t,cb) {
 
 
                     //  i.loadFiles(records)
@@ -694,7 +776,7 @@ function SanitizeNamesFromDB() {
                     console.log('00000000000000000000000000000000000000000000', file)
                     cb()
                 }
-                helper.getIMDBEpisodeInformation    = function getIMDBEpisodeInformation(t,cb) {
+                helperAddFileToDB.getIMDBEpisodeInformation    = function getIMDBEpisodeInformation(t,cb) {
                     var episode = token.episode;
                     var epi = JSON.parse(episode.epi);
                     /* if ( epi.s == '') {
@@ -742,30 +824,17 @@ function SanitizeNamesFromDB() {
                         , epi.s, epi.e, self.settings.getIMDBShowInformation, overrideForceDB )
 
                 };
-                helper.updateDatabase_WithEpisode   = function updateDatabase_WithEpisode(t, cbB) {
+                helperAddFileToDB.updateDatabase_WithEpisode   = function updateDatabase_WithEpisode(t, cbB) {
                     var episodeToSave = t.episode
                     //self.proc('save new show...', episodeToSave)
-                    console.log('1111111111111111111111111111111111111')
-                    //console.error('episodeToSave', episodeToSave)
+                    console.log('1111111111111111111111111111111111111');
 
-                    /*
-                     if ( episode.standaloneContent == true ) {
-                     self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest () {
-                     //self.proc('item updated');
-                     console.log('22222222222222222222222222222222222222222')
-                     cbB();
-                     });
-
-                     return;
-                     }
-                     */
-
-
-                    self.addNewEpisodeToDatabase(episodeToSave, function onCompletedTest_addNewEpisodeToDatabase () {
-                        //self.proc('item updated');
-                        console.log('22222222222222222222222222222222222222222')
-                        cbB();
-                    });
+                    self.addNewEpisodeToDatabase(episodeToSave,
+                        function onCompletedTest_addNewEpisodeToDatabase () {
+                            //self.proc('item updated');
+                            console.log('22222222222222222222222222222222222222222')
+                            cbB();
+                        });
                 }
 
                 var work = new PromiseHelper();
@@ -773,9 +842,9 @@ function SanitizeNamesFromDB() {
                 token.silentToken = true;
                 work.wait = token.simulate==false;
                 work.startChain(token)
-                    .add(helper.santizeName_convertFileNameToEpiAndSeasonNumber)
-                    .add(helper.getIMDBEpisodeInformation)
-                    .add(helper.updateDatabase_WithEpisode)
+                    .add(helperAddFileToDB.santizeName_convertFileNameToEpiAndSeasonNumber)
+                    .add(helperAddFileToDB.getIMDBEpisodeInformation)
+                    .add(helperAddFileToDB.updateDatabase_WithEpisode)
                     .add(function doneWithChain(t, cb3){
                         //console.log('done with iteration', i)
                         cb3()
@@ -836,10 +905,9 @@ function SanitizeNamesFromDB() {
             self.data.notFound = []
             self.data.foundImdbContent = []
             self.data.countFound = 0;
-            self.data.countValid = 0; 
-            self.data.countMissing = 0; 
+            self.data.countValid = 0;
+            self.data.countMissing = 0;
             self.data.imdbInfosNotFound = []
-
             if ( imdbIds) {
                 sh.async(imdbIds, function compare_IMDBINDB(imdb_id, fxDoneComparisons) {
                         var imdbInfo = imdb_id
@@ -1046,14 +1114,14 @@ function SanitizeNamesFromDB() {
 
                             if ( self.settings.fxFilterFile) {
                                 imdbInfoMatch = self.settings.fxFilterFile(imdbs)
-                               // imdbInfoMatch.localFilePath.startsWith('') //TODO match to dir name
+                                // imdbInfoMatch.localFilePath.startsWith('') //TODO match to dir name
                             }
 
                             //IOW: Get alll matchin imdb, then filter it late4r for proper match based on filename ... input?
                             //from input to settings of path?
                             if ( imdbInfoMatch ) {
                                 self.data.countValid++ //
-                                
+
                                 //sh.exit('no records in db')
                                 self.data.foundImdbContent.push(imdbInfoMatch)
                                 fxDone()
@@ -1158,16 +1226,27 @@ function SanitizeNamesFromDB() {
                     query.episodeNumber = jsonInfo.episodeNumber
                 }
             }
+
+
+
+            if ( self.settings.searchOnServerName ) {
+                query.serverName = self.settings.searchOnServerName;
+            }
+
+
+
+
             //asdf.g
             // console.error('query', query)
             //self.dbTo.dbHelper2.settings.logConsole =  self.settings.logConsole
             self.dbTo.dbHelper2.search(query, function onGetIt (objs) {
-                if ( self.settings.logConsole != false )
-                //  console.log('found results ... ' , objs)
-                    if ( objs.length > 0 ) {
-                        var oldEpisode = objs[0];
+                // if ( self.settings.logConsole != false )
+                //   console.log('{}||found results ... ' , objs)
+                //  sh.x()
+                if ( objs.length > 0 ) {
+                    var oldEpisode = objs[0];
 
-                    }
+                }
                 fxD(objs)
             },null, null, null, true)
         }
@@ -1318,6 +1397,8 @@ function SanitizeNamesFromDB() {
 
         p.utils.getTTId = function getTTId(f){
 
+
+            console.log('what is f', f)
             f = sh.fixPath(f)
             if ( f.includes('tt') == false) {
                 return null;

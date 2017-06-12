@@ -5,7 +5,7 @@
 var sh = require('shelpers').shelpers;
 var RitvHelper = require(__dirname + '/../../../ritv/node_modules/ritvHelpers/index.js').ritvHelpers;
 var rch = RitvHelper.ritvHelper;
-var SNTestWorkflow = sh.require('ritv/distillerv3/tools/santizename/wrappers/'+'SN_test_workflow.js')
+var SNTestWorkflow = sh.require('ritv/distillerv3/tools/santizename/wrappers/' + 'SN_test_workflow.js')
     .SNTestWorkflow
 
 var file_GetFileListFromRemoteScript = './WorkflowGetFilesFromRemoteMachine.js';
@@ -21,8 +21,7 @@ RC_HelperFxs.getDlDirs = function getDLDirs(dirs) {
     var breedConfig = config.breed;
 
     var dirs = config.innerSettingsMixin.dir_downloads
-    if (  sh.isWin() )
-    {
+    if (sh.isWin()) {
         dirs = config.innerSettingsMixin.dir_downloads_win
     }
 
@@ -33,7 +32,7 @@ RC_HelperFxs.getDlDirs = function getDLDirs(dirs) {
 RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput2, fxDone, dirs) {
     //
 
-    if ( dirs == null ) {
+    if (dirs == null) {
         console.log('using based irectories')
         dirs = RC_HelperFxs.getDlDirs(dirs)
     }
@@ -49,17 +48,17 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
     var fileOutput = sh.fs.makePath(__dirname, 'trash', 'output.txt')
     var fileOutputMoveTo = sh.fs.makePath(__dirname, 'trash', 'output2.txt')
 
-    if ( fileOutput2 ) {
+    if (fileOutput2) {
         fileOutputMoveTo = fileOutput2;
     }
 
     var files = [];
 
-    sh.async(dirs, function onEachDir(dir,fx) {
+    sh.async(dirs, function onEachDir(dir, fx) {
 
-        var fileStore = sh.fs.makePath(dirTrash, sh.stripBadFiles(dir)+ '.filelist.txt')
+        var fileStore = sh.fs.makePath(dirTrash, sh.stripBadFiles(dir) + '.filelist.txt')
 
-        if ( false == sh.fs.exists(dir) ) {
+        if (false == sh.fs.exists(dir)) {
             console.log('does not exist', dir)
             fx()
             return;
@@ -69,10 +68,10 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
 
         var cmd = 'dir /s /b /a >' + fileStore
 
-        if ( sh.isWin() ) {
+        if (sh.isWin()) {
 
         } else {
-            cmd = 'ls -R '+dir+' >' + fileStore
+            cmd = 'ls -R ' + dir + ' >' + fileStore
         }
 
         sh.runAsync(cmd, function onRunSync() {
@@ -84,13 +83,15 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
         console.log('file in log', dir, fileStore);
         // sh.run()
 
-    }, function onEachDirsDione(){
+    }, function onEachDirsDione() {
 
 
         sh.fs.joinFiles(files, fileOutputMoveTo)
-        if ( res ) { res.send('onGetFiles'); }
+        if (res) {
+            res.send('onGetFiles');
+        }
 
-        sh.cid(fxDone,fileOutputMoveTo )
+        sh.cid(fxDone, fileOutputMoveTo)
     })
 
 
@@ -108,7 +109,7 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
     sh.throwIfNull(fileManifest, 'need a fileManifest')
     console.log('--verifyComplete%', fileManifest, fileList);
 
-    sh.each.lineToDict =function linetodict(file) {
+    sh.each.lineToDict = function linetodict(file) {
         var file = sh.readFile(file);
         file = file.replace(/\r/g, "");
         var cfg = {};
@@ -120,7 +121,7 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
         output.lines = lines;
         //console.log('lines after', lines.length)
         var dictFiles = {}
-        sh.each(lines, function addtoLine(k,line) {
+        sh.each(lines, function addtoLine(k, line) {
             line = sh.replaceBackslash(line)
             //   var y = line.split('/');
             dictFiles[line] = line;
@@ -140,12 +141,12 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
     var itemsValid = []
     var itemsFound = []
     var foundCount = 0;
-    sh.each(json, function onJ(k,jsonObj) {
-        if (jsonObj.skip==true) {
+    sh.each(json, function onJ(k, jsonObj) {
+        if (jsonObj.skip == true) {
             return;
         }
 
-        if ( jsonObj.urlTorrent == null ) {
+        if (jsonObj.urlTorrent == null) {
             return; //don't have file
         }
 
@@ -154,12 +155,12 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
         var found = false;
 
         itemsValid.push(json)
-        sh.each(dirs, function onK(k,v) {
+        sh.each(dirs, function onK(k, v) {
             var dirC = sh.fs.join(v, 'incoming/finished/', dirRemoteMega);
-            dirC  =  sh.replaceBackslash(dirC);
+            dirC = sh.replaceBackslash(dirC);
             //console.log('------dir', dirC);
             var foundObj = dict[dirC];
-            if ( foundObj) {
+            if (foundObj) {
                 found = true;
                 itemsFound.push(json)
                 // asdf.g
@@ -183,11 +184,11 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
     output.itemsFound = itemsFound
     output.itemsValid = itemsValid;
 
-    outputLite.percent = sh.toPercent(foundCount/itemsValid.length);
+    outputLite.percent = sh.toPercent(foundCount / itemsValid.length);
 
     sh.copyProps(outputLite, output)
 
-    output.output = sh.join(output.foundCount+'/'+
+    output.output = sh.join(output.foundCount + '/' +
         output.expectedCount, output.percent);
 
     sh.callIfDefined(fxDone, output, outputLite)
@@ -196,18 +197,9 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
 }
 
 RC_HelperFxs.checkPercentageCompleteDeep =
-    function checkPercentageCompleteDeep(fileDlManifest, fileListOfFiles, fxDone) {
-        SNTestWorkflow.testWorkflow(fileDlManifest, fileListOfFiles, function onDone1(output, lite) {
-            console.log('testWorkflow', 'done')
-            //asdf.g
-            //var line = sh.clone(output)
-
-            sh.cid(fxDone,output, lite)
-            return;
-            console.log('found how many?', output.foundCount);
-            sh.throwIf(output.foundCount != 2, 'did not match write count of items');
-        });
-        return;
+    function checkPercentageCompleteDeep(cfg) {
+        SNTestWorkflow.testWorkflow(cfg)
+        return
     }
 
 RC_HelperFxs.getFileListUsingSockets =
@@ -227,7 +219,7 @@ RC_HelperFxs.getFileListUsingSockets =
 
             return;
             self.proc('sending a result back.....')
-            if ( instance.data.socket && self.data.socketBreed == null ) {
+            if (instance.data.socket && self.data.socketBreed == null) {
                 self.data.socketBreed = instance.data.socket;
             }
         }
@@ -240,9 +232,8 @@ RC_HelperFxs.getFileListUsingSockets =
 exports.RC_HelperFxs = RC_HelperFxs;
 exports.RCScripts = RC_HelperFxs;
 
-if ( module.parent == null ) {
+if (module.parent == null) {
     RC_HelperFxs.runX
-
 
 
     var dirTrash = sh.fs.makePath(__dirname, 'trash')
@@ -253,6 +244,14 @@ if ( module.parent == null ) {
     var fileListOfFiles = fileOutputMoveTo
     var fileDlManifest = 'G:/Dropbox/projects/crypto/mp/RCExt/manifests/listIds_ls051393312.json'
 
+
+    var fileListOfFiles = fileOutputMoveTo
+    var fileDlManifest = 'G:/Dropbox/projects/crypto/mp/RCExt/manifests/listIds_ls051393312.json'
+    var fileDlManifestLite = 'G:/Dropbox/projects/crypto/mp/RCExt/testData/listIds_ls051393312.lite.json'
+    
+    fileListOfFiles = "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_6024_.txt"
+    fileListOfFilesZZZ = "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_ZZZZ_.txt"
+    fileDlManifest = "G:\\Dropbox\\projects\\crypto\\ritv/imdb_movie_scraper/IMDB_App_Output/dlListsWrapC/List ls Ids_ls05139_11.json"
 
     function fx1() {
         RC_HelperFxs.verifyComplete(fileDlManifest, fileOutputMoveTo, function onDone(output, lite) {
@@ -273,20 +272,86 @@ if ( module.parent == null ) {
      */
 
 
+    function testCheckPercentage_Deep() {
+        var cfg = {}
+        cfg.fileList = fileListOfFiles
+        cfg.fileManifest = fileDlManifest
+        cfg.fxDone = function onDone(fileOutput, lite) {
+            //asdf.g
+            console.error(lite)
+            //  console.log('onDone fx2 zzzfile output', fileOutput);
 
-    function fx2() {
-        RC_HelperFxs.checkPercentageCompleteDeep(fileDlManifest,
-            fileListOfFiles, function onDone(fileOutput, lite) {
-              //asdf.g
-               console.error(lite)
-                console.log('onDone fx2 zzzfile output', fileOutput);
-                //  asdf.g
-                //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
-            }, null);
+
+            //asdf.g
+
+
+            //  asdf.g
+            //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+        };
+
+        //cfg.searchGlobalAllServers = true;
+
+
+        cfg.checkFileSizes = true; //import the size in the filelist
+        //make dl list get the import dl list
+        cfg.checkForIMDB = true; //
+        cfg.checkForFilePath = true; //match if ay portion is in file name ///so it would not concern with the end of file name ...
+        //that's enough
+
+        RC_HelperFxs.checkPercentageCompleteDeep(cfg);
     }
 
 
-    fx2()
+    //testCheckPercentage_Deep()
+
+
+    function testCheckPercentage_Deep2() {
+        var cfg = {}
+        cfg.fileList = fileListOfFilesZZZ
+        cfg.fileManifest = fileDlManifestLite
+
+        cfg.fxDone = function onDone(data2) {
+            if ( data2 == null ) { data2 = {}}
+          //  sh.x('kko')
+            //console.error(data2)
+           // sh.x('kko')
+
+
+
+            var cfg = {}
+            cfg.fileList = fileListOfFilesZZZ
+            cfg.fileManifest = fileDlManifestLite
+            cfg.fxDone = function onDone(data) {
+                console.error(sh.n, sh.n, sh.n, sh.n)
+                console.error(data2.countFound, data.countFound)
+                console.error(data2.countDLList, data.countDLList)
+                console.error(data2.countNA, data.countNA)
+                console.error(data2.percentValid, data.percentValid)
+                sh.x('zzz999')
+                //sh.x('kko')
+            };
+            cfg.doNotImport_fileList = true;
+            cfg.checkFileSizes = true; //import the size in the filelist
+            cfg.searchAllServers = true
+            RC_HelperFxs.checkPercentageCompleteDeep(cfg);
+
+        };
+      //  cfg.fxDone()
+       // return;
+
+        //cfg.searchGlobalAllServers = true;
+        cfg.doNotImport_fileList = true;
+        cfg.checkFileSizes = true; //import the size in the filelist
+        //make dl list get the import dl list
+        cfg.checkForIMDB = true; //
+        cfg.checkForFilePath = true; //match if ay portion is in file name ///so it would not concern with the end of file name ...
+        //that's enough
+        //cfg.searchOnServerName = 'http___localhost_6024_.txt'
+        RC_HelperFxs.checkPercentageCompleteDeep(cfg);
+    }
+
+    testCheckPercentage_Deep2()
+
 
     /*
      RCScripts.verifyComplete(fileDlManifest, fileOutputMoveTo, function onDone(output) {

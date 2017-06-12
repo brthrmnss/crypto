@@ -1556,6 +1556,7 @@ function onInitDB() {
 
             return;
         }
+
         p.createVerifyBlock = function createVerifyBlock() {
 
             var divParent = $('#divSaveArea');
@@ -1604,7 +1605,6 @@ function onInitDB() {
 
             self.data.forwardOutputType = {};
             self.types.dlRemoteFileList = 'dlRemoteFileList';
-
 
             var downloadButtonData =   {
                 url:self.getValFrom(self.data.ui.txtBreedServerUrl),
@@ -1661,6 +1661,93 @@ function onInitDB() {
                 text:''})
             self.data.ui.txtDlRemoteFileListStatus = uiUtils.lastId();
             u.br()
+
+
+
+
+            var widthIndent = 72
+            function addNewMethods() {
+                uiUtils.spacer({width:widthIndent});
+                self.types.taskCheckProgressLite = 'taskClearLocalDB';
+                uiUtils.addBtn({
+                        title: 'Task Clear  Local DB',
+                        text: 'Status',
+                        html: uiUtils.glyph('remove'),
+                        fxClick: self.onServerTask,
+                        data: {
+                            url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                            ip:self.data.ip,
+                            port:self.data.portHoist2,
+                            cmd: self.types.taskCheckProgressLite
+                        }
+                    }
+                )
+                uiUtils.spacerSlim();
+
+                self.types.taskCheckProgressLite = 'taskImportIntoLocalDB';
+                uiUtils.addBtn({
+                        title: 'Task Import into Local DB',
+                        text: 'Status',
+                        html: uiUtils.glyph('upload'),
+                        fxClick: self.onServerTask,
+                        data: {
+                            url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                            ip:self.data.ip,
+                            port:self.data.portHoist2,
+                            cmd: self.types.taskCheckProgressLite
+                        }
+                    }
+                )
+                uiUtils.spacerSlim();
+
+
+                u.br()
+            }
+
+
+            addNewMethods()
+
+
+            function addManiFilterMethods() {
+                uiUtils.spacer({width:widthIndent});
+                self.types.taskCheckProgressLite = 'taskFilterManifestLocally';
+                uiUtils.addBtn({
+                        title: 'Filter Manifest Locally',
+                        text: 'Status',
+                        html: uiUtils.glyph('modal-window'),
+                        fxClick: self.onServerTask,
+                        data: {
+                            url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                            ip:self.data.ip,
+                            port:self.data.portHoist2,
+                            cmd: self.types.taskCheckProgressLite
+                        }
+                    }
+                )
+                uiUtils.spacerSlim();
+
+                self.types.taskCheckProgressLite = 'taskFilterManifestGlobally';
+                uiUtils.addBtn({
+                        title: 'Filter Manifest Globally',
+                        text: 'Status',
+                        html: uiUtils.glyph('globe'),
+                        fxClick: self.onServerTask,
+                        data: {
+                            url:self.getValFrom(self.data.ui.txtBreedServerUrl),
+                            ip:self.data.ip,
+                            port:self.data.portHoist2,
+                            cmd: self.types.taskCheckProgressLite
+                        }
+                    }
+                )
+                uiUtils.spacerSlim();
+
+
+                u.br()
+            }
+
+
+            addManiFilterMethods()
 
 
             uiUtils.collector.start()

@@ -58,8 +58,9 @@ function IMDB_DB_Helper() {
 
 
         config = sh.dv(config, {})
-        if ( config.logging == null )
-            config.logging = false;
+        config.logging = sh.dv(config.logging, false)
+        //if ( config.logging == null )
+        //    config.logging = false;
 
 
         self.settings = config;
@@ -95,6 +96,8 @@ function IMDB_DB_Helper() {
         //enable sql logging
         config.logging = console.log
 
+
+
         var configDB = {
             host: cluster_settings.mysql.ip,
             port: cluster_settings.mysql.port,
@@ -103,9 +106,11 @@ function IMDB_DB_Helper() {
             password: cluster_settings.mysql.password,
             logging: config.logging
         }
+//asdf.g
 
-
-        if ( self.settings.dbg )
+        var showConfig= true
+        showConfig = false;
+        if ( self.settings.dbg  || showConfig)
             console.log('config---', m, configDB)
         self.cfg = configDB;
 
@@ -460,11 +465,11 @@ function IMDB_DB_Helper() {
                 //port:self.settings.port,
                 cfg: {db: self.cfg},
                 settings:self.settings,
-                logging:false
+                logging:false //.logging for rcLive imdb.logging
             }
         );
         //sh.exit('what is logging', self.breadcrumbs.logging)
-        self.breadcrumbs.logging = false;
+        //self.breadcrumbs.logging = false;
 
         self.sequelize = self.breadcrumbs.sequelize;
         self.Table = self.breadcrumbs.Table;
@@ -777,7 +782,7 @@ function IMDB_DB_Helper() {
 
             //debugQuery = true
 
-            console.log('-->fullQuery', 'agasint oldrcdb?',self.Table.name,  'todo:why?', fullQuery)
+            console.log('-->fullQuery', 'agasint oldrcdb?',  self.cfg, self.Table.name,  'todo:why?', fullQuery)
 
 
             //console.log('-->fullQuery', self.Table)

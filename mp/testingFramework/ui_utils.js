@@ -535,7 +535,9 @@ function defineUtils() {
             lbl.css('width', cfg.width);
             lbl.css('display', 'inline-block');
         }
-        lbl.css('user-select', 'none');
+        if ( cfg.unselectable ) {
+            lbl.css('user-select', 'none');
+        }
         u.addUI(cfg, lbl);
         return cfg;
     }

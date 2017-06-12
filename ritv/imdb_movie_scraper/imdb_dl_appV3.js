@@ -163,6 +163,7 @@ function imdb_dl_app() {
         //settings.saveToJSON = true; //do u really need this?
         ss.year = year;
         ss.yearEnd = yearEnd;
+        ss.years = self.settings.years;
         ss.output = 'tv_top_150_list.json';
         var defaultName = false;
         if (defaultName) {
@@ -202,15 +203,15 @@ function imdb_dl_app() {
             }
         }
         /*if ( self.settings.fileOutput ) {
-            //  asdf.g
-            //bookmark.outptu changed
-            self.output = null;
-            //ss.output = self.settings.output;
-            if ( self.settings.fileOutput.includes('/') == false  ) {
-                self.settings.fileOutput = sh.fs.makePath(/!*__dirname, *!/'IMDB_App_Output', self.settings.fileOutput);
-                ss.output = self.settings.fileOutput;
-            }
-        }*/
+         //  asdf.g
+         //bookmark.outptu changed
+         self.output = null;
+         //ss.output = self.settings.output;
+         if ( self.settings.fileOutput.includes('/') == false  ) {
+         self.settings.fileOutput = sh.fs.makePath(/!*__dirname, *!/'IMDB_App_Output', self.settings.fileOutput);
+         ss.output = self.settings.fileOutput;
+         }
+         }*/
         //    asdf.g
         console.log('downloadListOfIMDBIds', ss.output, query);
 
@@ -380,6 +381,11 @@ function imdb_dl_app() {
 
 
         var list = JSON.parse(sh.readFile(fileOutput));
+        
+        //add numbers to easy coun ting
+        sh.each(list, function onAddNumbers(k,item) {
+            item.index = k;
+        })
 
         //augment to json epsidoe einformation
 
@@ -393,9 +399,15 @@ function imdb_dl_app() {
 
         if ( self.settings.maxImdbListSize) {
             list = list.slice(0, self.settings.maxImdbListSize);
-            self.proc('maxImdbListSize', 'clipping size', self.settings.maxImdbListSize)
+            self.proc('maxImdbListSize', 'clipping size', self.settings.maxImdbListSize, list.length)
+            // asdf.g
         }
 
+
+
+
+        //self.createDlList();
+       // return;
 
         //sh.writeFile(fileOutput + '.b4.episodes.json', sh.toJSONString(list));
         var options = {};
@@ -403,17 +415,18 @@ function imdb_dl_app() {
         options.skipBadIds = true
         optionsClone = sh.clone(options);
         imdb_api_get_content.get_episodes(list, function done(o) {
-            self.proc('done....', optionsClone)
+            self.proc('done....', optionsClone, fileOutput)
             function saveEachFile() {
                 sh.each(o, function saveEachFileEpisode(imdb, showJSON) {
                     if ( showJSON.series === false ) {
                         return // skip movies (they have no expidoes)
                     }
+                    sh.fs.mkdirp(self.settings.output_espidoes_dir);
                     var fileName = /*__dirname + '/'+*/ self.settings.output_espidoes_dir + '/' + imdb + '.json'
                     sh.writeFile(fileName, sh.toJSONString(showJSON))
                 })
             }
-
+            //asdf.g
             saveEachFile();
             sh.writeFile(fileOutput, sh.toJSONString(list));
 
@@ -436,7 +449,11 @@ function imdb_dl_app() {
 
         if ( self.settings.stopAfterGetIMDB ) {
             self.proc('stopAfterGetIMDB')
-            self.proc(self.dlSettings.output)
+            //asdf.g
+            //self.proc('ok.......', self.settings.fxDone)
+            if (self.settings.fxDone)
+                console.log('createDLList', 'done and', self.settings.fxDone.name)
+            // asdf.g
             sh.callIfDefined(self.settings.fxDone, self.dlSettings.output)
             return;
         }

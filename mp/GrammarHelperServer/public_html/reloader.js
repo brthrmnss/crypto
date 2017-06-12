@@ -135,6 +135,19 @@ window.fxInvoke = function (classToUpdate) {
         })
     }
 
+    if ( reloader.reloadWhensTestFxs ) {
+        $.each(reloader.reloadWhensTestFxs, function onReloadWhenFxs(i, reloadWhenFxObj) {
+            var match =  reloadWhenFxObj.fxTest( classToUpdate, classToUpdate.toLowerCase() )
+            if ( match ) {
+                var result = reloadWhenFxObj.fx(classToUpdate)
+                if ( result == true ) {
+                    console.log('last match')
+                    return false; //break out of loop
+                }
+            }
+        })
+    }
+
 }
 
 if ( typeof $ === 'undefined') {
@@ -229,7 +242,10 @@ reloader.reloadWhenFx = function reloadWhenFx(asdf,fx){
     reloader.reloadWhensFxs.push({file:asdf, fx:fx});
 }
 
-
+reloader.reloadWhensTestFxs = [];
+reloader.reloadWhenTestFx = function reloadWhenTestFx(fxTest,fx){
+    reloader.reloadWhensTestFxs.push({fxTest:fxTest, fx:fx});
+}
 
 reloader.dictRemappingReloadFileUrls = {};
 reloader.addReloadMapping = function addReloadMapping(path,replaceWith){

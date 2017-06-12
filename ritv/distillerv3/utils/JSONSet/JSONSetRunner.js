@@ -53,9 +53,10 @@ exports.JSONSetRunner.runSet = function runSet(fileInput, fileIterator, cfg ){
     function runTask() {
 
         var fxDoneOriginal = cfg.fxDone; 
-        console.error('running')
+        console.error('running JSONSetRunner')
         function finishedTask() {
-            console.error('running done')
+            console.error('JSONSetRunnerFinished done')
+            console.error('JSONSetRunnerFinished arguments', arguments)
             JSONSetRunner.sch.nextTask();
             var args = sh.convertArgumentsToArray(arguments)
             sh.callIfDefined2(fxDoneOriginal, arguments)

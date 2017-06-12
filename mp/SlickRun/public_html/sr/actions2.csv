@@ -47,6 +47,7 @@ getpocket,|pocket
 weather,https://www.google.com/search?q=weatherh&oq=weatherh+&aqs=chrome..69i57.745j0j7&sourceid=chrome&ie=UTF-8#q=weather+10036
 news,https://news.google.com/news?hl=en&pz=1&ftcl=true&zx=4jsatqrgp9xo&pog=false
 
+hackernewstop,https://news.ycombinator.com/best
 
 gtbreeddb,nodejsruntime gthk "BDB TT" "http://localhost:6018/index.html567.html"
 editbreeddb,nodejsruntime gtwebstorm "crypto - [G" "partial:db2_ui.js"
@@ -70,7 +71,7 @@ gmail,nodejsruntime gthk "morrisonstephen@gmail.com" "https://mail.google.com/ma
 gtdating,http://localhost:10110/g/datingsim/index.html
 
 listbookstoread,evernote:///view/1269954/s11/6cba0ac4-2db0-453a-b34f-c7923942acb7/6cba0ac4-2db0-453a-b34f-c7923942acb7/
-
+mpreader,evernote:///view/1269954/s11/b61e2b31-162c-484e-8e70-25672e212b63/b61e2b31-162c-484e-8e70-25672e212b63/
 
 #comment line
 #> means use many aliases until the end
@@ -173,9 +174,10 @@ gtccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webs
 gtactions,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-actions.ahk
 gtactions,nodejsruntime gtwebstorm "crypto - [G" "partial:G:\Dropbox\projects\crypto\mp\SlickRun\public_html\sr\actions2.csv"
 editactions,|gtactions
+edit,|gtactions
 gtrdk,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-rdk.ahk
 gtdev,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev.ahk
-editgotos,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\editahkgotos.ahk
+editgotos,|editactions
 gteditgotos,|editgotos
 p4,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\gtp4.ahk
 
@@ -196,3 +198,15 @@ startlayoutmanager,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJav
 
 
 gttestccrt,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell\goto\gt_editccrt.ahk
+
+babylonjs,nodejsruntime gthk "http://127.0.0.1:8080/epubV2.html/Babylon.js%20Essentials%20-%20Unknown.epub" "http://127.0.0.1:8080/epubV2.html/Babylon.js%20Essentials%20-%20Unknown.epub"
+
+finetune,https://system.1dollarscan.com/tunelablist.php
+orderhistory,https://system.1dollarscan.com/history.php
+
+
+pid3,http://localhost:10110/g/pid3/index.html
+calmtech,http://localhost:10110/g/calmtech/index.html
+xtech,http://localhost:10110/g/cleanmobileapp/index.html
+
+epubv2,http://127.0.0.1:8080/epubv2.html

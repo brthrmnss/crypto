@@ -298,6 +298,7 @@ function RCConfigExecServer() {
             }
             var cfg = {}
             cfg.file = file;
+            self.proc('file', file)
             self.data.openFile.init(cfg);
 
             res.send('opened ....');
@@ -695,6 +696,10 @@ function RCConfigExecServer() {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
                     fx.data.fileDLManifest = file;
+                    var fileMissing = file+'.missing.json';
+                    //clear
+                    self.proc('do have file', sh.fs.exists(fileMissing), fileMissing)
+                    sh.fs.delete(fileMissing, true)
                     self.cmds.sendStatus('file is ' + file)
                     self.cmds.sendStatus('finished making manifest')
                     cb();
@@ -987,7 +992,15 @@ function RCConfigExecServer() {
 
 
         p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
-            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+            console.log('.....!@ddddd9999#d$', 'sanitizeFileList',
+                exports.RCExtV, self.data.id)
+            //why: will import files into db, 
+            //will search manifest for files in db 
+            
+            //2 check globally for path of file
+            //make test dmoe file 
+            //see if it can find fake demo file 
+            
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
 
             //var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
@@ -1007,7 +1020,7 @@ function RCConfigExecServer() {
              }
              */
 
-            console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
+            self.proc('fileFileList', '<<<<<<<<<<<', fileFileList)
 
             self.cmds.sendStatus('running tool');
 
@@ -1015,21 +1028,42 @@ function RCConfigExecServer() {
             self.cmds.sendStatus('running sanitizeFileList', type);
 
 
-            RCScripts.checkPercentageCompleteDeep(fileDlManifest, fileFileList, function onDone(output) {
+            
+            var cfg = {}
+
+            cfg.fileList = fileFileList
+            cfg.fileManifest = fileDlManifest
+
+            cfg.fxDone =  function onDone(output) {
                 console.log('found how many?', output.foundCount);
                 output.itemsValid = null;
                 output.itemsFound = null;
-               // output.lines = output.lines.length
+                // output.lines = output.lines.length
                 //sh.throwIf(output.foundCount != 2, 'did not match write count of items');\
                 var outputLite = self.utils.flatten(output)
                 outputLite.output = JSON.stringify(outputLite)
 
 
+                if (self.data.createFilteredList) {
+                    var fileDlRecManifest=fileDlManifest+'.recipet.json'
+                }
+
                 console.log('xoutput', outputLite)
 
                 fx(output);
                 self.cmds.sendStatus('done with sanitizeFileList '+ output.foundCount, type, outputLite);
-            });
+            }
+            //cfg.searchGlobalAllServers = true;
+
+/*
+            cfg.checkFileSizes = true; //import the size in the filelist 
+            //make dl list get the import dl list
+            cfg.checkForIMDB = true; //
+            cfg.checkForFilePath = true; //match if ay portion is in file name ///so it would not concern with the end of file name ... 
+            //that's enough 
+            */
+            
+            RCScripts.checkPercentageCompleteDeep(cfg);
 
             return;
         }
@@ -1075,8 +1109,9 @@ function RCConfigExecServer() {
         
         p.cmds.uploadAndRun = function uploadAndRun(cmd, fx) {
             self.proc('.....!@uploadAndRun#d$', exports.RCExtV, self.data.id)
-            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
+            var fileDlManifest  = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
             //var fileDlRecManifest=fileDlManifest+'.recipet.json'
+            var fileDlManifestMissingFilesOnly = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest+'.missing.json')
 
             console.log('fileFileList', '<<<<<<<<<<<', fileDlManifest)
 
@@ -1089,13 +1124,19 @@ function RCConfigExecServer() {
                 self.cmds.sendStatus('FAILED .... do the import first ', type);
                 return;
             }
+            
+            if ( sh.fs.exists(fileDlManifestMissingFilesOnly) ) {
+                self.proc('...', 'fileDlManifestMissingFilesOnly')
+                fileDlManifest = fileDlManifestMissingFilesOnly
+                self.cmds.sendStatus('running uploadAndRun with fileDlManifestMissingFilesOnly file---', type);
+            }
 
-            var cfg = sh.clone(cmd)
-            cfg.fileManifest = fileDlManifest;
-            cfg.ip = cmd.ip;
-            cfg.port = cmd.port;
+            var cfg             = sh.clone(cmd);
+            cfg.fileManifest    = fileDlManifest;
+            cfg.ip              = cmd.ip;
+            cfg.port            = cmd.port;
             delete cfg.url;
-            cfg.socket = self.data.socketBreed2;
+            cfg.socket          = self.data.socketBreed2;
             console.log('111what is socket', cfg.socket)
 
             Workflow_UploadAndRun.uploadAndRun(cfg,  function onDone(output) {

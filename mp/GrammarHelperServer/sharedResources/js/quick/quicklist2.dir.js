@@ -80,6 +80,52 @@
             if ( config.fxRender ) {
               config.fxRender(utils, config);
             }
+              
+              
+              if ( utils.dev == null ) {
+                  utils.dev = {};
+                  utils.dev.getContent = function getContentFromDevTemplate(jq) {
+                      return utils.contentDev.find(jq)
+                  }
+                  utils.template = {};
+                  utils.template.getContent = function getContentFromComponentTemplate(jq) {
+                      return utils.contentDefault.find(jq)
+                  }
+
+              }
+
+
+
+           /*   if ( config.useTemplate == null ) {
+                  console.error('fxRender', 'useTemplate',  config.useTemplate )
+
+
+                  debugger
+                  var defaultPartial = utils.template.getContent('partial')
+                  if ( defaultPartial.length > 0 ) {
+                      //var fromContent = utils.template.getContent('list_'+cfgCrud.useTemplate)
+                      var fxName = 'fxRender'
+                      //utils.showElements()
+
+                      var to = '#listContent'
+                      tH2.templateContent.find(to).html('');
+                      tH2.templateContent.find(to).append(defaultPartial.clone());
+                  }
+                 // var defaultPartial = utils.template.getContent('list_'+cfgCrud.useTemplate)
+                 /!* if ( fromContent.length == 0 ) {
+                      console.error('could not find it....', 'useTemplate',  fromContent )
+                      return;
+                  }
+*!/
+                  console.error('fxRender', 'useTemplate',  defaultPartial )
+
+
+
+                  //debugger
+              }
+              
+              */
+              
             attrs.maxHeight = sh.dv(attrs.maxHeight,  config.maxHeight );
             //console.error('l', attrs.maxHeight, config);
             //if max height

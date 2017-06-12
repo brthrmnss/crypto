@@ -92,15 +92,30 @@ function ConvertXToIMDB_PB_List() {
         }
 
         if ( self.settings.skipIfListExists ) {
-            if ( sh.fs.exists(self.data.fileOutputDlList)) {
+            if ( sh.fs.exists(self.data.fileOutputDlList) ) {
                 self.proc('found existing file for ', listId);
                 self.data.skipToDl = true;
                 if ( self.data.skipToDl ) {
                     self.chain.nextLink();
                     return;
                 }
+            } else {
+                self.proc('file doe snto exist ... oik')
             }
         }
+        self.proc(self.settings.skipIfListExists, self.data.fileOutputDlList)
+
+
+        if ( self.settings.skipFirstFile ) {
+            self.data.filename = self.settings.skipFirstFile;
+            self.proc('found existing file for ', self.data.filename);
+            self.chain.nextLink();
+            return;
+        }
+
+        //sdfsdf.g
+
+        //     asdf.skipIfListExists
 
         //console.log('what', self.data.fileOutputDlList)
         //sh.exit()
@@ -168,7 +183,7 @@ function ConvertXToIMDB_PB_List() {
 
         imdb2MegaConfig.fxDone = function onDoneGettingList(filename) {
             self.data.filename = filename;
-            console.log('filename', filename)
+            console.log('onDoneGettingList', 'filename', filename)
 
             self.data.calledTimes++;
             if ( self.settings.urlList ) {
@@ -219,15 +234,20 @@ function ConvertXToIMDB_PB_List() {
         var skipAll = false;
         //skipAll = true;
 
+        self.proc('what is file', self.data.filename)
+        //return;
+
         r.addToFile(
             {
                 fileInput: self.data.filename,
                 fxDone: function onFinishedConvert(file, itP) {
                     //asdf.g
                     //asdf.g
+                    self.proc('output of the list ', file)
+                    self.proc('file is out in', self.data.fileOutputDlMagsList)
                     sh.fs.copy(file, self.data.fileOutputDlMagsList, true);
                     //
-                    self.proc('file is out in', self.data.fileOutputDlMagsList)
+                    //asdf.f
                     //asdf.g
                     self.chain.cb();
                     //process.exit();
@@ -245,27 +265,72 @@ function ConvertXToIMDB_PB_List() {
     p.step3_postProcessList = function step3_postProcessList() {
         var index = 0;
         var dictIds = {};
+        var dictSeriesNamesWithIds = {};
         var skippedCount = 0;
+        var missingNames = [];
+        var namesFound = [];
 
         sh.fs.exists(self.data.fileOutputDlMagsList, 'could not find the mag output file')
         //sh.exit('what is the list sent', listZ)
-        var json = sh.readJSONFile(self.data.fileOutputDlMagsList)
+        var jsonDLManifestItems = sh.readJSONFile(self.data.fileOutputDlMagsList)
+
+        var totalSize = 0;
+
         var fileContents = [];
-        sh.each(json, function processItem(k,item) {
+        sh.each(jsonDLManifestItems, function removeDuplicates(k,item) {
             var match = dictIds[item.imdb_id];
+            if  ( item.urlTorrentNotFound ) {
+                missingNames.push(item.title+' | '+item.name)
+            } else {
+                namesFound.push(item.title+' | '+item.name)
+            }
             if ( match ) {
-                //console.log('skipped', item.name)
-                skippedCount++
-                return;
+                var isDupe = true;
+                if ( item.series) { //tv shows can have same id, but must have differetn name
+                    if ( item.name == null ) {
+                        sh.throw('what is name null, is this skip?')
+                    }
+                    var keyInSeries = item.imdb_id +'_' + item.name
+                    var existing = dictSeriesNamesWithIds[keyInSeries]
+                    if ( existing  == null ) {
+                        dictSeriesNamesWithIds[keyInSeries] = item
+                        isDupe = false
+                    }
+                }
+                if ( isDupe ) {
+                    //console.log('skipped', item.name)
+                    item.filteredDupe = true
+                    item.filteredDupeReason = 'imdb the same'
+                    skippedCount++
+                    return;
+                }
             }
             dictIds[item.imdb_id] = item;
             fileContents.push(item)
             index++;
             item.genIndex = index;
+            if ( item.size )
+            totalSize += item.size;
+
+
+
         })
         self.data.fileContents = fileContents;
 
-        self.proc('processed list', ' x items', index, 'skipped', skippedCount)
+        self.data.fileOutputDlMagsList_DupeFiltered3 = self.data.fileOutputDlMagsList+'.dupe.filtered3.json'
+        sh.writeJSONFile(self.data.fileOutputDlMagsList_DupeFiltered3, jsonDLManifestItems)
+        self.proc('processed list', ' x items', index, 'skipped', skippedCount, sh.percent(skippedCount/jsonDLManifestItems.length))
+        self.proc('at processed list', ' skipped dupe id items here-->', self.data.fileOutputDlMagsList_DupeFiltered3)
+        sh.log.file(self.data.fileOutputDlMagsList_DupeFiltered3)
+
+
+        self.data.fileOutputDlMagsList_missing = self.data.fileOutputDlMagsList+'.missing.json'
+        sh.writeJSONFile(self.data.fileOutputDlMagsList_missing, missingNames)
+        self.data.fileOutputDlMagsList_missing = self.data.fileOutputDlMagsList+'.namesFound.json'
+        sh.writeJSONFile(self.data.fileOutputDlMagsList_missing, namesFound)
+
+
+        self.proc('totalSize', totalSize);
 
         //seasons
         self.chain.cb()
@@ -296,6 +361,14 @@ function ConvertXToIMDB_PB_List() {
 
         }
 
+
+
+
+ 
+
+        //sh.log.file(__filename)
+
+       // sh.log.file(__dirname)
         //G:\Dropbox\projects\crypto\ritv\distillerv3\utils\JSONSet\TaskContentLists_CombineFilesInOuputDir.js
         self.chain.cb()
         sh.callIfDefined(self.settings.fxDone, self.data.fileOutputDlMagsList, self)
@@ -703,6 +776,47 @@ if (module.parent == null) {
         }
 
 
+        p.getMetaFromUrl = function getMetaFromUrl() {
+            var skipIfListExists = false;
+            skipIfListExists = true
+            // var fileOutputName = 'bestMovies-1994-1996-5'
+            var dlConfig = {
+                "contentType": "tv",
+                "type": "tv",
+                "maxImdbListSize": 100,
+                "sortType": "Popularity",
+                //"yearStart": "1994",
+                //"yearEnd": "2017",
+                // "years": "1994,555555",
+                //"yearEnd": "2017",
+                "cmd": "listids",
+                "wrapType": "imdbSearch",
+                "listIds": [],
+                "taskName": "imdbSearch_top_tv.json"
+            }
+
+            //var dlConfig = {}
+            dlConfig.year = 2017;
+            dlConfig.yearEnd = 2017;
+            dlConfig.years = 'were2017';
+            dlConfig.maxImdbListSize = null
+            //   dlConfig.maxImdbListSize = 5
+            //  dlConfig.type = "movies"
+
+            var fileOutputName = dlConfig.taskName
+            fileOutputName = 'top250-show-manual';
+            var imdbAppConfig = ConvertXToIMDB_PB_List.createIMDBList_fromSearch(dlConfig,
+                skipIfListExists, fileOutputName,
+                function onSaved(file) {
+                    console.log('onDlConfig', file, '...')
+                    sh.log.file(file)
+                    //asdf.g
+                })
+            // imdbAppConfig.getIMDBMetaDataOnly = true;
+            //imdbAppConfig.skipIfListExists = true;
+           // imdbAppConfig.skipFirstFile = 'g:\\Dropbox\\projects\\crypto\\ritv\\imdb_movie_scraper\\IMDB_App_Output/tv_top_250_2017_2017_rating.json.bak'
+        }
+
         function defineUtils() {
             var utils = {};
             p.utils = utils;
@@ -730,7 +844,8 @@ if (module.parent == null) {
     //instance.onDlLists();
     // instance.getMetaFromSearchParameters();
     // instance.getMetaFromSearchParameters_Movies();
-    instance.getMetaFromSearchParameters_RCE();
+    //instance.getMetaFromSearchParameters_RCE();
+    instance.getMetaFromUrl();
 
 }
  

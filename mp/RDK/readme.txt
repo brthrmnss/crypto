@@ -1,0 +1,3 @@
+
+open the py.py item
+run testpython2.js ....

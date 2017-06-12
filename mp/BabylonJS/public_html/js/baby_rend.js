@@ -21,6 +21,7 @@ function BabyRend() {
 
         // load the 3D engine
         var engine = new BABYLON.Engine(canvas, true);
+        self.data.engine = engine;
         self.data.x.engine = engine;
         // createScene function that creates and return the scene
 
@@ -43,6 +44,7 @@ function BabyRend() {
     p.createScene = function createScene() {
         var canvas = self.data.x.canvas;
 
+
         //debugger;
         // create a basic BJS Scene object
         var scene = new BABYLON.Scene(self.data.x.engine);
@@ -56,6 +58,92 @@ function BabyRend() {
         // attach the camera to the canvas
         camera.attachControl(canvas, false);
         BabyLib.camera = camera;
+
+
+
+        this._camera = self.data.x.camera;
+        //var blurH = new BABYLON.BlurPostProcess("blurH", new BABYLON.Vector2(1, 0), 2, 0.5, this._camera);
+        //var blurV = new BABYLON.BlurPostProcess("blurV", new BABYLON.Vector2(0, 1), 4, 0.5, this._camera);
+        //var bw = new BABYLON.BlackAndWhitePostProcess("bw", 1.0, this._camera);
+
+
+        //var postProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, null, null, self.data.engine, true);
+
+
+        var engine = self.data.engine;
+
+        //var postProcess = new BABYLON.BlackAndWhitePostProcess("bandw", 1.0, this._camera); //, null, engine, true);
+
+        var sepiaKernelMatrix = BABYLON.Matrix.FromValues(
+            0.393, 0.349, 0.272, 0,
+            0.769, 0.686, 0.534, 0,
+            0.189, 0.168, 0.131, 0, 
+            0, 0, 0, 0
+        );
+      //  var postProcess = new BABYLON.ConvolutionPostProcess("Sepia", sepiaKernelMatrix, 1.0,  this._camera, null, null, true);
+        //var postProcess = new BABYLON.FxaaPostProcess("fxaa", 1.0, this._camera, null, self.data.engine, true);
+
+       // var postProcess = new BABYLON.ColorCorrectionPostProcess("color_correction",
+      //      "./js/color_correction_poisterize.png", 1.0,  this._camera, null, engine, true);
+       // var postProcess = new BABYLON.ColorCorrectionPostProcess("color_correction",
+        //    "./js/color_correction_inverted.png", 1.0,  this._camera, null, engine, true);
+
+        //var postProcess = new BABYLON.PostProcess("Down sample", "XShader.txt", ["screenSize", "highlightThreshold"], null, 0.25, null, BABYLON.Texture.BILINEAR_SAMPLINGMODE, engine, true);
+       // console.error('...')
+
+
+        //http://localhost:6015/Scenes/Customs/postprocesses/compose.fragment.fx
+
+        function setupFrax() {
+            
+            
+            
+            var blurWidth = 1.0;
+
+            var postProcess0 = new BABYLON.PassPostProcess("Scene copy", 1.0, camera);
+            var postProcess1 = new BABYLON.PostProcess("Down sample", "XShader.txt", ["screenSize", "highlightThreshold"], null, 0.25, camera, BABYLON.Texture.BILINEAR_SAMPLINGMODE);
+            postProcess1.onApply = function (effect) {
+                effect.setFloat2("screenSize", postProcess1.width, postProcess1.height);
+                effect.setFloat("highlightThreshold", 0.90);
+            };
+            var postProcess2 = new BABYLON.BlurPostProcess("Horizontal blur", new BABYLON.Vector2(1.0, 0), blurWidth, 0.25, camera);
+            var postProcess3 = new BABYLON.BlurPostProcess("Vertical blur", new BABYLON.Vector2(0, 1.0), blurWidth, 0.25, camera);
+            var postProcess4 = new BABYLON.PostProcess("Final compose", "postprocesses/compose", ["sceneIntensity", "glowIntensity", "highlightIntensity"], ["sceneSampler"], 1, camera);
+            postProcess4.onApply = function (effect) {
+                effect.setTextureFromPostProcess("sceneSampler", postProcess0);
+                effect.setFloat("sceneIntensity", 0.5);
+                effect.setFloat("glowIntensity", 0.4);
+                effect.setFloat("highlightIntensity", 1.0);
+            };
+        }
+
+        //setupFrax();
+
+        function setupFrax2() {
+
+            var blurWidth = 1.0;
+
+            var postProcess0 = new BABYLON.PassPostProcess("Scene copy", 1.0, camera);
+            /*
+            var postProcess1 = new BABYLON.PostProcess("Down sample", "XShader.txt", ["screenSize", "highlightThreshold"], null, 0.25, camera, BABYLON.Texture.BILINEAR_SAMPLINGMODE);
+            postProcess1.onApply = function (effect) {
+                effect.setFloat2("screenSize", postProcess1.width, postProcess1.height);
+                effect.setFloat("highlightThreshold", 0.90);
+            };
+            var postProcess2 = new BABYLON.BlurPostProcess("Horizontal blur", new BABYLON.Vector2(1.0, 0), blurWidth, 0.25, camera);
+            var postProcess3 = new BABYLON.BlurPostProcess("Vertical blur", new BABYLON.Vector2(0, 1.0), blurWidth, 0.25, camera);
+            */
+            var postProcess4 = new BABYLON.PostProcess("Final compose", "postprocesses/compose2", ["sceneIntensity", "glowIntensity", "highlightIntensity"], ["sceneSampler"], 1, camera);
+            postProcess4.onApply = function (effect) {
+                effect.setTextureFromPostProcess("sceneSampler", postProcess0);
+                effect.setFloat("sceneIntensity", 0.5);
+                effect.setFloat("glowIntensity", 0.4);
+                effect.setFloat("highlightIntensity", 1.0);
+            };
+        }
+
+        setupFrax2();
+
 
         // create a basic light, aiming 0,1,0 - meaning, to the sky
         var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);

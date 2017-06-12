@@ -97,7 +97,7 @@ function BasicClass3() {
      // self.loadAutoIt();
         //self.winActivate('TTS-Reader')
         self.winActivate('Generic - morristew')
-        self.sendKeys('GetRich$$')
+        self.sendKeys('$MoneyFlows')
         self.sendKeys('{Enter}')
 
         return;

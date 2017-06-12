@@ -1,0 +1,41 @@
+[
+	{
+		"name": "The Scariest Horror Movies of All Time",
+		"url": "http://www.imdb.com/list/ls051393312/",
+		"time": "2017-01-17T01:08:02.494Z",
+		"skip": true,
+		"index": 0,
+		"genIndex": 1
+	},
+	{
+		"title": "The Evil Dead",
+		"imdb_id": "tt0083907",
+		"year": "1981",
+		"comment": "",
+		"name": "The Evil Dead",
+		"query": "The Evil Dead 1981",
+		"dirRemoteMega": "/Root/movies/The_Evil_Dead_1981/tt0083907/",
+		"filtered": true,
+		"size": 1.3,
+		"urlTorrent": "magnet:?xt=urn:btih:2296295180956ff54a86d53f9de8d062acc0210a&dn=The+Evil+Dead+%281981%29+1080p+BrRip+x264+-+YIFY&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969",
+		"nameTorrent": "The Evil Dead (1981) 1080p BrRip x264 - YIFY",
+		"index": 1,
+		"genIndex": 2
+	},
+	{
+		"title": "Pet Sematary",
+		"imdb_id": "tt0098084",
+		"year": "1989",
+		"comment": "",
+		"name": "Pet Sematary",
+		"query": "Pet Sematary 1989",
+		"dirRemoteMega": "/Root/movies/Pet_Sematary_1989/tt0098084/",
+		"filtered": true,
+		"size": 1.18,
+		"urlTorrent": "magnet:?xt=urn:btih:fb72ce58f05cc2212bd9447d9a824deb657466ad&dn=Pet+Sematary+1989+BRRip+720p+x264+AC3+%5BEnglish_Latino%5D+CALLIXTUS&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fpublic.popcorn-tracker.org%3A6969",
+		"nameTorrent": "Pet Sematary 1989 BRRip 720p x264 AC3 [English_Latino] CALLIXTUS",
+		"index": 2,
+		"genIndex": 3
+	}
+
+]

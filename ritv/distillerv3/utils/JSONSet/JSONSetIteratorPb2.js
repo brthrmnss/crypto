@@ -26,12 +26,21 @@ function JSONSetIteratorPB_IMDB() {
 
     }
 
-    p.fxCallback = function fxCallback(item,  fx, i, runner) {
+    p.fxCallback = function fxCallback(item,  fxOrig, i, runner) {
         delete item.throwErrorWhenQueryNotFound
         var skipUrls = false;
         skipUrls = true;
         var doNotRetryPbNotFound = true;
         // doNotRetryPbNotFound = false
+
+        function fx(o) {
+
+            var dbg = [ item]
+
+            debugger;
+            //sh.x()
+            fxOrig(o)
+        }
 
         //self.utils.cleanItem(item)
 
@@ -176,12 +185,34 @@ function JSONSetIteratorPB_IMDB() {
         if ( self.data.modeHighlight1Query )
             self.runner.data.listFiltered=self.replaceListfileterdIwth;
         // self.runner.data.listFiltered=[];
-
-
+        self.modifyDirMega(self.runner.data.listFiltered)
         self.proc('total size', self.runner.data.totalSize)
     }
     p.test = function test(config) {
     }
+
+
+    p.modifyDirMega = function modifyDirMega(completedFilteredItems) {
+        sh.each(completedFilteredItems, function kv(k,v) {
+            //console.log('v', v)
+            if ( v.dirRemoteMega == null ) {
+                return;
+                sh.throw('how did this happen dirRemoteMega')
+            }
+            if ( v.nameTorrent == null ) {
+                return;
+                sh.throw('how did this happen nameTorrent')
+            }
+            v.dirRemoteMega +=  v.nameTorrent+'/'
+
+            v.dirRemoteMega = sh.fs.clean2(v.dirRemoteMega)
+
+            //TODO: Remove ... test thits later
+            //asdf.g
+            
+        })
+    }
+
 
     function defineUtils() {
         var utils = {};
@@ -206,6 +237,7 @@ function JSONSetIteratorPB_IMDB() {
                 console.log('SearchPB complete:', url);
                 if ( url ) {
                     item.size = url.size;
+
                     item.urlTorrent = url.urlTorrent;
                     item.nameTorrent = url.nameTorrent
                 }
@@ -249,23 +281,9 @@ function JSONSetIteratorPB_IMDB() {
             options.retry = 3
             options.fxReturnFirstResult = function onDoneSearchPB(url) {
                 self.proc('SearchPB complete:', item.query, url);
-                
                 fx(url)
                 return
-                asdf.g
-                if ( url ) {
-                    item.size = url.size;
-                    item.urlTorrent = url.urlTorrent;
-                    item.nameTorrent = url.nameTorrent
-                }
-                else  {
-                    item.pbNotFound = true
-                    if ( self.expandItem(item, fx, i, runner) ) {
-                        return;
-                    }
-                }
 
-                fx();
             }
 
             go.go(options);
@@ -330,7 +348,24 @@ function JSONSetIteratorPB_IMDB() {
             //highlight = 'My Name Is Earl'
             // highlight = 'naruto'
             // highlight = 'O.C.'
+            //highlight = 'American God'
             if( highlight!=null) {
+
+                sh.log.line = function () {
+                    var str = '';
+                    sh.each.times(80, function () {
+                        str += '-'
+                    })
+                    console.log(str)
+                    return str;
+                }
+                if ( self.data.warnedAboutFilterWithLine != true ) {
+                    self.data.warnedAboutFilterWithLine = true;
+                    sh.log.line()
+                    self.proc('warning a filter is set', highlight)
+                    sh.log.line()
+                    sh.log.line()
+                }
                 self.runner.settings.storeOutputFileElsewhere = true;
                 if (false == sh.includes(item.name, highlight, true)) {
                     item.filtered = true;
@@ -423,12 +458,12 @@ function JSONSetIteratorPB_IMDB() {
 
 
                 self.utils.downloadItem2(item, false,
-                    onGetTorrentLink
+                    onGotTorrentLink
                 );
                 //self.utils.downloadItem
 
 
-                function onGetTorrentLink(torrentResult) {
+                function onGotTorrentLink(torrentResult) {
                     var item2 = sh.clone(item)
                     self.utils.addPb(item2, {})
                     // item2.name += ' ' + node.name;
@@ -780,6 +815,9 @@ function JSONSetIteratorPB_IMDB() {
             });
 
             return;
+
+
+            sdf.g.h.d.is.this.hit
             //  process.exit()
 
             var queryList = {};

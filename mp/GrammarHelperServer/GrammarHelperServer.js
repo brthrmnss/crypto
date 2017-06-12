@@ -16,7 +16,7 @@
  tetst route for other settings
 
  next step
- use dirstatic to get main directorys
+ use dirstatic to get main directorys   
  use :iud route to get local files
 
  */
@@ -27,6 +27,8 @@ var sh = require('shelpers').shelpers;
 var shelpers = require('shelpers');
 var request = require('request')
 var EasyRemoteTester = shelpers.EasyRemoteTester;
+
+//sh.changeDir(__dirname)
 
 function GrammarHelperServer() {
     var p = GrammarHelperServer.prototype;

@@ -29,6 +29,8 @@ function SanitizeList_FileWorkflow() {
         self.settings = sh.dv(config, {});
 
 
+        //self.settings.fileImport_ClearAll = true; //why: test using diffen types of files 
+        //self.settings.searchOnServerName = 'testFakeMachine';
 
         var output = {}
 
@@ -36,12 +38,27 @@ function SanitizeList_FileWorkflow() {
         sh.throwIfNull(self.settings.fileManifest, 'need a fileManifest')
         console.log('-verifyComplete%', self.settings.fileManifest, self.settings.fileList);
 
-        //sh.exit('howmany')
+        self.settings.fileImportServerName = sh.fs.leaf(self.settings.fileList)
+        if ( self.settings.searchOnServerName != null ) {
+        } else {
+            //by default
+            self.settings.searchOnServerName =
+                self.settings.fileImportServerName
+            //sh.exit('howmany')
+        }
+        if ( self.settings.searchAllServers ) {
+            self.settings.searchOnServerName = null;
+        }
+      
+        
+        /*
+         if (self.settings.searchOnServerName) {
+         i.settings.fileImportServerName =  self.settings.searchOnServerName;
+         }
+         */
 
-
+        //sh.x(self.settings)
         self.runTestWorkflow();
-
-
 
     }
 
@@ -58,8 +75,9 @@ function SanitizeList_FileWorkflow() {
         work.startChain(token)
         //import files, santizie, put in database toDB
             .add(self.importFilesIntoFileDB)
+            // return;b
             //go through all files and make sure files exist
-            .add(self.searchForFileInDlManifest)
+            .add(self.iterateOverDlManifest_and_findFiles)
             .add(self.lastStep)
             //.log()
             .end();
@@ -68,6 +86,37 @@ function SanitizeList_FileWorkflow() {
 
     function defineSteps() {
         p.importFilesIntoFileDB = function importFilesIntoFileDB(token, cb) {
+
+
+            if ( self.settings.searchOnServerName !=
+                self.settings.fileImportServerName) {
+                self.proc('skipping','importFilesIntoFileDB')
+
+                self.settings.searchOnDB = true;
+                /*   var i = new SanitizeNamesFromDB();
+                 //  i.settings.logging = true;
+                 i.init();
+                 self.data.searchRc = i;
+                 //self.data.filesNormalized = i.getFilesFromMachines();
+                 */
+                cb();
+                return;
+            }
+
+
+            if (self.settings.doNotImport_fileList) {
+                self.settings.searchOnDB = true;
+                self.proc('skipping','importFilesIntoFileDB')
+                cb();
+                return;
+            }
+
+            if ( self.settings.skipFileImport ) {
+                self.proc('skipFileImport', self.data.filesNormalized.length )
+                cb();
+                return;
+            }
+           // asdf.g
 
             self.proc('importFilesIntoFileDB')
             // fx(fx.data.taskName, 'size');
@@ -99,6 +148,9 @@ function SanitizeList_FileWorkflow() {
 
             i.settings.dbg = true;
 
+            i.settings.fileImportServerName =  self.settings.fileImportServerName
+            i.settings.searchOnServerName = self.settings.searchOnServerName;
+            i.settings.fileImport_ClearAll = self.settings.fileImport_ClearAll; //why: test if this is
 
             var skipDBImportOfFiles = false;
 
@@ -107,77 +159,31 @@ function SanitizeList_FileWorkflow() {
                 skipDBImportOfFiles = true;
             }
 
+
+            i.settings.fxDone = function onDoneste() {
+                cb()
+            }
+
             i.addFileListToDatabase(self.settings.fileList, skipDBImportOfFiles);
             self.data.filesNormalized = i.data.filesNormalized
             self.proc('size of file list', self.data.filesNormalized.length )
             //console.log('this was the list', i.data.filesNormalized)
             //sh.x()
-            if ( self.settings.skipFileImport ) {
-                self.proc('skipFileImport', self.data.filesNormalized.length )
-                cb();
-                return;
-            }
+
 
             //  i.iterateOverFiles();
 
             //i.tests.testSaveNewMovie();
 
 
-            i.settings.fxDone = function onDoneste() {
-                cb()
-            }
+
 
             //cb();
         }
 
-        /*  p.searchForFileInDlManifest2 = function searchForFileInDlManifest2(token, cb) {
-         self.proc('searchForFileInDlManifest', self.settings.fileManifest);
 
-         var json = sh.fs.readJSONFile(self.settings.fileManifest);
-         var i = new SanitizeNamesFromDB();
-         i.init();
-         //i.testMode();
-         // i.iterateOverFiles_InMega();
-         // i.iterateOverFiles();
-         i.settings.maxFiles = null
-         i.settings.logging = true
-         i.settings.mode2 = true;
-         //i.settings.maxComparisons = 100
-         //var collect = file.map(function (x ) { return x.imdb_id})
-         var imdbIds = []
-         // if ( i.settings.mode2 == true ) {
-         sh.each(json, function addId(i, imdb) {
-         if (imdb.skip) {
-         return;
-         }
-         if (imdb.urlTorrentNotFound == true)
-         return;
-         var query = imdb;
-         query.imdb_id = imdb.imdb_id
-         if (imdb.series) {
-         //   asdf.gcontent
-         query.seasonNumber = imdb.query.split(' ').slice(-1)[0]
-         }
-         if (imdb.seasonNumber) {
-         // asdf.g
-         query.seasonNumber = imdb.seasonNumber;
-         }
-         query.query = imdb.query
-
-         self.proc(imdb.name, query.imdb_id)
-         imdbIds.push(query)
-         })
-
-         self.proc('compareDB');
-         console.log('imdbdids', imdbIds)
-         //sh.exit('imdbds')
-         i.compareDB(imdbIds);
-         //i.tests.testSaveNewMovie();
-         cb();
-         }
-         */
-        p.searchForFileInDlManifest = function searchForFileInDlManifest(token, cb) {
-            self.proc('searchForFileInDlManifest');
+        p.iterateOverDlManifest_and_findFiles = function iterateOverDlManifest_and_findFiles(token, cb2) {
+            self.proc('iterateOverDlManifest_and_findFiles');
 //asdf.g
             var dlManifestRequests = sh.fs.readJSONFile(self.settings.fileManifest);
             self.settings.fileMissingOutput = self.settings.fileManifest+'.missing.json'
@@ -185,15 +191,36 @@ function SanitizeList_FileWorkflow() {
             self.data.listMissingDlRequests = [];
             self.data.listDlRequestsProcessed = [];
 
+            self.data.countDLList = 0;
             self.data.countFound = 0;
             self.data.countMissing = 0;
             self.data.countSkipped = 0;
             self.data.countNA = 0;
+            self.data.naItems = [];
+            self.data.listMissingManifestFile= [];
             //asdf.g
 
-           // sh.exit('size', dlManifestRequests.length )
-            sh.async(dlManifestRequests, function checkIfRequestFound(dlRequest, fxDoneIteration) {
-                    i++
+            var index = 0
+
+            self.proc('okokokok');
+            var i = new SanitizeNamesFromDB();
+            i.init();
+
+
+            // sh.exit('size', dlManifestRequests.length )
+            sh.async(dlManifestRequests,
+                function checkIfRequestFound(dlRequest, __fxDoneIteration) {
+                    var h = {};
+                    function fxDoneIteration() {
+                        if ( h.finished ) {
+                            //asdf.g
+                            self.proc('udpe call')
+                        }
+                        h.finished = true
+                        __fxDoneIteration()
+                    }
+                    index++
+
                     //self.proc('okokokok')
                     if (dlRequest.skip) {
                         self.data.countSkipped++
@@ -201,48 +228,26 @@ function SanitizeList_FileWorkflow() {
                     }
                     if (dlRequest.urlTorrentNotFound == true) {
                         self.data.countNA++
+                        self.data.naItems.push(dlRequest.name)
                         fxDoneIteration(); return;
                         return;
                     }
 
-                    self.proc('okokokok')
-                    var i = new SanitizeNamesFromDB();
-                    i.init();
-                    //i.testMode();
-                    // i.iterateOverFiles_InMega();
-                    // i.iterateOverFiles();
-                    i.settings.maxFiles = null
-                    i.settings.logging = true
-                    i.settings.mode2 = true;
-                    i.settings.fxFilterFile = function fxFilterFile_OnlyValidImdbs(imdbs) {
-                        // asdf.g
-                        self.proc('okokokok')
-                        var validMatch = null;
-                        sh.each(imdbs, function findMatchFileName(k,imdbInfo) {
-                            var file = sh.fs.norm(imdbInfo.localFilePath)
-                            var fileIsInList = self.data.filesNormalized.includes(file);
-                            if ( fileIsInList ) {
-                                validMatch = imdbInfo;
-                                return false;
-                            }
-                            //console.log('can match',file,fileIsInList)
-                        })
-                        self.proc('okokokok')
-
-                        //sh.exit('find', imdbs)
-                        //asdf.g
-
-                        return validMatch;
-
-
+                    if (dlRequest.urlTorrent == null) {
+                        self.data.countNA++
+                        self.data.naItems.push(dlRequest.name)
+                        fxDoneIteration(); return;
+                        return;
                     }
-                    //i.settings.maxComparisons = 100
-                    //var collect = file.map(function (x ) { return x.imdb_id})
-                    var imdbIds = []
-                    // if ( i.settings.mode2 == true ) {
+
+                    self.data.countDLList++
 
 
-                    //console.log('what is imdg', dlRequest)
+                    if ( self.settings.searchOnServerName ) {
+                        i.settings.searchOnServerName = self.settings.searchOnServerName;
+                    }
+
+
                     var query = sh.clone(dlRequest);
                     query.imdb_id = dlRequest.imdb_id
                     if (dlRequest.series) {
@@ -256,50 +261,153 @@ function SanitizeList_FileWorkflow() {
                     query.query = dlRequest.query
 
                     console.log(dlRequest.name, query.imdb_id)
-                    imdbIds.push(query)
-
-                    self.proc('compareDB');
-                    console.log('imdbdids', imdbIds)
-                    //sh.exit('imdbds')
-
-                    //dl manifest to dl again
-                    //what files missing?
-                    //what files found, and what are proper names
-                    i.compareDB(imdbIds);
-                    i.settings.fxDoneErrors = function onFinishedProcessingDlRequest(missingItems, data) {
 
 
-                        var dlRequestProcessed = sh.clone(dlRequest);
-                        dlRequestProcessed.found = data.foundImdbContent
-                        self.data.listDlRequestsProcessed.push(dlRequestProcessed)
+                    if (  self.settings.searchOnDB ) {
+                        // asdf.g
+                        var queryPrevFile = sh.clone(query)
+                        queryPrevFile.fxDone = function onRecievedFile(files) {
+                            self.proc('file', files, files.prototype, sh.isString(files))
+                            console.log('~~~~~', files.length, files)
+                            var file = null
+                            if ( files.length > 0  ) {
+                                file = files[0];
+                            }
+                            //asdf.g
+                            fxSearchForFile(true, file);//
 
-
-                        self.data.countFound  += data.countFound;
-                        self.data.countMissing += data.countMissing;
-
-                        if (missingItems.length > 0) {
-                            dlRequest.errors = missingItems
-                            dlRequestProcessed.errors = missingItems
-                            dlRequest.urlTorrentBad = dlRequest.urlTorrent;
-                            delete dlRequest.urlTorrent;
-                            delete dlRequest.genIndex;
-                            delete dlRequest.size;
-                            delete dlRequest.filtered;
-                            delete dlRequest.seeders;
-                            dlRequest.index = self.data.listMissingDlRequests.length+1;
-
-                            self.data.listMissingDlRequests.push(dlRequest)
                         }
-                        fxDoneIteration()
+                        queryPrevFile.serverName = self.settings.searchOnServerName;
+                        i.searchRcDbForFile(queryPrevFile)
+                    } else {
+                        fxSearchForFile();
+
                     }
-                    //i.tests.testSaveNewMovie();
+
+
+
+                    function fxSearchForFile(preMatchMode, preMatchedFile) {
+
+                    //console.error('pre---yyy', preMatchedFile)
+                       //sh.x()
+                        //i.testMode();
+                        // i.iterateOverFiles_InMega();
+                        // i.iterateOverFiles();
+                        i.settings.maxFiles = null
+                        i.settings.logging = true
+                        i.settings.mode2 = true;
+                        //this method will search all files, and look to match the item info
+                        i.settings.fxFilterFile = function fxFilterFile_OnlyValidImdbs(potentialMatchingFiles) {
+
+
+                            if ( preMatchMode   ) {
+                                //asdf.g
+                                return preMatchedFile;
+                                //asdf.g
+                            }
+
+                            self.proc('okokokok')
+                            var validMatch = null;
+
+
+                            console.log('potentialMatchingFiles', potentialMatchingFiles)
+
+                            //asdf.g
+                            sh.each(potentialMatchingFiles, function findMatchFileName(k,fileInfo) {
+                                var localFilePath = sh.fs.norm(fileInfo.localFilePath)
+                                var fileIsInList = self.data.filesNormalized.includes(localFilePath);
+
+                                if (  self.settings.searchOnDB ) {
+                                    console.log('()()--', fileIsInList, '--', localFilePath)
+                                    sh.x()
+                                }
+
+                                if ( fileIsInList ) {
+                                    validMatch = fileInfo;
+                                    return false;
+                                }
+                                //console.log('can match',file,fileIsInList)
+                            })
+                            self.proc('okokokok')
+
+                            //sh.exit('find', imdbs)
+                            //asdf.g
+
+                            return validMatch;
+
+
+                        }
+                        //i.settings.maxComparisons = 100
+                        //var collect = file.map(function (x ) { return x.imdb_id})
+
+                        // if ( i.settings.mode2 == true ) {
+
+
+                        //console.log('what is imdg', dlRequest)
+
+                        var imdbIds = [] //realy a movie object
+                        imdbIds.push(query)
+
+                        self.proc('compareDB');
+                        //console.log('imdbdids', imdbIds)
+                        //sh.exit('imdbds')
+
+
+
+                        //dl manifest to dl again
+                        //what files missing?
+                        //what files found, and what are proper names
+                        i.compareDB(imdbIds);
+                        i.settings.fxDoneErrors = function onFinishedProcessingDlRequest(missingItems, data) {
+                            i.settings.fxDoneErrors = null;
+                            
+                            var dlRequestProcessed = sh.clone(dlRequest);
+                            dlRequestProcessed.found = data.foundImdbContent
+                            self.data.listDlRequestsProcessed.push(dlRequestProcessed)
+
+
+                            self.data.countFound  += data.countFound;
+                            self.data.countMissing += data.countMissing;
+
+                            if (missingItems.length > 0) {
+
+                                var dlRequestClone = sh.clone(dlRequest);
+                                //self.data.listMissingManifestFile.push(dlRequestClone) TODO: dleete this file
+
+                                dlRequest.errors = missingItems
+                                dlRequestProcessed.errors = missingItems
+                                dlRequest.urlTorrentBad = dlRequest.urlTorrent;
+                                delete dlRequest.urlTorrent;
+                                delete dlRequest.genIndex;
+                                delete dlRequest.size;
+                                delete dlRequest.filtered;
+                                delete dlRequest.seeders;
+                                dlRequest.index = self.data.listMissingDlRequests.length+1;
+
+
+                                dlRequestClone.origIndex = dlRequestClone.genIndex;
+                                dlRequestClone.index =self.data.listMissingDlRequests.length
+                                self.data.listMissingDlRequests.push(dlRequestClone)
+
+
+                            }
+                            fxDoneIteration()
+                        }
+                        //i.tests.testSaveNewMovie();
+                    }
                 },
-                finishedAllSets        )
+                finishedAllSets )
+
+
+
             function finishedAllSets()     {
                 sh.writeJSONFile(self.settings.fileMissingOutput, self.data.listMissingDlRequests)
                 sh.writeJSONFile(self.settings.fileDlManifestProcessedOutput, self.data.listDlRequestsProcessed)
 
+                //sh.writeJSONFile(self.self.data.listMissingManifestFile)
+
                 self.proc('file is here:', self.settings.fileDlManifestProcessedOutput)
+                self.proc('fileMissingOutput is here:', self.settings.fileMissingOutput)
                 //asdf.g
 
                 self.data.percentValid = sh.percent(
@@ -310,7 +418,7 @@ function SanitizeList_FileWorkflow() {
                     self.data.countFound-self.data.countMissing+'/'+self.data.countFound)
 
 
-                cb();
+                cb2();
             }
 
         }
@@ -322,7 +430,8 @@ function SanitizeList_FileWorkflow() {
 
         p.lastStep = function lastStep() {
             //asdf.g
-         //   sh.exit('what is fxdone', self.settings.fxDone)
+           // sd.ggg
+             //sh.exit('what is fxdone', self.settings.fxDone)
             sh.callIfDefined(self.settings.fxDone, self.data)
         }
     }
@@ -350,15 +459,17 @@ MySQLAdapater.cacheEnabled = true;
 //MySQLAdapater
 
 
-SNTestWorkflow.testWorkflow = function testWorkflow(fileManifest, fileList, fxDone, skipFileImport) {
+SNTestWorkflow.testWorkflow = function testWorkflow(cfg) {
 
+    sh.throwIfNull(cfg.fileManifest, 'only accept configs')
 
     var instance = new SanitizeList_FileWorkflow();
     var config = {};
-    config.fileManifest = fileManifest;
-    config.fileList = fileList
-    config.fxDone = fxDone
-    config.skipFileImport
+    config = cfg;
+    /*config.fileManifest = cfg.fileManifest;
+     config.fileList = cfg.fileList
+     config.fxDone = cfg.fxDone
+     config.skipFileImport = cfg.cfg;*/
     instance.init(config)
     //instance.test();
     return;

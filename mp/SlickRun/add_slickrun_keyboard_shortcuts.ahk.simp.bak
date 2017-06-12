@@ -1,0 +1,21 @@
+#SingleInstance FORCE
+
+!1::
+    WinActivate SR - Google Chrome
+     Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    ; Run "chromeddd"
+    Return
+!2::
+    WinActivate SR - Google Chrome
+     Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    ; Run "chromeddd"
+    Return
+>!q::
+    WinActivate SR - Google Chrome
+     Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    Run "bobob"
+    Return
+#q::
+    WinActivate SR - Google Chrome
+     Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+    Return

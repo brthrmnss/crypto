@@ -1,12 +1,11 @@
 <div id="listTester2"
-     pad10 >
+     pad10>
     <h1>Calm Tech</h1>
     <span>This is a quick test of this</span>
 
 
-
     <div abs>
-    <img src="/g/cleanmobileapp/js/attachment.jpg" ></img>
+        <img src="/g/cleanmobileapp/js/attachment.jpg"></img>
     </div>
 
 
@@ -14,7 +13,7 @@
 
     <div relative pad10
          mw250 mh50
-         bg-black white >
+         bg-black white>
         ok????
     </div>
 
@@ -23,14 +22,14 @@
          style="width:315px; height:519px;
          color:#0D0D0D;
          left:960px; top:385px; "
-         bg-white  >
+         bg-white>
         <!-- ok????-->
-        <div horizontal-layout   >
+        <div horizontal-layout>
             <div class="horizontal-flex-container-flex-item">
                 icon
             </div>
-            <div center upcase stretch >
-                <center-content   >
+            <div center upcase stretch>
+                <center-content>
                     5:47PM
                 </center-content>
 
@@ -40,14 +39,15 @@
             </div>
         </div>
         <!-- <glyph plus/>-->
-        <div horizontal-layout >
+        <div horizontal-layout padnochildren padlr20>
             <div class="">
                 <btn title="Back to menu">
-                    <glyph align-left/> </btn>
+                    <glyph align-left/>
+                </btn>
                 <glyph align-left/>
             </div>
-            <div center-content bold  upcase stretch >
-                <center-content   >
+            <div center-content bold upcase stretch pad10>
+                <center-content>
                     <span red>
                         shopping bag
                     </span>
@@ -59,48 +59,69 @@
             </div>
         </div>
         <div lrpad20 w100>
-        <div bg-lightgray   h1    />
-        <div style="background-color:#F5F5F5"   h1    />
+            <div bg-lightgray h1/>
+            <div style="background-color:#F5F5F5" h1/>
         </div>
 
-        <div w100 bg-llgray pad20
+        <div w100 bg-llgray xpad20
              style="max-height:442px;"
-             scroll>
+             scroll
+             class="parentWidthWrapper"
+        >
             <!-- sdfdsf-->
             <quickcrud2 config="configCrud">
-                <list_dark>
+                <list_partial>
                     <ul id="listHolder"
-                        class="quick-crud-list" >
+                        xbg-red
+                        parentWidth="100"
+                        class="quick-crud-list">
+                        <li ng-repeat="item in vmC.items">
 
-                        <li ng-repeat="item in vmC.items"  >
-                            <div relative pad10
-                                 mw250 mh50
-                                 bg-black white >
-                                <div ng-click="goTo(item)"
-                                     xclass="sideNavTextRow2">
-                                    {{item.name}}
-                                    {{item.first_name}}
-                                    {{item.last_name}}
+                            <div   horizontal-layout padnochildren padlr20>
+                                <div class="">
+                                    <div ng-click="goTo(item)"
+                                         xclass="sideNavTextRow2">
+                                        {{item.name}}
+                                        {{item.first_name}}
+                                        {{item.last_name}}
+                                    </div>
+                                    <div
+                                            style="font-size:14px;"
+                                            right10 top10
+                                            tr ng-click="vmC.$scope.$parent.deleteItem(item)">x
+                                    </div>
+                                    <div ng-if="item.selected==true">selected</div>
+
+                                    <div w100
+                                         bottom
+                                         bg-white
+                                         left0
+                                         style="height:2px;"
+                                         h2
+                                         ng-if="item.selected==true"></div>
                                 </div>
-                                <div
-                                        style="font-size:14px;"
-                                        right10 top10
-                                        tr ng-click="vmC.$scope.$parent.deleteItem(item)">x</div>
-                                <div ng-if="item.selected==true">selected</div>
+                                <div center-content bold upcase stretch pad10>
+                                    <center-content>
 
-                                <div w100
-                                     bottom
-                                     bg-white
-                                     left0
-                                     style="height:2px;"
-                                     h2
-                                     ng-if="item.selected==true"></div>
+                                    </center-content>
+                                </div>
+                                <div class="">
+
+                                </div>
+
+
                             </div>
+
+                            <div bg-lightgray w100 h1/>
+                           <!-- <div relative pad10
+                                 zmw250 mh50>
+
+                            </div>-->
                         </li>
 
 
                     </ul>
-                </list_dark>
+                </list_partial>
             </quickcrud2>
 
             <!-- <hr2 bg-lightgray />-->
@@ -118,9 +139,9 @@
          style="width:315px; height:519px;
          color:#0D0D0D;
          top:515px; left:1020px;"
-         bg-white  >
-       <!-- ok????-->
-        <div class="horizontal-flex-container" pad10 >
+         bg-white>
+        <!-- ok????-->
+        <div class="horizontal-flex-container" pad10>
             <div class="horizontal-flex-container-flex-item">
                 icon
             </div>
@@ -132,15 +153,16 @@
                 cart
             </div>
         </div>
-       <!-- <glyph plus/>-->
-        <div horizontal-layout >
+        <!-- <glyph plus/>-->
+        <div horizontal-layout>
             <div class="">
                 <btn title="Back to menu">
-                <glyph align-left/> </btn>
+                    <glyph align-left/>
+                </btn>
                 <glyph align-left/>
             </div>
-            <div center-content bold  upcase stretch >
-                <center-content   >
+            <div center-content bold upcase stretch>
+                <center-content>
                     <span red>
                         details
                     </span>
@@ -155,13 +177,13 @@
         <div w100 bg-llgray pad20
              style="max-height:442px;"
              scroll>
-           <!-- sdfdsf-->
+            <!-- sdfdsf-->
             <div id="currentProduct_pic"
                  style="max-height:130px;"
                  is-square
                  bg-black
                  mar20
-                mw100
+                 mw100
                  white
             >
 
@@ -169,7 +191,7 @@
 
             </div>
 
-            <div id="tagList" horizontal-list white >
+            <div id="tagList" horizontal-list white>
             <span style="font-size:8px;" upcase class="tagListItem">
                 handmade
             </span>
@@ -180,15 +202,17 @@
             <div id="cP_title" upcase loose
 
                  style="font-size:24px;
-                 line-height:93%">Marble candle holder</div>
+                 line-height:93%">Marble candle holder
+            </div>
 
             <div id="cP_price" upcase loose lightgray
-                 style="font-size:15px;">$60.00</div>
+                 style="font-size:15px;">$60.00
+            </div>
 
             <spacer/>
 
-           <!-- <hr2 bg-lightgray />-->
-            <div bg-lightgray w100 h2 />
+            <!-- <hr2 bg-lightgray />-->
+            <div bg-lightgray w100 h2/>
 
             <spacer/>
 
@@ -200,14 +224,12 @@
             </div>
 
 
-
         </div>
 
 
         <!--<span class="glyphicon glyphicon-plus"></span>-->
 
     </div>
-
 
 
 </div>

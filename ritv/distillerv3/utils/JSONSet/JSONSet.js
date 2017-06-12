@@ -225,7 +225,7 @@ function JSONSet() {
         }
         if ( self.settings.storeOutputFileElsewhere ) {
             sh.fs.writeJSONFile(self.data.fileOutput2, self.data.listFiltered  )
-            sh.callIfDefined(self.settings.fxDone)
+            sh.callIfDefined(self.settings.fxDone, self.data.fileOutput2)
             return;
         }
         //asdf.g
