@@ -14,7 +14,7 @@ var SearchPBCachedRequest = sh.require('ritv/distillerv3/utils/SearchPBCachedReq
 //G:\Dropbox\projects\crypto\mp\GrammarHelperServer\public_html\others\ExtBookzz\ListExtractorScraper.js
 var d = 'mp/ExtProxy/amazonAnots/0.1_0/js/extras_maybe/ListExtractorScraper.js'
 //G:\Dropbox\projects\crypto\mp\ExtProxy\ggnampgigkndjmbbjlodenmpbamidgeo\0.5_0\js\extras_maybe\ListExtractorScraper.js
-//var d = 'mp/GrammarHelperServer/public_html/others/ExtBookzz/ListExtractorScraper.js'
+var d = 'mp/GrammarHelperServer/public_html/others/ExtBookzz/ListExtractorScraper.js'
 var ListExtractorScraper = sh.require(d).ListExtractorScraper
 
 
@@ -33,6 +33,7 @@ function SearchBookzz() {
 
     p.searchBookzz = function searchBookzz(query, fxDone) {
 
+
         var url = 'http://bookzz.org/s/?q='+query+'&yearFrom=&yearTo=&language=&extension=&t=0'
         var url = 'http://book4you.org/s/?q='+query+'&yearFrom=&yearTo=&language=&extension=&t=0'
         var exactMatching = true
@@ -42,6 +43,14 @@ function SearchBookzz() {
 
 
         self.data.url = url;
+
+        if ( self.settings.preResponseBody ) {
+            self.proc('had a preResponseBody')
+            self.processTorrentLinks(self.settings.preResponseBody);
+            return;
+        }
+
+
         var options = {}
         options.url = url
         options.encoding = null
@@ -87,73 +96,6 @@ function SearchBookzz() {
 
 
 
-        p.processTorrentLinks = function processTorrentLinks(body, token, cb) {
-            $ = cheerio.load(body);
-            self.proc('bod length', body.length )
-
-            var y = y
-
-            var instance = new ListExtractorScraper();
-            var config = {};
-            config.body = body;
-
-            config.fxDone = function onFinished(result) {
-                var h = sh.eachHelper(result);
-                h.prependToProp('link', 'http://bookzz.org');
-
-
-                self.proc('found x', result.length);
-
-                var data = {};
-                data.length = result.length;
-
-                h.propLowercase('type')
-
-                console.log('---', result);
-
-                var readable = h.findWhereXinY('type', ['epub', 'mobi', 'rtf'])
-                var pdfs = h.findWhere('type', 'pdf')
- 
-                data.readableLength = readable.length;
-                data.pdfLength = pdfs.length;
-
-                if ( readable.length > 0 ) {
-                    var first = readable[0]
-                    data.url = first.link;
-                    data.first = first;
-                }
-
-
-                data.url = self.data.url;
-                sh.callIfDefined(self.settings.fxDone, result, data)
-            }
-            //= 'example_bookzz.html';
-
-            instance.init(config)
-            instance.setupAreas('#searchResultBox', '.resItemBox')
-            instance.setupLiField('name', instance.utils.prop('itemprop', 'name'))
-            instance.setupLiField('author', instance.utils.prop('itemprop', 'author'))
-            instance.setupLiField('lang', instance.utils.prop('itemprop', 'inLanguage'))
-            var f = instance.setupLiField('link', instance.utils.prop('itemprop', 'name' ))
-            f.keepAttr = 'href'
-            f.parent = true;
-            var f = instance.setupLiField('type',
-                instance.utils.prop('title', 'Electronic library download book  '))
-            f.fxText = function fxText(txt) {
-                txt = sh.dv(txt)
-                var txt2 = txt;
-                txt2 = txt2.replace('Download ', '')
-                txt2 = sh.unwrap(txt2)
-                if ( txt2.includes(')')){
-                    txt2 = txt2.split(')')[0]
-                }
-                return txt2;
-
-            }
-            instance.parseContents();
-        }
-
-
         var instance = new SearchPBCachedRequest();
         var config = {};
         config.fileExt = '.html'
@@ -163,6 +105,81 @@ function SearchBookzz() {
         instance.request(options, fxCallback)
         //instance.test();
         // request(options, fxCallback)
+    }
+
+    p.processTorrentLinks = function processTorrentLinks(body, token, cb) {
+        $ = cheerio.load(body);
+        self.proc('bod length', body.length )
+
+        //console.log('body', body)
+        if ( body.includes('single sign on')) {
+            console.error('need to llogin')
+            self.data.needToLogin = true;
+        }
+
+        var y = y
+
+        var instance = new ListExtractorScraper();
+        var config = {};
+        config.body = body;
+
+        config.fxDone = function onFinished(result) {
+            var h = sh.eachHelper(result);
+            h.prependToProp('link', 'http://bookzz.org');
+
+
+            self.proc('found x', result.length);
+
+            var data = {};
+            data.length = result.length;
+
+            h.propLowercase('type')
+
+            console.log('---', result);
+
+            var readable = h.findWhereXinY('type', ['epub', 'mobi', 'rtf'])
+            var pdfs = h.findWhere('type', 'pdf')
+
+            data.readableLength = readable.length;
+            data.pdfLength = pdfs.length;
+
+            if ( readable.length > 0 ) {
+                var first = readable[0]
+                data.url = first.link;
+                data.first = first;
+            }
+
+
+            data.url = self.data.url;
+            if ( self.data.needToLogin ) {
+                data.needToLogin = self.data.needToLogin;
+            }
+            sh.callIfDefined(self.settings.fxDone, result, data)
+        }
+        //= 'example_bookzz.html';
+
+        instance.init(config)
+        instance.setupAreas('#searchResultBox', '.resItemBox')
+        instance.setupLiField('name', instance.utils.prop('itemprop', 'name'))
+        instance.setupLiField('author', instance.utils.prop('itemprop', 'author'))
+        instance.setupLiField('lang', instance.utils.prop('itemprop', 'inLanguage'))
+        var f = instance.setupLiField('link', instance.utils.prop('itemprop', 'name' ))
+        f.keepAttr = 'href'
+        f.parent = true;
+        var f = instance.setupLiField('type',
+            instance.utils.prop('title', 'Electronic library download book  '))
+        f.fxText = function fxText(txt) {
+            txt = sh.dv(txt)
+            var txt2 = txt;
+            txt2 = txt2.replace('Download ', '')
+            txt2 = sh.unwrap(txt2)
+            if ( txt2.includes(')')){
+                txt2 = txt2.split(')')[0]
+            }
+            return txt2;
+
+        }
+        instance.parseContents();
     }
 
 
@@ -203,6 +220,7 @@ if (module.parent == null) {
         console.log('test complete', list.length, data)
     }
     i.init(config)
+    config.preResponseBody = 'sdfsdf;;;;'
     //i.searchBookzz('crimson moon')
     //i.searchBookzz('ddddBeneath A Crimson Moon Michels Christine')
     i.searchBookzz('Beneath A Crimson Moon Michels Christine')

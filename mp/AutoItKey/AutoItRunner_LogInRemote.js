@@ -60,6 +60,11 @@ function BasicClass3() {
             return;
         }
 
+        p.sendKeysRaw = function sendKeysRaw(window_title) {
+            var str = 'Send('+sh.qq(window_title)+', 1)'
+            self.push(str)
+            return;
+        }
 
         p.push = function push(cmd) {
             if (self.t) {
@@ -96,8 +101,8 @@ function BasicClass3() {
         console.log('one2')
      // self.loadAutoIt();
         //self.winActivate('TTS-Reader')
-        self.winActivate('Generic - morristew')
-        self.sendKeys('$MoneyFlows')
+        self.winActivate('Generic - morristew7')
+        self.sendKeysRaw('MadCash#')
         self.sendKeys('{Enter}')
 
         return;

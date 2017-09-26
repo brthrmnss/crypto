@@ -1,0 +1,1416 @@
+
+commonVars { environment: 'seed5', str: 'root@95.211.137.145' }
+define miniappsettings.task_name app.deploy.rcext
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+commonVars { environment: 'seed5', str: 'root@95.211.137.145' }
+define miniappsettings.task_name app.deploy.sbdb
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+
+Running '[36mapp.log.rcext.2[39m' task...
+Running "echo create inSeries chain..." on local.
+Finished '[36mapp.log.rcext.2[39m' after [35m6.58 ms[39m
+@ create inSeries chain...
+tail -f ~/.forever/RC_ConfigManager_ExecServer.js.log
+Running "tail -f ~/.forever/RC_ConfigManager_ExecServer.js.log" on host "95.211.137.145".
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #328
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #329
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #330
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #331
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #332
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #333
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #334
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #335
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #336
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #337
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #338
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #339
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #340
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #341
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #342
+@95.211.137.145 __dirname /opt/nodejs/rcext/node_modules/ritvHelpers
+@95.211.137.145 dirRoot /opt/nodejs/rcext/node_modules/ritvHelpers/../../ritv/
+@95.211.137.145 dirPath /opt/nodejs/rcext/ritv/distillerv3/Step2_BulkTDownloader.js
+@95.211.137.145 exit http://127.0.0.1:6008/exitQuit
+@95.211.137.145 error: { Error: connect ECONNREFUSED 127.0.0.1:6008
+@95.211.137.145 at Object.exports._errnoException (util.js:1022:11)
+@95.211.137.145 at exports._exceptionWithHostPort (util.js:1045:20)
+@95.211.137.145 at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)
+@95.211.137.145 code: 'ECONNREFUSED',
+@95.211.137.145 errno: 'ECONNREFUSED',
+@95.211.137.145 syscall: 'connect',
+@95.211.137.145 address: '127.0.0.1',
+@95.211.137.145 port: 6008 }
+@95.211.137.145 statusCode: undefined
+@95.211.137.145 body: undefined
+@95.211.137.145
+@95.211.137.145 reloadServer undefined false
+@95.211.137.145
+@95.211.137.145 ...sdfxsdf......
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://localhost:6018 (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:35:14)
+@95.211.137.145 >>>*> RCConfigExecServer loadConfig go to http://95.211.137.145:6018/index.html567.html (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:36:14)
+@95.211.137.145 startSocket ... no no n
+@95.211.137.145 RCConfigExecServer undefined
+@95.211.137.145 fs.js:640
+@95.211.137.145 return binding.open(pathModule._makeLong(path), stringToFlags(flags), mode);
+@95.211.137.145 ^
+@95.211.137.145
+@95.211.137.145 Error: ENOENT: no such file or directory, open '/tasks/test_dl_manifest'
+@95.211.137.145 at Error (native)
+@95.211.137.145 at Object.fs.openSync (fs.js:640:18)
+@95.211.137.145 at Object.fs.writeFileSync (fs.js:1333:33)
+@95.211.137.145 at Object.writeFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:2914:12)
+@95.211.137.145 at Object.writeJSONFile (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:1703:12)
+@95.211.137.145 at RCConfigExecServer.newTask (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:322:20)
+@95.211.137.145 at onTestSavingFile (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:334:22)
+@95.211.137.145 at Function.onTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1248:17)
+@95.211.137.145 at Object.each (/opt/nodejs/rcext/node_modules/shelpers/lib/shelpers.js:3615:41)
+@95.211.137.145 at RCConfigExecServer.runTests (/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js:1247:16)
+@95.211.137.145 error: Forever detected script exited with code: 1
+@95.211.137.145 error: Script restart attempt #343
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.rcext
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.rcext
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.sbdb
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.sbdb
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+
+Running '[36mapp.stop.rcext[39m' task...
+
+Running '[36mapp.stop.rcext[39m' task...
+Running "echo create inSeries chain..." on local.
+Running "echo create inSeries chain..." on local.
+Finished '[36mapp.stop.rcext[39m' after [35m6.92 ms[39m
+Finished '[36mapp.stop.rcext[39m' after [35m6.92 ms[39m
+@ create inSeries chain...
+@ create inSeries chain...
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost [32minfo[39m: Forever stopped process:
+@localhost [32minfo[39m: Forever stopped process:
+@localhost [37m [39m [37muid[39m [90mcommand[39m [90mscript[39m [37mforever[39m [37mpid[39m [37mid[39m [35mlogfile[39m [33muptime[39m
+@localhost [0] BreedHoistServer.js [90m/root/.nvm/versions/node/v6.9.5/bin/node[39m [90m/opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js[39m 15573 15643 [35m/root/.forever/BreedHoistServer.js.log[39m [33m0:4:8:49.759[39m
+@localhost [37m [39m [37muid[39m [90mcommand[39m [90mscript[39m [37mforever[39m [37mpid[39m [37mid[39m [35mlogfile[39m [33muptime[39m
+@localhost [0] BreedHoistServer.js [90m/root/.nvm/versions/node/v6.9.5/bin/node[39m [90m/opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js[39m 15573 15643 [35m/root/.forever/BreedHoistServer.js.log[39m [33m0:4:8:49.759[39m
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost [32minfo[39m: Forever stopped process:
+@localhost [37m [39m [37muid[39m [90mcommand[39m [90mscript[39m [37mforever[39m [37mpid[39m [37mid[39m [35mlogfile[39m [33muptime[39m
+@localhost [0] RC_ConfigManager_ExecServer.js [90m/root/.nvm/versions/node/v6.9.5/bin/node[39m [90m/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js[39m 17103 114563 [35m/root/.forever/RC_ConfigManager_ExecServer.js.log[39m [33m0:0:0:0.272[39m
+@localhost [32minfo[39m: Forever stopped process:
+@localhost [37m [39m [37muid[39m [90mcommand[39m [90mscript[39m [37mforever[39m [37mpid[39m [37mid[39m [35mlogfile[39m [33muptime[39m
+@localhost [0] RC_ConfigManager_ExecServer.js [90m/root/.nvm/versions/node/v6.9.5/bin/node[39m [90m/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js[39m 17103 114563 [35m/root/.forever/RC_ConfigManager_ExecServer.js.log[39m [33m0:0:0:0.272[39m
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost ok
+@localhost ok
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.rcext
+define miniappsettings.task_name app.deploy.rcext
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.sbdb
+define miniappsettings.task_name app.deploy.sbdb
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+
+Running '[36mapp.stop.rcext[39m' task...
+
+Running '[36mapp.stop.rcext[39m' task...
+Running "echo create inSeries chain..." on local.
+Running "echo create inSeries chain..." on local.
+Finished '[36mapp.stop.rcext[39m' after [35m8 ms[39m
+Finished '[36mapp.stop.rcext[39m' after [35m8 ms[39m
+@ create inSeries chain...
+@ create inSeries chain...
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+/home/user/.nvm/versions/node/v6.9.5/bin/shipit staging app.stop.rcext
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.rcext
+define miniappsettings.task_name app.deploy.rcext
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.sbdb
+define miniappsettings.task_name app.deploy.sbdb
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+
+Running '[36mapp.stop.rcext[39m' task...
+
+Running '[36mapp.stop.rcext[39m' task...
+Running "echo create inSeries chain..." on local.
+Running "echo create inSeries chain..." on local.
+Finished '[36mapp.stop.rcext[39m' after [35m20 ms[39m
+Finished '[36mapp.stop.rcext[39m' after [35m20 ms[39m
+@ create inSeries chain...
+@ create inSeries chain...
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.rcext
+define miniappsettings.task_name app.deploy.rcext
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'rcext',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/',
+copyMain: false,
+start_app: 'RCExt/BreedHoistServer.js',
+fileOtherScripts: [ 'RCExt/RC_ConfigManager_ExecServer.js' ],
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'../node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '../' ] },
+copyPairs2:
+{ mainRCE_Content: [ '/media/sf_Dropbox/projects/crypto/mp/RCExt', '' ],
+dbRitvApps: [ '/media/sf_Dropbox/projects/crypto/ritv/', '../ritv/' ],
+uiUtilsOrig:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+'../mp/RCExt/public_html/js/lib' ],
+uiUtilsOrig2:
+[ '/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+'../mp/RCExt/public_html/js/lib' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirDeploy: 'mp/',
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.rcext',
+dir_deploy: '/opt/nodejs/rcext/mp//' }
+/media/sf_Dropbox/projects/crypto/',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox/projects/crypto/mp/RCExt',
+/media/sf_Dropbox/projects/crypto/ritv/',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/ui_utils.js',
+/media/sf_Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+fileNodeScript /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+commonVars { environment: 'staging', str: 'root@localhost' }
+commonVars { environment: 'staging', str: 'root@localhost' }
+define miniappsettings.task_name app.deploy.sbdb
+define miniappsettings.task_name app.deploy.sbdb
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+settings { app_name: 'sbdb',
+deploy_config: true,
+dir_local_app: '/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+start_app: 'RemoteConsoleServer/RemoteConsoleServer.js',
+dir_deploy_to_script_base: 'Code/node_scripts/',
+getPath: [Function: getPath_RelativeToDeployDir],
+copyPairs:
+{ shelpers:
+[ '/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+'node_modules' ],
+localNodeModules_: [ '/media/sf_Dropbox/projects/crypto/node_modules', '' ] },
+replace_dir: [ '/media/sf_Dropbox', '/media/sf_Dropbox' ],
+dirBase: '/opt/nodejs/',
+task_name: 'app.deploy.sbdb',
+dir_deploy: '/opt/nodejs/sbdb//' }
+/media/sf_Dropbox/projects/crypto/mp/RemoteConsoleServer',
+/media/sf_Dropbox/projects/crypto/node_modules/shelpers',
+/media/sf_Dropbox/projects/crypto/node_modules',
+/media/sf_Dropbox',
+/media/sf_Dropbox
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+fileNodeScript /opt/nodejs/sbdb/RemoteConsoleServer/RemoteConsoleServer.js
+
+Running '[36mapp.stop.rcext[39m' task...
+
+Running '[36mapp.stop.rcext[39m' task...
+Running "echo create inSeries chain..." on local.
+Running "echo create inSeries chain..." on local.
+Finished '[36mapp.stop.rcext[39m' after [35m8.27 ms[39m
+Finished '[36mapp.stop.rcext[39m' after [35m8.27 ms[39m
+@ create inSeries chain...
+@ create inSeries chain...
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+sudo pkill -f 'RCExt/BreedHoistServer.js' &
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+Running "sudo pkill -f 'RCExt/BreedHoistServer.js' & " on host "localhost".
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop BreedHoistServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: BreedHoistServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: /opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js
+@localhost ok
+@localhost ok
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok
+Running "source ~/.nvm/nvm.sh; nvm use 0; forever stop RC_ConfigManager_ExecServer.js ; echo ok" on host "localhost".
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost Now using node v6.9.5 (npm v3.10.10)
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost ok
+@localhost ok
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost-err [31merror[39m: Forever cannot find process with id: RC_ConfigManager_ExecServer.js
+@localhost ok
+@localhost ok
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' &
+Running "sudo pkill -f '/opt/nodejs/rcext/mp/RCExt/RC_ConfigManager_ExecServer.js' & " on host "localhost".
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.
+@localhost-err Connection to localhost closed.

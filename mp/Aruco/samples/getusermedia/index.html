@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Sample Three.js</title>
+		<style>
+			#container {
+				background: #000;
+				width: 400px;
+				height: 300px;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container">
+
+
+		</div>
+
+	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script src="js/Three.js"></script>
+
+    <script src="threejsutils.js"></script>
+
+	<script type="text/javascript">
+
+	// set the scene size
+	var WIDTH = 640,
+	    HEIGHT = 480;
+
+	// set some camera attributes
+	var VIEW_ANGLE = 65,
+	    ASPECT = WIDTH / HEIGHT,
+	    NEAR = 0.1,
+	    FAR = 10000;
+
+	// get the DOM element to attach to
+	// - assume we've got jQuery to hand
+	var $container = $('#container');
+
+	// create a WebGL renderer, camera
+	// and a scene
+	var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setClearColor( 0xf2f2f2, 1);
+
+	var camera = new THREE.PerspectiveCamera(  VIEW_ANGLE,
+	                                ASPECT,
+	                                NEAR,
+	                                FAR  );
+	var scene = new THREE.Scene();
+
+	// the camera starts at 0,0,0 so pull it back
+	camera.position.z = 1600;
+
+	// start the renderer
+	renderer.setSize(WIDTH, HEIGHT);
+
+	// attach the render-supplied DOM element
+	$container.append(renderer.domElement);
+
+	// create the sphere's material
+	var sphereMaterial = new THREE.MeshLambertMaterial(
+	{
+	    color: 0xCC0000
+	});
+
+	// set up the sphere vars
+	var radius = 50, segments = 16, rings = 16;
+
+	// create a new mesh with sphere geometry -
+	// we will cover the sphereMaterial next!
+	var sphere = new THREE.Mesh(
+	   new THREE.SphereGeometry(radius, segments, rings),
+	   sphereMaterial);
+
+	// add the sphere to the scene
+	scene.add(sphere);
+
+
+    var dWidth = 300
+    var geometry = new THREE.PlaneGeometry( 300, 300, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+    var plane = new THREE.Mesh( geometry, material );
+
+    var xAxis = new THREE.Vector3(1,1,0);
+    //rotateAroundWorldAxis(plane, xAxis, Math.PI / 180);
+    //-312,156,874,-56,-6,-4, 640, 480
+    var max = 56
+    var xAxis = new THREE.Vector3(-56/max,-6/max,-4/max);
+  //  rotateAroundWorldAxis(plane, xAxis, 5*Math.PI / 180);
+    plane.translateX( -312 - dWidth/2 );
+    plane.translateY( 156 + dWidth/2 );
+    plane.translateZ( 874 );
+
+
+    var yaw = -56
+    var pitch  = -6
+    var roll =  -4
+   //  plane.rotation.x = roll*Math.PI / 180 //roll / Math.PI
+   //  plane.rotation.y = pitch*Math.PI / 180 //pitch / Math.PI
+    //  plane.rotation.z = -1*yaw*Math.PI / 180 // yaw / Math.PI
+     plane.rotation.x = roll*-Math.PI / 180 //roll / Math.PI
+     plane.rotation.y = pitch*-Math.PI / 180 //pitch / Math.PI
+    plane.rotation.z = -1*20*Math.PI / 180 // yaw / Math.PI
+
+    scene.add(plane);
+
+
+
+
+    // and the camera
+	scene.add(camera);
+
+	// create a point light
+	var pointLight = new THREE.PointLight( 0xFFFFFF );
+
+	// set its position
+	pointLight.position.x = 10;
+	pointLight.position.y = 50;
+	pointLight.position.z = 130;
+
+	// add to the scene
+	scene.add(pointLight);
+
+	// draw!
+	renderer.render(scene, camera);
+	</script>
+</html>

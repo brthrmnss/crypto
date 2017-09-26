@@ -1,0 +1,304 @@
+<html>
+
+<head>
+    <title>Augmented Reality Marker Detector</title>
+
+    <script type="text/javascript" src="libs/polyfill.js"></script>
+
+    <script type="text/javascript" src="cv.js"></script>
+    <script type="text/javascript" src="aruco.js"></script>
+    <script type="text/javascript" src="addpanel.js"></script>
+    <style media="screen">
+        .container {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #CCC;
+            margin: 0 auto 60px;
+            position: relative;
+        // position: absolute;
+            -webkit-perspective: 600px;
+            -moz-perspective: 600px;
+            -o-perspective: 600px;
+            perspective: 600px;
+        }
+
+        .panel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0.7;
+            color: white;
+            background: red;
+        }
+
+        #translate-z-negative .panel {
+            -webkit-transform: translateZ( -200px );
+            -moz-transform: translateZ( -200px );
+            -o-transform: translateZ( -200px );
+            transform: translateZ( -200px );
+        }
+
+        #translate-z-positive .panel {
+            -webkit-transform: translateZ( 200px );
+            -moz-transform: translateZ( 200px );
+            -o-transform: translateZ( 200px );
+            transform: translateZ( 200px );
+        }
+
+        #rotate-x .panel {
+            -webkit-transform: rotateX( 45deg );
+            -moz-transform: rotateX( 45deg );
+            -o-transform: rotateX( 45deg );
+            transform: rotateX( 45deg );
+        }
+
+        #rotate-y .panel {
+            -webkit-transform: rotateY( 45deg );
+            -moz-transform: rotateY( 45deg );
+            -o-transform: rotateY( 45deg );
+            transform: rotateY( 45deg );
+        }
+
+        #rotate-z .panel {
+            -webkit-transform: rotateZ( 45deg );
+            -moz-transform: rotateZ( 45deg );
+            -o-transform: rotateZ( 45deg );
+            transform: rotateZ( 45deg );
+        }
+    </style>
+
+</head>
+
+<body style="font-family: monospace;">
+
+<center>
+    <div style="margin: 10px;"><strong>-= Augmented Reality Marker Detector =-</strong></div>
+    <div style="width:640px; height:480px; background-color: #d2d2d2" id="candvasBackboard" >
+        <video id="video" autoplay="true" style="display:none;"></video>
+        <canvas id="canvas" style="width:640px; height:480px;">
+        </canvas>
+        <div style="width:640px; height:480px;  top: 0px; position: absolute;" id="canvasBackboard" >
+
+            <div id="outerContainer" style="background-color: #d2d2d2; ">
+                <div id="innerContainer" style="
+font-size: 1em;
+padding: 0%;
+background-color: #FFFCCC;
+position: absolute;
+">
+                    <!--    <div id="innerInner" style="top: -50%">
+    -->
+                    <input />
+                    Transform this!
+                    <p></p>
+
+
+                </div>
+                <!--   </div>-->
+
+
+            </div>
+        </div>
+    </div>
+
+
+</center>
+
+
+<center>
+    <div style="margin: 10px;"><strong>-= Augmented Reality Marker Detector =-</strong></div>
+    <video id="video" autoplay="true" style="display:none;"></video>
+    <canvas id="canvas" style="width:640px; height:480px;"></canvas>
+    <div style="margin: 15px;"><strong>Powered by <a href="http://code.google.com/p/js-aruco/">js-aruco</a></strong>
+    </div>
+</center>
+
+
+
+<p style="-webkit-transform: skew(32deg, 0deg);
+ -moz-transform: skew(32deg, 0deg);
+ -o-transform: skew(32deg, 0deg);
+ -ms-transform: skew(32deg, 0deg);
+ transform: skew(32deg, 0deg)">
+    This element has been skewed horizontally and vertically. You can still select the text, and otherwise interact with
+    the element, as you would if it weren’t transformed.</p>
+
+error: 0
+x: -416 y: 100 z: 881
+yaw: -55 pitch: -4 roll: -1
+
+
+</body>
+
+
+
+<script>
+
+    drawPoint(-312,156,874,-56,-6,-4, 640, 480)
+
+    /*
+     //return;
+
+     //drawPoint(-165,211,1081,-80,75,19, 640, 480)
+     drawPoint(-405,84,901,-0,-4,56, 640, 480)
+     drawPoint(-378,84,937,-48,-5,-1, 640, 480)
+     drawPoint(-353,80,900,-56,-5,-0, 640, 480)
+
+
+     */
+    //yaw is vertical axis, that is yRotation ....
+    //pitch is pushing backwards, that is x
+    //roll is spinning like clock, that is
+    /* function drawPoint(x,y,z, rY, rX, rZ , w,h) {
+     //http://westciv.com/tools/3Dtransforms/
+     document.getElementById("outerContainer").style.color = "blue";
+
+     var transform = ''
+
+     var xOffset = 0
+     //xOffset = -165
+     var yOffset = -10
+     // xOffset = -150
+     var translateX = (w*.5)  + x + xOffset
+
+     var translateX = (w*.5)  + (x/z)*(w) + xOffset
+
+
+
+     var translateY = (h*.5)  - y + yOffset
+
+     //  var yCenter =
+     //        var xCenter =
+
+     translateY = (h*.5)  - (y/z)*(h) + yOffset
+
+
+
+
+     var feet = z/150;
+     var dHeight = feet*7;
+     var dWidth = feet*7;
+
+
+     //translateX -= dWidth*.5
+     translateY -= dWidth*.5
+
+     transform += "translateX("+translateX+"px) ";
+     transform += "translateY("+translateY+"px) ";
+
+
+
+     var translateZ =  -0//(480*.5)  - 100
+     translateZ  = z*-1
+     translateZ =  -0
+     transform += "translateZ("+translateZ+"px) ";
+
+     var perspective =  2//(480*.5)  - 100
+     // document.getElementById("demodd").style.transform = "perspective("+perspective+")";
+     //    transform += "perspective("+perspective+"px)";
+
+
+     var innerTransform = ''
+     //http://theboredengineers.com/2012/05/the-quadcopter-basics/
+     var rotateX = -0
+     rotateX = rX
+     var rotateY = rY
+     var rotateZ =  rZ
+
+     //rotateY = 0
+     //identify
+     //rotateX = 0 //pushing back like card deck
+     //rotateY = 50 //spinnign on vertical axis
+     //rotateZ = 50 //spinning around z axis
+
+
+     //  rotateX = -180
+     innerTransform += "rotateX("+rotateX+"deg) ";
+
+     innerTransform += "rotateY("+rotateY+"deg) ";
+
+     innerTransform += "rotateZ("+rotateZ+"deg) ";
+
+     //var transformO = -55
+     //  document.getElementById("innerContainer").style.transformOrigin="0 0";
+     //  document.getElementById("innerContainer").style.transformOrigin=translateX+100 + "px " + translateY
+     document.getElementById("innerContainer").style.transformOrigin="100 0"
+     document.getElementById("innerContainer").style.transformOrigin=translateX + " " + translateY
+     document.getElementById("innerContainer").style.transformOrigin=0 + " " + 0
+     //  document.getElementById("innerContainer").style.transformOrigin=w/2 + " " + h/2
+     // document.getElementById("innerContainer").style.transformOrigin=x + " " + y
+     //http://www.w3schools.com/cssref/css3_pr_perspective.asp
+     //http://css-tricks.com/almanac/properties/p/perspective/
+     var perspective =  10000//(480*.5)  - 100
+     //var btransform = "perspective("+perspective+"px)";
+
+     document.getElementById("canvasBackboard").style.perspective = perspective
+
+     document.getElementById("outerContainer").style.transform = transform
+
+     document.getElementById("innerContainer").style.transform = innerTransform
+
+
+
+     document.getElementById('innerContainer').style.width= dWidth+'px';
+     document.getElementById('innerContainer').style.height= dHeight+'px';
+     //   document.getElementById("outerContainer").setAttribute("style","width:50px");
+     // document.getElementById("outerContainer").setAttribute("style","width:50px");
+     }
+     function drawPointc(x,y,z, rX, rY, rZ) {
+     //http://westciv.com/tools/3Dtransforms/
+     document.getElementById("outerContainer").style.color = "blue";
+
+     var transform = ''
+
+     var xOffset = 0
+     xOffset = 0
+     var yOffset = 0
+     // xOffset = -150
+     var translateX = (640*.5)  - 410 + xOffset
+     transform += "translateX("+translateX+"px) ";
+
+     var translateY = (480*.5)  + yOffset
+     transform += "translateY("+translateY+"px) ";
+
+
+     var translateZ =  -0//(480*.5)  - 100
+     translateZ  = -881
+     transform += "translateZ("+translateZ+"px) ";
+
+     var perspective =  2//(480*.5)  - 100
+     // document.getElementById("demodd").style.transform = "perspective("+perspective+")";
+     //    transform += "perspective("+perspective+"px)";
+
+
+     var innerTransform = ''
+     //http://theboredengineers.com/2012/05/the-quadcopter-basics/
+     var rotateX = -0
+     rotateX = -1
+     //  rotateX = -180
+     innerTransform += "rotateX("+rotateX+"deg) ";
+     var rotateY = -4
+     innerTransform += "rotateY("+rotateY+"deg) ";
+     var rotateZ = -55
+     rotateZ = -55
+     innerTransform += "rotateZ("+rotateZ+"deg) ";
+
+     //var transformO = -55
+     document.getElementById("innerContainer").style.transformOrigin="0 0";
+     document.getElementById("innerContainer").style.transformOrigin=translateX+100 + "px " + translateY
+     document.getElementById("innerContainer").style.transformOrigin="100 0"
+     //http://www.w3schools.com/cssref/css3_pr_perspective.asp
+     //http://css-tricks.com/almanac/properties/p/perspective/
+     var perspective =  10000//(480*.5)  - 100
+     //var btransform = "perspective("+perspective+"px)";
+
+     document.getElementById("canvasBackboard").style.perspective = perspective
+
+     document.getElementById("outerContainer").style.transform = transform
+
+     document.getElementById("innerContainer").style.transform = innerTransform
+
+     }*/
+</script>
+
+</html>

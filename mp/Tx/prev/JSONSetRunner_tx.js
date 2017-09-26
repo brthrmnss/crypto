@@ -8,6 +8,8 @@ function TaxRunner() {
     var p = TaxRunner.prototype;
     p = this;
     var self = this;
+    self.data = {};
+
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
     }
@@ -20,9 +22,375 @@ function TaxRunner() {
     }
     p.saveOutput = function method(config) {
     }
+    p.searchAllItemsFor = function searchAllItemsFor(config) {
+        sh.throwIfNull(config.name, 'need a name for filter')
+        var cfg = self.data.baseCfg;
+        cfg.it.iteratorName = config.name
+        cfg.it.matchesDefault = []
+        cfg.it.noOutput = true
+        cfg.includeAllItems = true
+        cfg.it.fxFilter = config.fxFilter
+        cfg.it.itemsSkip = config.itemsSkip;
+        cfg.itemsSkip = config.itemsSkip;
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+    }
+
+    p.categorizeAllItemes = function categorizeAllItemes(cfg) {
+        var dictItemByAmount = new sh.DictArray()
+        var dictItemByAmountRaw = new sh.DictArray()
+        var dictPaymentsSameDesc = new sh.DictArray()
+        var dictPaymentsSameDesc1stWord = new sh.DictArray()
+        var dictPayments_ReveredAmts = new sh.DictArray();
+        self.data.dictItemByAmount = dictItemByAmount;
+        self.data.dictItemByAmountRaw = dictItemByAmountRaw;
+        self.data.dictPaymentsSameDesc = dictPaymentsSameDesc;
+        self.data.dictPaymentsSameDesc1stWord = dictPaymentsSameDesc1stWord;
+        //var cfg = self.utils.getConfig();
+        cfg.it.iteratorName = 'OrganizePayments3'
+        cfg.it.matchesDefault = []
+        cfg.it.noOutput = true
+        cfg.it.unimportant = true;
+        //cfg.includeAllItems = true
+        cfg.it.fxFilter = function fxFilter_fillOutDictionaries(item) {
+            item.amount = parseFloat(item.amount);
+            item.amount = item.amount.toFixed(2)
+
+            // if ( item.rejected != true  ) {
+            //asdf.g
+            if (!item.description.toLowerCase().includes('amazon')) {
+                //ignore amazon b/c price can be anything
+                dictItemByAmount.add(item.amount, item)
+            }
+            dictItemByAmountRaw.add(item.amount, item)
+
+            dictPaymentsSameDesc.add(item.originalDescription, item)
+            var descWords = item.originalDescription.split(' ');//[0]
+            var firstWords = descWords[0]
+            if (firstWords.toLowerCase().includes('withdraw')) {
+                var firstTwoWords = descWords.slice(0, 3).join(' ');
+                //asdf.g
+                firstWords = firstTwoWords
+            }
+            dictPaymentsSameDesc1stWord.add(firstWords, item)
+            //  }
+
+            //TODO: do this with all items in other iterator ....
+            //wh: it is useful to see which transactions (loans, credit card balances) were
+            //reversed
+            dictPayments_ReveredAmts.add(Math.abs(item.amount), item)
+
+        }
+        p.convertPayments = function convertPayments(cfgConvPayment) {
+            var outputDict = {};
+
+            var cfg = cfgConvPayment;
+
+            var listObj = [];
+            var totalAmount = 0;
+            var totalCount = 0;
+            var totalAmountNeg = 0;
+            var itemsMatched = [];
+
+
+            var dict = sh.clone(cfgConvPayment.dict.data.dict); //bookmark.heavy.operation
+
+            sh.each(dict, function filterDictSets(k, listItems) {
+
+                if (sh.isFunction(listItems)) {
+                    return;
+                }
+                if (cfg.allow1Only != true && listItems.length <= 1) {
+                    delete dict[k]
+                    return;
+                }
+                if (listItems == null) {
+                    return;
+                }
+
+                /*
+                 */
+                if (listItems.sort == null) {
+                    debugger
+
+                }
+                sh.sortByDate(listItems, 'date')
+
+                if (cfg.fxFilterDictArraySet) {
+                    var helper_listItems = {};
+                    var result = cfg.fxFilterDictArraySet(listItems, helper_listItems, k)
+                    if (result !== true)
+                        return;
+                }
+                //   if ( v.sort )
+                //     v.sort('date')
+                // sh.each.print(listItems, 'date')
+                // sh.x()
+                // console.log(k, listItems)
+
+                var firstLine = {};
+                firstLine.grouping = k;
+                listObj.push(firstLine)
+                var total = 0;
+                var listItemCount = 0;
+                //console.error('what to show, ', k, listItems.length)
+                sh.each(listItems, function copyItemToOutputLines(kk, item) {
+                    var line = item;
+                    if (item == null) {
+                        console.log(k, v, kk, item)
+                    }
+                    // item.category = k
+                    item.amount = parseFloat(item.amount);
+                    //item.amount = item.amount.toFixed(2)
+
+                    if (cfg.fxFilterItems) {
+                        //      asdf.g
+                        if (cfg.abs) {
+                            cfg.oldAmt = item.amount
+                            item.amount = Math.abs(item.amount)
+                        }
+                        var result = cfg.fxFilterItems(item)
+                        if (cfg.abs) {
+                            item.amount = cfg.oldAmt
+                        }
+                        if (result !== true)
+                            return;
+                    }
+                    itemsMatched.push(item)
+                    listItemCount++;
+                    total += item.amount
+                    if (item.amount > 0) {
+                        totalAmount += item.amount
+                    } else {
+                        totalAmountNeg += item.amount;
+                    }
+                    totalCount += 1;
+                    if (cfg.skipLines != true) {
+                        listObj.push(line)
+                    }
+                })
+
+                if (totalCount == 0) {
+                    listObj.pop(); //remove empty set
+                    return;
+                }
+
+                firstLine.total = total.toFixed(2);
+                firstLine.count = listItems.length;
+                firstLine.moneyPerc = sh.toPercent(firstLine.total / JSONSetIterator_Generic.totalIncome);
+                firstLine.avg$ = (total / listItems.length).toFixed(2)
+                firstLine.countPerc = listItems.length / JSONSetIterator_Generic.totalCount;
+                firstLine.countPerc = sh.toPercent(firstLine.countPerc);
+                //console.log('totalX', total, listItems.length, JSONSetIterator_Generic.totalIncome)
+                //asdf.g
+            })
+
+
+            if (cfg.sortItemsByVal) {
+                //asdf.g
+                //sh.sortByName(listObjs, 'total' )
+
+                var field = 'total'
+                listObj.sort(function (aObj, bObj) {
+                    var a = aObj[field];
+                    a = parseFloat(a)
+                    var b = bObj[field];
+                    b = parseFloat(b)
+                    //  console.error('date match',  b, a, bObj, aObj)
+                    var diff = b - a
+                    return diff;
+                });
+            }
+
+            var lineTotal = {};
+            lineTotal.grouping = 'maintotal'
+            lineTotal.count = totalCount;
+            lineTotal.countPerc = totalCount / JSONSetIterator_Generic.totalCount;
+            lineTotal.countPerc = sh.toPercent(lineTotal.countPerc);
+            lineTotal.moneyPerc = totalAmountNeg / JSONSetIterator_Generic.totalIncome;
+            lineTotal.moneyPerc = sh.toPercent(lineTotal.moneyPerc);
+            var avg$ = totalAmountNeg / totalCount;
+            lineTotal.avg$ = avg$
+            lineTotal.total = totalAmount;
+            lineTotal.totalNeg = totalAmountNeg;
+
+            sh.each(lineTotal, function fixPerc(k, v) {
+                if (v.toFixed != null && v.toString().includes('.'))
+                    lineTotal[k] = v.toFixed(2)
+            })
+
+            listObj.unshift(lineTotal)
+
+
+            var output = {}
+            output.listObj = listObj;
+            output.itemsMatched = itemsMatched;
+
+            return output
+        }
+
+        p.addFileForFilterFx = function addFileForFilterFx(cfgFF) {
+            cfgFF.dict = sh.dv(cfgFF.dict, self.data.dictItemByAmountRaw)
+            var output = self.convertPayments(cfgFF);
+
+            var columns = columnify(output.listObj);
+            self.data.runner.createAdditionalFlatFile(cfgFF.name + '.csv', columns)
+
+
+            self.searchAllItemsFor({
+                name: cfgFF.name,
+                itemsSkip: output.itemsMatched
+            })
+            // JSONSetRunner.sch.displayTasks();
+            JSONSetRunner.sch.flipLast2Tasks();
+            //JSONSetRunner.sch.displayTasks();
+            //asdf.g
+            return output.itemsMatched;
+
+        }
+
+        cfg.it.fxDone = function fxDone(runner, it) {
+
+
+            self.data.runner = runner;
+            /*    var arr = self.addFileForFilterFx({
+             name:'small payments',
+             abs:true,
+             fxFilterItems:function getSmallFee(item){
+             //console.error('what is amt', item.amount)
+             if ( item.amount < 2.5) {
+             return true;
+             }
+             }
+             })
+             */
+            var arr = self.addFileForFilterFx({
+                name: '11 payments',
+                dict: self.data.dictPaymentsSameDesc1stWord,
+                abs: true,
+                fxFilterDictArraySet: function getSmallFee(listSet, h, setName) {
+                    //console.error('what is amt', setName, listSet.length)
+                    if (listSet.length == 11) {
+                        //asdf.g
+                        return true;
+                    }
+                }
+            })
+
+
+            var arr = self.addFileForFilterFx({
+                name: '13 payments',
+                dict: self.data.dictPaymentsSameDesc1stWord,
+                abs: true,
+                fxFilterDictArraySet: function getSmallFee(listSet, h, setName) {
+                    // console.error('what is amt', setName, listSet.length)
+                    if (listSet.length == 13) {
+                        return true;
+                    }
+                }
+            })
+
+            var arr = self.addFileForFilterFx({
+                name: '10 payments',
+                dict: self.data.dictPaymentsSameDesc1stWord,
+                abs: true,
+                fxFilterDictArraySet: function getSmallFee(listSet, h, setName) {
+                    // console.error('what is amt', setName, listSet.length)
+                    if (listSet.length == 10) {
+                        return true;
+                    }
+                }
+            })
+
+            return;
+
+            var y = cfg.convertPayments(dictItemByAmount);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('comments_output2', columns)
+
+            y = cfg.convertPayments(dictPaymentsSameDesc);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc', columns)
+
+
+            var csvLines = cfg.convertPayments({
+                itemDict: dictPaymentsSameDesc1stWord,
+                //skipLines: true,
+                allow1Only: true,
+                fxFilterDictArrays: function includeItemesWith1(arr) {
+                    // console.log('asdf', arr)
+                    if (arr.length == 1) {
+                        //asdf.g
+                        return true;
+                    }
+                    // asdf.g.f
+                },
+                //sortItemsByVal:true
+            });
+            var csvLines2 = columnify(csvLines);
+            runner.createAdditionalFlatFile('dictPayments_1OffPayments', csvLines2)
+
+
+            y = cfg.convertPayments(dictPaymentsSameDesc1stWord);
+            var columns = columnify(y);
+            //console.log(columns)
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc1stWord', columns)
+
+
+            var csvLines = cfg.convertPayments({
+                itemDict: dictPaymentsSameDesc1stWord,
+                skipLines: true,
+                sortItemsByVal: true
+            });
+            var csvLines2 = columnify(csvLines);
+            runner.createAdditionalFlatFile('dictPayments_mostExpensiveCategories', csvLines2)
+
+
+            //find reversed payments
+
+            y = cfg.convertPayments(dictPayments_ReveredAmts, function onlyIfDirectionChanges(items) {
+                var h = {};
+                sh.each(items, function testDir(k, v) {
+                    if (v.amount > 0) {
+                        h.positive = true
+                    }
+                    if (v.amount < 0) {
+                        h.negative = true
+                    }
+                })
+                if (h.positive && h.negative) {
+                    return true;
+                }
+            });
+            var columns = columnify(y);
+            runner.createAdditionalFlatFile('dictPaymentsSameDesc1stWord_revsed', columns)
+
+
+            // process.exit();
+
+        }
+
+        // asdf.g
+
+        sh.throwIfNull(self.data.fileIterator, 'fileIterator not set')
+        JSONSetRunner.runSet(self.data.fileInput, self.data.fileIterator, cfg)
+    }
+
+    function defineUtils() {
+        p.utils = {};
+        p.utils.getConfig = function getConfig() {
+            return self.data.baseCfg;
+            var cfg = {}
+            cfg.it = {}
+            return cfg;
+        }
+    }
+
+    defineUtils();
 
     p.proc = function debugLogger() {
-        if ( self.silent == true) {
+        if (self.silent == true) {
             return;
         }
         sh.sLog(arguments);
@@ -31,11 +399,6 @@ function TaxRunner() {
 
 exports.TaxRunner = TaxRunner;
 
-if (module.parent == null) {
-    var instance = new TaxRunner();
-    var config = {};
-    instance.init(config)
-}
 
 /*
  open file
@@ -66,109 +429,124 @@ if (module.parent == null) {
     var fileInput = 'mint 2014.csv';
     //JSONSetRunner.runSetDir(fileInput, dirIteratorsAuto)// why do not run all the iterators ... using custom now
     //return;
-    var cfg = {}
-    cfg.it = {}
-    cfg.announce = false;
-    // cfgBase = sh.clone(cfg);
+    var fileIterator = dirIterators + 'JSONSetIterator_Generic.js'
+    var JSONSetIterator_Generic = require('./' + fileIterator).IteratorClass
+    fileIterator = sh.fs.resolve(fileIterator);
 
 
+    function defineCfgItem() {
+        var cfg = {}
+        cfg.it = {}
+        cfg.announce = false;
+        // cfgBase = sh.clone(cfg);
 
+        cfg.fxPreProcess = function preProccess(item) {
+            //ASDF.G
+            item.amount = parseFloat(item.amount);
+            if (item.transactionType == 'credit') {
 
+            } else {
+                if (item.amount > 0)
+                    item.amount = item.amount * -1
+            }
 
-    cfg.fxPreProcess = function preProccess(item) {
-        //ASDF.G
-        item.amount = parseFloat(item.amount);
-        if (  item.transactionType == 'credit') {
+            return item;
+        }
+        cfg.fxGetItems = function fxGetItems(_cfg) {
+            //asdf.g
+            if (_cfg.includeAllItems) {
+                return data.allItems;
+            }
+            if (data.allItems == null)
+                return null;
+            //asdf.g
+            _cfg.listAllItemsCount = data.allItems.length;
+            return data.unfilteredItems;
 
-        } else {
-            if ( item.amount > 0 )
-                item.amount = item.amount * -1
+            return [];
         }
 
-        return item;
+        //cfg.resetList = true
+
+
+        /*JSONSetIterator_Generic.utils.tag = function () {
+
+         } */
+
+
+        JSONSetRunner.runSet.fxResetConfig = function fxResetConfig(_cfg) {
+            cfg.it.iteratorName = null
+            cfg.it.matchesDefault = []
+            cfg.it.matchesPersonal = null
+            cfg.resetList = false
+            cfg.inputIsOutput_doesNotFilter = null
+            cfg.it.fxDone = null;
+            cfg.it.fxDone = null;
+            cfg.it.tagWhy = null
+            cfg.it.peachTreeAcct = null
+            cfg.it.fxDone = null;
+            cfg.includeAllItems = null
+            cfg.it.noOutput = false
+            cfg.it.unimportant = false
+
+            delete cfg.it.noOutput;
+            delete cfg.it.desc;
+            cfg.it.fxFilter = null;
+            //  console.log('\t', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
+
+        }
+
+        JSONSetRunner.runSet.fxPost = function onFxPost(inst, _cfg) {
+            cfg.it.iteratorName = null
+            cfg.it.matchesDefault = null
+            cfg.it.matchesPersonal = null
+            cfg.resetList = false
+            cfg.it.fxDone = null;
+            cfg.it.fxDone = null;
+            cfg.includeAllItems = null
+            cfg.it.noOutput = false
+            delete cfg.it.noOutput;
+            delete cfg.it.desc;
+            cfg.it.fxFilter = null;
+            if (cfg.it.spit)
+                console.log('\t', 'JSONSetRunner.runSet.fxPost', 'inst', _cfg.iteratorName, inst.data.work.list.length, inst.data.listMatched.length, inst.data.listFiltered.length)
+            //console.log(  inst.data.work.list )
+            //    console.log('')
+            //console.log(inst.data.listFiltered)
+            //console.log(inst.data.listMatched);
+
+            if (data.allItems == null) {
+                //why: cache all items the first time only
+                data.allItems = inst.data.work.list
+
+                //  process.exit()
+            }
+            data.unfilteredItems = inst.data.listFiltered;
+
+            //asdf.g
+        }
+
+        return cfg
     }
+
+    var cfg = defineCfgItem();
+
+
+    //if (module.parent == null) {
+    var tx = instance = new TaxRunner();
+    var config = {};
+
+    tx.init(config)
+
+    tx.data.baseCfg = cfg;
+    tx.data.dirIterators = dirIterators
+    tx.data.fileInput = fileInput
+    tx.data.fileIterator = fileIterator;
+    //  }
 
 
     var data = {};
     //data.allItems = sh.readFile(fileInput);
-
-
-    cfg.fxGetItems = function fxGetItems(_cfg) {
-        //asdf.g
-        if ( _cfg.includeAllItems) {
-            return data.allItems;
-        }
-        if ( data.allItems == null )
-            return null;
-        //asdf.g
-        _cfg.listAllItemsCount = data.allItems.length;
-        return data.unfilteredItems;
-
-        return [];
-    }
-
-    var fileIterator = dirIterators + 'JSONSetIterator_Generic.js'
-    var JSONSetIterator_Generic = require('./'+fileIterator).IteratorClass
-    fileIterator = sh.fs.resolve(fileIterator);
-    //cfg.resetList = true
-
-
-    /*JSONSetIterator_Generic.utils.tag = function () {
-
-     } */
-
-
-    JSONSetRunner.runSet.fxResetConfig = function fxResetConfig(_cfg){
-        cfg.it.iteratorName = null
-        cfg.it.matchesDefault = []
-        cfg.it.matchesPersonal = null
-        cfg.resetList = false
-        cfg.inputIsOutput_doesNotFilter=null
-        cfg.it.fxDone = null ;
-        cfg.it.fxDone = null;
-        cfg.it.tagWhy = null
-        cfg.it.peachTreeAcct = null
-        cfg.it.fxDone = null;
-        cfg.includeAllItems = null
-        cfg.it.noOutput = false
-        cfg.it.unimportant = false
-
-        delete cfg.it.noOutput;
-        delete cfg.it.desc;
-        cfg.it.fxFilter = null;
-        //  console.log('\t', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
-
-    }
-
-    JSONSetRunner.runSet.fxPost = function onFxPost(inst, _cfg){
-        cfg.it.iteratorName = null
-        cfg.it.matchesDefault = null
-        cfg.it.matchesPersonal = null
-        cfg.resetList = false
-        cfg.it.fxDone = null ;
-        cfg.it.fxDone = null;
-        cfg.includeAllItems = null
-        cfg.it.noOutput = false
-        delete cfg.it.noOutput;
-        delete cfg.it.desc;
-        cfg.it.fxFilter = null;
-        if ( cfg.it.spit )
-            console.log('\t', 'JSONSetRunner.runSet.fxPost', 'inst', _cfg.iteratorName, inst.data.work.list.length,  inst.data.listMatched.length, inst.data.listFiltered.length)
-        //console.log(  inst.data.work.list )
-        //    console.log('')
-        //console.log(inst.data.listFiltered)
-        //console.log(inst.data.listMatched);
-
-        if ( data.allItems == null ) {
-            //why: cache all items the first time only
-            data.allItems = inst.data.work.list
-
-            //  process.exit()
-        }
-        data.unfilteredItems = inst.data.listFiltered;
-
-        //asdf.g
-    }
 
 
     /*
@@ -193,7 +571,6 @@ if (module.parent == null) {
      */
 
 
-
     function removeInvalidDates() {
         cfg.it.iteratorName = 'Invalid Entires'
         cfg.it.desc = 'remove outside of target year ( Ensure All Dates in range)'
@@ -204,7 +581,7 @@ if (module.parent == null) {
         cfg.it.matchesDefault = []
         cfg.it.fxFilter = function fxFilter(item) {
             // console.log(item.date2.getFullYear())
-            if ( item.date2.getFullYear() != 2014 ) {
+            if (item.date2.getFullYear() != 2014) {
                 //asdf.g
                 return true
             }
@@ -215,8 +592,8 @@ if (module.parent == null) {
         cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
 
             // console.log(runner)
-            sh.sortByNumber(runner.data.listFiltered, 'amount' )
-            var columns         = columnify(   runner.data.listFiltered      );
+            sh.sortByNumber(runner.data.listFiltered, 'amount')
+            var columns = columnify(runner.data.listFiltered);
             //  console.log(columns)
             runner.createAdditionalFlatFile('all_valid_sorted_amount', columns)
 
@@ -228,17 +605,16 @@ if (module.parent == null) {
     removeInvalidDates()
 
 
-
     cfg.it.iteratorName = 'Personal Loans through FCU'
     cfg.it.desc = 'do not count loands to other accounts. Transfers to other people '
     cfg.it.matchesDefault = []
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.desc.includes('transfer') && item.desc.includes('to account ')) {
+        if (item.desc.includes('transfer') && item.desc.includes('to account ')) {
             return true; //do not count transfers as income
         }
-        if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
+        if (item.desc.includes('transfer') && item.desc.includes('from account ')) {
             return true; //do not count transfers as income
         }
     }
@@ -257,7 +633,7 @@ if (module.parent == null) {
          if ( item.desc.includes('transfer') && item.desc.includes('from account ')) {
          return true; //do not count transfers as income
          }*/
-        if ( item.desc.includes('9688-3')  ) {
+        if (item.desc.includes('9688-3')) {
             return true; //do not count transfers as income
         }
     }
@@ -269,7 +645,7 @@ if (module.parent == null) {
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
+        if (item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
             return true; //do not count transfers as income
         }
     }
@@ -283,15 +659,15 @@ if (module.parent == null) {
     //cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
 
-        if ( item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
+        if (item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
             //asdf.g
             return false; //do not count transfers as income
         }
-        if ( item.description.includes('Deposit')  ){
+        if (item.description.includes('Deposit')) {
             // asdf.g
             return true;
         }
-        if ( item.originalDescription.includes('Deposit')  ){
+        if (item.originalDescription.includes('Deposit')) {
             // asdf.g
             return true;
         }
@@ -317,14 +693,11 @@ if (module.parent == null) {
     cfg.it.matchesDefault = []
     cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.desc2.includes('Withdrawal-ACH-A-AMEX')) {
+        if (item.desc2.includes('Withdrawal-ACH-A-AMEX')) {
             return true;
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
-
 
 
     cfg.it.iteratorName = 'Checks-Tagger'
@@ -334,7 +707,7 @@ if (module.parent == null) {
 
     cfg.it.fxFilter = function fxFilter(item) {
         item.amount = parseFloat(item.amount);
-        if (item.description.startsWith('Check ') ) {
+        if (item.description.startsWith('Check ')) {
 
             item.description += ' ctt'
 
@@ -353,19 +726,18 @@ if (module.parent == null) {
             dict[1143] = "State Taxes"
 
 
-
             var words = item.description.split(' ')
             sh.each(words, function on(k, word) {
-                if ( sh.isNumber(word) == false ) {
+                if (sh.isNumber(word) == false) {
                     return
                 }
 
                 var checkMapping = dict[word]
-                if ( checkMapping ) {
+                if (checkMapping) {
                     item.description += ' ' + checkMapping
                     item.originalDescription += ' |' + checkMapping
                     console.log(item.description)
-                      //  asdf.g
+                    //  asdf.g
                 }
             })
 
@@ -389,29 +761,30 @@ if (module.parent == null) {
         }
         JSONSetRunner.runSet(fileInput, fileIterator, cfg)
     }
+
     //test_haveChecksBeenTagged();
 
-   // JSONSetRunner.runSet_Block = true;
+    // JSONSetRunner.runSet_Block = true;
 
 
     cfg.it.iteratorName = ' American Express'
     cfg.it.matchesDefault = []
     cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.desc2.includes('AUTOPAY PAYMENT') && item.accountName == 'Gold Card') {
+        if (item.desc2.includes('AUTOPAY PAYMENT') && item.accountName == 'Gold Card') {
             return true;
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
+    tx.categorizeAllItemes(cfg)
 
     cfg.it.iteratorName = 'Accountant';
-    cfg.it.matchesDefault = ['Neats' ];
+    cfg.it.matchesDefault = ['Neats'];
     cfg.it.tagWhy = 'Russell Price'
     cfg.it.peachTreeAcct = 68500
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'Cell Phone';
@@ -419,7 +792,6 @@ if (module.parent == null) {
     cfg.it.tagWhy = 'Wireless Business Utilities'
     cfg.it.peachTreeAcct = 78000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'Air Travel'
@@ -435,9 +807,8 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Retirement IRA Cont'
     cfg.it.matchesDefault =
-        ['Betterment', ]
+        ['Betterment',]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'Rental Cars'
@@ -485,7 +856,6 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'Dry Cleaning'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
@@ -495,11 +865,10 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'Pills'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
-        ['VITAMIN AND CARD OUTLE' ,
+        ['VITAMIN AND CARD OUTLE',
             'PUREFORMULAS.COM',
             'CUSTOMPROBI',
             '*LIFTMODE',
@@ -509,7 +878,6 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'Fraud'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
@@ -517,7 +885,6 @@ if (module.parent == null) {
             'Gpo Haslemere Gb'
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'Gym'
@@ -533,11 +900,10 @@ if (module.parent == null) {
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
         ['Coinbasebtc'
-            ,'WEBCOINBASE',
+            , 'WEBCOINBASE',
 
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'Student Loans'
@@ -559,11 +925,11 @@ if (module.parent == null) {
         /*   if ( item.description.includes('Deposit')  ){
          return true;
          }*/
-        if ( item.originalDescription.includes('(USATAXPYMT)')  ){
+        if (item.originalDescription.includes('(USATAXPYMT)')) {
             return true;
         }
 
-        if ( item.originalDescription.includes('(US-Fed-Tax)')  ){
+        if (item.originalDescription.includes('(US-Fed-Tax)')) {
             return true;
         }
 
@@ -573,7 +939,6 @@ if (module.parent == null) {
          }*/
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'State Taxes'
@@ -594,7 +959,6 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'CPU Utilities'
     cfg.it.matchesDefault =
         ['GH *GITHUB.COM', 'Github',
@@ -606,8 +970,6 @@ if (module.parent == null) {
     cfg.it.tagWhy = 'Business Utitilize'
     cfg.it.peachTreeAcct = 78000
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
 
 
     cfg.it.iteratorName = 'Audiobooks'
@@ -632,7 +994,7 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Junk Food'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
-        ['Pizza','Pizzeria',
+        ['Pizza', 'Pizzeria',
             'Chipotle',
             'Taka House',
             'ESPADA BRAZILIAN'
@@ -663,11 +1025,10 @@ if (module.parent == null) {
     cfg.it.iteratorName = 'Clothes'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
-        ["Khol's",'Target',
+        ["Khol's", 'Target',
             "KOHL'S"
         ]
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
 
 
     cfg.it.iteratorName = 'ATM'
@@ -691,7 +1052,7 @@ if (module.parent == null) {
     cfg.it.fxFilter = function fxFilter(item) {
         item.amount = parseFloat(item.amount);
         // console.log('check', item)
-        if (item.description.startsWith('Check ') ) {
+        if (item.description.startsWith('Check ')) {
             // asdf.g
             return true; //skip check lines
         }
@@ -720,7 +1081,6 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'Travel Incidentals'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
@@ -730,23 +1090,22 @@ if (module.parent == null) {
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
-
     cfg.it.iteratorName = 'Mobile Apps'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
-        ['Google.com/' ]
+        ['Google.com/']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Amazon'
     cfg.it.unimportant = true;
     cfg.it.matchesDefault =
-        ['Amazon' ]
+        ['Amazon']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
     cfg.it.iteratorName = 'Fees'
     cfg.it.matchesDefault =
-        ['Fee' ]
+        ['Fee']
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     cfg.it.iteratorName = 'Untagged'
@@ -761,7 +1120,7 @@ if (module.parent == null) {
     cfg.it.noOutput = true
     cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.description.includes('Deposit') ) {
+        if (item.description.includes('Deposit')) {
             return true;
         }
     }
@@ -772,11 +1131,24 @@ if (module.parent == null) {
     cfg.it.noOutput = true
     cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
-        if ( item.transactionType == 'debit' ){
+        if (item.transactionType == 'debit') {
             return true;
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+
+
+ /*   cfg.it.iteratorName = 'Phone Number like'
+    cfg.it.matchesDefault = ['1-8', '(8']
+    cfg.it.noOutput = true
+    cfg.includeAllItems = true
+    /!*cfg.it.fxFilter = function fxFilter(item) {
+     if (item.transactionType == 'debit') {
+     return true;
+     }
+     }*!/
+    JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
+
 
     /* cfg.it.iteratorName = 'Total Debits'
      cfg.it.matchesDefault = []
@@ -790,45 +1162,67 @@ if (module.parent == null) {
      JSONSetRunner.runSet(fileInput, fileIterator, cfg)*/
 
 
-
     cfg.it.iteratorName = 'Large Purchases'
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
     cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
         item.amount = parseFloat(item.amount);
-        if ( item.transactionType == 'credit' ){
+        if (item.transactionType == 'credit') {
             return false; //skip income payments
         }
-        if ( Math.abs(item.amount) > 10000 ){
+        if (Math.abs(item.amount) > 10000) {
             //console.error(item)
             return true;
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
-    cfg.it.iteratorName = 'Large Purchases Morethan Week'
+    cfg.it.iteratorName = "Large Purchases More than 1 Week pay"
     cfg.it.matchesDefault = []
     cfg.it.noOutput = true
     cfg.includeAllItems = true
     cfg.it.fxFilter = function fxFilter(item) {
+
+
         item.amount = parseFloat(item.amount);
-        if ( item.transactionType == 'credit' ){
+        if (item.transactionType == 'credit') {
             return false; //skip income payments
         }
-        //TODO: check if transfer
-        if ( Math.abs(item.amount) > 10000 ){
+        /*  //TODO: check if transfer
+         if (Math.abs(item.amount) > 10000) {
+         //console.error(item)
+         return true;
+         }
+         */
+        if (Math.abs(item.amount) > JSONSetIterator_Generic.totalIncome / 50) {
             //console.error(item)
-            return true;
-        }
+            /*
 
-        if ( Math.abs(item.amount) > JSONSetIterator_Generic.totalIncome/50 ){
-            //console.error(item)
+             console.error('what is eincomd levles???',
+             item.amount,
+             JSONSetIterator_Generic.totalIncome,
+             JSONSetIterator_Generic.totalIncome / 50)
+             */
+
             return true;
         }
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+
+    tx.searchAllItemsFor({
+        name: 'Tiny Payments lt 5 USD',
+        fxFilter: function fxFilter(item) {
+            item.amount = parseFloat(item.amount);
+            if (item.transactionType == 'credit') {
+                return false; //skip income payments
+            }
+            if (Math.abs(item.amount) < 5) {
+                return true;
+            }
+        }
+    })
 
     cfg.it.iteratorName = 'OrganizePayments2'
     cfg.it.matchesDefault = []
@@ -854,37 +1248,55 @@ if (module.parent == null) {
     }
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
+    function onAddFinalSummarization2() {
+        cfg.it.iteratorName = 'Final-Pre'
+        cfg.it.matchesDefault = []
+        cfg.it.unimportant = true;
+        cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
+            setTimeout(function addLater() {
+                onAddFinalSummarization()
+                doXCaliber()
+            }, 500);
+        }
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
+        //   onAddFinalSummarization()
+        //  doXCaliber()
+    }
 
-    cfg.it.iteratorName = 'Final'
-    cfg.it.matchesDefault = []
-    cfg.it.unimportant = true;
-    cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
-        runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
-        console.log('|open comments_output.json')
+    onAddFinalSummarization2()
 
-        var columns         = columnify(   JSONSetIterator_Generic.comments       );
-        // if ( self.settings. showAllItemsAtEnd)
-        console.log(columns)
+    function onAddFinalSummarization() {
+        cfg.it.iteratorName = 'Final'
+        cfg.it.matchesDefault = []
+        cfg.it.unimportant = true;
+        cfg.it.fxDone = function fxDone(runner, it) { //bookmark.genereate final output
+            runner.createAdditionalFile('comments_output', JSONSetIterator_Generic.comments)
+            console.log('|open comments_output.json')
 
-        runner.createAdditionalFlatFile('comments_output', columns)
+            var columns = columnify(JSONSetIterator_Generic.comments);
+            // if ( self.settings. showAllItemsAtEnd)
+            console.log(columns)
 
-
-        var cfg = {}
-        cfg.columnSplitter = ',';
-
-        var columns = columnify(   JSONSetIterator_Generic.allLines  , cfg     );
-        runner.createAdditionalFlatFile('final_output', columns, 'csv')
+            runner.createAdditionalFlatFile('comments_output', columns)
 
 
-        var columns = columnify( JSONSetIterator_Generic.allLines2, cfg );
-        runner.createAdditionalFlatFile('final_output_filtered', columns, 'csv')  
-        
-        console.log('<|open comments_output.txt')
+            var cfg = {}
+            cfg.columnSplitter = ',';
+
+            var columns = columnify(JSONSetIterator_Generic.allLines, cfg);
+            runner.createAdditionalFlatFile('final_output', columns, 'csv')
+
+
+            var columns = columnify(JSONSetIterator_Generic.allLines2, cfg);
+            var fileOutput = runner.createAdditionalFlatFile('final_output_filtered', columns, 'csv')
+
+            console.log('<|open comments_output.txt')
+            sh.log.file(fileOutput)
+
+        }
+        JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
     }
-    JSONSetRunner.runSet(fileInput, fileIterator, cfg)
-
-
 
     function doXCaliber() {
 
@@ -943,7 +1355,7 @@ if (module.parent == null) {
             var totalCount = 0;
             var totalAmountNeg = 0;
 
-            sh.each(a, function (k, listItems) {
+            sh.each(a.data.dict, function (k, listItems) {
 
                 if (sh.isFunction(listItems)) {
                     return;
@@ -958,6 +1370,10 @@ if (module.parent == null) {
 
                 /*
                  */
+                if (listItems.sort == null) {
+                    debugger
+
+                }
                 sh.sortByDate(listItems, 'date')
 
                 if (fxTestArray) {
@@ -1124,7 +1540,8 @@ if (module.parent == null) {
         }
         JSONSetRunner.runSet(fileInput, fileIterator, cfg)
     }
-    doXCaliber();
+
+    //doXCaliber();
 
 
 }

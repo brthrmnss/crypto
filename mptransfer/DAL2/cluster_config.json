@@ -1,0 +1,20 @@
+{
+    "peers":{
+        "a":"127.0.0.1"
+    },
+    "links": {
+        "a":["b", "c"],
+        "b":[],
+        "e":["d"],
+        "d":"b",
+        "f":"e"
+    },
+    "table":["cars", "people"],
+    "password":"wishing on 3 wells for downstairs",
+    "name" : "test splurge",
+    "overrides":{
+        "a":{},
+        "b":null
+    }
+
+}

@@ -41,6 +41,9 @@ function GetFileListFromRemote() {
 
         if ( self.settings.file == null ) {
             var filename = sh.fs.clean(self.settings.url)
+            if ( self.settings.withSizes) {
+                filename+= '.withSizes'
+            }
             var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists',filename+'.txt' )
             var dirOutput = sh.fs.getDir(fileOutput)
             sh.fs.mkdirp(dirOutput)
@@ -128,13 +131,13 @@ function GetFileListFromRemote() {
                 var content = sh.readFile(fileOutput)
                 onResultOfcall(content)
                 //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
-            }, null);
+            }, null, self.settings.withSizes );
             return;
         }
 
         self.proc('started the push')
         self.data.socket.on('getLocalFiles_results', onResultOfcall)
-        self.data.socket.emit('getLocalFiles', {msg:'ok'})
+        self.data.socket.emit('getLocalFiles', {msg:'ok', withSizes:self.settings.withSizes})
 
         //self.chain.nextLink();
         return;

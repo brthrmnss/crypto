@@ -38,11 +38,17 @@
 <script src="js/baby_rend.js" ></script>
 <script src="js/baby_lib.js" ></script>
 <script src="js/baby_lib_extended.js" ></script>
-<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
-<script src="http://localhost:10110/reloader.js" ></script>
+<!--<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>-->
+
+<script type="text/javascript" src="http://192.168.1.165:10110/jquery.js"></script>
+<script type="text/javascript" src="http://192.168.1.165:10110/ui_utils.js"></script>
+<script type="text/javascript" src="http://192.168.1.165:10110/g/js/reloaderGH.js"></script>
+
+
 <script>
   function onReloader() {
-    reloader.reloadWhen('index.html');
+    reloader.reloadWhenSelf('index.html');
 
     reloader.reloadWhenFx('baby_rend.js', function onTestOneJs(a, b, c) {
       console.log('reload it', a,b,c);

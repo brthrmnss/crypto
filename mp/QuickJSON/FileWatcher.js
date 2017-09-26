@@ -39,13 +39,26 @@ function FileWatcher() {
             self.settings.__filename = sh.replaceBackslash(self.settings.__filename);
         }
 
-        self.watchDirs();
-        self.setupSocket();
-        self.handleInitRunSettings();
+        console.log('config', self.settings);
 
-        self.data.count = 0;
+        if ( self.settings.delayStart ) {
+            setTimeout(function onX_waitForstgOverrides() {
+                initStart()
+            },50)
+        } else{
+            initStart()
+        }
+        function initStart() {
+            self.watchDirs();
+            self.setupSocket();
+            self.handleInitRunSettings();
 
-        console.log('config', self.settings)
+            self.data.count = 0;
+        }
+
+
+
+
     }
 
     p.watchDirs = function watchDirs(config) {
@@ -73,7 +86,7 @@ function FileWatcher() {
             })
         }
     }
-    
+
     p.trigger = function trigger(file, changes) {
         if ( changes.addedFiles && changes.addedFiles.length == 1 ) {
             var fileFirst = changes.addedFiles[0];
@@ -111,7 +124,7 @@ function FileWatcher() {
             file = self.settings.fxTransformFile(file);
         }
         if ( self.settings.action == 'runFile') {
-           // self.proc('runFile', file, self.settings.__filename)
+            // self.proc('runFile', file, self.settings.__filename)
             if ( self.settings.runAlways != true ) {
                 var leaf = sh.fs.leaf(file);
                 leaf = leaf.trim()
@@ -129,8 +142,18 @@ function FileWatcher() {
                         }
                     }
                     if (skipFile) {
-                        self.proc('not same file', leaf, sh.qq(self.settings.file), self.settings.file.indexOf(leaf))
-                        return
+                        if ( self.settings.fileMatchFilter ) {
+                            if ( leaf.includes(self.settings.fileMatchFilter)) {
+                                self.proc('saved by wildcard', leaf, self.settings.fileMatchFilter)
+                                file = self.settings.file;
+                                skipFile = false;
+                            }
+                        }
+                        if ( skipFile )  {
+                            self.proc('not same file', leaf, sh.qq(self.settings.file), self.settings.file.indexOf(leaf))
+                            return
+                        }
+
                     }
 
                 }
@@ -264,7 +287,7 @@ function FileWatcher() {
             });
 
             monitor.on('change', function onChange(changes) {
-               // var file = dirMonitored2 + '/' + changes.modifiedFiles[0]
+                // var file = dirMonitored2 + '/' + changes.modifiedFiles[0]
                 var file = /*dirMonitored2 + '/' +*/ changes.modifiedFiles[0]
                 if ( self.settings.dir6) {
                     var file = self.settings.dir6 + '/' + changes.modifiedFiles[0]
@@ -274,13 +297,11 @@ function FileWatcher() {
                 if ( changes.modifiedFiles.length == 0 ) {
                     file = changes.addedFiles[0]
                 }
-
+                if ( file == null ) { file = ''}
                 file = sh.replaceBackslash(file);
 
                 if ( self.settings.debugChanges )
                     console.log(file, changes);
-
-
 
                 self.trigger(file, changes);
                 // asdf.g
@@ -290,7 +311,7 @@ function FileWatcher() {
 
     }
     defineWatchers();
-    
+
     function defineUtils () {
         p.utils = {}
         p.utils.runFile = function runFile(file) {
@@ -331,11 +352,18 @@ function FileWatcher() {
 
             self.data.count ++;
             self.proc('running', fileToRun, self.data.count)
-            var  y = sh.runAsync('node '+ fileToRun)
+            var cmdNode = 'node';
+            if ( sh.isWin() == false ) {
+                cmdNode = '/home/user/.nvm/versions/node/v6.9.5/bin/node'
+            }
+            cmdNode = sh.dv(self.settings.cmdNode, cmdNode)
+            var  y= sh.runAsync(cmdNode + ' '+ fileToRun)
+
+           // var  y = sh.runAsync('node '+ fileToRun)
             //spit stdout to screen
             y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
             //spit stderr to screen
-            y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
+            y.stderr.on('data', function (data) {   process.stderr.write(data.toString());  });
 
 
         }

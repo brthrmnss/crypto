@@ -42,6 +42,7 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
       return fx.apply(null, args)
       //return;
     }
+    sh.cid = sh.callIfDefined
 
     service.copyProps =   function copyProps(from, to) {
       for (var propName in from) to[propName] = from[propName];
@@ -52,6 +53,17 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
       return args
     }
 
+    sh.args = convertArgumentsToArray;
+
+    function defineErrors() {
+        function throwFx() {
+            var args = sh.args(arguments)
+            var a = args.join(' ')
+            throw new Error(a)
+        }
+        sh.throw = throwFx;
+    }
+    defineErrors()
 
     function defineBasics() {
       sh.toJSONString = function toJSONString(o, printJSON) {
@@ -198,8 +210,8 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
 
     }
     defineIterators();
-    
-    sh.isObject = angular.isObject;
+
+    $.isObject = sh.isObject = angular.isObject;
     
     function defineIteratorExtras() {
 
@@ -389,6 +401,7 @@ if (typeof exports === 'undefined' || exports.isNode == false) {
     } else {
       app.factory('sUtils', sUtils);
       app.factory('sh', sUtils);
+      debugger
     }
 
   } else {

@@ -696,9 +696,13 @@ function defineUtils() {
         cfg = uiUtils.addDiv(cfg)
         return cfg;
     }
-    uiUtils.changeContainer = function focusOnContainer() {
+    uiUtils.changeContainer = function focusOnContainer(container) {
         uiUtils.flagCfg.lastAddTo = uiUtils.flagCfg.addTo;
-        uiUtils.flagCfg.addTo = uiUtils.lastCfg.ui;
+        var setContainerTo = uiUtils.lastCfg.ui;
+        if (container ) {
+            setContainerTo = container;
+        }
+        uiUtils.flagCfg.addTo = setContainerTo;
         //console.log('adding to', uiUtils.flagCfg.addTo)
     }
     uiUtils.popContainer = function popContainer() {
@@ -913,6 +917,7 @@ function defineUtils() {
         u.addUI(cfg, ui)
     }
 
+
     uiUtils.select = {};
     uiUtils.select.addOption = function addOption(ui, k,v) {
         var opt = {};
@@ -1031,6 +1036,10 @@ function defineUtils() {
             }
 
             ui.css('color', color)
+        }
+
+        uiUtils.minWidth = u.minW = function setMindWiht(w) {
+            uiUtils.lastUI.css('min-width', w + 'px')
         }
 
         uiUtils.removeWrap = function removeWrap(ui) {
@@ -2452,6 +2461,9 @@ function defineUtils() {
                 },
                 error: function (a, b, c) {
                     console.error(url, 'request failed', a, b, c)
+                    if ( a.responseText) {
+                        console.error('\t',  a.responseText)
+                    }
                     //gUtils.remoteFailed(a,b,c)
                     callIfDefined(fxError, a, b, c, url)
                 }

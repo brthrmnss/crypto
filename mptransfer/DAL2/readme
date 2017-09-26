@@ -1,0 +1,186 @@
+This is server
+Arch is micro-service based
+Each subfolder contains a service
+main-server.js - handles login, and registration
+http://localhost:33031/
+
+
+/usr/sbin/node file_server.js
+10.211.55.4 ip address
+Sun, 03 Jan 2016 19:48:36 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at ../credentials_server/api/CredentialConsumerAPI.js:25:17
+Sun, 03 Jan 2016 19:48:36 GMT body-parser deprecated undefined extended: provide extended option at ../credentials_server/node_modules/body-parser/index.js:85:29
+starting LoginAPIConsumerService ./sessions_test
+LoginConsumerAPI Server Started on 33037
+http://localhost:33037
+contents <Buffer 27 75 73 65 20 73 74 72 69 63 74 27 3b 0a 0a 76 61 72 20 75 72 6c 20 3d 20 72 65 71 75 69 72 65 28 27 75 72 6c 27 29 0a 20 20 2c 20 50 61 74 68 20 3d ... >
+resolved /media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/sequelize/lib/sequelize.js false
+making model file
+undefined { get: [Function: get],
+  put: [Function: put],
+  post: [Function: post],
+  delete: [Function: delete_] } '/api/file'
+10.211.55.4
+ ip address free space
+Executing (default): CREATE TABLE IF NOT EXISTS `Invite_Campaigns` (`id` INTEGER NOT NULL auto_increment , `name` VARCHAR(65), `creatorip` VARCHAR(15), `creator` VARCHAR(65), `datecreated` DATETIME NOT NULL, `dateupdated` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): CREATE TABLE IF NOT EXISTS `Invite_Campaigns` (`id` INTEGER NOT NULL auto_increment , `name` VARCHAR(65), `creatorip` VARCHAR(15), `creator` VARCHAR(65), `datecreated` DATETIME NOT NULL, `dateupdated` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `Invite_Campaigns`
+Executing (default): SHOW INDEX FROM `Invite_Campaigns`
+Executing (default): CREATE TABLE IF NOT EXISTS `Invites` (`id` INTEGER NOT NULL auto_increment , `invite_code` VARCHAR(65), `level` ENUM('free user', 'invited', 'neophite', 'paid user', 'admin'), `email` VARCHAR(65), `forumname` VARCHAR(65), `joindate` DATETIME, `trialExpire` DATETIME, `creatorip` VARCHAR(15), `creator` VARCHAR(65), `datecreated` DATETIME NOT NULL, `dateupdated` DATETIME NOT NULL, `InviteCampaignId` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`InviteCampaignId`) REFERENCES `Invite_Campaigns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): CREATE TABLE IF NOT EXISTS `Invites` (`id` INTEGER NOT NULL auto_increment , `invite_code` VARCHAR(65), `level` ENUM('free user', 'invited', 'neophite', 'paid user', 'admin'), `email` VARCHAR(65), `forumname` VARCHAR(65), `joindate` DATETIME, `trialExpire` DATETIME, `creatorip` VARCHAR(15), `creator` VARCHAR(65), `datecreated` DATETIME NOT NULL, `dateupdated` DATETIME NOT NULL, `InviteCampaignId` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`InviteCampaignId`) REFERENCES `Invite_Campaigns` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `Invites`
+Executing (default): SHOW INDEX FROM `Invites`
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `username` VARCHAR(65), `password` VARCHAR(65), `email` VARCHAR(65), `level` ENUM('free user', 'invited', 'neophite', 'paid user', 'admin'), `status` ENUM('active', 'pending', 'disabled', 'suspended'), `lastloginip` VARCHAR(15), `lastlogindate` DATETIME, `paidExpiryDate` DATETIME, `lastPayment` VARCHAR(65), `identifier` VARCHAR(15), `datecreated` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `username` VARCHAR(65), `password` VARCHAR(65), `email` VARCHAR(65), `level` ENUM('free user', 'invited', 'neophite', 'paid user', 'admin'), `status` ENUM('active', 'pending', 'disabled', 'suspended'), `lastloginip` VARCHAR(15), `lastlogindate` DATETIME, `paidExpiryDate` DATETIME, `lastPayment` VARCHAR(65), `identifier` VARCHAR(15), `datecreated` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): CREATE TABLE IF NOT EXISTS `file` (`id` INTEGER(10) NOT NULL auto_increment , `originalFilename` VARCHAR(255), `userId` VARCHAR(255), PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): CREATE TABLE IF NOT EXISTS `file` (`id` INTEGER(10) NOT NULL auto_increment , `originalFilename` VARCHAR(255), `userId` VARCHAR(255), PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `file`
+Executing (default): SHOW INDEX FROM `file`
+Connection has been established successfully.
+Executing (default): SELECT count(*) AS `count` FROM `file` AS `file`;
+Executing (default): INSERT INTO `file` (`id`,`originalFilename`,`userId`) VALUES (NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL),(NULL,NULL,NULL);
+starting...
+starting/ { port: 33037,
+  default_server: 'http://10.211.55.4:33037/api/get_content/',
+  default_server2: '*',
+  url_verify: 'http://10.211.55.4:33037/api/verify/',
+  url_test: 'http://10.211.55.4:33037/api/test/',
+  full_path: 'true',
+  fxDone: undefined,
+  name: 'test Real Content Provider API',
+  silentToken: true }
+quit true false
+    $ http://localhost:33037/api/find_content
+checking if user is logged in /api/find_content?originalFilename=randomTask
+LoginAPIConsumerService key undefined { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true } } undefined
+
+ consumer not logged in
+>>>*>  Request _callback test (http://localhost:33037/api/find_content) (doSearchWithNoLogin (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:179:27)) http://localhost:33037/api/find_content [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/find_content) {"msg":"user not logged in","success":false} (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: {"msg":"user not logged in","success":false}
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/find_content results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+{ msg: 'user not logged in', success: false }
+404 for  test (http://localhost:33037/api/find_content) {"msg":"user not logged in","success":false}
+    $ http://localhost:33031/api/login
+>>>*>  Request _callback test (http://localhost:33031/api/login) (testLoginWithNewUser (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:465:19)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'no user found', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+    $ http://localhost:33031/api/login
+>>>*>  Request _callback test (http://localhost:33031/api/login) (testLoginWithNewUser (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:447:19)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success',
+  success: true,
+  key: '848504eabd531fef886366523fa069ce',
+  user_id: 155 }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+login { msg: 'success',
+  success: true,
+  key: '848504eabd531fef886366523fa069ce',
+  user_id: 155 }
+    $ http://localhost:33037/api/verify?key=848504eabd531fef886366523fa069ce
+checking if user is logged in /api/verify?key=848504eabd531fef886366523fa069ce
+
+ /api/verify sent session key 848504eabd531fef886366523fa069ce
+isUserLoggedInAtMainCreateLocalSession { msg: 'success',
+  success: true,
+  key: '848504eabd531fef886366523fa069ce',
+  username: 'mark',
+  user_id: 155 }
+setting path on session to  sessions_test {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"key":"848504eabd531fef886366523fa069ce"}
+filehostingDDDD 10.211.55.4:33037
+headers undefined [ 'filehostingX=848504eabd531fef886366523fa069ce',
+  'filehosting=848504eabd531fef886366523fa069ce; Max-Age=900000; Domain=127.0.0.1:33037; HttpOnly',
+  'filehostingG=848504eabd531fef886366523fa069ce; Max-Age=900000; Domain=10.211.55.4:33037; HttpOnly',
+  'filehostingDDD=848504eabd531fef886366523fa069ce; Max-Age=900000; Domain=10.211.55.4:33037; HttpOnly',
+  'filehostingDDD=848504eabd531fef886366523fa069ce; Max-Age=900000; Domain=10.211.55.4:33037; HttpOnly' ]
+>>>*>  Request _callback test (http://localhost:33037/api/verify?key=848504eabd531fef886366523fa069ce) (tryVerify_LoginUserToRemoveAPI (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:499:19)) http://localhost:33037/api/verify?key=848504eabd531fef886366523fa069ce [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/verify?key=848504eabd531fef886366523fa069ce) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success', success: true }
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/verify?key=848504eabd531fef886366523fa069ce results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+    $ http://localhost:33037/api/find_content
+checking if user is logged in /api/find_content?originalFilename=randomTask
+LoginAPIConsumerService key 848504eabd531fef886366523fa069ce { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: '848504eabd531fef886366523fa069ce',
+  __lastAccess: 1451850517873 } undefined
+>>>*>  find_content  getContent [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:90:18)
+success|ok() is deprecated and will be removed in 2.1, please use promise-style instead.
+Executing (default): SELECT `id`, `originalFilename`, `userId` FROM `file` AS `file` WHERE `file`.`originalFilename` = 'randomTask' LIMIT 10;
+>>>*>  Request _callback test (http://localhost:33037/api/find_content) (doSearchAfterLogin (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:194:23)) http://localhost:33037/api/find_content [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/find_content) [] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: []
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/find_content results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+    $ http://localhost:33037/api/file/create
+checking if user is logged in /api/file/create?originalFilename=jack.mp4
+LoginAPIConsumerService key 848504eabd531fef886366523fa069ce { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: '848504eabd531fef886366523fa069ce',
+  __lastAccess: 1451850517873 } undefined
+Executing (default): INSERT INTO `file` (`id`,`originalFilename`) VALUES (DEFAULT,'jack.mp4');
+>>>*>  /media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/RestHelperSQL js:758:30 We have a persisted instance now (undefined
+>>>*>  Request _callback test (http://localhost:33037/api/file/create) (createMovie_to_search (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:216:23)) http://localhost:33037/api/file/create [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/file/create) 101 (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: 101
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/file/create results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+body 101
+    $ http://localhost:33037/api/find_content
+checking if user is logged in /api/find_content?originalFilename%5Blike%5D=%25mp4%25
+LoginAPIConsumerService key 848504eabd531fef886366523fa069ce { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: '848504eabd531fef886366523fa069ce',
+  __lastAccess: 1451850517873 } undefined
+>>>*>  find_content  getContent [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:90:18)
+Executing (default): SELECT `id`, `originalFilename`, `userId` FROM `file` AS `file` WHERE `file`.`originalFilename` LIKE '%mp4%' LIMIT 10;
+Using .values has been deprecated. Please use .get() instead
+>>>*>  Request _callback test (http://localhost:33037/api/find_content) (doSearchWithLikeInName_VerifySearchWorks (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:235:23)) http://localhost:33037/api/find_content [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/find_content) [{"id":101,"originalFilename":"jack.mp4","userId":null}] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: [{"id":101,"originalFilename":"jack.mp4","userId":null}]
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/find_content results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+body [ { id: 101, originalFilename: 'jack.mp4', userId: null } ]
+    $ http://localhost:33037/api/file/delete/101
+checking if user is logged in /api/file/delete/101
+LoginAPIConsumerService key 848504eabd531fef886366523fa069ce { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: '848504eabd531fef886366523fa069ce',
+  __lastAccess: 1451850517873 } undefined
+Executing (default): SELECT `id`, `originalFilename`, `userId` FROM `file` AS `file` WHERE `file`.`id` = '101';
+Executing (default): DELETE FROM `file` WHERE `id` = 101 LIMIT 1
+destroyed
+>>>*>  Request _callback test (http://localhost:33037/api/file/delete/101) (createMovie_to_search_delete (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:251:23)) http://localhost:33037/api/file/delete/101 [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/file/delete/101)  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents:
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/file/delete/101 results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+body
+    $ http://localhost:33037/api/get_content
+checking if user is logged in /api/get_content?test=true
+LoginAPIConsumerService key 848504eabd531fef886366523fa069ce { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: '848504eabd531fef886366523fa069ce',
+  __lastAccess: 1451850517873 } undefined
+>>>*>  Request _callback test (http://localhost:33037/api/get_content) (reqMovie (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/file_server/file_server.js:268:23)) http://localhost:33037/api/get_content [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33037/api/get_content) test ok (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: test ok
+>>>*>  Object storeContents [as fx2] http://localhost:33037/api/get_content results (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/EasyRemoteTester.js:80:22)
+body test ok
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete test Real Content Provider API (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/node_modules/shelpers/lib/PromiseHelperV3.js:53:30)

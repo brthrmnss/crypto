@@ -28,7 +28,7 @@ var shelpers = require('shelpers');
 var request = require('request')
 var EasyRemoteTester = shelpers.EasyRemoteTester;
 
-//sh.changeDir(__dirname)
+sh.cwd(__dirname)
 
 function GrammarHelperServer() {
     var p = GrammarHelperServer.prototype;
@@ -51,6 +51,15 @@ function GrammarHelperServer() {
             sh.allowWildcardRequests(req, res, null, true)
             next();
         })
+
+        var bodyParser  = require("body-parser");
+        //var multer = require('multer');
+        app.use(bodyParser.json({limit: '50mb'}));
+        app.use(bodyParser.urlencoded({
+            limit: '50mb',
+            extended: true
+        }));
+
         app.get('/', function (req, res) {
             res.send('Hello World!');
         });
@@ -58,19 +67,23 @@ function GrammarHelperServer() {
         //http://127.0.0.1:14002/socket.io-1.2.0.js.ignore
         app.get('/socket.io-1.2.0.js', function (req, res) {
             var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
+            var fileSocket = __dirname + '/' + 'js/libHide/'+'socket.io-1.2.0.js.ignore'
             res.sendfile( fileSocket );
         });
 
-        app.get('/ui_utils.js', function (req, res) {
-            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
-            fileSocket = 'G:/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js'
-            res.sendfile( fileSocket );
+        app.get('/ui_utils.js', function onGetUiUtils(req, res) {
+            var fileUIUtils = sh.requirePath('/mp/testingFramework/ui_utils.js')
+            res.sendfile( fileUIUtils );
+        });
+
+        app.get('/jquery.js', function onGetJquery (req, res) {
+            var fileReq = sh.fs.join(__dirname,'public_html', 'jquery-1.11.1.js.ignore')
+            res.sendfile( fileReq );
         });
 
         app.get('/shelpers-mini.js', function (req, res) {
-            var fileSocket = __dirname + '/' + 'public_html/'+'socket.io-1.2.0.js.ignore'
-            fileSocket = 'G:/Dropbox/projects/crypto/mp/testingFramework/shelpers-mini.js'
-            res.sendfile( fileSocket );
+            var fileUIUtils = sh.requirePath('/mp/testingFramework/shelpers-mini.js')
+            res.sendfile( fileUIUtils );
         });
 
 
@@ -99,28 +112,41 @@ function GrammarHelperServer() {
         });
 
 
-        app.get('/searchBookzz', function onDownloadMagnet(req, res){
-            var SearchBookzz = sh.require('mp/GrammarHelperServer/SearchBookzz.js').SearchBookzz
+        function defineSearchZZ() {
+            function onSearchZZ_Relay(req, res){
+                var SearchBookzz = sh.require('mp/GrammarHelperServer/SearchBookzz.js').SearchBookzz
 
-            var i = new SearchBookzz();
-            var config = {}
-            config.fxDone = function onTestComplete(list, data) {
-                var json = data
-                json.list = list;
-                res.json(json)
-                console.log('SearchBookzz complete:', data.url)
+                var i = new SearchBookzz();
+                var config = {}
+                config.fxDone = function onTestComplete(list, data) {
+                    var json = data
+                    sh.each.removeField(list, 'ui')
+                    json.list = list;
+                    res.json(json)
+                    console.log('SearchBookzz complete:', data.url)
+                }
+                i.init(config)
+                var type = req.method;
+                var query = req.query.query
+                if ( type == 'POST' ) {
+                    if (  req.body == null) {
+                        debugger
+                        console.log('post had no data')
+                    } else {
+                        config.preResponseBody = req.body.data
+                    }
+                    //debugger;
+                }
+
+                //i.searchBookzz('crimson moon')
+                //i.searchBookzz('ddddBeneath A Crimson Moon Michels Christine')
+                i.searchBookzz(query)
+                return;
             }
-            i.init(config)
-
-            var query = req.query.query
-            //i.searchBookzz('crimson moon')
-            //i.searchBookzz('ddddBeneath A Crimson Moon Michels Christine')
-            i.searchBookzz(query)
-
-
-            return;
-
-        });
+            app.get('/searchBookzz', onSearchZZ_Relay);
+            app.post('/searchBookzz', onSearchZZ_Relay);
+        }
+        defineSearchZZ();
 
         app.get('/searchpb', function onDownloadMagnet(req, res){
 
@@ -294,7 +320,11 @@ function GrammarHelperServer() {
                 return;
             }
 
+            if ( sh.isWin() == false ) {
+                file = '/'+file
+            }
 
+            file = sh.getContentBefore(file, '?')
 
             if ( sh.fs.exists(file)) {
                 res.sendfile(file);
@@ -560,6 +590,9 @@ function GrammarHelperServer() {
                 //why: if shared resources, ehcek if dev has override file in project directory
                 var referer = req.headers['referer'];
                 var ref_split = referer.split('/g/')[1];
+                if ( ref_split == null ) {
+                    ref_split = '';
+                }
                 ref_split = ref_split.split('/');
                 var dirRef = ref_split.shift();
                 var dirOverride =  dirRef
@@ -906,8 +939,14 @@ function GrammarHelperServer() {
         var BES = require(srvReload).init();
         process.chdir(cwd)
         ////G:\Dropbox\projects\crypto\mp\Test_CanReloadJavascriptClass\runFileWatcherMonitor_BasicReloadServer2_mac.js
-        var srvWatcher = dirCrypto+'/mp/Test_CanReloadJavascriptClass/runFileWatcherMonitor_BasicReloadServer2_mac.js'
-        require(srvWatcher)
+        //var srvWatcher = dirCrypto+'/mp/Test_CanReloadJavascriptClass/runFileWatcherMonitor_BasicReloadServer2_mac.js'
+        //require(srvWatcher)
+        var srvWatcher = dirCrypto+'/mp/Test_CanReloadJavascriptClass/projectFileWatcher.js'
+        var ProjectFileWatcher = require(srvWatcher).ProjectFileWatcher
+        var instance = new ProjectFileWatcher();
+        var config = {};
+        instance.init(config)
+        instance.test();
     }
     p.proc = function debugLogger() {
         if ( self.silent == true) {

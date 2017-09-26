@@ -350,7 +350,6 @@ if ( typeof sh == 'undefined ') {
   }
 
 
-
   function testBasic() {
   }
 
@@ -361,7 +360,8 @@ if ( typeof sh == 'undefined ') {
     testBasic();
   }
   if ( isNode == false ) {
-    var wrapperRelodableService = window.reloadableHelper.makeServiceReloadable('uiX_serv', DataGenerator)
+    var wrapperRelodableService = window.reloadableHelper
+        .makeServiceReloadable('uiX', UIX)
     angular.module('com.sync.quick').factory('uiX', wrapperRelodableService)
     angular.module('com.sync.quick').factory('xUI', wrapperRelodableService)
   }

@@ -1,0 +1,962 @@
+/**
+ * Created by user on 1/13/16.
+ */
+/**
+ * Created by user on 1/3/16.
+ */
+
+var rh = require('rhelpers');
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+var express    = require('express');
+var SequelizeHelper = shelpers.SequelizeHelper;
+var EasyRemoteTester = shelpers.EasyRemoteTester;
+
+var SQLSharingServer = require('./sql_sharing_server').SQLSharingServer;
+
+if (module.parent == null) {
+
+    var config = {}
+    config.cluster_config = 'tests/'+'test_cluster_config.json'
+    var server_config = rh.loadRServerConfig(true, config);
+    var cluster_config  = server_config.cluster_config;
+
+    var allPeers = [];
+    var topology = {};
+    //override for wind evelopment
+    rh.configOverride = {};
+    rh.configOverride.mysql = {};
+    rh.configOverride.mysql.port = '3306'
+    rh.configOverride.mysql.user = 'root'
+    rh.configOverride.mysql.pass = 'password'
+
+
+    function testGrabbingCurrentPeer() {
+        //startup service with nothing.
+        //see what happens
+
+        // sh.each(peer, function processPeer(peerName, ip) {
+        var config = {};
+        config.cluster_config = cluster_config;
+
+        // var peers = dictPeerToLinksToPeers[peerName];
+        // var me = {}
+        // me[peerName] = ip;
+        //    peers.push(me)
+        // config.cluster_config.peers = peers;
+        config.cluster_config.peers.a = server_config.ip+':' + 16001
+        // config.port = port;
+        //  config.peerName = peerName;
+        //  config.tableName = peerName+'Table';
+        config.fxDone = fxFinishedInitPeer
+        var service = new SQLSharingServer();
+        var peerName = 'a';
+        config.peerName = peerName
+        config.tableName = config.cluster_config.tables[0]
+        service.init(config);
+        var a = service;
+        allPeers.push(service);
+        topology[peerName] = a;
+    }
+    testGrabbingCurrentPeer();
+    return;
+
+    //load confnig frome file
+    //peer has gone down ... peer comes back
+    //real loading
+    //multipe tables
+
+    //define tables to sync and time
+    //create 'atomic' modes for create/update and elete
+
+    //TODO:
+    /*
+     Drop the ip address
+     fi ip address is not 127.0.0.1,
+     make 'tabeles'
+     specify refresh time
+     make fulls ync -
+     */
+    var topology = {};
+    var allPeers = [];
+    /**
+     * Create network from config file
+     */
+    function defineTopology() {
+        var dictPeersToIp = {};
+        var dictPeerToLinksToPeers = {};
+        sh.each(server_config.cluster_config.peers, function onPeer(peerName,peer) {
+            //  sh.each(peer, function processPeer(peerName, ip) {
+            dictPeersToIp[peerName] = peer;
+            dictPeerToLinksToPeers[peerName] = [];
+            //  });
+        })
+
+        /*
+         config.cluster_config.peers = [
+         {d:"127.0.0.1:12004"},
+         {e:"127.0.0.1:12005"}
+         ]
+         create an object where the name of the peer, and the ip address
+         do for each way
+         */
+        sh.each(server_config.cluster_config.links, function onPeer(fromPeerName,linksTo) {
+            var fromPeer = dictPeerToLinksToPeers[fromPeerName];
+            //   sh.each(peer, function processPeer(peerName, linksTo) {
+            fromPeer.linkedToPeer = sh.dv( fromPeer.linkedToPeer, {})
+            sh.each(linksTo, function processPeerLinkedTo(i, toPeerName) {
+                var toPeer = dictPeersToIp[toPeerName];
+                var toPeerConfig = {};
+                var exists = fromPeer.linkedToPeer[toPeerName]
+                if ( exists == null ) {
+                    toPeerConfig[toPeerName] = toPeer;
+                    fromPeer.push(toPeerConfig);
+                    fromPeer.linkedToPeer[toPeerName] = toPeerConfig;
+                }
+
+                function linkToPeer_to_fromPeer() {
+                    var dbg= [fromPeerName, toPeerName]
+                    var fromPeerConfig_rev = {};
+                    var fromPeer = dictPeerToLinksToPeers[toPeerName]; //siwtch
+                    fromPeer.linkedToPeer = sh.dv( fromPeer.linkedToPeer, {})
+                    var exists = fromPeer.linkedToPeer[fromPeerName]
+                    var fromPeerIp =  dictPeersToIp[fromPeerName]
+                    if ( exists == null ) {
+                        fromPeerConfig_rev[fromPeerName] = fromPeerIp;
+                        fromPeer.push(fromPeerConfig_rev);
+                        fromPeer.linkedToPeer[fromPeerName] = fromPeerConfig_rev;
+                    }
+                    //link toPeer to fromPeer
+                }
+                linkToPeer_to_fromPeer();
+            });
+            //   });
+        })
+        sh.each(server_config.cluster_config.links, function onPeer(fromPeerName,linksTo) {
+            var fromPeer = dictPeerToLinksToPeers[fromPeerName];
+            //   sh.each(peer, function processPeer(peerName, linksTo) {
+            fromPeer.linkedToPeer = sh.dv( fromPeer.linkedToPeer, {})
+            sh.each(linksTo, function processPeerLinkedTo(i, toPeerName) {
+                var toPeer = dictPeersToIp[toPeerName];
+                var toPeerConfig = {};
+                var exists = fromPeer.linkedToPeer[toPeerName]
+                if ( exists == null ) {
+                    toPeerConfig[toPeerName] = toPeer;
+                    fromPeer.push(toPeerConfig);
+                    fromPeer.linkedToPeer[toPeerName] = toPeerConfig;
+                }
+
+                function linkToPeer_to_fromPeer() {
+                    var dbg= [fromPeerName, toPeerName]
+                    var fromPeerConfig_rev = {};
+                    var fromPeer = dictPeerToLinksToPeers[toPeerName]; //siwtch
+                    fromPeer.linkedToPeer = sh.dv( fromPeer.linkedToPeer, {})
+                    var exists = fromPeer.linkedToPeer[fromPeerName]
+                    var fromPeerIp =  dictPeersToIp[fromPeerName]
+                    if ( exists == null ) {
+                        fromPeerConfig_rev[fromPeerName] = fromPeerIp;
+                        fromPeer.push(fromPeerConfig_rev);
+                        fromPeer.linkedToPeer[fromPeerName] = fromPeerConfig_rev;
+                    }
+                    //link toPeer to fromPeer
+                }
+                linkToPeer_to_fromPeer();
+            });
+            //   });
+        })
+
+
+        sh.each(server_config.cluster_config.peers, function onPeer(peerName,ip) {
+            //var ip = null;
+            if ( ip.indexOf(':') !=-1 ) {
+                var port = ip.split(':')[1];
+                ip = ip.split(':')[0];
+
+            }
+
+            // sh.each(peer, function processPeer(peerName, ip) {
+            var config = {};
+            config.cluster_config = cluster_config;
+            var peers = dictPeerToLinksToPeers[peerName];
+            var me = {}
+            me[peerName] = ip;
+            peers.push(me)
+            config.cluster_config.peers = peers;
+
+            config.port = port;
+            config.peerName = peerName;
+            config.tableName = peerName+'Table';
+            config.fxDone = fxFinishedInitPeer
+            var service = new SQLSharingServer();
+            service.init(config);
+            var a = service;
+            allPeers.push(service);
+            topology[peerName] = a;
+            //     });
+        })
+
+    }
+    defineTopology();
+
+
+    var i = 0
+    function fxFinishedInitPeer () {
+        i++
+        if ( i == allPeers.length ) {
+            testInstances()
+        }
+
+    }
+    return;
+    //testInstances();
+
+    // setTimeout(testInstances, 500);
+
+
+    /*
+     var config = sh.clone(config);
+     config.port = 12002;
+     config.peerName = 'b';
+     config.tableName = 'bA';
+     var service = new SQLSharingServer();
+     service.init(config);
+     var b = service;
+     allPeers.push(service)
+     */
+    function __augmentNetworkConfiguration() {
+        if ( topology.augmentNetworkConfiguration) {
+            return;
+        }
+        topology.augmentNetworkConfiguration = true;
+        config = sh.clone(config);
+        config.cluster_config.peers = [
+            {c:"127.0.0.1:12003"},
+            {b:"127.0.0.1:12002"}
+        ]
+        config.port = 12003;
+        config.peerName = 'c';
+        config.tableName = 'cA';
+
+        var service = new SQLSharingServer();
+        service.init(config);
+        var c = service;
+        allPeers.push(service)
+        topology.c = c;
+        //c.linkTo({b:b});
+        b.linkTo({c:c})
+
+        config = sh.clone(config);
+        config.cluster_config.peers = [
+            {d:"127.0.0.1:12004"},
+            {b:"127.0.0.1:12002"}
+        ]
+        config.port = 12004;
+        config.peerName = 'd';
+        config.tableName = 'dA';
+        var service = new SQLSharingServer();
+        service.init(config);
+        var d = service;
+        allPeers.push(service)
+        topology.d = d;
+        //d.linkTo({c:c});
+        b.linkTo({d:d})
+
+
+    }
+    function __augmentNetworkConfiguration2() {
+        if ( topology.augmentNetworkConfiguration2) {
+            return;
+        }
+        topology.augmentNetworkConfiguration2 = true;
+        config = sh.clone(config);
+        config.cluster_config.peers = [
+            {d:"127.0.0.1:12004"},
+            {e:"127.0.0.1:12005"}
+        ]
+        config.port = 12005;
+        config.peerName = 'e';
+        config.tableName = 'eA';
+        var service = new SQLSharingServer();
+        service.init(config);
+        var e = service;
+        allPeers.push(service)
+        topology.d.linkTo({e:e})
+    }
+
+
+    function testInstances() {
+        //make chain
+        var sh = require('shelpers').shelpers;
+        var shelpers = require('shelpers');
+        var EasyRemoteTester = shelpers.EasyRemoteTester;
+        var t = EasyRemoteTester.create('Test Channel Server basics',
+            {
+                showBody:false,
+                silent:true
+            });
+
+
+
+        var b = topology.b;
+        var baseUrl = 'http://127.0.0.1:'+ b.settings.port;
+        var urls = {};
+
+        var helper = {};
+
+        function defineHelperMethod() {
+            /**
+             * Deletes all data from all nodes
+             */
+            helper.clearAllData = function clearAllData(addData) {
+                t.workChain.utils.wait(1);
+                t.add(function () {
+                    sh.async(allPeers,
+                        function (peer, fxDone) {
+                            // asdf.g
+                            peer.test.destroyAllRecords(true, recordsDestroyed)
+                            function recordsDestroyed() {
+                                fxDone();
+                            }
+                        },
+                        function dleeteAll() {
+                            t.cb()
+                        });
+                });
+                if ( addData) {
+                    helper.addData();
+                }
+            }
+            helper.addData = function addData() {
+                t.add(function () {
+                    sh.async(allPeers,
+                        function (peer, fxDone) {
+                            // asdf.g
+                            peer.test.createTestData(recordsCreated)
+                            function recordsCreated() {
+                                fxDone();
+                            }
+                        },
+                        function dleeteAll() {
+                            t.cb()
+                        });
+                });
+            }
+
+
+
+
+            helper.getCountsOfAll = function getCountsOfAll(msg) {
+                t.workChain.utils.wait(1);
+                dictCounts = {};
+                t.add(function () {
+                    sh.async(allPeers,
+                        function(peer, fxDone) {
+                            var t2 = EasyRemoteTester.create('TestInSync',
+                                {  showBody:false,  silent:true });
+                            var baseUrl = 'http://'+ peer.settings.ip; //127.0.0.1:'+ b.settings.port;
+                            var urls = {};
+                            t2.settings.baseUrl = baseUrl;
+                            urls.getCount = t2.utils.createTestingUrl('count');
+                            t2.getR(urls.getCount).with(
+                                //   {sync:false,peer:'a'}
+                            )
+                                .fxDone(function syncComplete(result) {
+
+                                    dictCounts[peer.settings.name] = result;
+                                    fxDone()
+                                    return;
+                                });
+                        },
+                        function goCounts() {
+                            console.log('---------->counts', msg, dictCounts)
+                            t.cb()
+                        } );
+                });
+            }
+
+
+
+            helper.clearDataFromNode = function clearDataFromNode(service) {
+                service = sh.dv(service, topology.a)
+                t.workChain.utils.wait(1);
+                t.add(function () {
+                    service.test.destroyAllRecords(true, t.cb);
+                });
+            }
+
+            helper.toggleBlocking = function toggleBlocking(service) {
+                service = sh.dv(service, topology.c)
+                service.settings.block = !service.settings.block
+                console.log('blocking is ', service.settings.block , 'for', service.settings.name)
+
+            }
+
+            helper.pingNode = function clearDataFromNode(service) {
+                service = sh.dv(service, topology.a)
+                t.workChain.utils.wait(1);
+                t.add(function () {
+                    service.test.destroyAllRecords(true, t.cb);
+                });
+            }
+
+            helper.pingNode = function clearDataFromNode(service) {
+                service = sh.dv(service, topology.a)
+                t.workChain.utils.wait(1);
+                t.add(function () {
+                    service.test.destroyAllRecords(true, t.cb);
+                });
+            }
+
+
+            helper.verifyLocally = function verifyLocally(service) {
+                service = sh.dv(service, topology.a)
+                t.add(function getASize() {
+                    service.getSize(t.cb);
+                })
+                t.add(function getBSize() {
+                    b.getSize(t.cb);
+                })
+                t.add(function testSize() {
+                    t.assert(b.size == service.size, 'sync did ntow ork' + [b.size, service.size])
+                    t.cb();
+                })
+            }
+
+
+            helper.addRecord = function addRecord(service) {
+                service = sh.dv(service, topology.a)
+                t.add(function addNewRecord() {
+                    service.dbHelper2.addNewRecord({name: "test new"}, t.cb);
+                });
+            }
+
+
+            helper.verifyRecourCount = function verifyRecourCount (countExpect, service) {
+                service = sh.dv(service, topology.a)
+                t.add(function verifyCounts() {
+                    service.dbHelper2.countAll(function gotAllRecords(count) {
+                        t.assert(countExpect== count, 'not the right amount of records '
+                            + count +' == '+ countExpect);
+                        t.cb()
+                    })
+                });
+            }
+
+
+
+            helper.verifySync = function verifySync () {
+                urls.verifySync = t.utils.createTestingUrl('verifySync');
+                t.getR(urls.verifySync).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        t.assert(result.ok==true, 'data not integral ' + result.ok)
+                        return;
+                    });
+            }
+
+            /**
+             * Records need to be  marked as 'deleted'
+             * otherwise deletion doesn't count
+             * @param client
+             */
+            helper.forgetRandomRecordFrom =  function forgetRandomRecordFrom(client) {
+                if ( client == null ) { client = b }
+                t.add(function forgetRandomRecord() {
+                    client.test.forgetRandomRecord(t.cb);
+                });
+            }
+
+            helper.deleteRandomRecordFrom =  function deleteRandomRecordFrom(client) {
+                if ( client == null ) { client = b }
+                t.add(function deleteRandomRecord() {
+                    b.test.deleteRandomRecord(t.cb);
+                });
+            }
+
+            helper.syncIn = function syncIn() {
+                t.getR(urls.syncIn).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+            }
+            helper.syncOut = function syncOut() {
+                t.getR(urls.syncReverse).with({sync:false,peer:'a', fromPeer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+            }
+            helper.syncBothDirections = function syncBothDirections() {
+                helper.syncIn()
+                helper.syncOut()
+            }
+
+            helper.notInSync = function notInSync() {
+                t.getR(urls.verifySync).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        t.assert(result.ok==false, 'data is not supposed to be in sync ' + result.ok);
+                        return;
+                    });
+            }
+            helper.inSync = function inSync() {
+                t.getR(urls.verifySync).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        t.assert(result.ok==true, 'data not inSync ' + result.ok);
+                        return;
+                    });
+            }
+
+            helper.purgeDeletedRecords = function purgeDeletedRecords() {
+                urls.purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
+                t.getR(urls.purgeDeletedRecords).with({fromPeer:'?'})
+                    .fxDone(function purgeDeletedRecords_Complete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+
+                        return;
+                    })
+            }
+
+
+            helper.inSyncAll = function inSyncAll() {
+                t.workChain.utils.wait(1);
+                t.add(function () {
+                    sh.async(allPeers,
+                        function(peer, fxDone) {
+                            var t2 = EasyRemoteTester.create('TestInSync',
+                                {  showBody:false,  silent:true });
+                            var baseUrl = 'http://'+ peer.ip; //127.0.0.1:'+ b.settings.port;
+                            var urls = {};
+                            t2.settings.baseUrl = baseUrl;
+                            urls.verifySync = t2.utils.createTestingUrl('verifySync');
+                            t2.getR(urls.verifySync).with(
+                                {sync:false,peer:'a'}
+                            )
+                                .fxDone(function syncComplete(result) {
+                                    t2.assert(result.ok==true, 'data not inSync ' + result.ok);
+                                    fxDone();
+                                    return;
+                                });
+                        },
+                        function dleeteAll() {
+                            t.cb()
+                        } );
+                });
+            }
+
+
+
+
+
+
+            helper.addTimer = function addTimer(reason) {
+                t.add(function defineNewNodes() {
+                    if (t.timer  != null ) {
+                        var diff = sh.time.secs(t.timer)
+                        console.log('>');console.log('>');console.log('>');
+                        console.log(t.timerReason, 'time', diff);
+                        console.log('>');console.log('>');console.log('>');
+                    } else {
+
+                    }
+                    t.timerReason = reason;
+                    t.timer = new Date();
+                    t.workChain.utils.wait(1);
+                    t.cb()
+                });
+            }
+
+
+        }
+        defineHelperMethod();
+
+        //t.add(clearAllData())
+        helper.clearAllData()
+
+
+
+
+        t.add(function bPullARecords(){
+            b.pull(t.cb);
+        })
+
+
+        helper.addRecord()
+
+
+
+        //do partial sync
+        //sync from http request methods
+        //batched sync
+        //remove batch tester
+        //cluster config if no config sent
+
+        function defineHTTPTestMethods() {
+            //var t = EasyRemoteTester.create('Test Channel Server basics',{showBody:false});
+            t.settings.baseUrl = baseUrl;
+            urls.getTableData = t.utils.createTestingUrl('getTableData');
+            urls.syncIn = t.utils.createTestingUrl('syncIn');
+            urls.atomicAction = t.utils.createTestingUrl('atomicAction');
+
+
+        }
+        defineHTTPTestMethods();
+
+
+        function atomicSyncTest() {
+            helper.toggleBlocking();
+            helper.clearAllData();
+            helper.getCountsOfAll('counts on start');
+            /*
+             helper.addRecord();
+
+             t.getR(urls.getTableData).with({sync:false})
+             // .bodyHas('status').notEmpty()
+             .fxDone(function syncComplete(result) {
+             return;
+             });
+
+             helper.verifySync();*/
+            //  return;
+
+            helper.verifySync();
+
+            var records =[];
+            var rec=  topology.b.dbHelper2.updateRecordForDb({name:'yyy2'})
+            records = [rec];
+
+            t.getR(urls.atomicAction).with({records:records,
+                type:'update',
+                fromPeer:'?'})
+            // .bodyHas('status').notEmpty()
+                .fxDone(function syncComplete(result) {
+                    return;
+                });
+
+
+            var rec2=  topology.b.dbHelper2.updateRecordForDb({name:'yyy2'})
+            var records2 = [rec2];
+
+            t.getR(urls.atomicAction).with({records:records2,
+                type:'update',
+                fromPeer:'?'})
+            // .bodyHas('status').notEmpty()
+                .fxDone(function syncComplete(result) {
+                    return;
+                });
+
+            t.getR(urls.atomicAction).with({records:records,
+                type:'delete',
+                fromPeer:'?'})
+            // .bodyHas('status').notEmpty()
+                .fxDone(function syncComplete(result) {
+                    return;
+                });
+
+            t.workChain.utils.wait(1);
+            helper.verifyRecourCount(1);
+            helper.getCountsOfAll();
+            helper.verifySync();
+        }
+        atomicSyncTest()
+
+
+
+        function oldTest() {
+
+
+            function define_TestIncrementalUpdate () {
+                urls.getTableData = t.utils.createTestingUrl('getTableDataIncremental');
+
+                t.getR(urls.getTableData).with({sync:false}) //get all records
+                    .fxDone(function syncComplete(result) {
+                        return;
+                    })
+                t.workChain.utils.wait(1);
+                //ResuableSection_verifySync()
+                helper.addRecord();
+
+                t.getR(urls.getTableData).with({sync:false})
+                    .fxDone(function syncComplete(result) {
+                        console.log('>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<')
+                        t.assert(b.lastUpdateSize==1, 'updated wrong # of records ' + b.lastUpdateSize)
+                        return;
+                    })
+
+                helper.verifySync();
+            }
+            define_TestIncrementalUpdate();
+
+
+
+            function define_TestDataIntegrity() {
+                urls.verifySync = t.utils.createTestingUrl('verifySync');
+                t.getR(urls.verifySync).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        t.assert(result.ok==true, 'data not integral ' + result.ok)
+                        return;
+                    });
+            }
+            define_TestDataIntegrity();
+
+
+            function define_syncReverse() {
+                helper.addRecord();
+
+                t.add(function addNewRecord() {
+                    b.dbHelper2.addNewRecord({name: "test newB"}, t.cb);
+                });
+                t.add(function addNewRecord() {
+                    b.dbHelper2.addNewRecord({name: "test newB"}, t.cb);
+                });
+
+                urls.syncReverse = t.utils.createTestingUrl('syncReverse');
+
+
+                t.getR(urls.syncReverse).with({sync:false,peer:'a', fromPeer:'?'})
+                    .fxDone(function syncComplete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+                t.getR(urls.syncIn).with({sync:false,peer:'a'})
+                    .fxDone(function syncComplete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+                helper.verifySync()
+            };
+            define_syncReverse();
+            ;
+
+
+
+
+            function define_TestDataIntegrity2() {
+                helper.forgetRandomRecordFrom();
+                t.workChain.utils.wait(1);
+                helper.forgetRandomRecordFrom();
+                helper.forgetRandomRecordFrom();
+                helper.notInSync();
+                helper.syncBothDirections()
+            }
+            define_TestDataIntegrity2();
+
+            function defineBlockSlowTests() {
+                function define_ResiliancyTest() {
+                    helper.forgetRandomRecordFrom();
+
+                    helper.forgetRandomRecordFrom(topology.a);
+                    helper.forgetRandomRecordFrom(topology.a);
+                    helper.forgetRandomRecordFrom();
+                    helper.notInSync();
+                    //notInSync();
+                    helper.syncBothDirections()
+                    helper.verifySync()
+                    helper.inSync();
+
+                }
+
+                define_ResiliancyTest();
+
+                function define_ResiliancyTest_IllegallyChangedRecords() {
+                    helper.syncBothDirections();
+                    helper.verifySync();
+                    helper.inSync();
+                    t.add(function getRecord() {
+                        b.test.getRandomRecord(function (rec) {
+                            randomRec = rec;
+                            t.cb()
+                        });
+                    });
+                    t.add(function updateRecords() {
+                        randomRec.updateAttributes({name: "JJJJ"}).then(t.cb)
+                    });
+                    helper.notInSync();
+                    //resolve
+                    helper.syncBothDirections();
+
+                    helper.notInSync()//did not upldate global date
+                    t.add(function updateRecords() {
+                        randomRec.updateAttributes({global_updated_at: new Date()}).then(t.cb)
+                    });
+                    helper.syncBothDirections();
+                    helper.inSync();
+                };
+                define_ResiliancyTest_IllegallyChangedRecords();
+
+                function define_multipleNodes() {
+                    /*t.add(function defineNewNodes() {
+                     augmentNetworkConfiguration()
+                     t.cb()
+                     });*/
+                    helper.clearAllData();
+
+                    helper.syncBothDirections()
+                    helper.verifySync()
+                    helper.inSync();
+                    t.add(function getRecord() {
+                        b.test.getRandomRecord(function (rec) {
+                            randomRec = rec;
+                            t.cb()
+                        });
+                    });
+                    t.add(function updateRecord_skipUpdateTime() {
+                        randomRec.updateAttributes({name: "JJJJ"}).then(t.cb)
+                    });
+                    helper.notInSync()
+                    helper.syncBothDirections()
+                    helper.notInSync(); //did not upldate global date
+                    t.add(function updateRecords() {
+                        randomRec.updateAttributes({global_updated_at: new Date()}).then(t.cb)
+                    });
+                    helper.syncBothDirections();
+                    helper.inSync();
+                };
+                define_multipleNodes();
+            }
+            defineBlockSlowTests()
+
+            function defineSlowTests2() {
+                function define_TestDeletes() {
+                    helper.syncBothDirections()
+                    helper.verifySync()
+                    helper.deleteRandomRecordFrom(b);
+                    helper.deleteRandomRecordFrom(b);
+                    helper.deleteRandomRecordFrom(topology.c);
+
+                    helper.purgeDeletedRecords();
+
+                    helper.inSync();
+
+                };
+                define_TestDeletes()
+
+                function define_TestDeletes2() {
+                    t.add(function defineNewNodes() {
+                        augmentNetworkConfiguration2()
+                        t.cb()
+                    });
+                    helper.clearAllData();
+
+                    helper.syncBothDirections()
+                    helper.verifySync()
+                    helper.deleteRandomRecordFrom(b);
+                    helper.deleteRandomRecordFrom(b);
+                    helper.deleteRandomRecordFrom(topology.c);
+                    helper.deleteRandomRecordFrom(topology.e);
+
+                    //syncBothDirections();
+                    helper.purgeDeletedRecords();
+                    /*t.add(function getRecord() {
+                     b.test.getRandomRecord(function (rec) {
+                     randomRec = rec;
+                     t.cb()
+                     });
+                     });
+                     t.add(function updateRecords() {
+                     randomRec.updateAttributes({name:"JJJJ"}).then( t.cb  )
+                     });*/
+                    //  notInSync()
+                    // syncBothDirections()
+                    helper.inSync();
+
+                };
+                define_TestDeletes2()
+            }
+            defineSlowTests2()
+
+
+
+            function define_TestHubAndSpoke() {
+                t.add(function defineNewNodes() {
+                    augmentNetworkConfiguration()
+                    t.cb()
+                });
+                t.add(function defineNewNodes() {
+                    augmentNetworkConfiguration2()
+                    t.cb()
+                });
+                helper.clearAllData();
+
+                helper.addTimer('sync both dirs')
+                helper.syncBothDirections()
+                helper.addTimer('local sync')
+                helper.verifySync()
+                helper.addTimer('deletes')
+                helper.deleteRandomRecordFrom(b);
+                helper.deleteRandomRecordFrom(b);
+                helper.deleteRandomRecordFrom(topology.c);
+                helper.deleteRandomRecordFrom(topology.e);
+
+                helper.addTimer('purge all deletes')
+                //syncBothDirections();
+                helper.purgeDeletedRecords();
+                /*t.add(function getRecord() {
+                 b.test.getRandomRecord(function (rec) {
+                 randomRec = rec;
+                 t.cb()
+                 });
+                 });
+                 t.add(function updateRecords() {
+                 randomRec.updateAttributes({name:"JJJJ"}).then( t.cb  )
+                 });*/
+                //  notInSync()
+                // syncBothDirections()
+                helper.addTimer('insync')
+                helper.inSync();
+                helper.inSyncAll();
+                //TODO: Test sync on N
+                //check in sync on furthes node
+                helper.addTimer('insyncover')
+
+            };
+            define_TestHubAndSpoke()
+        }
+
+
+        //TODO: Add index to updated at
+
+        //test from UI
+        //let UI log in
+        //task page saeerch server
+
+        //account server
+        //TODO: To getLastPage for records
+
+        //TODO: replace getRecords, with getLastPage
+        //TODO: do delete, so mark record as deleted, store in cache,
+        //3x sends, until remove record from database ...
+
+        /*
+         when save to delete? after all synced
+         mark as deleted,
+         ask all peers to sync
+         then delete from database if we delete deleted nodes
+
+         do full sync
+         if deleteMissing -- will remove all records my peers do not have
+         ... risky b/c incomplete database might mess  up things
+         ... only delete records thata re marked as deleted
+         */
+
+        /*
+         TODO:
+         test loading config from settings object with proper cluster config
+         test auto syncing after 3 secs
+         build proper hub and spoke network ....
+         add E node that is linked to d (1 hop away)
+         */
+        /**
+         * store global record count
+         * Mark random record as deleted,
+         * sync
+         * remove deleted networks
+         * sync
+         * ensure record is gone
+         */
+
+        //Revisions
+    }
+}
+
+
+

@@ -1,0 +1,1144 @@
+/**
+ * Created by user on 1/3/16.
+ */
+
+var rh = require('rhelpers');
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+var express    = require('express');
+var SequelizeHelper = shelpers.SequelizeHelper;
+var EasyRemoteTester = shelpers.EasyRemoteTester;
+
+sh.isNumber =  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function SQLSharingServer() {
+    var p = SQLSharingServer.prototype;
+    p = this;
+    var self = this;
+    p.init = function init(config) {
+        self.settings = {};     //store settings and values
+        if (config) {
+            self.settings = config;
+        } else
+        {
+            var cluster_settings = rh.loadRServerConfig(true);
+        }
+        //self.settings.port = 3001;
+
+        self.server_config = rh.loadRServerConfig(true);  //load server config
+
+        self.app = express();   //create express server
+        self.createRoutes();    //decorate express server
+        self.createSharingRoutes();
+
+        self.app.listen(self.settings.port);
+        self.proc('started server on', self.settings.port);
+
+        self.identify();
+        self.connectToDb();
+    }
+
+    p.linkTo = function linkTo(peerToAdd, reset ) {
+        var reset = sh.dv(reset, false);
+        if ( reset ) {
+            self.settings.cluster_config.peers = []
+        }
+
+
+        var foundSelf = false;
+
+
+        var peersToAdd = sh.forceArray(peerToAdd);
+        sh.each(peersToAdd, function (k, peer)  {
+
+
+            sh.each(peer, function (peerName, ipAddOrPeer)  {
+                var peer = ipAddOrPeer;
+                if ( sh.isNumber(ipAddOrPeer) ) {
+                    // return;
+                    //peer =
+                }
+                else if ( peer.settings != null ) {
+                    var peer = ipAddOrPeer.settings.ip;
+                }
+
+                if ( ipAddOrPeer == self.settings.ip) {
+                    foundSelf = true;
+                }
+                //peersToAdd[k] = peer;
+                //self.settings.cluster_config.peers[peerName] = peer;
+                var newPeer = {}
+                newPeer[peerName] = peer;
+                self.settings.cluster_config.peers.push(newPeer);
+            })
+        })
+
+        if ( foundSelf == false) {
+            //self.settings.cluster_config.peers[self.settings.name] = self.settings.ip;
+            var myPeer = {}
+            myPeer[self.settings.name] = self.settings.ip;
+            self.settings.cluster_config.peers.push(myPeer);
+        }
+        self.identify();
+    }
+
+    p.createRoutes = function createRoutes() {
+        self.app.post('/upload', function (req, res) {});
+    }
+
+    function defineRoutes() {
+        self.showCluster = function showCluster(req, res) {
+            res.send(self.settings);
+        };
+        self.showTable  = function showCluster(req, res) {
+            res.send('ok');
+        };
+        self.getTableData = function getTableData(req, res) {
+
+            var incremental = false;
+            if ( req.originalUrl.indexOf('getTableDataIncre') != -1 ) {
+                incremental = true;
+            };
+
+            var syncResult =  req.query.sync == "true";
+            self.pull( function syncComplete() {
+                if ( syncResult == false ) {
+                    res.send('ok');
+                }
+            }, incremental );
+
+            if ( syncResult ) {
+                res.send('ok');
+            }
+        };
+
+        self.verifySync = function verifySync(req, res) {
+            self.pull2( function syncComplete(ok) {
+                var result = {};
+                result.ok = ok;
+                res.send(result);
+            } );
+
+        };
+
+
+        self.reverseSync = function reverseSync(req, res) {
+            if ( self.utils == null ) self.utils = {};
+            self.utils.forEachPeer = function fEP(fxPeer, fxDone) {
+                sh.async(self.settings.peers,
+                    fxPeer, function allDone() {
+                        sh.callIfDefined(fxDone);
+                    })
+                return;
+            }
+
+            self.utils.forEachPeer(fxEachPeer, fxComplete);
+            /* self.pull2( function syncComplete(ok) {
+             var result = {};
+             result.ok = ok;
+             res.send(result);
+             } );*/
+            function fxEachPeer(ip, fxDone) {
+                var config = {showBody:false};
+                config.baseUrl = ip;
+                var t = EasyRemoteTester.create('Sync Peer', config);
+                var urls = {};
+                urls.sync = t.utils.createTestingUrl('sync');
+                var reqData = {};
+                reqData.data =  0
+                t.getR(urls.sync).why('get syncronize the other side')
+                    .with(reqData).storeResponseProp('count', 'count')
+                // t.addSync(fxDone)
+                t.add(function(){
+                    fxDone()
+                    t.cb();
+                })
+                //fxDone();
+            }
+            function fxComplete(ok) {
+                var result = {};
+                result.ok = ok;
+                res.send(result);
+            }
+        };
+
+
+
+        self.getCount = function getCount(req, res) {
+            //count records in db with my source
+            /*
+             q: do get all records? only records with me as source ..
+             // only records that are NOT related to user on other side
+             */
+
+            var dateSet = new Date()
+            var dateInt = parseInt(req.query.global_updated_at)
+            var dateSet = new Date(dateInt);
+            var query = {}
+            if ( req.query.global_updated_at != null ) {
+                query.where = {global_updated_at:{$gt:dateSet}};
+                query.order = ['global_updated_at',  'DESC']
+            }
+
+            self.proc('who is request from', req.query.peerName);
+            self.dbHelper2.countAll(function gotAllRecords(count){
+                self.count = count;
+                res.send({count:count});
+                if ( req.query.global_updated_at != null ) {
+                    var dbg = dateSet ;
+                    return;
+                }
+            }, query);
+        };
+
+        self.getSize = function getSize(cb) {
+            self.dbHelper2.count(function gotAllRecords(count){
+                self.count = count;
+                self.size = count;
+                sh.callIfDefined(cb)
+            })
+        }
+
+        self.getRecords = function getRecords(req, res) {
+            var query = {}
+            if ( req.query.global_updated_at != null ) {
+                var dateSet = new Date()
+                var dateInt = parseInt(req.query.global_updated_at)
+                var dateSet = new Date(dateInt);
+                query.where = {global_updated_at:{$gt:dateSet}};
+            }
+            query.order = ['global_updated_at',  'DESC']
+            self.dbHelper2.search(query, function gotAllRecords(recs){
+                self.recs = recs;
+                res.send(recs);
+            } )
+        };
+        self.getNextPage = function getRecords(req, res) {
+            var query = {}
+            query.where  = {};
+            if ( req.query.global_updated_at != null ) {
+                var dateSet = new Date()
+                var dateInt = parseInt(req.query.global_updated_at)
+                var dateSet = new Date(req.query.global_updated_at);
+                query.where = {global_updated_at:{$gt:dateSet}};
+            }
+            query.order = ['global_updated_at',  'DESC']
+            query.limit = 100;
+            self.dbHelper2.search(query, function gotAllRecords(recs){
+                self.recs = recs;
+                res.send(recs);
+            } )
+        };
+
+        /*self.syncRecords = function syncRecords(req, res) {
+         self.dbHelper2.getAll(function gotAllRecords(recs){
+         self.recs = recs;
+         res.send(recs);
+         })
+         };*/
+
+        p.createSharingRoutes = function createSharingRoutes() {
+            self.app.get('/showCluster', self.showCluster );
+            self.app.get('/showTable/:tableName', self.showTable );
+            self.app.get('/getTableData/:tableName', self.getTableData);
+
+            self.app.get('/verifySync', self.verifySync);
+            self.app.get('/getTableData', self.getTableData);
+            self.app.get('/getTableDataIncremental', self.getTableData);
+            self.app.get('/count', self.getCount );
+            self.app.get('/getRecords', self.getRecords );
+            self.app.get('/getNextPage', self.getNextPage );
+            self.app.get('/verifySync', self.verifySync );
+
+            self.app.get('/reverseSync', self.reverseSync );
+            self.app.get('/sync', self.getTableData);
+            //self.app.get('/syncRecords', self.syncRecords );
+        };
+    }
+    defineRoutes();
+
+    function defineSyncRoutines() {
+        self.sync = {};
+
+
+        /**
+         * Ping all peers, in async, pull from each peer
+         * @param cb
+         */
+        self.pull = function pullFromPeers(cb, incremental) {
+            self.pulling = true;
+            sh.async(self.settings.peers,
+                function syncPeer(peerIp, fxDoneSync) {
+                    self.proc('syninc peer', peerIp );
+                    self.sync.syncPeer( peerIp, function syncedPeer() {
+                        fxDoneSync()
+                    }, incremental);
+                }, function allDone() {
+                    self.proc('all records synced');
+                    sh.callIfDefined(cb)
+                })
+            return;
+            /*
+             async
+             syncpeer
+             get count after udapted time, or null
+             offset by 100
+             get count afater last updated time
+             next
+             res.send('ok');
+             */
+        };
+
+
+
+        /**
+         * Get count ,
+         * offset by 1000
+         * very count is same
+         * @param ip
+         * @param cb
+         */
+        self.sync.syncPeer = function syncPeer(ip, cb, incremental) {
+            var config = {showBody:false};
+            config.baseUrl = ip;
+
+            var t = EasyRemoteTester.create('Sync Peer', config);
+            var urls = {};
+            urls.register = t.utils.createTestingUrl('register');
+
+            urls.getCount = t.utils.createTestingUrl('count');
+            urls.getRecords = t.utils.createTestingUrl('getRecords');
+
+            if ( self.dictPeerSyncTime == null )
+                self.dictPeerSyncTime = {};
+
+            var reqData = {};
+            reqData.peerName = self.settings.peerName;
+            if (incremental) {
+                if (self.dictPeerSyncTime[ip] == null) {
+                    self.dictPeerSyncTime[ip] = new Date();
+                }
+                reqData.global_updated_at = self.dictPeerSyncTime[ip].getTime();
+                reqData.incremental = true;
+            }
+
+            t.getR(urls.getCount).why('get getCount')
+                .with(reqData).storeResponseProp('count', 'count')
+
+            t.add(function getRecordCount(){
+                var y = t.data.count;
+                t.cb();
+            });
+
+            t.recordsAll = [];
+
+            t.add(function syncRecourds(){
+                t.quickRequest( urls.getRecords,
+                    'get', result, reqData);
+                function result(body) {
+                    t.assert(body.length!=null, 'no page');
+                    t.records = body;
+                    t.recordsAll = t.recordsAll.concat(body);
+                    t.cb();
+                };
+            });
+            t.add(function filterNewRecordsForPeerSrc(){
+                t.cb();
+            })
+            t.add(function deleteAllRecordsForPeerName(){
+                self.dbHelper2.upsert(t.records, function upserted(){
+                    t.cb();
+                })
+            })
+            t.add(function countRecords(){
+                self.dbHelper2.count(  function upserted(count){
+                    self.size = count;
+                    t.cb();
+                })
+            })
+            t.add(function verifySync(){
+                self.lastUpdateSize = t.recordsAll.length;
+                self.lastRecords = t.recordsAll;
+                if ( t.recordsAll.length > 0 )
+                    self.dictPeerSyncTime[ip] = t.recordsAll[0].global_updated_at;
+                sh.callIfDefined(cb)
+            })
+
+        }
+
+
+
+
+        /**
+         * Ping all peers, in async, pull from each peer
+         * @param cb
+         */
+        self.pull2 = function verifyFromPeers(cb, incremental) {
+            var resultsPeers = {};
+            var result = true;
+            self.pulling = true;
+            sh.async(self.settings.peers,
+                function verifySyncPeer(peerIp, fxDoneSync) {
+                    self.proc('verifying peer', peerIp );
+                    self.sync.verifySyncPeer( peerIp, function syncedPeer(ok) {
+                        resultsPeers[peerIp] = ok
+                        if ( ok == false ) {
+                            result = false;
+                        }
+                        fxDoneSync(ok )
+                    }, incremental);
+                }, function allDone() {
+                    self.proc('all records verified');
+                    sh.callIfDefined(cb, result, resultsPeers)
+                })
+            return;
+        };
+
+
+
+        /**
+         * Ask for each peer record, starting from the bottom
+         * @param ip
+         * @param cb
+         */
+        self.sync.verifySyncPeer = function syncPeer(ip, cb, incremental) {
+            var config = {showBody:false};
+            config.baseUrl = ip;
+
+            var t = EasyRemoteTester.create('Sync Peer', config);
+            var urls = {};
+
+            urls.getCount = t.utils.createTestingUrl('count');
+            urls.getRecords = t.utils.createTestingUrl('getRecords');
+            urls.getNextPage = t.utils.createTestingUrl('getNextPage');
+
+            if ( self.dictPeerSyncTime == null )
+                self.dictPeerSyncTime = {};
+
+            var reqData = {};
+            reqData.peerName = self.settings.peerName;
+
+            t.getR(urls.getCount).why('get getCount')
+                .with(reqData).storeResponseProp('count', 'count')
+
+            t.add(function getRecordCount(){
+                var recordCount = t.data.count;
+                t.cb();
+            });
+
+            t.recordsAll = [];
+            t.recordCount = 0 ;
+            t.iterations = 0
+            t.matches = [];
+
+            t.add(getRecordsUntilFinished);
+            function getRecordsUntilFinished(){
+
+                t.quickRequest( urls.getNextPage,
+                    'get', onGotNextPage, reqData);
+                function onGotNextPage(body) {
+                    t.assert(body.length!=null, 'no page');
+                    if ( body.length != 0 ) {
+                        reqData.global_updated_at = body[0].global_updated_at;
+
+
+                        t.addNext(function verifyRecords(){
+                            var query = {};
+                            var dateFirst = new Date(body[0].global_updated_at);
+                            if ( body.length > 1 ) {
+                                var dateLast = new Date(body.slice(-1)[0].global_updated_at);
+                            } else {
+                                dateLast = dateFirst
+                            }
+                            query.where = {
+                                global_updated_at: {$gte:dateFirst},
+                                $and: {
+                                    global_updated_at: {$lte:dateLast}
+                                }
+                            };
+                            query.order = ['global_updated_at',  'DESC'];
+                            self.dbHelper2.search(query, function gotAllRecords(recs){
+                                var yquery = query;
+                                var match = self.dbHelper2.compareTables(recs, body);
+                                if ( match != true ) {
+                                    t.matches.push(t.iterations)
+                                    self.proc('match issue on', t.iterations, recs.length, body.length)
+                                }
+                                t.cb();
+                            } )
+                        })
+                        t.addNext(getRecordsUntilFinished)
+                    }
+                    t.recordCount += body.length;
+                    t.iterations  += 1
+                    t.recordsAll = t.recordsAll.concat(body); //not sure about this
+                    t.cb();
+                };
+
+                //var recordCount = t.data.count;
+                //t.cb();
+            }
+
+
+            t.add(function filterNewRecordsForPeerSrc(){
+                t.ok = t.matches.length == 0;
+                t.cb();
+            })
+            t.add(function deleteAllRecordsForPeerName(){
+                t.cb();
+            })
+            /* t.add(function countRecords(){
+             self.dbHelper2.count(  function upserted(count){
+             self.size = count;
+             t.cb();
+             })
+             })*/
+            t.add(function verifySync(){
+                //    self.lastUpdateSize = t.recordsAll.length;
+                //  if ( t.recordsAll.length > 0 )
+                //        self.dictPeerSyncTime[ip] = t.recordsAll[0].global_updated_at;
+                sh.callIfDefined(cb, t.ok)
+            })
+
+        }
+    }
+    defineSyncRoutines();
+
+
+    p.identify = function identify() {
+        if ( self.settings.cluster_config == null )
+            throw new Error ( ' need cluster config ')
+
+
+        if ( self.settings.port != null &&
+            sh.includes(self.settings.ip, self.settings.port) == false ) {
+            self.settings.ip = null; //clear ip address if does not include port
+        };
+
+        self.settings.ip = sh.dv(self.settings.ip, '127.0.0.1:'+self.settings.port); //if no ip address defined
+        if ( self.settings.ip.indexOf(':')== -1 ) {
+            self.settings.ip = self.settings.ip+':'+self.settings.port;
+        }
+        self.proc('ip address', self.settings.ip);
+
+        self.settings.peers = [];
+        var foundPeerEntryForSelf = false;
+        sh.each(self.settings.cluster_config.peers, function findMatchingPeer(i, ipSection){
+            var peerName = null;
+            var peerIp = null;
+            sh.each(ipSection, function getIpAddressAndName(name, ip) {
+                peerName = name;
+                peerIp = ip;
+            })
+            if ( self.settings.peerName != null ) {
+                if (self.settings.peerName == peerName) {
+                    foundPeerEntryForSelf = true;
+                    self.settings.name = peerName;
+                    return;
+                }
+            } else {
+                if (self.settings.ip == peerIp) {
+                    foundPeerEntryForSelf = true;
+                    self.settings.name = peerName;
+                    return;
+                }
+            }
+            console.error('....');
+            self.settings.peers.push(peerIp);
+        });
+        self.proc(self.settings.peerName, 'foundPeerEntryForSelf', foundPeerEntryForSelf, self.settings.peers.length,  self.settings.peers);
+        if ( foundPeerEntryForSelf == false ) {
+            throw new Error('did not find self in config')
+        }
+        if (  self.settings.peers.length == 0 ) {
+            throw new Error('init: not enough peers')
+        }
+    }
+
+
+    function defineDatabase() {
+        function defineDbHelpers() {
+            var dbHelper = {};
+            self.dbHelper2 = dbHelper;
+            dbHelper.count = function (fx, table) {
+                table = sh.dv(table, self.Table);
+                //console.error('count', table.name, name)
+                table.count({where: {}}).then(function onResults(count) {
+                    self.count = count;
+                    self.proc('count', count);
+                    sh.callIfDefined(fx, count);
+                })
+            }
+
+            dbHelper.utils = {};
+            dbHelper.utils.queryfy = function queryfy(query) {
+                query = sh.dv(query, {});
+                var fullQuery = {};
+                if ( query.where != null ) {
+                    fullQuery = query;
+                }else {
+                    fullQuery.query = query;
+                }
+                return fullQuery;
+            }
+
+            dbHelper.countAll = function (fx, query) {
+                var fullQuery = dbHelper.utils.queryfy(query)
+                self.Table.count(fullQuery).then(function onResults(count) {
+                    self.count = count;
+                    self.proc('count', count)
+                    sh.callIfDefined(fx, count)
+                    //  self.version = objs.updated_at.getTime();
+                })
+            }
+
+            dbHelper.getUntilDone = function (query, limit, fx, fxDone, count) {
+                var index = 0;
+                if (count == null) {
+                    dbHelper.countAll(function (initCount) {
+                        count = initCount;
+                        nextQuery();
+                    }, query)
+                    return;
+                }
+                ;
+
+                function nextQuery(initCount) {
+                    self.proc(index, count, (index / count).toFixed(2));
+                    if (index >= count) {
+                        if (index == 0 && count == 0) {
+                            sh.callIfDefined(fx, [], true);
+                        }
+                        sh.callIfDefined(fxDone);
+                        //sh.callIfDefined(fx, [], true);
+                        return;
+                    }
+                    ;
+
+                    self.Table.findAll(
+                        {
+                            limit: limit,
+                            offset: index,
+                            where: query,
+                            order: 'global_updated_at ASC'
+                        }
+                    ).then(function onResults(objs) {
+                            var records = [];
+                            var ids = [];
+                            sh.each(objs, function col(i, obj) {
+                                records.push(obj.dataValues);
+                                ids.push(obj.dataValues.id);
+                            });
+                            self.proc('sending', records.length, ids)
+                            index += limit;
+
+                            var lastPage = false;
+                            if (index >= count) {
+                                lastPage = true
+                            }
+                            // var lastPage = records.length < limit;
+                            //lastPage = index >= count;
+                            // self.proc('...', lastPage, index, count)
+                            sh.callIfDefined(fx, records, lastPage);
+                            sh.callIfDefined(nextQuery)
+                        }
+                    ).catch(function (err) {
+                            console.error(err, err.stack);
+                            throw(err);
+                        })
+                }
+
+                nextQuery();
+
+
+            }
+
+
+            dbHelper.getAll = function getAll(fx) {
+                dbHelper.search({}, fx);
+            }
+            dbHelper.search = function search(query, fx, convert) {
+                convert = sh.dv(convert, true)
+                //table = sh.dv(table, self.Table);
+                var fullQuery = dbHelper.utils.queryfy(query)
+                self.Table.findAll(
+                    fullQuery
+                ).then(function onResults(objs) {
+                        if (convert) {
+                            var records = [];
+                            var ids = [];
+                            sh.each(objs, function col(i, obj) {
+                                records.push(obj.dataValues);
+                                ids.push(obj.dataValues.id);
+                            });
+                        } else {
+                            records = objs;
+                        }
+                        sh.callIfDefined(fx, records)
+                    }
+                ).catch(function (err) {
+                        console.error(err, err.stack);
+                        fx(err)
+                        throw(err);
+                    })
+            }
+
+
+            self.dbHelper2.upsert = function upsert(records, fx) {
+                records = sh.forceArray(records);
+                var dict = {};
+                var dictOfExistingItems = dict;
+                var queryInner = {};
+                var statements = [];
+
+                var newRecords = [];
+                var ids = [];
+                sh.each(records, function putInDict(i, record) {
+                        ids.push(record.id)
+                    }
+                )
+                self.proc(self.name, ':', 'upsert', records.length, ids)
+                if (records.length == 0) {
+                    sh.callIfDefined(fx);
+                    return;
+                }
+
+                sh.each(records, function putInDict(i, record) {
+                    if (record.id_timestamp == null || record.source_node == null) {
+                        throw new Error('bad record ....');
+                    }
+                    if (sh.isString(record.id_timestamp)) { //NO: this is id ..
+                        //record.id_timestamp = new Date(record.id_timestamp);
+                    }
+                    if (sh.isString(record.global_updated_at)) {
+                        record.global_updated_at = new Date(record.global_updated_at);
+                    }
+
+                    var dictKey = record.id_timestamp + record.source_node
+                    if (dict[dictKey] != null) {
+                        self.proc('duplicate keys', dictKey)
+                        throw new Error('duplicate key error on unique timestamps' + dictKey)
+                        return;
+                    }
+                    dict[dictKey] = record;
+                    /*statements.push(SequelizeHelper.Sequlize.AND(
+
+
+                     ))*/
+
+                    statements.push({
+                        id_timestamp: record.id_timestamp,
+                        source_node: record.source_node
+                    });
+                })
+
+                if (statements.length > 0) {
+                    queryInner = SequelizeHelper.Sequelize.or(statements)
+                    queryInner = SequelizeHelper.Sequelize.or.apply(this, statements)
+
+                    //find all matching records
+                    var query = {where: queryInner};
+
+                    self.Table.findAll(query).then(function (results) {
+                        self.proc('found existing records');
+                        sh.each(results, function (i, eRecord) {
+                            var eRecordId = eRecord.id_timestamp + eRecord.source_node;
+                            var newerRecord = dictOfExistingItems[eRecordId];
+                            if (newerRecord == null) {
+                                self.proc('warning', 'look for record did not have in database')
+                                //newRecords.push()
+                                return;
+                            }
+
+                            //do a comparison
+                            var dateOldRecord = parseInt(eRecord.dataValues.global_updated_at.getTime());
+                            var dateNewRecord = parseInt(newerRecord.global_updated_at.getTime());
+                            var newer = dateNewRecord > dateOldRecord;
+                            var sameDate = eRecord.dataValues.global_updated_at.toString() == newerRecord.global_updated_at.toString()
+                            if ( self.settings.showWarnings ) {
+                                self.proc('compare',
+                                    eRecord.name,
+                                    newerRecord,
+                                    newer,
+                                    eRecord.dataValues.global_updated_at, newerRecord.global_updated_at);
+                            }
+                            if ( newer == false ) {
+                                if ( self.settings.showWarnings )
+                                    self.proc('warning', 'rec\'v object that is older', eRecord.dataValues)
+                            }
+                            else if (sameDate) {
+                                if ( self.settings.showWarnings )
+                                    self.proc('warning', 'rec\'v object that is already up to date', eRecord.dataValues)
+                            } else {
+                                console.error('newerRecord', newerRecord)
+                                eRecord.updateAttributes(newerRecord);
+                            }
+                            //handled item
+                            dictOfExistingItems[eRecordId] = null;
+                        });
+                        createNewRecords();
+                    });
+                } else {
+                    createNewRecords();
+                }
+
+                //update them all
+
+                //add the rest
+                function createNewRecords() {
+                    var _dictOfExistingItems = dictOfExistingItems;
+                    //mixin un copied records
+                    sh.each(dictOfExistingItems, function addToNewRecords(i, eRecord) {
+                        if (eRecord == null) {
+                            //already updated
+                            return;
+                        }
+                        console.error('removing id on', eRecord.id)
+                        eRecord.id = null;
+                        newRecords.push(eRecord);
+                    });
+
+                    if (newRecords.length > 0) {
+                        self.Table.bulkCreate(newRecords).then(function (objs) {
+
+                            self.proc('all records created', objs.length);
+                            //sh.each(objs, function (i, eRecord) {
+                            // var match = dict[eRecord.id_timestamp.toString() + eRecord.source]
+                            // eRecord.updateAttributes(match)
+                            // })
+                            sh.callIfDefined(fx);
+
+                        }).catch(function (err) {
+                            console.error(err, err.stack)
+                            throw  err
+                        })
+                    } else {
+                        self.proc('no records to create')
+                        sh.callIfDefined(fx)
+                    }
+
+
+                    /* sh.callIfDefined(fx)*/
+
+                }
+
+            }
+
+
+            self.dbHelper2.addNewRecord = function addNewRecord(record, fx) {
+                var item = record;
+                item.source_node = self.settings.peerName;
+                //item.desc = GenerateData.getName();
+                item.global_updated_at = new Date();
+                item.id_timestamp = (new Date()).toString() + '_' + Math.random() + '_' + Math.random();
+
+
+                var newRecords = [item];
+                self.Table.bulkCreate(newRecords).then(function (objs) {
+                    self.proc('all records created', objs.length);
+                    sh.callIfDefined(fx);
+                }).catch(function (err) {
+                    console.error(err, err.stack);
+                    throw  err
+                });
+
+            }
+
+
+            self.dbHelper2.compareTables = function compareTables(a, b) {
+                // console.log(nameA,data.count1,
+                //     nameB, data.count2, data.count1 == data.count2 );
+
+                var getId = function getId(obj){
+                    return obj.source_node + '_' + obj.id_timestamp//.getTime();
+                }
+
+                var dictTable1 = sh.each.createDict(
+                    a, getId);
+                var dictTable2 = sh.each.createDict(
+                    b, getId);
+
+                function compareObjs(a, b) {
+                    var badProp = false;
+                    if ( b == null ) {
+                        self.proc('b is null' )
+                        return false;
+                    }
+                    sh.each(self.settings.fields, function (prop, defVal) {
+                        if (['global_updated_at'].indexOf(prop)!= -1 ){
+                            return;
+                        }
+                        var valA = a[prop];
+                        var valB = b[prop];
+                        if ( valA != valB ) {
+                            badProp = true;
+                            self.proc('mismatched prop', prop, valA, valB)
+                            return false; //break out of loop
+                        }
+                    });
+                    if ( badProp ) {
+                        return false;
+                    }
+                    return true
+                }
+
+                var result = {};
+                result.notInA = []
+                result.notInB = [];
+                result.brokenItems = [];
+                function compareDictAtoDictB(dict1, dict2) {
+                    var diff = [];
+                    var foundIds = [];
+                    sh.each(dict1, function (id, objA) {
+                        var objB= dict2[id];
+                        if ( objB == null ) {
+                            // console.log('b does not have', id, objA)
+                            result.notInB.push(objA)
+                            // return;
+                        } else { //why: b/c if A has extra record ... it is ok...
+                            if (!compareObjs(objA, objB)) {
+                                result.brokenItems.push([objA, objB])
+                                //return;
+                            }
+                        }
+                        foundIds.push(id);
+                    });
+
+                    sh.each(dict2, function (id, objB) {
+                        if ( foundIds.indexOf(id) != -1 ) {
+                            return
+                        };
+                        /*if ( ! compareObjs(objA, objB)) {
+                         result.brokenItems.push(objA)
+                         return;
+                         }*/
+                        //console.log('a does not have', id, objB)
+                        result.notInA.push(objB)
+                    });
+                };
+
+                compareDictAtoDictB(dictTable1, dictTable2);
+
+                if ( result.notInA.length > 0 ) {
+                    //there were items in a did not find
+                    return false;
+                };
+                if ( result.brokenItems.length > 0 ) {
+                    self.proc('items did not match', result.brokenItems)
+                    return false;
+                };
+                return true;
+                return false;
+            }
+
+
+            self.dbHelper2.deleteRecord = function deleteRecord(id, cb) {
+                console.log('....d')
+
+
+                if ( sh.isNumber( id ) == false ) {
+                    /* self.Table.destroy(
+
+                     )*/
+                    console.log('...d.d')
+                    // self.Table.destroy(id)
+                    id.destroy()
+                        .then(function() {
+                            sh.callIfDefined(cb);
+                        })
+                } else {
+                    console.log('....d')
+                    self.Table.destroy({where:{id:id}})
+                        .then(function() {
+                            console.log('fff')
+                            sh.callIfDefined(cb);
+                        })
+                }
+
+            };
+        }
+
+        defineDbHelpers();
+
+        p.connectToDb = function connectToDb() {
+            var sequelize = rh.getSequelize(null, null, false);
+            self.sequelize = sequelize;
+            self.createTableDefinition();
+        }
+
+        /**
+         * Creates table object
+         */
+        p.createTableDefinition = function createTableDefinition() {
+            var tableSettings = {};
+            if (self.settings.force == true) {
+                tableSettings.force = true
+                tableSettings.sync = true;
+            }
+            tableSettings.name = self.settings.tableName
+            //tableSettings.name = sh.dv(sttgs.name, tableSettings.name);
+            tableSettings.createFields = {
+                name: "", desc: "", user_id: 0,
+                imdb_id: "", content_id: 0,
+                progress: 0
+            };
+
+
+            self.settings.fields = tableSettings.createFields;
+
+            var requiredFields = {
+                source_node: "", id_timestamp: "",
+                global_updated_at: new Date(), //make another field that must be changed
+                version: 0, deleted: true
+            }
+            sh.mergeObjects(requiredFields, tableSettings.createFields);
+            tableSettings.sequelize = self.sequelize;
+            SequelizeHelper.defineTable(tableSettings, tableCreated);
+
+            function tableCreated(table) {
+                console.log('table ready')
+                //if ( sttgs.storeTable != false ) {
+                self.Table = table;
+                //  self.setVersion();
+                //  }
+                //  sh.callIfDefined(fx);
+                //   sh.callIfDefined(sttgs.fx, table)
+                /* if (self.settings.testMode) {
+                 self.test.createTestData();
+                 };*/
+                setTimeout(function () {
+                    sh.callIfDefined(self.settings.fxDone);
+                }, 100)
+
+
+            }
+        }
+
+        function defineTest() {
+            self.test = {};
+            self.test.createTestData = function createTestData(cb) {
+                GenerateData = shelpers.GenerateData;
+                var gen = new GenerateData();
+                var model = gen.create(100, function (item, id, dp) {
+                    item.name = id;
+                    // item.id = id;
+                    item.source_node = self.settings.peerName;
+                    item.desc = GenerateData.getName();
+                    item.global_updated_at = new Date();
+                    item.id_timestamp = (new Date()).toString() + '_' + Math.random();
+                });
+
+                var results = model;
+
+                self.Table.bulkCreate(results).then(
+                    function (results) {
+                        // Notice: There are no arguments here, as of right now you'll have to...
+                        if (cb != null) cb(results);
+                        return;
+                    }).catch(function (err) {
+                        console.log(err)
+                        // exit();
+                        setTimeout(function () {
+                            throw err;
+                        }, 5);
+                    });
+            }
+            self.test.destroyAllRecords = function (confirmed, fx) {
+                if (confirmed != true) {
+                    return false;
+                }
+
+                self.Table.destroy({where: {}}).then(function () {
+                    sh.callIfDefined(fx);
+                    self.proc('all records destroyed')
+                })
+
+            }
+
+
+            self.test.deleteRandomRecord = function (fx) {
+                /*Array.prototype.randsplice = function(){
+                 var ri = Math.floor(Math.random() * this.length);
+                 var rs = this.splice(ri, 1);
+                 return rs;
+                 }
+                 var obj = self.lastRecords.randsplice();
+
+                 if ( obj.length ==1 ) {
+                 obj = obj[0];
+                 }*/
+                //this will pull the other side records
+
+
+
+                self.test.getRandomRecord(function onGotRecord(rec) {
+                    self.dbHelper2.deleteRecord(rec.id, fx);
+                })
+
+
+                /*self.dbHelper2.count(function gotAllRecords(count){
+                 self.count = count;
+                 self.size = count;
+                 sh.callIfDefined(cb)
+                 })*/
+
+            };
+
+            self.test.getRandomRecord = function (fx) {
+
+                var query = {};
+                query.where  = {};
+
+                self.dbHelper2.countAll(function gotCount(count){
+                    self.count = count;
+                    //offset by count?
+                    query.order = ['global_updated_at',  'DESC']
+                    query.limit = 1;
+                    query.offset = parseInt(count*Math.random());
+                    self.dbHelper2.search(query, function gotAllRecords(recs){
+                        var obj = recs[0];
+                        sh.callIfDefined(fx, obj)
+                    } , false);
+                }, query);
+
+
+            }
+
+            self.test.saveRecord = function saveRecord(obj, fx) {
+                obj.save().then(function gotAllRecords(recs){
+                        sh.callIfDefined(fx, obj)
+                    }
+                )
+
+            }
+
+
+
+
+
+        }
+
+        defineTest();
+
+    }
+
+    defineDatabase();
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return;
+        }
+        sh.sLog(arguments);
+    }
+}
+
+exports.SQLSharingServer = SQLSharingServer;
+
+if (module.parent == null) {
+
+    return;
+
+
+}

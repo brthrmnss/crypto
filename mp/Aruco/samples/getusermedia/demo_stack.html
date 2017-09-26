@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <title>Augmented Reality Marker Detector</title>
+
+    <script type="text/javascript" src="libs/polyfill.js"></script>
+
+    <script type="text/javascript" src="cv.js"></script>
+    <script type="text/javascript" src="aruco.js"></script>
+
+    <script type="text/javascript" src="posit1.js"></script>
+    <script type="text/javascript" src="svd.js"></script>
+
+    <script type="text/javascript" src="addPanel.js"></script>
+
+    <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/Three.js"></script>
+    <script type="text/javascript" src="js/underscore.js"></script>
+
+    <script type="text/javascript" src="js/math.min.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="theme.css">
+
+
+
+    <script id="taskTemplate" type="text/template">
+        <%= title %> <button class="edit" >Edit</button>
+        <div class="container" style="" >
+            <div class="column-center" style="border: solid">Column center</div>
+            <div class="column-left">Column left</div>
+            <div class="column-right">Column right<br />
+                <img src="arrow.png" width="100" /> </div>
+        </div>
+        <button class="delete" >Delete</button>
+    </script>
+
+
+    <script>
+        window.template = function(id){
+            return _.template( $('#'+id).html());
+        }
+
+        window.template2 = function(templateId, idStore, values){
+            var compiled =  _.template( $('#'+templateId).html());
+            if ( values == null ) values = {}
+            var templateHTML =  compiled(values)
+            $('#'+idStore).html(templateHTML)
+        }
+
+        setTimeout(function update() {
+            window.template2('taskTemplate', 'divBottom', {title:'dog'})
+        },500)
+
+    </script>
+
+
+</head>
+
+<body style="font-family: monospace;">
+
+<center>
+    <div class="Center-Container" style="width:20px; height:10px; background-color: #FF0000; right: 50%; top: 50%; position: absolute;" >
+        <!--<div class="Center-Block Absolute-Center"  style="  background-color: #FFF000 " >
+            <h4 class="Title">Absolute Center,<br>Within Container.</h4>
+            <p>          This box is absolutely centered, horizontally and vertically, within its container using <br><code>position: relative</code>
+            </p>
+        </div>
+    -->
+        forw1<br />
+       row2
+        <div class="container"  style="  width:350px;    border: solid;" >
+            <div>
+                <!--<h4 class="Title">Absolute Center,<br>Within Container.</h4>
+                <p>          This box is absolutely centered, horizontally and vertically, within its container using <br><code>position: relative</code>
+                </p>
+                -->
+                <div id="divBottom" style="scaleX(5); transform: scale(5,5)" />
+
+            </div>
+        </div>
+        <p></p></div>
+
+</center>
+</body>
+
+
+
+
+
+</html>

@@ -1,0 +1,203 @@
+<html>
+
+<head>
+    <title>Augmented Reality Marker Detector</title>
+
+    <script type="text/javascript" src="libs/polyfill.js"></script>
+
+    <script type="text/javascript" src="cv.js"></script>
+    <script type="text/javascript" src="aruco.js"></script>
+
+    <script>
+        var video, canvas, context, imageData, detector;
+
+        function onLoad() {
+            video = document.getElementById("video");
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+
+            canvas.width = parseInt(canvas.style.width);
+            canvas.height = parseInt(canvas.style.height);
+
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            if (navigator.getUserMedia) {
+
+                function successCallback(stream) {
+                    if (window.webkitURL) {
+                        video.src = window.webkitURL.createObjectURL(stream);
+                    } else if (video.mozSrcObject !== undefined) {
+                        video.mozSrcObject = stream;
+                    } else {
+                        video.src = stream;
+                    }
+                }
+
+                function errorCallback(error) {
+                }
+
+                navigator.getUserMedia({video: true}, successCallback, errorCallback);
+
+                detector = new AR.Detector();
+
+                requestAnimationFrame(tick);
+            }
+        }
+
+        function tick() {
+            requestAnimationFrame(tick);
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                snapshot();
+
+                var markers = detector.detect(imageData);
+                drawCorners(markers);
+                drawId(markers);
+            }
+        }
+
+        function snapshot() {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawCorners(markers) {
+            var corners, corner, i, j;
+
+            context.lineWidth = 3;
+
+            for (i = 0; i !== markers.length; ++i) {
+                corners = markers[i].corners;
+
+                context.strokeStyle = "red";
+                context.beginPath();
+
+                for (j = 0; j !== corners.length; ++j) {
+                    corner = corners[j];
+                    context.moveTo(corner.x, corner.y);
+                    corner = corners[(j + 1) % corners.length];
+                    context.lineTo(corner.x, corner.y);
+                }
+
+                context.stroke();
+                context.closePath();
+
+                context.strokeStyle = "green";
+                context.strokeRect(corners[0].x - 2, corners[0].y - 2, 4, 4);
+            }
+        }
+
+        function drawId(markers) {
+            var corners, corner, x, y, i, j;
+
+            context.strokeStyle = "blue";
+            context.lineWidth = 1;
+
+            for (i = 0; i !== markers.length; ++i) {
+                corners = markers[i].corners;
+
+                x = Infinity;
+                y = Infinity;
+
+                for (j = 0; j !== corners.length; ++j) {
+                    corner = corners[j];
+
+                    x = Math.min(x, corner.x);
+                    y = Math.min(y, corner.y);
+                }
+
+                context.strokeText(markers[i].id, x, y)
+            }
+        }
+
+        window.onload = onLoad;
+    </script>
+
+</head>
+
+<body style="font-family: monospace;">
+
+
+<!--
+-webkit-transition: -webkit-transform 0.8s ease; transition: -webkit-transform 0.8s ease;
+-webkit-transform-origin: 0% 0%; transform-origin: 0% 0% 0px; -webkit-transform: scale(1) scaleZ(1) rotateZ(360deg) translateZ(-68px);
+ transform: scale(1) scaleZ(1) rotateZ(360deg) translateZ(-68px);
+ -->
+<div style="width:640px; height:480px; background-color: #d2d2d2" >
+
+
+
+<div id="demodd" style="
+font-size: 5.1em;
+padding: 2%;
+
+transform: scale(1.0) scaleZ(1.0) translateZ(-68px);
+transform-origin: 0% 0%;
+transform: scale(1.0) scaleZ(1.0) translateZ(-68px);
+transform-origin: 0% 0%;
+perspective: 200;
+perspective-origin: 50% 50%;
+
+">Transform this!<p></p>
+</div>
+
+
+
+
+</div>
+
+<p style="
+transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+transform-origin: 0% 0%;
+perspective: 100;-webkit-transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+-webkit-transform-origin: 0% 0%;
+-webkit-perspective: 100;
+-webkit-perspective-origin: 50% 50%;
+-moz-transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+-moz-transform-origin: 0% 0%;
+-moz-perspective: 100;
+-moz-perspective-origin: 50% 50%;
+-o-transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+-o-transform-origin: 0% 0%;
+-o-perspective: 100;
+-o-perspective-origin: 50% 50%;
+-ms-transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+-ms-transform-origin: 0% 0%;
+-ms-perspective: 100;
+-ms-perspective-origin: 50% 50%;
+transform: scale(1.0) scaleZ(1.0) rotateZ(360deg) translateZ(-68px);
+transform-origin: 0% 0%;
+perspective: 100;
+perspective-origin: 50% 50%;
+">
+    dddd
+    This element has been skewed horizontally and vertically. You can still select the text, and otherwise interact with
+    the element, as you would if it weren’t transformed.
+</p>
+
+
+<center>
+    <div style="margin: 10px;"><strong>-= Augmented Reality Marker Detector =-</strong></div>
+    <video id="video" autoplay="true" style="display:none;"></video>
+    <canvas id="canvas" style="width:640px; height:480px;"></canvas>
+    <div style="margin: 15px;"><strong>Powered by <a href="http://code.google.com/p/js-aruco/">js-aruco</a></strong>
+    </div>
+</center>
+
+
+
+<p style="-webkit-transform: skew(32deg, 0deg);
+ -moz-transform: skew(32deg, 0deg);
+ -o-transform: skew(32deg, 0deg);
+ -ms-transform: skew(32deg, 0deg);
+ transform: skew(32deg, 0deg)">
+    This element has been skewed horizontally and vertically. You can still select the text, and otherwise interact with
+    the element, as you would if it weren’t transformed.</p>
+
+error: 0
+x: -416 y: 100 z: 881
+yaw: -55 pitch: -4 roll: -1
+
+
+</body>
+
+</html>

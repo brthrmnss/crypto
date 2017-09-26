@@ -15,96 +15,40 @@ function MaryTTSSpeaker() {
     }
 
     p.test = function test() {
-        var port = 59125
-        var baseUrl = 'http://127.0.0.1:'+port
-        var t = EasyRemoteTester.create('Test say basics',{showBody:false});
-        var data = {};
-        t.settings.baseUrl = baseUrl
-        var urls = {};
-        urls.notes = {};
-        urls.say = t.utils.createTestingUrl('say')
-        urls.process = t.utils.createTestingUrl('process')
 
-        var maryXML =
-            '<?xml version="1.0" encoding="UTF-8" ?> '+
-            '<maryxml version="0.4" '+
-            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '+
-            'xmlns="http://mary.dfki.de/2002/MaryXML" '+
-            'xml:lang="en"> '+
-            '    <prosody rate="+200%" pitch="+20%" range="-10%" volume="loud"> '+
-            '    This is something you have to see! '+
-            '    </prosody> '+
-            '    </maryxml>'
-
-        var req = {}
-        //  req.INPUT_TEXT  = 'hello world'
-        req.INPUT_TYPE= 'TEXT'
-        req.OUTPUT_TYPE ='AUDIO'
-        //req.OUTPUT_TYPE ='WORDS'
-        //  req.INPUT_TEXT = 'Willkommen in der Welt der Sprach-synthese'
-        req.INPUT_TEXT  = 'hello world, ddvwere are you'
-        req.LOCALE  = 'en_US'
-        req.AUDIO="WAVE_FILE"
+        var cfg = {};
 
 
-        var maryXML2 = '<?xml version="1.0" encoding="UTF-8" ?> '+
-            '<maryxml version="0.4" '+
-            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '+
-            'xmlns="http://mary.dfki.de/2002/MaryXML" '+
-            'xml:lang="en-US"> '+
-            'Welcome<boundary breakindex="4"/>to the world of speech synthesis! '+
-            '</maryxml>'
+
+        cfg.text = 'is that a nice body you have?'
+        cfg.voice = 'cmu-rms en_US male unitselection general'
+        cfg.voice = 'cmu-rms' //_en_US_male_unitselection_general'
+        self.speak(cfg)
+
+        setTimeout(function() {
+            cfg.text = 'what did you say?'
+            cfg.voice = 'cmu-slt';
+            cfg.trash = true;
+            self.speak(cfg)
+        }, 1500)
 
 
-        var maryXML=[ '<?xml version="1.0" encoding="UTF-8"?>',
-            '<maryxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://mary.dfki.de/2002/MaryXML" version="0.4" xml:lang="en-US">',
-            '<p>',
-            '<prosody rate="150%">Welcome to the world of speech synthesis!</prosody>',
-            '</p>',
-            '</maryxml>']
+        setTimeout(function() {
+            cfg.text = 'what did you say?'
+            cfg.voice = 'cmu-slt';
+            cfg.trash = true;
+            self.speak(cfg)
+        }, 3200)
 
-        maryXML = maryXML.join(' \n')
 
-        console.log('mary', maryXML)
+        setTimeout(function() {
+            cfg.text = 'me too .....'
+            cfg.voice = 'dfki-obadiah';
+            cfg.trash = true;
+            self.speak(cfg)
+        }, 2000)
 
-        //request raw xml
-        var req = {}
-        //  req.INPUT_TEXT  = 'hello world'
-        req.INPUT_TYPE= 'RAWMARYXML'
-        req.OUTPUT_TYPE ='AUDIO'
-        // req.OUTPUT_TYPE ='WORDS'
-        //  req.INPUT_TEXT = 'Willkommen in der Welt der Sprach-synthese'
-        req.INPUT_TEXT  = maryXML
-        req.INPUT_TEXT  = maryXML
-        req.LOCALE  = 'en_US'
-        req.AUDIO="WAVE_FILE"
-
-        // req.AUDIO_OUT= "WAVE_FILE"
-        // req.VOICE='bits3'
-        var t2 = t.clone('test a few voices notes');
-        t2.getR(urls.process).with(req)
-            .addFx(function onResult(asdf, resp) {
-                if ( resp.statusCode != 200 ) {
-                    // console.error('result', asdf)
-                    console.error(asdf.toString());
-                    //  console.error(asdf.toString('utf8'));
-                    return
-                }
-                sh.writeFile('sample.wav', asdf, false, true)
-                return;
-                sh.writeFile('x2.wav', asdf, false, false)
-                var fs = require('fs')
-                fs.writeFileSync('sample.wav',  asdf);
-            })
-            .fxFail(function onFault(e){
-                console.error(e)
-            })
-
-        //.bodyHas('status').notEmpty()
-        //t2.getR(urls.say).with({text:'test', rate:20}).bodyHas('status').notEmpty()
-        // t2.getR(urls.say).with({text:'test', rate:350}).bodyHas('status').notEmpty()
-        //t2.getR(urls.say).with({text:'voice', voice:'Heather'}).bodyHas('status').notEmpty()
-        return;
+        return
 
     }
 
@@ -150,24 +94,53 @@ function MaryTTSSpeaker() {
         req.INPUT_TEXT  = maryXML
         req.LOCALE  = 'en_US'
         req.AUDIO="WAVE_FILE"
+        if ( cfg.voice ) {
+            req.VOICE  = cfg.voice;
+        }
 
         // req.AUDIO_OUT= "WAVE_FILE"
         // req.VOICE='bits3'
         var t2 = t.clone('test a few voices notes');
-        t2.getR(urls.process).with(req)
-            .addFx(function onResult(error, resp, body) {
+        t2.getR(urls.process,/*null,*/ 'getBinary').with(req)
+            .addFx(function onResult(body, resp, error) {
+
+                //console.error('onResult', body, resp, error)
+
                 if (resp == null) {
                     console.error('response is null');
                     console.error(error);
                     return
                 }
                 if ( resp.statusCode != 200 ) {
-                    console.error(body.toString());
+                    console.error('...', resp.code, resp.statusCode, resp.statusMessage )
+                    if ( body == null ) {
+                        console.error(body , resp.code);
+                    } else {
+                        console.error(body.toString(),  resp.code);
+                    }
+                    return
+                }
+                if ( body == null ) {
+                    console.error('body', body, 'is null')
                     return
                 }
                 var file = 'sample.wav';
                 file = sh.fs.resolve(file);
-                sh.writeFile('sample.wav', body, false, true)
+                if ( cfg.trash ) {
+                    sh.fs.mkdirp(sh.fs.trash('sounds'))
+                    file = sh.fs.trash('sounds/'+Math.random()+'.wav')
+                }
+                console.log('')
+                //console.log(body)
+                self.proc('writing file', file, body.length, body==undefined, body=='undefined')
+                sh.writeFile(file, body, false, true)
+                sh.runAsync(
+                    ['G:/Dropbox/projects/delegation/Reader/TTS-Reader/bin/windows/cmdmp3.exe',
+                        sh.qq(file)].join(' ')
+                )
+
+
+
                 if ( self.data.killed != true )
                 sh.callIfDefined(cfg.fx, file)
                 return;

@@ -1,0 +1,74 @@
+{
+  "frontend": {
+    "site_title":"bougie uploads",
+    "feedback_email":"local@test.com",
+    "login_port":33031,
+    "tracker_ip": "0",
+    "welcome":"..."
+  },
+  "scripts": [
+    "node_scripts/bitcoinorder_server2/invoice_service.js",
+    "`node_scripts/bitcoinorder_server/order_watcher/invoice_watcher.js",
+    "node_scripts/credentials_server/user_server.js",
+    "node_scripts/file_server/file_server.js",
+    "`node_scripts/reedem_server/redeem_server.js",
+    "node_scripts/search_server/search_server2.js",
+    "`node_scripts/invite_server/invite_server.js",
+    "node_scripts/registration_server/registration_server.js",
+    "node_scripts/bitcoin_wallet/electrum_wallet_manager.js"
+  ],
+  "global":{
+    "dir_login_consumer_sessions":"XhomeX/ritv/sessions_login_consumer_api",
+    "title":"BougieUpload.cr",
+    "feedback_email":"yyy@hotmail.com"
+  },
+  "downloads":{
+    "dir_downloads":"/media/incoming"
+  },
+  "mysql":{
+    "ip" : "127.0.0.1",
+    "databasename" : "yetidb",
+    "user" : "yetidbuser",
+    "pass" : "aSDDD545y^",
+    "port" : "3306"
+  },
+  "files":{
+    "port":33037,
+    "default_server":"http://127.0.0.1:33037/api/get_content/",
+    "default_server2":"*",
+    "url_verify":"http://127.0.0.1:33037/api/verify/",
+    "url_test":"http://127.0.0.1:33037/api/test/",
+    "full_path":"true",
+    "testMode_2Servers":true
+  },
+  "search":{
+    "port":33310,
+    "show_search_results":true,
+    "login":true
+  },
+  "bitcoinAPI":{
+  },
+  "electrum":{
+    "dir":"",
+    "__dir":"stores wallet in dir of electrum folder",
+    "___use_electrum_client":false
+  },
+  "loginAPI":{
+    "port":33031,
+    "dir_sessions":"XhomeX/ritv/dir_sessions",
+    "warning":"this is the main port for the whole server"
+  },
+  "debug_startup":false,
+  "email":{
+    "xservice":"mailbox.org",
+    "username":"rmanager@mailbox.org",
+    "password":"Runningman6",
+    "port":"587",
+    "send_emails_after_registration":true,
+    "enable_forgot_password":true,
+    "require_activation":true
+  },
+  "registration_server":{
+    "port":18001
+  }
+}

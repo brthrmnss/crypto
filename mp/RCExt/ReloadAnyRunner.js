@@ -23,8 +23,15 @@ config.__filename = __filename;
 
 config.blockDefaultPublicHTML= true; 
 
-config.initRun = [
+/*config.initRun = [
     'G:/Dropbox/projects/crypto/mp/RCExt/RC_ConfigManager_ExecServer.js',
     'G:/Dropbox/projects/crypto/mp/RCExt/BreedHoistServer.js'
+]*/
+
+
+config.initRun = [
+    'RC_ConfigManager_ExecServer.js',
+    'BreedHoistServer.js'
 ]
+
 f.init(config)  

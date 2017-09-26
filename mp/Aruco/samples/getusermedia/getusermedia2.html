@@ -1,0 +1,573 @@
+<html>
+
+<head>
+<title>Augmented Reality Marker Detector</title>
+
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script type="text/javascript" src="cv.js"></script>
+<script type="text/javascript" src="aruco.js"></script>
+
+<script type="text/javascript" src="posit1.js"></script>
+<script type="text/javascript" src="svd.js"></script>
+
+<script type="text/javascript" src="addPanel.js"></script>
+<script type="text/javascript" src="calibrator.js"></script>
+
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/Three.js"></script>
+<script type="text/javascript" src="js/underscore.js"></script>
+
+<script type="text/javascript" src="js/math.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="theme.css">
+
+<script>
+    window.template = function(id){
+        return _.template( $('#'+id).html());
+    }
+
+    window.template2 = function(templateId, idStore, values){
+        var compiled =  _.template( $('#'+templateId).html());
+        if ( values == null ) values = {}
+        var templateHTML =  compiled(values)
+        $('#'+idStore).html(templateHTML)
+    }
+
+    setTimeout(function update() {
+        // window.template2('taskTemplate', 'divBottom', {title:'dog'})
+    },500)
+
+</script>
+
+<script>
+
+var video, canvas, context, imageData, detector;
+var posit;
+
+var anotMaster = new AnotMaster();
+var calibrator = new Calibrator();
+//uncomment to hide camera
+//anotMaster.loadCamera = false;
+Config = {}
+//if true, will not find distant markers
+//Config.default = true
+Config.loadCamera = true
+//Config.loadCamera = false
+anotMaster.loadCamera = Config.loadCamera;
+Config.removeInvalidMarkers = true;
+Config.dampen = true;
+//anotMaster.getRandom();
+//anotMaster.loadCamera = true;
+
+(function lX() {
+    var  annotationInfo = {}
+
+
+    annotationInfo.id = ''
+    annotationInfo.centerContent = false;
+    //annotationInfo.centerContent = true;
+    annotationInfo.widthOfAnnotation = 6/12
+    //annotationInfo.xFeet=1
+    //annotationInfo.yFeet=1
+
+    annotationInfo.alpha = 0.8
+
+    annotationInfo.templateId = 'taskTemplate';
+    annotationInfo.templateId = 'taskTemplate';
+    //
+    // annotationInfo.templateId = 'closetX'
+    annotationInfo.templateId = 'fireplaceX'
+    annotationInfo.xFeet=-6
+    annotationInfo.yFeet=-1.0+.1+.2
+    annotationInfo.vars = {title:'dog'};
+
+    //annotationInfo.marker_id = 555
+    anotMaster.addAnnotation(annotationInfo)
+})();
+
+(function rX() {
+    var  annotationInfo = {}
+    annotationInfo.templateId = 'closetX'
+    annotationInfo.id = ''
+    annotationInfo.centerContent = true;
+    annotationInfo.widthOfAnnotation = 6/12
+    //annotationInfo.xFeet=1
+    //annotationInfo.yFeet=1
+
+    annotationInfo.alpha = 0.8
+
+    annotationInfo.templateId = 'taskTemplate';
+    annotationInfo.vars = {title:'dog'};
+    return;
+    anotMaster.addAnnotation(annotationInfo)
+})();
+
+
+
+function onLoad(){
+    video = document.getElementById("video");
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+
+    canvas.width = parseInt(canvas.style.width);
+    canvas.height = parseInt(canvas.style.height);
+
+    if ( anotMaster.loadCamera == false  ) {
+        function setupAppParams() {
+            function initFakeData() {
+                var marker1 = [
+                    {"id": 504, "corners": [
+                        {"x": 400, "y": 320},
+                        {"x": 265, "y": 309},
+                        {"x": 271, "y": 173},
+                        {"x": 408, "y": 175}
+                    ]}
+                ]
+                try {
+                    //  anotMaster.addMarker(marker1)
+                } catch (e) {
+                }
+                var markers = []
+                var marker1 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 271, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+                var marker2 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 8, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+                var marker3 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 271, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+
+
+                var marker2 = {"id":639,"corners":[{"x":42,"y":91},{"x":112,"y":54},{"x":150,"y":126},{"x":83,"y":162}]}
+
+                var  marker3 = {"id":639,"corners":[{"x":507,"y":51},{"x":604,"y":100},{"x":598,"y":249},{"x":484,"y":222}]}
+                //,{"id":802,"corners":[{"x":87,"y":168},{"x":108,"y":170},{"x":107,"y":195},{"x":85,"y":193}]}
+
+                var marker4 = {"id":802,"corners":[{"x":87,"y":168},{"x":108,"y":170},{"x":107,"y":195},{"x":86,"y":193}]}
+
+                //marker heavily skewed
+
+                var centerSkewed = {"id":231,"corners":[{"x":333,"y":268},{"x":290,"y":267},{"x":271,"y":188},{"x":317,"y":196}]}
+
+                markers.push(centerSkewed);
+
+                markers.push(marker1);
+                markers.push(marker2);
+                markers.push(marker3);
+                markers.push(marker4)
+
+
+                //start again, for transform origin issue
+                markers =[]
+                var cornerByDoor = [{"id":802,"corners":[{"x":82,"y":188},{"x":103,"y":190},{"x":102,"y":215},{"x":81,"y":213}]}]
+                markers.push(cornerByDoor[0])
+
+                var inCenter = [{"id":639,"corners":[{"x":357,"y":105},{"x":478,"y":94},{"x":477,"y":222},{"x":359,"y":225}]}]
+                markers.push(inCenter[0])
+                //markers=[]
+                // marker1 = {"id":231,"corners":[{"x":385,"y":52},{"x":383,"y":144},{"x":294,"y":143},{"x":294,"y":51}]}
+                // markers.push(marker1);
+
+
+                // markers = [{"id":456,"corners":[{"x":129,"y":62},{"x":144,"y":89},{"x":109,"y":97},{"x":95,"y":71}]},{"id":456,"corners":[{"x":129,"y":62},{"x":144,"y":89},{"x":109,"y":97},{"x":95,"y":71}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":129,"y":86},{"x":145,"y":111},{"x":111,"y":122},{"x":95,"y":96}]},{"id":456,"corners":[{"x":101,"y":188},{"x":122,"y":208},{"x":93,"y":227},{"x":71,"y":206}]},{"id":456,"corners":[{"x":101,"y":188},{"x":122,"y":208},{"x":93,"y":227},{"x":71,"y":206}]},{"id":456,"corners":[{"x":101,"y":188},{"x":122,"y":208},{"x":93,"y":227},{"x":71,"y":206}]},{"id":456,"corners":[{"x":101,"y":188},{"x":122,"y":208},{"x":93,"y":227},{"x":71,"y":206}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":118,"y":189},{"x":140,"y":208},{"x":112,"y":228},{"x":90,"y":207}]},{"id":456,"corners":[{"x":121,"y":246},{"x":148,"y":258},{"x":126,"y":285},{"x":99,"y":272}]},{"id":456,"corners":[{"x":122,"y":246},{"x":149,"y":258},{"x":127,"y":285},{"x":101,"y":272}]},{"id":456,"corners":[{"x":126,"y":251},{"x":153,"y":263},{"x":132,"y":291},{"x":105,"y":278}]},{"id":456,"corners":[{"x":125,"y":251},{"x":153,"y":262},{"x":132,"y":290},{"x":105,"y":277}]},{"id":456,"corners":[{"x":125,"y":250},{"x":153,"y":261},{"x":132,"y":289},{"x":105,"y":276}]},{"id":456,"corners":[{"x":125,"y":250},{"x":153,"y":261},{"x":132,"y":289},{"x":105,"y":276}]},{"id":456,"corners":[{"x":125,"y":250},{"x":153,"y":261},{"x":132,"y":289},{"x":105,"y":276}]},{"id":456,"corners":[{"x":125,"y":250},{"x":153,"y":261},{"x":132,"y":289},{"x":105,"y":276}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":132,"y":266},{"x":159,"y":274},{"x":144,"y":304},{"x":116,"y":296}]},{"id":456,"corners":[{"x":156,"y":305},{"x":185,"y":300},{"x":182,"y":334},{"x":153,"y":337}]},{"id":456,"corners":[{"x":158,"y":301},{"x":187,"y":297},{"x":184,"y":330},{"x":155,"y":334}]},{"id":456,"corners":[{"x":159,"y":298},{"x":187,"y":294},{"x":185,"y":328},{"x":156,"y":331}]},{"id":456,"corners":[{"x":160,"y":296},{"x":189,"y":292},{"x":187,"y":325},{"x":158,"y":329}]},{"id":456,"corners":[{"x":160,"y":296},{"x":188,"y":291},{"x":186,"y":325},{"x":157,"y":329}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":159,"y":297},{"x":187,"y":292},{"x":186,"y":326},{"x":157,"y":330}]},{"id":456,"corners":[{"x":224,"y":346},{"x":250,"y":334},{"x":257,"y":366},{"x":231,"y":377}]},{"id":456,"corners":[{"x":224,"y":346},{"x":250,"y":334},{"x":257,"y":366},{"x":231,"y":377}]},{"id":456,"corners":[{"x":215,"y":337},{"x":239,"y":324},{"x":248,"y":356},{"x":223,"y":368}]},{"id":456,"corners":[{"x":213,"y":338},{"x":238,"y":324},{"x":247,"y":356},{"x":222,"y":370}]},{"id":456,"corners":[{"x":212,"y":338},{"x":237,"y":325},{"x":246,"y":356},{"x":221,"y":369}]},{"id":456,"corners":[{"x":207,"y":338},{"x":231,"y":324},{"x":241,"y":356},{"x":216,"y":370}]},{"id":456,"corners":[{"x":207,"y":338},{"x":231,"y":324},{"x":241,"y":356},{"x":216,"y":370}]},{"id":456,"corners":[{"x":207,"y":338},{"x":231,"y":324},{"x":241,"y":356},{"x":216,"y":370}]},{"id":456,"corners":[{"x":207,"y":338},{"x":231,"y":324},{"x":241,"y":356},{"x":216,"y":370}]},{"id":456,"corners":[{"x":230,"y":370},{"x":251,"y":352},{"x":267,"y":381},{"x":245,"y":399}]},{"id":456,"corners":[{"x":233,"y":373},{"x":254,"y":354},{"x":271,"y":382},{"x":250,"y":401}]},{"id":456,"corners":[{"x":235,"y":372},{"x":254,"y":351},{"x":272,"y":379},{"x":252,"y":398}]},{"id":456,"corners":[{"x":236,"y":370},{"x":255,"y":349},{"x":274,"y":377},{"x":254,"y":397}]},{"id":456,"corners":[{"x":234,"y":369},{"x":252,"y":348},{"x":272,"y":373},{"x":253,"y":394}]},{"id":456,"corners":[{"x":230,"y":369},{"x":248,"y":347},{"x":268,"y":372},{"x":250,"y":394}]},{"id":456,"corners":[{"x":227,"y":370},{"x":244,"y":348},{"x":266,"y":372},{"x":248,"y":394}]},{"id":456,"corners":[{"x":226,"y":374},{"x":242,"y":350},{"x":264,"y":373},{"x":247,"y":397}]},{"id":456,"corners":[{"x":226,"y":375},{"x":242,"y":352},{"x":265,"y":374},{"x":248,"y":399}]},{"id":456,"corners":[{"x":224,"y":376},{"x":240,"y":352},{"x":263,"y":375},{"x":247,"y":399}]},{"id":456,"corners":[{"x":222,"y":377},{"x":237,"y":353},{"x":260,"y":375},{"x":244,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":220,"y":377},{"x":235,"y":353},{"x":259,"y":375},{"x":243,"y":399}]},{"id":456,"corners":[{"x":246,"y":361},{"x":257,"y":334},{"x":283,"y":353},{"x":271,"y":379}]},{"id":456,"corners":[{"x":245,"y":360},{"x":256,"y":334},{"x":283,"y":353},{"x":271,"y":379}]},{"id":456,"corners":[{"x":245,"y":360},{"x":256,"y":334},{"x":283,"y":353},{"x":271,"y":379}]},{"id":456,"corners":[{"x":245,"y":360},{"x":256,"y":334},{"x":283,"y":353},{"x":271,"y":379}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":256,"y":356},{"x":266,"y":330},{"x":294,"y":347},{"x":283,"y":373}]},{"id":456,"corners":[{"x":307,"y":281},{"x":310,"y":253},{"x":340,"y":265},{"x":335,"y":292}]},{"id":456,"corners":[{"x":307,"y":281},{"x":310,"y":253},{"x":340,"y":265},{"x":335,"y":292}]},{"id":456,"corners":[{"x":301,"y":274},{"x":304,"y":246},{"x":334,"y":257},{"x":329,"y":285}]},{"id":456,"corners":[{"x":301,"y":274},{"x":304,"y":246},{"x":334,"y":257},{"x":329,"y":285}]},{"id":456,"corners":[{"x":303,"y":264},{"x":306,"y":236},{"x":336,"y":245},{"x":333,"y":273}]},{"id":456,"corners":[{"x":302,"y":263},{"x":304,"y":236},{"x":334,"y":244},{"x":331,"y":272}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":315,"y":238},{"x":315,"y":210},{"x":345,"y":217},{"x":344,"y":246}]},{"id":456,"corners":[{"x":312,"y":182},{"x":313,"y":154},{"x":344,"y":162},{"x":342,"y":190}]},{"id":456,"corners":[{"x":313,"y":179},{"x":314,"y":151},{"x":346,"y":159},{"x":344,"y":187}]},{"id":456,"corners":[{"x":314,"y":177},{"x":316,"y":149},{"x":347,"y":157},{"x":345,"y":185}]},{"id":456,"corners":[{"x":315,"y":175},{"x":316,"y":147},{"x":348,"y":154},{"x":345,"y":183}]},{"id":456,"corners":[{"x":316,"y":175},{"x":317,"y":146},{"x":348,"y":154},{"x":346,"y":183}]},{"id":456,"corners":[{"x":317,"y":176},{"x":318,"y":147},{"x":350,"y":155},{"x":347,"y":184}]},{"id":456,"corners":[{"x":316,"y":175},{"x":317,"y":146},{"x":349,"y":154},{"x":347,"y":183}]},{"id":456,"corners":[{"x":315,"y":177},{"x":317,"y":149},{"x":348,"y":157},{"x":346,"y":186}]},{"id":456,"corners":[{"x":315,"y":177},{"x":317,"y":149},{"x":348,"y":157},{"x":346,"y":186}]},{"id":456,"corners":[{"x":316,"y":178},{"x":317,"y":149},{"x":349,"y":157},{"x":347,"y":186}]},{"id":456,"corners":[{"x":316,"y":178},{"x":318,"y":149},{"x":349,"y":157},{"x":347,"y":187}]},{"id":456,"corners":[{"x":316,"y":179},{"x":317,"y":151},{"x":348,"y":158},{"x":347,"y":187}]},{"id":456,"corners":[{"x":316,"y":179},{"x":317,"y":151},{"x":348,"y":158},{"x":347,"y":187}]},{"id":456,"corners":[{"x":316,"y":179},{"x":317,"y":151},{"x":348,"y":158},{"x":347,"y":187}]},{"id":456,"corners":[{"x":317,"y":186},{"x":318,"y":158},{"x":350,"y":166},{"x":347,"y":194}]},{"id":456,"corners":[{"x":317,"y":187},{"x":318,"y":158},{"x":350,"y":167},{"x":347,"y":195}]},{"id":456,"corners":[{"x":317,"y":188},{"x":319,"y":159},{"x":350,"y":168},{"x":348,"y":196}]},{"id":456,"corners":[{"x":317,"y":188},{"x":319,"y":160},{"x":350,"y":167},{"x":348,"y":197}]},{"id":456,"corners":[{"x":317,"y":189},{"x":319,"y":161},{"x":350,"y":169},{"x":348,"y":197}]},{"id":456,"corners":[{"x":317,"y":190},{"x":318,"y":161},{"x":350,"y":169},{"x":348,"y":198}]},{"id":456,"corners":[{"x":318,"y":191},{"x":319,"y":163},{"x":351,"y":171},{"x":348,"y":199}]},{"id":456,"corners":[{"x":317,"y":192},{"x":319,"y":164},{"x":350,"y":172},{"x":348,"y":201}]},{"id":456,"corners":[{"x":317,"y":194},{"x":318,"y":165},{"x":350,"y":173},{"x":347,"y":202}]},{"id":456,"corners":[{"x":318,"y":193},{"x":319,"y":164},{"x":350,"y":172},{"x":348,"y":201}]},{"id":456,"corners":[{"x":317,"y":193},{"x":318,"y":165},{"x":350,"y":173},{"x":347,"y":202}]},{"id":456,"corners":[{"x":316,"y":194},{"x":318,"y":166},{"x":349,"y":174},{"x":347,"y":202}]},{"id":456,"corners":[{"x":314,"y":194},{"x":316,"y":166},{"x":347,"y":174},{"x":345,"y":203}]},{"id":456,"corners":[{"x":316,"y":193},{"x":318,"y":165},{"x":349,"y":173},{"x":346,"y":201}]},{"id":456,"corners":[{"x":317,"y":192},{"x":319,"y":164},{"x":350,"y":172},{"x":348,"y":201}]},{"id":456,"corners":[{"x":317,"y":192},{"x":319,"y":164},{"x":350,"y":172},{"x":348,"y":201}]},{"id":456,"corners":[{"x":316,"y":193},{"x":317,"y":164},{"x":349,"y":172},{"x":346,"y":201}]},{"id":456,"corners":[{"x":316,"y":192},{"x":317,"y":163},{"x":349,"y":172},{"x":346,"y":200}]},{"id":456,"corners":[{"x":317,"y":192},{"x":318,"y":163},{"x":350,"y":171},{"x":347,"y":200}]},{"id":456,"corners":[{"x":317,"y":192},{"x":318,"y":163},{"x":350,"y":171},{"x":347,"y":200}]},{"id":456,"corners":[{"x":316,"y":193},{"x":317,"y":164},{"x":348,"y":172},{"x":346,"y":201}]},{"id":456,"corners":[{"x":314,"y":192},{"x":316,"y":164},{"x":347,"y":172},{"x":345,"y":201}]}]
+
+                anotMaster.drawCorners(markers)
+            }
+
+            setTimeout(initFakeData, 250)
+
+
+            var modelSize = 35.0; //millimeters
+            detector = new AR.Detector();
+            posit = new POS.Posit(modelSize, canvas.width);
+            anotMaster.posit = posit;
+        }
+        setupAppParams();
+        return;
+    }
+
+
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (navigator.getUserMedia){
+
+        function successCallback(stream){
+            if (window.webkitURL) {
+                video.src = window.webkitURL.createObjectURL(stream);
+            } else if (video.mozSrcObject !== undefined) {
+                video.mozSrcObject = stream;
+            } else {
+                video.src = stream;
+            }
+        }
+
+        function errorCallback(error){
+        }
+
+        navigator.getUserMedia({video: true}, successCallback, errorCallback);
+
+        var modelSize = 35.0; //millimeters
+
+        detector = new AR.Detector();
+        posit = new POS.Posit(modelSize, canvas.width);
+
+        requestAnimationFrame(tick);
+    }
+}
+
+function tick(){
+    requestAnimationFrame(tick);
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA){
+        snapshot();
+
+        var markers = detector.detect(imageData);
+        if ( markers == null ) {
+            return;
+        }
+        drawCorners(markers);
+        drawId(markers);
+    }
+}
+
+function snapshot(){
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+var  counter = 0
+function drawCorners(markers){
+    var corners, corner, i, j;
+
+
+    if ( markers == null ) {
+        return;
+    }
+    // console.log('drawing markers', markers.length)
+    if ( counter == 0  ) {
+        console.log('drawing markers', JSON.stringify(markers))
+    }
+    counter++
+    if ( counter  >50 ) {
+        counter =0
+    }
+
+    context.lineWidth = 3;
+
+    for (i = 0; i !== markers.length; ++ i) {
+        corners = markers[i].corners;
+
+        context.strokeStyle = "red";
+        context.beginPath();
+
+        for (j = 0; j !== corners.length; ++j) {
+            corner = corners[j];
+            context.moveTo(corner.x, corner.y);
+            corner = corners[(j + 1) % corners.length];
+            context.lineTo(corner.x, corner.y);
+        }
+
+        context.stroke();
+        context.closePath();
+
+        context.strokeStyle = "green";
+        context.strokeRect(corners[0].x - 2, corners[0].y - 2, 4, 4);
+
+    }
+    $('#holderAnnotations').empty();
+    anotMaster.clearAnnotations();
+    for (i = 0; i < markers.length; i++) {
+        //   try {
+        var marker = markers[i]
+        //continue;
+        corners = marker.corners;
+        var corners4 = JSON.parse(JSON.stringify(corners))
+        var badMarker = false;
+        for (y = 0; y < corners.length; ++y) {
+            corner = corners[y];
+
+            corner.x = corner.x - (canvas.width / 2);
+            corner.y = (canvas.height / 2) - corner.y;
+            if (Config.removeInvalidMarkers) {
+                if (Math.abs(corner.x) > canvas.width * 2) {//TODO move to aruco
+                    badMarker = true
+                }
+                if (Math.abs(corner.y) > canvas.height * 2) {//TODO move to aruco
+                    badMarker = true
+                }
+            }
+        }
+
+        if (badMarker) {
+            return;
+        }
+
+        var pose = posit.pose(corners);
+        var input = {pose: pose, marker: marker, id: marker.id, corners: corners4, rotations: pose.bestRotation}
+        anotMaster.drawMarkerAnnotation(input)
+        if ( Config.addToCalibrator) {
+            //marker.corners = corners4;
+            //calibrator.addCalibration(input, 456)
+        }
+        continue;
+
+
+        //  console.log(pose)
+        updatePose("pose1"+i, pose.bestError, pose.bestRotation, pose.bestTranslation, marker.id, corners4);
+        // updatePose("pose2"+i, pose.alternativeError, pose.alternativeRotation, pose.alternativeTranslation, marker.id, corners4);
+
+
+        //  } catch ( e ) {
+        //       console.error('error')
+        //       throw e
+        //   }
+    }
+}
+
+anotMaster.drawCorners = drawCorners;
+
+function updatePose(id, error, rotation, translation, divId, corners){
+    var yaw = -Math.atan2(rotation[0][2], rotation[2][2]);
+    var pitch = -Math.asin(-rotation[1][2]);
+    var roll = Math.atan2(rotation[1][0], rotation[1][1]);
+
+
+    drawPoint(translation[0] | 0,
+                    translation[1] | 0,
+                    translation[2] | 0,
+            Math.round( yaw * 180.0/Math.PI),
+            Math.round(-pitch * 180.0/Math.PI),
+            Math.round(0+(roll  )* 180.0/Math.PI),
+            640,480, rotation, corners)
+
+
+    var d = document.getElementById(id);
+    if ( d == null ) {
+        return;
+    }
+
+
+
+    d.innerHTML =
+            " id: " + divId
+            + "<br/>" +
+            " error: " + error
+            + "<br/>"
+            + " x: " + (translation[0] | 0)
+            + " y: " + (translation[1] | 0)
+            + " z: " + (translation[2] | 0)
+            + "<br/>"
+            + " yaw: " + Math.round(-yaw * 180.0/Math.PI)
+            + " pitch: " + Math.round(-pitch * 180.0/Math.PI)
+            + " roll: " + Math.round(roll * 180.0/Math.PI);
+};
+
+function drawId(markers){
+    var corners, corner, x, y, i, j;
+
+    context.strokeStyle = "blue";
+    context.lineWidth = 1;
+
+
+    for (i = 0; i !== markers.length; ++ i){
+        corners = markers[i].corners;
+
+        x = Infinity;
+        y = Infinity;
+
+        for (j = 0; j !== corners.length; ++ j){
+            corner = corners[j];
+
+            x = Math.min(x, corner.x);
+            y = Math.min(y, corner.y);
+        }
+
+        context.strokeText(markers[i].id, x, y)
+    }
+}
+
+window.onload = onLoad;
+</script>
+
+</head>
+
+<body style="font-family: monospace;">
+
+<center>
+    <div style="margin: 10px;"><strong>-= Augmented Reality Marker Detector =-</strong></div>
+
+    <div style="width:640px; height:480px; background-color: #d2d2d2" id="candvasBackboard" >
+
+
+
+        <video id="video" autoplay="true" style="display:none;"></video>
+        <canvas id="canvas" style="width:640px; height:480px; ">
+        </canvas>
+
+        <div style="width:640px; height:480px;  top: 35px; position: absolute;"
+             id="canvasBackboard" >
+            2222
+            <div id="outerContainer" style="background-color: #f2f2f2; ">
+                <div id="innerContainer" style="
+font-size: 1em;
+padding: 0%;
+background-color: #FFFCCC;
+position: absolute;
+ opacity: 0">
+                    ">
+                    <input />
+                    Transform this!
+                    <p></p>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div id="holderAnnotations" />
+
+    </div>
+
+
+
+
+
+    <div style="margin: 15px;"><strong>Powered by <a href="http://code.google.com/p/js-aruco/">js-aruco</a></strong></div>
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose1"></div>
+    </div>
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose2"></div>
+    </div>
+    <br />
+    <div style="clear: both;" />
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose10"></div>
+    </div>
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose20"></div>
+    </div>
+    <br />
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose11"></div>
+    </div>
+    <div style="float: left; border: solid 1px black;">
+        <div id="pose21"></div>
+    </div>
+
+
+
+
+</center>
+
+
+<div class="Center-Container" style="width:200px; height:480px; background-color: #FF0000 " >
+    <!--<div class="Center-Block Absolute-Center"  style="  background-color: #FFF000 " >
+        <h4 class="Title">Absolute Center,<br>Within Container.</h4>
+        <p>          This box is absolutely centered, horizontally and vertically, within its container using <br><code>position: relative</code>
+        </p>
+    </div>
+-->
+    <div class="container"  style="  width:350px;   background-color: #0000FF " >
+        <div>
+            <h4 class="Title">Absolute Center,<br>Within Container.</h4>
+            <p>          This box is absolutely centered, horizontally and vertically, within its container using <br><code>position: relative</code>
+            </p>
+        </div>
+    </div>
+    <p></p></div>
+
+
+
+<div id="divBottom" ></div>
+
+</body>
+
+<style>
+    .container_{   width: 300px; }
+    .column-left{ float: left; width: 33%; }
+    .column-right{ float: right; width: 33%; }
+    .column-center{ display: inline-block; width: 33%; }
+</style>
+
+<script id="taskTemplate" type="text/template">
+
+    <div class="container_"   >
+        <!--
+            <div class="column-center" >Column center <button class="edit" >Edit</button>  <button class="delete" >Delete</button></div>
+            <div class="column-left" style="xborder: solid" >Column left  <%= title %></div>
+            <div class="column-right" style="xborder: solid" >Column right<br />
+                <img src="arrow.png" width="100" /> </div>
+        <!-- -->
+        <!--
+
+        -->
+    </div>
+    <!--
+<img src="closet.jpg" width="100" />
+-->
+    <img src="closet.jpg" width="100" />
+    456545
+
+</script>
+
+
+
+<script id="closetX" type="text/template">
+
+    <div class="container_"   >
+        <!--
+            <div class="column-center" >Column center <button class="edit" >Edit</button>  <button class="delete" >Delete</button></div>
+            <div class="column-left" style="xborder: solid" >Column left  <%= title %></div>
+            <div class="column-right" style="xborder: solid" >Column right<br />
+                <img src="arrow.png" width="100" /> </div>
+        <!-- -->
+        <!--
+
+        -->
+    </div>
+    <!--
+<img src="closet.jpg" width="100" />
+-->
+    <img src="closet.jpg" width="100" />
+    456545
+
+</script>
+
+
+
+<script id="fireplaceX" type="text/template">
+
+    <div class="container_"   >
+        <!--
+            <div class="column-center" >Column center <button class="edit" >Edit</button>  <button class="delete" >Delete</button></div>
+            <div class="column-left" style="xborder: solid" >Column left  <%= title %></div>
+            <div class="column-right" style="xborder: solid" >Column right<br />
+                <img src="arrow.png" width="100" /> </div>
+        <!-- -->
+        <!--
+
+        -->
+    </div>
+    <!--
+<img src="closet.jpg" width="100" />
+-->
+    <img src="fireplace.jpg" width="1300" />
+    456545
+
+</script>
+
+</html>

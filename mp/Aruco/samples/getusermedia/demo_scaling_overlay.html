@@ -1,0 +1,79 @@
+<html>
+
+<head>
+<title>Augmented Reality Marker Detector</title>
+
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script type="text/javascript" src="cv.js"></script>
+<script type="text/javascript" src="aruco.js"></script>
+
+<script type="text/javascript" src="posit1.js"></script>
+<script type="text/javascript" src="svd.js"></script>
+
+<script type="text/javascript" src="addPanel.js"></script>
+
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/Three.js"></script>
+<script type="text/javascript" src="js/underscore.js"></script>
+
+<script type="text/javascript" src="js/math.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="theme.css">
+
+<script>
+    window.template = function(id){
+        return _.template( $('#'+id).html());
+    }
+
+    window.template2 = function(templateId, idStore, values){
+        var compiled =  _.template( $('#'+templateId).html());
+        if ( values == null ) values = {}
+        var templateHTML =  compiled(values)
+        $('#'+idStore).html(templateHTML)
+    }
+
+    setTimeout(function update() {
+        window.template2('taskTemplate', 'divBottom', {title:'dog'})
+    },500)
+
+</script>
+
+
+</head>
+
+<body style="font-family: monospace;">
+
+
+<div id="divBottom" style="scaleX(5); thransform: scale(5,5)" />
+
+</body>
+
+<style>
+    .container{   width: 300px; }
+    .column-left{ float: left; width: 33%;
+        border-right:   5px solid red;
+        border:   5px solid red;
+        border-style: solid;
+        border-top: thick double #ff0000;
+    }
+    .column-right{ float: right; width: 33%;
+        border: dashed;
+    }
+    .column-center{ display: inline-block; width: 33%; }
+</style>
+
+<script id="taskTemplate" type="text/template">
+    <%= title %> <button class="edit" >Edit</button>
+    <div class="container" style="" >
+        <div class="column-center" style="border: solid">Column center</div>
+        <div class="column-left">Column left</div>
+        <div class="column-right">Column right<br />
+            <img src="arrow.png" width="100" /> </div>
+    </div>
+    <button class="delete" >Delete</button>
+</script>
+
+
+</html>

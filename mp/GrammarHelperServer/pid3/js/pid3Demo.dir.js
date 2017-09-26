@@ -361,15 +361,19 @@
                 quickCrudHelper = quickCrudHelper.create();
                 quickCrudHelper.loadConfig(cfg)
                 var h = quickCrudHelper;
-                h.showTitle('List Boost-->');
+                h.showTitle('Tags/Prompts');
 
                 //asdf.g
 
                 x.items = x.items.slice(0, 10)
                 //x.items = [];
 
+                var basePIDServerUrl = 'http://'+window.location.hostname+':'+6016
                 //h.connectToInMemory(x.items)
-                h.connectToQuickRest('http://127.0.0.1:6016/api/tags')
+                h.connectToQuickRest(basePIDServerUrl+'/api/tags')
+                h.connectToQuickRest(basePIDServerUrl+'/api/tags')
+
+               // debugger
 
                 h.quickFormHelper.addTextInput('name', 'Name')
                 h.quickFormHelper.addTextInput('desc', 'Desc')

@@ -126,7 +126,7 @@
 
       element.html($compile(html)(scope));
       scope.element = element;
-    };
+    }; 
 
     $scope.goToPage = function (page) {
       $scope.vm.config.restHelper.pageGoTo(page);
@@ -139,6 +139,7 @@
       return compareTo == page;
     }
     $scope.morePages = true;
+    $scope.morePages = false;
     $scope.goToNextPage = function (page) {
       $scope.vm.config.restHelper.pageNext();
     }

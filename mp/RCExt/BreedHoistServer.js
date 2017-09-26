@@ -22,20 +22,60 @@ var HoistServer = require('./HoistServer').HoistServer
 var RC_HelperFxs = require('./supporting/TestRCScripts.js').RC_HelperFxs
 var Workflow_ImportVidsAgain = require('./supporting/Workflow_ImportVidsAgain.js').Workflow_ImportVidsAgain
 
+var FileExtractor = shelpers.FileExtractor;
 
+
+//Running "source ~/.nvm/nvm.sh; nvm use 0; forever start --uid BreedHoistServer.js -c "--max_old_space_size=1800" -a /opt/nodejs/rcext/mp/RCExt/BreedHoistServer.js" on host "localhost".
+//source ~/.nvm/nvm.sh; nvm use 0;
+// // node  /opt/nodejs/rcext/mp//RCExt/BreedHoistServer.js -c "--max_old_space_size=1800"
+
+
+if ( sh.isWin() ) {
+
+    sh.catchErrors(function onSkip(err) {
+        console.error(
+            'test against', err
+        )
+        if (err && err.message &&
+            err.message.startsWith('EPERM') && err.message.includes('h:\\med')) {
+            return true;
+        }
+
+        if (err && err.message &&
+            err.message.includes(' ENOTEMPTY: ') && err.message.includes('rmdirSync')) {
+            console.error('ignore this ')
+            return true;
+        }
+        debugger
+        //return true;
+    })
+
+}
+
+
+sh.storeLogOutput(__filename)
+
+sh.storeErrorsInLogFile(__filename);
+
+
+
+console.error('test console', sh.n, sh.n, sh.n)
+console.log('test console', sh.n, sh.n, sh.n)
+
+//sh.x()
 function DLHoistServer() {
- 
+
     var p = DLHoistServer.prototype;
     p = this;
     var self = this;
     self.data = {}
 
-    self.data.filePathTestConfig =  __dirname+'/'+'testData/' + 'test_dl_manifest.json'
+    self.data.filePathTestConfig = __dirname + '/' + 'testData/' + 'test_dl_manifest.json'
 
-    var dirManifest = __dirname+'/'+'manifests/'
+    var dirManifest = __dirname + '/' + 'manifests/'
     sh.makePathIfDoesNotExist(dirManifest);
 
-  //  console.error(self.data.filePathTestConfig)
+    //  console.error(self.data.filePathTestConfig)
     //sh.exit(self.data.filePathTestConfig)
 
     var superInstance = new HoistServer(self)
@@ -43,26 +83,36 @@ function DLHoistServer() {
     p.init = function init(config) {
         config = sh.dv(config, {});
         config.port = sh.dv(config.port, 6022)
-        config.portSocket = sh.dv(config.portSocket,  config.port+2);
+        config.portSocket = sh.dv(config.portSocket, config.port + 2);
         self.settings = config;
 
-        sh.mkdirp(__dirname + '/configs')
+        sh.mkdirp(__dirname
+            + '/configs')
         // sh.mkdirp(__dirname + '/configUploads')
         self.createHoistServer();
         self.app.use(express.static(
-            sh.fs.join(__dirname,'outputFileLists')));
+            sh.fs.join(__dirname, 'outputFileLists')));
         self.startSocket();
+
+
+        self.checkAutoResume();
+        //check auto start ...
     }
+
+    p.checkAutoResume = function checkAutoResume() {
+        return;
+    }
+
 
     p.createHoistServer2 = function createHoistServer2(config) {
         //  sdf.g
-        self.app.get('/valid', function onReadFile (req, res) {
+        self.app.get('/valid', function onReadFile(req, res) {
             var name = req.query.name;
             //var content = sh.readFile(dirSaves+name+'.html')
             res.send('connected');
         });
 
-        self.app.get('/hostname', function onHostName (req, res) {
+        self.app.get('/hostname', function onHostName(req, res) {
             var name = req.query.name;
             var os = require("os");
             var hostname = os.hostname().toLowerCase();
@@ -70,16 +120,16 @@ function DLHoistServer() {
         });
 
 
-        self.app.get('/useConfig', function onUseConfig (req, res) {
+        self.app.get('/useConfig', function onUseConfig(req, res) {
             var taskName = req.query.taskName;
             var fileManifest = sh.fs.makePath(__dirname, 'manifests', taskName)
             console.log('---')
             self.proc('run config with', fileManifest);
             sh.fs.exists(fileManifest, 'manifest must exists')
             console.log('waht file?', fileManifest);
-            if ( sh.fs.notFound(fileManifest)  ) {
-                console.error('error','dude')
-                res.send(sh.json.error('not found '+ taskName));
+            if (sh.fs.notFound(fileManifest)) {
+                console.error('error', 'dude')
+                res.send(sh.json.error('not found ' + taskName));
                 return;
             }
 
@@ -88,7 +138,9 @@ function DLHoistServer() {
 
             var fileConfig = sh.getFileName(fileConfigCp)
 
-            if ( req.query.run != 'false') {
+
+            if (req.query.run != 'false') {
+                self.data.configFile.set('lastFileRun', fileConfig)
                 self.runFromConfigFile(fileConfig);
                 res.send('run');
             }
@@ -99,14 +151,14 @@ function DLHoistServer() {
         });
 
 
-        self.app.get('/useConfig', function onUseConfig (req, res) {
+        self.app.get('/useConfig', function onUseConfig(req, res) {
             var taskName = req.query.taskName;
             var fileManifest = sh.fs.makePath(__dirname, 'manifests', taskName)
             self.proc('run config with', fileManifest);
             sh.fs.exists(fileManifest, 'manifest must exists')
             console.log('what', fileManifest);
-            if ( sh.fs.notFound(fileManifest)  ) {
-                res.send(sh.json.error('not found '+ taskName));
+            if (sh.fs.notFound(fileManifest)) {
+                res.send(sh.json.error('not found ' + taskName));
                 return;
             }
 
@@ -115,7 +167,7 @@ function DLHoistServer() {
 
             var fileConfig = sh.getFileName(fileConfigCp)
 
-            if ( req.query.run != 'false') {
+            if (req.query.run != 'false') {
                 self.runFromConfigFile(fileConfig);
                 res.send('run');
             }
@@ -124,55 +176,180 @@ function DLHoistServer() {
             res.send('moved');
 
         });
-
-
-        self.app.get('/getStatus', function onGetStatus (req, res) {
-            var output = onGetStatus2(false)
-            res.send(output);
+        self.app.get('/testConfig', function onUseConfig(req, res) {
+            self.testRemotely()
+            res.send('started ' + sh.timestamp());
         });
 
 
+        function defineJSONSwitchesConfig() {
+
+            function JSONConfigFileHelper() {
+                var p = JSONConfigFileHelper.prototype;
+                p = this;
+                var self = this;
+                self.data = {}
+                p.init = function init(config) {
+                    self.settings = sh.dv(config, {});
+                    if (self.settings.name) {
+                        //e && self.settings.file == null
+                        self.settings.file = sh.fs.trash() + sh.fs.addFileExt(self.settings.name, '.json')
+                    }
+                    self.proc('file', self.settings.file)
+
+                    //sh.x()
+                    self.readFile();
+                };
+                p.set = function setByProp(prop, value) {
+                    self.data.file[prop] = value;
+                    self.saveFile()
+                };
+                p.get = function getByProp(prop) {
+                    var val = self.data.file[prop]
+                    return val
+                };
+
+                p.saveFile = function saveFile() {
+                    sh.writeJSONFile(self.settings.file, self.data.file);
+                    if (self.settings.fxSave) self.settings.fxSave();
+                }
+
+                p.readFile = function readFile() {
+                    self.data.file = sh.readJSONFile(self.settings.file, {}, true)
+                    return self.data.file;
+                }
+
+                p.proc = function debugLogger() {
+                    if (self.silent == true) {
+                        return;
+                    }
+                    sh.sLog(arguments);
+                };
+            }
+
+            var j = new JSONConfigFileHelper();
+            var config = {};
+            //config.file = __dirname + '/' + 'recent_tasks.json';
+            config.name = 'RCConfig'
+
+            j.init(config);
+            var testVal = Math.random()
+            j.set('test', testVal)
+            sh.assert(j.get('test'), testVal)
+            j.readFile();
+            sh.assert(j.get('test'), testVal)
+            self.data.configFile = j;
+
+            self.app.get('/getConfigFile', function getConfigFile(req, res) {
+                res.sendfile(self.data.configFile);
+            });
+
+            self.app.get('/clearConfigFileHistory', function clearConfigFileHistory(req, res) {
+                var body = req.query;
+                var prop = body.prop;
+                var val = body.val;
+                self.proc('removingTasls', body.file, 'leaf', sh.fs.leaf(body.file)); //, 'to', val)
+                //  j.set(prop, val)
+                var dirLogs = sh.fs.getTrashDir() + 'dl.logs/';
+                var existingfile = sh.fs.join(dirLogs,
+                    sh.fs.leaf(body.file) + '.runBreed.TXRun.json');
+                self.proc('deelte file', existingfile)
+                sh.fs.delete(existingfile, true)
+                res.send('removed');
+            });
+
+
+            self.app.get('/setConfigFileProp', function setConfigFileProp(req, res) {
+                var body = req.query;
+                var prop = body.prop;
+                var val = body.val;
+                self.proc('removingTasls', prop, 'to', val)
+                j.set(prop, val)
+                res.send('removed');
+            });
+            var args = process.argv.slice(2);
+            var reRunBreedOnRestart = j.get('reRunBreedOnRestart')
+            if (reRunBreedOnRestart === true || reRunBreedOnRestart === "true") {
+                //self.data.configFile
+                var lastFileRun = self.data.configFile.get('lastFileRun');
+                if (lastFileRun) {
+
+                    if ( args[0] == 'false ') {
+                        console.log('skip setup reap')
+                        return;
+                    }
+                    return;
+                    self.runFromConfigFile(lastFileRun);
+                }
+            }
+
+
+        }
+
+        defineJSONSwitchesConfig();
+
+        self.app.get('/getStatus', function onGetStatus(req, res) {
+            var output = onGetStatus2()
+            res.send(output);
+        });
+
         sh.defineExitware(self.app)
 
-       /* self.app.get('/exitQuit', function onExit (req, res) {
-            process.exit();
-            //var output = onGetStatus2(false)
-            res.send(5);
-        });*/
+        /* self.app.get('/exitQuit', function onExit (req, res) {
+         process.exit();
+         //var output = onGetStatus2(false)
+         res.send(5);
+         });*/
 
 
-        function onGetStatus2 ( onlyProgress ) {
+        function onGetStatus2(onlyItemsInProgress) {
 
             var items = self.data.instance.items;
             var items2 = [];
-            var status  = {};
+            var status = {};
             items2.push(status)
 
-            count=0
-            countUnstarted=0
+            count = 0
+            countUnstarted = 0
             countDone = 0
             countProgress = 0;
 
-            sh.each(items, function filterProp(k,item) {
+
+            sh.each(items, function filterProp(k, item) {
                 count++;
-                if ( item.globalStatus == null) {
+
+                var isDone = false;
+
+                if (item.globalStatus == null) {
                     countUnstarted++;
                 }
-                else if ( item.globalStatus.startsWith('done') ) {
+                else if (item.globalStatus.startsWith('done')) {
+                    isDone = true
                     countDone++;
                 }
-                else  {
+                else if (item.globalStatus.startsWith('finishedAlready')) {
+                    isDone = true
+                    countDone++;
+                }
+                else {
                     countProgress++;
                 }
 
-                if ( onlyProgress ) {
-                    if (item.globalStatus == null || item.globalStatus.startsWith('done')) {
+                if (onlyItemsInProgress) {
+                    if (isDone == true || item.globalStatus == null || item.globalStatus.startsWith('done')) {
                         return;
                     }
                 }
-                var filterProps = ['name2','title', 'size', 'dirRemoteMega', 'urlTorrent', 'workerId',
+                var filterProps = ['name2', 'title', 'size', 'dirRemoteMega',
+                    'nameTorrent',
+                    /*'urlTorrent', */'workerId',
                     'globalStatus']
                 var itemFiltered = sh.filterProps(item, filterProps)
+                itemFiltered.globalStatus += ' ' + sh.paren(sh.time.hrTime(item.globalStatusTime))
+                itemFiltered.totalTime = sh.time.hrTime(item.timeQItemStart)
+                if (item.bail) {
+                    itemFiltered.bail = item.bail;
+                }
                 items2.push(itemFiltered)
 
             })
@@ -190,14 +367,17 @@ function DLHoistServer() {
 
         }
 
-        self.app.get('/getStatus2',  function onGetStatusB(req, res) {
+        self.app.get('/getStatus_ofInProgress', function onGetStatusB(req, res) {
 
-            var output = onGetStatus2()
+            console.log('')
+            console.log('ok')
+            var output = onGetStatus2(true)
 
+            console.log('status result..')
+            //console.log(output)
             res.send(output);
 
         });
-
 
         self.fxFilterJSON = function onRemoveJSON(json) {
             delete json['instances']
@@ -233,7 +413,6 @@ function DLHoistServer() {
                 // i.run(innerConfig);
 
 
-
             }, 2200);
 
 
@@ -251,12 +430,12 @@ function DLHoistServer() {
             var t = self.tests.t;
             var t2 = t.clone('test an example command');
             var urls = self.tests.urls;
-            t2.getR(urls.test).with({text:'test', rate:20}).bodyHas('status').notEmpty();
+            t2.getR(urls.test).with({text: 'test', rate: 20}).bodyHas('status').notEmpty();
             //t2.getR(urls.play).with({text:'play', rate:20}).bodyHas('status').notEmpty();
 
             t2.wait(1)
 
-            t2.getR(urls.stop).with({text:'play', rate:20}).bodyHas('status').notEmpty();
+            t2.getR(urls.stop).with({text: 'play', rate: 20}).bodyHas('status').notEmpty();
             //t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig7', rate:20}).bodyHas('error').notEmpty();
             //t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig2'}).bodyHas('name').notEmpty();
 
@@ -271,6 +450,7 @@ function DLHoistServer() {
 
         }
     }
+
     defineTestingMethods();
 
     function defineSocketMethods() {
@@ -290,72 +470,75 @@ function DLHoistServer() {
             io.sockets.on('connection', function (socket) {
                 console.log('new connnnn')
                 self.pSocket = socket;
-                socket.emit('news', { hello: 'world' });
+                socket.emit('news', {hello: 'world'});
                 socket.on('my other event', function (data) {
                     console.log(data);
                 });
                 /*socket.on('chat message', function (data) {
                  console.log(data);
                  });*/
-                socket.on('chat message', function(msg){
+                socket.on('chat message', function (msg) {
                     io.emit('chat message', msg);
                 });
 
                 //sdf.g
 
-                socket.on('runcmd', function onRunCmd(data){
-                    self.proc('what is command', data.cmd, sh.toJSONString(data) )
+                socket.on('runcmd', function onRunCmd(data) {
+                    self.proc('what is command', data.cmd, sh.toJSONString(data))
                     //  self.proc('cmd no match', data)
-                    self.handleSocket(data, function onFinished (a,b,c) {
+                    self.handleSocket(data, function onFinished(a, b, c) {
                         var result = {}
-                        result.a = a; result.b = b; result.c = c;
-                        if ( data.noreturn != true  ) {
+                        result.a = a;
+                        result.b = b;
+                        result.c = c;
+                        if (data.noreturn != true) {
                             var str = data.cmd + '' + '_results'
                             console.log('str', str)
                             io.emit(str, result);
-                        };
+                        }
+                        ;
                     })
                     return
                 });
 
 
-                socket.on('getLocalFiles', function onGetLocalFiles(data){
-                    self.proc('what is command', data.cmd, sh.toJSONString(data) )
+                socket.on('getLocalFiles', function onGetLocalFiles(data) {
+                    self.proc('what is command', data.cmd, sh.toJSONString(data))
                     /*//  self.proc('cmd no match', data)
-                    self.handleSocket(data, function onFinished (a,b,c) {
-                        var result = {}
-                        result.a = a; result.b = b; result.c = c;
-                        if ( data.noreturn != true  ) {
-                            var str = data.cmd + '' + '_results'
-                            console.log('str', str)
-                            io.emit(str, result);
-                        };
-                    })*/
-                    var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
+                     self.handleSocket(data, function onFinished (a,b,c) {
+                     var result = {}
+                     result.a = a; result.b = b; result.c = c;
+                     if ( data.noreturn != true  ) {
+                     var str = data.cmd + '' + '_results'
+                     console.log('str', str)
+                     io.emit(str, result);
+                     };
+                     })*/
+                    var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists', 'my' + '.txt')
                     var dirOutput = sh.fs.getDir(fileOutput)
                     sh.fs.mkdirp(dirOutput)
                     RC_HelperFxs.listFilesInDirectories(fileOutput, function onDone(fileOutput, lite) {
                         //console.error(lite)
                         self.proc('file output', fileOutput);
                         var content = sh.readFile(fileOutput)
-                       // onResultOfcall(content)
+                        // onResultOfcall(content)
                         socket.emit('getLocalFiles_results', content);
                         //socket.broadcast.emit('window.invoke', x); 
-                    }, null);
-                    
+                    }, null, data.withSizes);
+
                     return
                 });
 
 
-                socket.on('importRecFile', function onImportRecFiles(data){
-                    self.proc('what is command', data.cmd, data.length )
-                   // var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
-                 //   var dirOutput = sh.fs.getDir(fileOutput)
-                   // sh.fs.mkdirp(dirOutput)
+                socket.on('importRecFile', function onImportRecFiles(data) {
+                    self.proc('what is command', data.cmd, data.length)
+                    // var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
+                    //   var dirOutput = sh.fs.getDir(fileOutput)
+                    // sh.fs.mkdirp(dirOutput)
                     Workflow_ImportVidsAgain.importRecFile(data, function onDone(fileOutput, lite) {
                         //console.error(lite)
                         self.proc('file output', fileOutput);
-                       // var content = sh.readFile(fileOutput)
+                        // var content = sh.readFile(fileOutput)
                         // onResultOfcall(content)
                         socket.emit('importRecFile_results', fileOutput);
                         //socket.broadcast.emit('window.invoke', x);
@@ -365,17 +548,16 @@ function DLHoistServer() {
                 });
 
 
-                socket.on('uploadAndRun', function onUploadAndRun(data){
+                socket.on('uploadAndRun', function onUploadAndRun(data) {
                     sh.throwIf(data.name == null, 'need a name for file')
                     sh.throwIfNull(data.contents, 'need contents for file')
-                    self.proc('what is command', data.cmd, data.length )
+                    self.proc('what is command', data.cmd, data.length)
                     // var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists','my'+'.txt' )
                     var fileManifest = sh.fs.join(dirManifest, data.name)
                     sh.writeFile(fileManifest, data.contents);
-                    socket.emit('uploadAndRun'+'_results', 'it was written');
+                    socket.emit('uploadAndRun' + '_results', 'it was written');
                     return;
                 });
-
 
 
                 socket.on('window.invoke', function (x) {
@@ -388,35 +570,35 @@ function DLHoistServer() {
             self.http = http;
         }
 
-        var dirCrypto = __dirname + '/'+'../'+'../'
+        var dirCrypto = __dirname + '/' + '../' + '../'
 
         function defineCMD() {
             p.handleSocket = function handleSocket(data, fx) {
                 console.log(data.cmd, 'cmd')
-                if ( data.cmd == 'testit'){
-                    self.cmds.sendStatus('test it ok '+sh.getTimeStamp())
+                if (data.cmd == 'testit') {
+                    self.cmds.sendStatus('test it ok ' + sh.getTimeStamp())
                     //self.cmds.listids(data, fx)
                 }
-                if ( data.cmd == 'searchpb'){
+                if (data.cmd == 'searchpb') {
                     self.cmds.searchPb(data, fx)
                 }
-                if ( data.cmd == 'getFileList'){
+                if (data.cmd == 'getFileList') {
                     self.cmds.getFileList(data, fx)
                 }
-                if ( data.cmd == 'listids'){
+                if (data.cmd == 'listids') {
                     self.cmds.listids(data, fx)
                 }
-                if ( data.cmd == 'makemani') {
+                if (data.cmd == 'makemani') {
                     console.log('..dfsd.')
-                    var dirManifest = __dirname+'/'+'manifests/'
+                    var dirManifest = __dirname + '/' + 'manifests/'
                     sh.makePathIfDoesNotExist(dirManifest);
 
                     sh.throwIfNull(data.title, 'need a title')
 
-                    if ( data.file) {
+                    if (data.file) {
 
                     }
-                    if ( data.tor ) {
+                    if (data.tor) {
                         var tors = [data.tor]
                     }
                     sh.writeJSONFile(dirManifest + data.title, tors)
@@ -426,6 +608,7 @@ function DLHoistServer() {
                 return;
             };
         }
+
         defineCMD()
 
 
@@ -459,18 +642,17 @@ function DLHoistServer() {
                 instance.init(config)
 
 
-
-
-
             }
 
         }
+
         defineCmds();
     }
+
     defineSocketMethods();
 
     p.proc = function debugLogger() {
-        if ( self.silent == true) {
+        if (self.silent == true) {
             return;
         }
         sh.sLog(arguments);
@@ -482,27 +664,44 @@ exports.DLHoistServer = DLHoistServer;
 
 exports.RCExtV = 1;
 
-exports.reloadServer = function reloadServer(delayed ) {
+exports.reloadServer = function reloadServer(delayed) {
 
 
-    if ( delayed !== true ) {
+    /*
+
+     var str = ''
+     sh.each.times(1000000, function onK(k,v) {
+     str += 'asdf asdfa sdf a sdfsdf sdf wwwwwwwwwwwwwwwwwwwww werwerwerwerwer'+sh.n
+     })
+
+     var mbs = 1000*1000
+     console.log('totalMemoryUsage', process.memoryUsage().heapTotal/mbs)
+     console.log('totalMemoryUsage', process.memoryUsage() )
+     setTimeout(function ok() {
+     console.log('closing')
+     }, 500000000)
+     return;
+     //sh.x('totalMemoryUsage')
+     */
+
+
+    if (delayed !== true) {
         sh.get('127.0.0.1:6022/exitQuit')
-        setTimeout(function a(){
+        setTimeout(function a() {
             exports.reloadServer(true)
         }, 500)
         return;
     }
 
     //var t = new DLHoistServer()
- 
+
     var instance = new DLHoistServer();
     var t = instance;
 
     var config = {};
     config.file = __dirname + '/RunBreed.js'
     config.fxClazz = 'startBreed'
-
-    var innerConfig ={}
+    var innerConfig = {}
     innerConfig.file = instance.data.filePathTestConfig;
     config.innerConfig = innerConfig;
 
@@ -517,7 +716,7 @@ exports.reloadServer = function reloadServer(delayed ) {
     //instance.testLocally()
     var testRemoteDownload = false;
     //testRemoteDownload = true
-    if ( testRemoteDownload ) {
+    if (testRemoteDownload) {
         instance.testRemotely();
     }
     /* return;

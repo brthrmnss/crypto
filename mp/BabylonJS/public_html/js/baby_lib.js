@@ -230,8 +230,8 @@ BabyLib.mat = function defineMAterials() {
     b.mat.createMaterial = function createMaterial(a,b2,c) {
 
         a = dv(a, 0.4)
-        b2 = dv(b2, 0.4)
-        c = dv(c, 0.4)
+        b2 = dv(b2, a)
+        c = dv(c, a)
 
         var blueMat = new BABYLON.StandardMaterial("ground", b.scene);
         blueMat.diffuseColor = new BABYLON.Color3(a,b2,c);

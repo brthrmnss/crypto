@@ -1,4 +1,4 @@
-<div    id="quickListTemplate" class="panel panel-default">
+<div    id="quickListTemplate" xclass="panel panel-default">
   <div id="headerContent" class="panel-heading" ></div>
   <md-toolbar id="subHeaderContent" class="md-theme-light md-default-theme">
     <!--<h2 class="md-toolbar-tools">
@@ -30,6 +30,19 @@
     </div>
   </div>
 
+  <div id="emptySet" ng-if="vmC.items.length == 0" >
+    Empty Set
+  </div>
+<!--
+
+  xcv.
+  xcb
+  {{vmC.items.length}}
+  <br />
+items: <br />
+  {{vmC.items}}
+  {{vmC.selectedIndex}}
+-->
 
   <div id="footerContent" class="panel-footer clearfix"></div>
 </div>

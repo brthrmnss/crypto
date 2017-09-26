@@ -86,13 +86,14 @@ function SpeakerMaryTTS() {
         var t2 = t.clone('test a few voices notes');
         t2.getR(urls.process).with(req)
             .addFx(function onResult(asdf, resp) {
-                if ( resp.statusCode != 200 ) {
+                if ( resp == null || resp.statusCode != 200 ) {
                     // console.error('result', asdf)
                     console.error(asdf.toString());
                     //  console.error(asdf.toString('utf8'));
                     return
                 }
-                sh.writeFile('sample.wav', asdf, false, true)
+                var fileWav = sh.fs.join(sh.fs.trash(), 'sample.wav')
+                sh.writeFile(fileWav, asdf, false, true)
                 return;
                 sh.writeFile('x2.wav', asdf, false, false)
                 var fs = require('fs')

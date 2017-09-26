@@ -52,7 +52,7 @@ function HoistServer(_self) {
     function defineRunInternals() {
 
 
-        p.run = function run(config) {
+        p.run = function run(config, fileConfig) {
             self.stopCurrent();
             var dirScript = self.settings.file;
             var clazz = require(dirScript)
@@ -64,7 +64,7 @@ function HoistServer(_self) {
             }
             if ( self.settings.fxClazz ) {
                 var fxClazz = clazz.XY[self.settings.fxClazz];
-                var instance = fxClazz(config);
+                var instance = fxClazz(config, fileConfig);
             }
 
             self.data.instance = instance;
@@ -86,7 +86,7 @@ function HoistServer(_self) {
                 console.error('runFromConfigFile', errorResult.error );
                 return errorResult;
             }
-            self.run(config)
+            self.run(config, fileConfig)
             return config;
         }
 

@@ -486,15 +486,25 @@ function SlickRunServer() {
              }*/
 
             cmd2 =  cmd
-            if ( cmd && cmd.startsWith('start ') == false ) {
-                if  ( cmd.includes('"') == false && cmd.includes("'") == false ) {
-                    //cmd = sh.qq(cmd)
-                }
-                cmd2 = 'start ' + ' "" ' + ' /min '+ cmd //sh.qq(cmd)
-                if ( actionSent && actionSent.noStart ) {
-                    cmd2 = cmd //sh.qq(cmd)
+            function hideExplorerPrompts() {
+                if (cmd && cmd.startsWith('start ') == false) {
+                    if (cmd.includes('"') == false && cmd.includes("'") == false) {
+                        //cmd = sh.qq(cmd)
+                    }
+                    cmd2 = 'start ' + ' "" ' + ' /min ' + cmd //sh.qq(cmd)
+                    if (actionSent && actionSent.noStart) {
+                        cmd2 = cmd //sh.qq(cmd)
+                    }
+                    if (actionSent && actionSent.name && actionSent.name.includes('openDir')) {
+                        cmd2 = 'start ' + ' "openDir" ' + cmd //sh.qq(cmd)
+                    }
+                    if (action && action.cmd.split('\\').length > 4 && action.cmd.includes('"') == false) {
+                        console.log('assume dir')
+                        cmd2 = 'start ' + ' "openDir" ' + cmd //sh.qq(cmd)
+                    }
                 }
             }
+            hideExplorerPrompts();
 
             console.log('cmd2', cmd2)
 

@@ -370,6 +370,8 @@
     p.unescapeAng = function unescapeAng(val) {
       var output = val
 
+        if ( val == null ) { return val }
+
       output = val 
             .split('[[').join('{{')
             .split(']]').join('}}');

@@ -294,7 +294,9 @@ reloadableHelper.upgradeApp = function upgradeapp(app) {
                     //debugger;
                     //service.QuickUIConvertor = QuickUIConvertor;
                     if ( service == null ) {
-                        console.warn('constructor had to be used', constructor, originalService)
+                        if ( debugRelodable ) {
+                            console.warn('constructor had to be used', constructor, originalService)
+                        }
                         service = constructor;
                         if ( constructor == null ) {
                             throw new Error('constructor % service cannot be defined ')

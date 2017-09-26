@@ -29,14 +29,14 @@ RC_HelperFxs.getDlDirs = function getDLDirs(dirs) {
 }
 
 //RC_HelperFxs.runX
-RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput2, fxDone, dirs) {
+RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput2, fxDone, dirs, withSizes) {
     //
 
     if (dirs == null) {
         console.log('using based irectories')
         dirs = RC_HelperFxs.getDlDirs(dirs)
     }
-    console.log('fix directories', dirs)
+    console.log('fix directories', dirs, withSizes)
     var res = null
     var dirCWDOrig = process.cwd()
 
@@ -52,11 +52,14 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
         fileOutputMoveTo = fileOutput2;
     }
 
+
     var files = [];
 
     sh.async(dirs, function onEachDir(dir, fx) {
 
+
         var fileStore = sh.fs.makePath(dirTrash, sh.stripBadFiles(dir) + '.filelist.txt')
+        sh.run('> ' + fileStore  )
 
         if (false == sh.fs.exists(dir)) {
             console.log('does not exist', dir)
@@ -71,7 +74,12 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
         if (sh.isWin()) {
 
         } else {
-            cmd = 'ls -R ' + dir + ' >' + fileStore
+            // cmd = 'ls -R ' + dir + ' >' + fileStore
+            cmd = 'find ' + dir + ' -name "*.*"  -print ' + ' >> ' + fileStore //+ '; echo;';
+            if ( withSizes ) {
+                process.chdir('/')
+                var cmd = 'du -h '+dir+' >' + fileStore
+            }
         }
 
         sh.runAsync(cmd, function onRunSync() {
@@ -124,16 +132,60 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
         sh.each(lines, function addtoLine(k, line) {
             line = sh.replaceBackslash(line)
             //   var y = line.split('/');
-            dictFiles[line] = line;
+            if (line.includes('/Root/') == null) {
+                return;
+            }
+            line = '/Root/' + sh.str.after(line, '/Root/')
+
+            var filePath = line;
+
+            var dirs = line.split('/')
+            if (dirs[0] == '') {
+                dirs.shift()
+            }
+
+            var dir3 = dirs.slice(0, 4)
+            var dir4 = dirs.slice(0, 5)
+
+            var dir3_path = '/'+dir3.join('/')+'/'
+            var dir4_path = '/'+dir4.join('/')+'/'
+
+            if (filePath.includes('/tt')) {
+                // console.log(dir4)
+                //  console.log(dir5)
+                // asdf.g
+                /*  if ( dir4.slice(-1)[0].startsWith('tt')) {
+                 dictFiles[dir4_path] = line;
+                 }
+
+                 if ( dir5.slice(-1)[0].startsWith('tt')) {
+                 console.log('\t',  dir5.slice(-1))
+                 dictFiles[dir5_path] = line;
+                 asdf.g
+                 }*/
+
+                if (filePath.includes('Root/tv/') && filePath.includes('/Season_')) {
+                    dictFiles[dir4_path] = line;
+                    //TOD what about spidoes?
+                } else {
+                    dictFiles[dir3_path] = line;
+                }
+
+                // dictFiles[dir5] = line;
+
+            }
+            //  dictFiles[line] = line;
         })
 
         return dictFiles;
     }
 
+    var dbg = false;
 
     var dict = sh.each.lineToDict(fileList);
-    //console.log('display.dict', dict)
-    //sh.exit('howmany')
+    //  console.log('display.dict', dict)
+    //sh.each.print(dict)
+    //  sh.exit('howmany')
 
     var json = sh.fs.readJSONFile(fileManifest);
     var count = 0;
@@ -152,22 +204,27 @@ RC_HelperFxs.verifyComplete = function verifyComplete(fileManifest, fileList, fx
 
         var dirRemoteMega = jsonObj.dirRemoteMega;
 
+        // console.log(k, 'what ?', dirRemoteMega)
         var found = false;
 
         itemsValid.push(json)
-        sh.each(dirs, function onK(k, v) {
-            var dirC = sh.fs.join(v, 'incoming/finished/', dirRemoteMega);
-            dirC = sh.replaceBackslash(dirC);
-            //console.log('------dir', dirC);
-            var foundObj = dict[dirC];
-            if (foundObj) {
-                found = true;
-                itemsFound.push(json)
-                // asdf.g
-                foundCount++
-                return false;
+
+        var dirMatch = dirRemoteMega
+        dirMatch = sh.replaceBackslash(dirMatch);
+
+        if ( dbg ) {
+            if (k < 100) {
+                console.log('------dir', dirMatch);
             }
-        })
+        }
+        var foundObj = dict[dirMatch];
+        if (foundObj) {
+            //asdf.g
+            found = true;
+            itemsFound.push(json)
+            foundCount++
+           // return false;
+        }
 
         count++;
         //console.log('|||', count, jsonObj);
@@ -248,7 +305,7 @@ if (module.parent == null) {
     var fileListOfFiles = fileOutputMoveTo
     var fileDlManifest = 'G:/Dropbox/projects/crypto/mp/RCExt/manifests/listIds_ls051393312.json'
     var fileDlManifestLite = 'G:/Dropbox/projects/crypto/mp/RCExt/testData/listIds_ls051393312.lite.json'
-    
+
     fileListOfFiles = "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_6024_.txt"
     fileListOfFilesZZZ = "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_ZZZZ_.txt"
     fileDlManifest = "G:\\Dropbox\\projects\\crypto\\ritv/imdb_movie_scraper/IMDB_App_Output/dlListsWrapC/List ls Ids_ls05139_11.json"
@@ -311,11 +368,12 @@ if (module.parent == null) {
         cfg.fileManifest = fileDlManifestLite
 
         cfg.fxDone = function onDone(data2) {
-            if ( data2 == null ) { data2 = {}}
-          //  sh.x('kko')
+            if (data2 == null) {
+                data2 = {}
+            }
+            //  sh.x('kko')
             //console.error(data2)
-           // sh.x('kko')
-
+            // sh.x('kko')
 
 
             var cfg = {}
@@ -336,8 +394,8 @@ if (module.parent == null) {
             RC_HelperFxs.checkPercentageCompleteDeep(cfg);
 
         };
-      //  cfg.fxDone()
-       // return;
+        //  cfg.fxDone()
+        // return;
 
         //cfg.searchGlobalAllServers = true;
         cfg.doNotImport_fileList = true;

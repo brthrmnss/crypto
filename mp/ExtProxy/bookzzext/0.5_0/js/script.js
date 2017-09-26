@@ -5,7 +5,7 @@
 @version 0.5
  */
 var four = 2 + 2
-console.log('boody')
+console.log('boody') 
 eval('four = 3 + 2; console.log("fff", "four")')
 var url = "http://localhost:10110/ggnampgigkndjmbbjlodenmpbamidgeo/0.5_0/js/amz_hijacks.js"
 url += '?='+Math.random();

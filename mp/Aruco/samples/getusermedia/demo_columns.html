@@ -1,0 +1,359 @@
+<html>
+
+<head>
+<title>Augmented Reality Marker Detector</title>
+
+<script type="text/javascript" src="libs/polyfill.js"></script>
+
+<script type="text/javascript" src="cv.js"></script>
+<script type="text/javascript" src="aruco.js"></script>
+
+<script type="text/javascript" src="posit1.js"></script>
+<script type="text/javascript" src="svd.js"></script>
+
+<script type="text/javascript" src="addPanel.js"></script>
+
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/Three.js"></script>
+<script type="text/javascript" src="js/underscore.js"></script>
+
+<script type="text/javascript" src="js/math.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="theme.css">
+
+<script>
+    window.template = function(id){
+        return _.template( $('#'+id).html());
+    }
+
+    window.template2 = function(templateId, idStore, values){
+        var compiled =  _.template( $('#'+templateId).html());
+        if ( values == null ) values = {}
+        var templateHTML =  compiled(values)
+        $('#'+idStore).html(templateHTML)
+    }
+
+    setTimeout(function update() {
+      window.template2('taskTemplate', 'divBottom', {title:'dog'})
+    },500)
+
+</script>
+
+<script>
+
+var video, canvas, context, imageData, detector;
+var posit;
+
+var anotMaster = new AnotMaster();
+//uncomment to hide camera
+//anotMaster.loadCamera = false;
+Config = {}
+//if true, will not find distant markers
+//Config.default = true
+Config.loadCamera = true
+Config.loadCamera = false
+anotMaster.loadCamera = Config.loadCamera;
+//anotMaster.getRandom();
+//anotMaster.loadCamera = true;
+
+function onLoad(){
+    video = document.getElementById("video");
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+
+    canvas.width = parseInt(canvas.style.width);
+    canvas.height = parseInt(canvas.style.height);
+
+    if ( anotMaster.loadCamera == false  ) {
+        function setupAppParams() {
+            function initFakeData() {
+                var marker1 = [
+                    {"id": 504, "corners": [
+                        {"x": 400, "y": 320},
+                        {"x": 265, "y": 309},
+                        {"x": 271, "y": 173},
+                        {"x": 408, "y": 175}
+                    ]}
+                ]
+                try {
+                    //  anotMaster.addMarker(marker1)
+                } catch (e) {
+                }
+                var markers = []
+                var marker1 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 271, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+                var marker2 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 8, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+                var marker3 = {"id": 504, "corners": [
+                    {"x": 400, "y": 320},
+                    {"x": 265, "y": 309},
+                    {"x": 271, "y": 173},
+                    {"x": 408, "y": 175}
+                ]}
+
+
+                var marker2 = {"id":639,"corners":[{"x":42,"y":91},{"x":112,"y":54},{"x":150,"y":126},{"x":83,"y":162}]}
+
+                var  marker3 = {"id":639,"corners":[{"x":507,"y":51},{"x":604,"y":100},{"x":598,"y":249},{"x":484,"y":222}]}
+                //,{"id":802,"corners":[{"x":87,"y":168},{"x":108,"y":170},{"x":107,"y":195},{"x":85,"y":193}]}
+
+                var marker4 = {"id":802,"corners":[{"x":87,"y":168},{"x":108,"y":170},{"x":107,"y":195},{"x":86,"y":193}]}
+
+                //marker heavily skewed
+
+                var centerSkewed = {"id":231,"corners":[{"x":333,"y":268},{"x":290,"y":267},{"x":271,"y":188},{"x":317,"y":196}]}
+
+                markers.push(centerSkewed);
+
+                markers.push(marker1);
+                markers.push(marker2);
+                markers.push(marker3);
+                markers.push(marker4)
+
+
+                //start again, for transform origin issue
+                markers =[]
+                var cornerByDoor = [{"id":802,"corners":[{"x":82,"y":188},{"x":103,"y":190},{"x":102,"y":215},{"x":81,"y":213}]}]
+                markers.push(cornerByDoor[0])
+
+                var inCenter = [{"id":639,"corners":[{"x":357,"y":105},{"x":478,"y":94},{"x":477,"y":222},{"x":359,"y":225}]}]
+                markers.push(inCenter[0])
+                //markers=[]
+                // marker1 = {"id":231,"corners":[{"x":385,"y":52},{"x":383,"y":144},{"x":294,"y":143},{"x":294,"y":51}]}
+                // markers.push(marker1);
+
+                anotMaster.drawCorners(markers)
+            }
+
+            setTimeout(initFakeData, 250)
+
+
+            var modelSize = 35.0; //millimeters
+            detector = new AR.Detector();
+            posit = new POS.Posit(modelSize, canvas.width);
+        }
+        setupAppParams();
+        return;
+    }
+
+
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (navigator.getUserMedia){
+
+        function successCallback(stream){
+            if (window.webkitURL) {
+                video.src = window.webkitURL.createObjectURL(stream);
+            } else if (video.mozSrcObject !== undefined) {
+                video.mozSrcObject = stream;
+            } else {
+                video.src = stream;
+            }
+        }
+
+        function errorCallback(error){
+        }
+
+        navigator.getUserMedia({video: true}, successCallback, errorCallback);
+
+        var modelSize = 35.0; //millimeters
+
+        detector = new AR.Detector();
+        posit = new POS.Posit(modelSize, canvas.width);
+
+        requestAnimationFrame(tick);
+    }
+}
+
+function tick(){
+    requestAnimationFrame(tick);
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA){
+        snapshot();
+
+        var markers = detector.detect(imageData);
+        if ( markers == null ) {
+            return;
+        }
+        drawCorners(markers);
+        drawId(markers);
+    }
+}
+
+function snapshot(){
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+}
+
+var  counter = 0
+function drawCorners(markers){
+    var corners, corner, i, j;
+
+
+    if ( markers == null ) {
+        return;
+    }
+    // console.log('drawing markers', markers.length)
+    if ( counter == 0  ) {
+        console.log('drawing markers', JSON.stringify(markers))
+    }
+    counter++
+    if ( counter  >50 ) {
+        counter =0
+    }
+
+    context.lineWidth = 3;
+
+    for (i = 0; i !== markers.length; ++ i) {
+        corners = markers[i].corners;
+
+        context.strokeStyle = "red";
+        context.beginPath();
+
+        for (j = 0; j !== corners.length; ++j) {
+            corner = corners[j];
+            context.moveTo(corner.x, corner.y);
+            corner = corners[(j + 1) % corners.length];
+            context.lineTo(corner.x, corner.y);
+        }
+
+        context.stroke();
+        context.closePath();
+
+        context.strokeStyle = "green";
+        context.strokeRect(corners[0].x - 2, corners[0].y - 2, 4, 4);
+
+    }
+    $('#holderAnnotations').empty();
+    for (i = 0; i < markers.length; i++) {
+        //   try {
+        var marker =  markers[i]
+        //continue;
+        corners = marker.corners;
+        var corners4 = JSON.parse(JSON.stringify(corners))
+        for (y = 0; y < corners.length; ++y) {
+            corner = corners[y];
+
+            corner.x = corner.x - (canvas.width / 2);
+            corner.y = (canvas.height / 2) - corner.y;
+        }
+
+        var pose = posit.pose(corners);
+        //  console.log(pose)
+        updatePose("pose1"+i, pose.bestError, pose.bestRotation, pose.bestTranslation, marker.id, corners4);
+        // updatePose("pose2"+i, pose.alternativeError, pose.alternativeRotation, pose.alternativeTranslation, marker.id, corners4);
+
+
+        //  } catch ( e ) {
+        //       console.error('error')
+        //       throw e
+        //   }
+    }
+}
+
+anotMaster.drawCorners = drawCorners;
+
+function updatePose(id, error, rotation, translation, divId, corners){
+    var yaw = -Math.atan2(rotation[0][2], rotation[2][2]);
+    var pitch = -Math.asin(-rotation[1][2]);
+    var roll = Math.atan2(rotation[1][0], rotation[1][1]);
+
+
+    drawPoint(translation[0] | 0,
+                    translation[1] | 0,
+                    translation[2] | 0,
+            Math.round( yaw * 180.0/Math.PI),
+            Math.round(-pitch * 180.0/Math.PI),
+            Math.round(0+(roll  )* 180.0/Math.PI),
+            640,480, rotation, corners)
+
+
+    var d = document.getElementById(id);
+    if ( d == null ) {
+        return;
+    }
+
+
+
+    d.innerHTML =
+            " id: " + divId
+            + "<br/>" +
+            " error: " + error
+            + "<br/>"
+            + " x: " + (translation[0] | 0)
+            + " y: " + (translation[1] | 0)
+            + " z: " + (translation[2] | 0)
+            + "<br/>"
+            + " yaw: " + Math.round(-yaw * 180.0/Math.PI)
+            + " pitch: " + Math.round(-pitch * 180.0/Math.PI)
+            + " roll: " + Math.round(roll * 180.0/Math.PI);
+};
+
+function drawId(markers){
+    var corners, corner, x, y, i, j;
+
+    context.strokeStyle = "blue";
+    context.lineWidth = 1;
+
+
+    for (i = 0; i !== markers.length; ++ i){
+        corners = markers[i].corners;
+
+        x = Infinity;
+        y = Infinity;
+
+        for (j = 0; j !== corners.length; ++ j){
+            corner = corners[j];
+
+            x = Math.min(x, corner.x);
+            y = Math.min(y, corner.y);
+        }
+
+        context.strokeText(markers[i].id, x, y)
+    }
+}
+
+window.onload = onLoad;
+</script>
+
+</head>
+
+<body style="font-family: monospace;">
+
+
+
+
+
+<div id="divBottom" ></div>
+
+</body>
+
+<style>
+    .container_ { width:300px; }
+    .column-left{ float: left; width: 33%; }
+    .column-right{ float: right; width: 33%; }
+    .column-center{ display: inline-block; width: 33%; }
+</style>
+
+<script id="taskTemplate" type="text/template">
+    <%= title %> <button class="edit" >Edit</button>
+    <div class="container_"   >
+        <div class="column-center" >Column center</div>
+        <div class="column-left" style="xborder: solid" >Column left</div>
+        <div class="column-right" style="xborder: solid" >Column right<br />
+            <img src="arrow.png" width="100" /> </div>
+    </div>
+    <button class="delete" >Delete</button>
+</script>
+
+
+</html>

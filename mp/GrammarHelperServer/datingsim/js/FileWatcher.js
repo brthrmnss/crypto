@@ -4,20 +4,8 @@ var sh = require('shelpers').shelpers;
 var shelpers = require('shelpers');
 
 
-sh.isFileType = function isFileType(file, type) {
-    var path = require('path');
-    var ext = path.extname(file);
 
-    ext = ext.slice(1).toLowerCase();
-    if ( ext == type ) {
-        return true;
-    }
-
-    return false;
-}
-
-
-fsmonitor = require('fsmonitor');
+var fsmonitor = require('fsmonitor');
 
 
 
@@ -28,8 +16,17 @@ function FileWatcher() {
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
 
-        self.watchDirs();
-        self.setupSocket();
+        if ( self.settings.delayStart ) {
+            setTimeout(function onX_waitForstgOverrides() {
+                initStart()
+            },50)
+        } else{
+            initStart()
+        }
+        function initStart() {
+            self.watchDirs();
+            self.setupSocket();
+        }
     }
 
     p.watchDirs = function watchDirs(config) {
@@ -45,7 +42,10 @@ function FileWatcher() {
          var yyy = sh.runAsync2('node',
          [self.settings.file])
          */
-        var  y= sh.runAsync('node '+ self.settings.file)
+        var cmdNode = 'node';
+        asdf.g
+        cmdNode = sh.dv(self.settings.cmdNode, 'node')
+        var  y= sh.runAsync(cmdNode + ' '+ self.settings.file)
         //  var  yy= sh.run('node '+ self.settings.file)
 //spit stdout to screen
         y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
@@ -54,7 +54,7 @@ function FileWatcher() {
         y.stderr.on('data', function (data) {   process.stdout.write(data.toString());  });
 
         return;
-
+/*
         var spawn = require('child_process').spawn;
 
 //kick off process
@@ -70,7 +70,7 @@ function FileWatcher() {
             console.log("Finished with code " + code);
         });
 
-        return;
+        return;*/
     }
 
     p.setupSocket = function setupSocket(config) {

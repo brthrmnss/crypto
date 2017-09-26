@@ -59,7 +59,9 @@ nback,nodejsruntime gthk "Dual N-Back Training" "http://brainscale.net/dual-n-ba
 gtcalmtech,http://localhost:10110/g/calmtech/index.html
 icons,https://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp
 
-gtritvdb,nodejsruntime gthk "BDB TT" "http://192.168.1.160:5600/index.html567.html"
+#gtritvdb,nodejsruntime gthk "BDB TT" "http://192.168.1.161:5600/index.html567.html"
+gtritvdb,nodejsruntime gthk "RT-CC" "http://192.168.1.161:5600/index.html567.html"
+gtlubuntu,nodejsruntime gthk "Clone of L.rT.1" "http://192.168.1.161:5600/index.html567.html"
 editritvdb,nodejsruntime gtwebstorm "crypto - [G" "partial:eval_client.js"
 #runritvdb,nodejsruntime G:\Dropbox\projects\crypto\mp\RCExt\ReloadAnyRunner.js
 
@@ -87,6 +89,7 @@ speaker,http://127.0.0.1:10100/tinymce.html#/player
 pdfconvertoer,http://127.0.0.1:10100/tinymce.html#/player
 autosave,http://127.0.0.1:10100/tinymce_autosave.html
 gsamz *,https://www.google.com/search?q=%W%+amazon
+ks *,https://www.google.com/search?q=%W%+kindle
 gs *,https://www.google.com/search?q=%W%
 newtor,https://torrentfreak.com/
 docerr,http://wiki-na.ms.com/CCRT/ErrorsAndNotifications

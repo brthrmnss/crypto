@@ -276,7 +276,7 @@
               console.warn('resthelper', 'list', 'undefined url', self);
             }
 
-            if ( self.config.dataSrc.inMemory == true ) {
+            if ( self.config.dataSrc &&  self.config.dataSrc.inMemory == true ) {
               setTimeout(returnNothing,10, self.config.dataSrc.items)
 
             } else {

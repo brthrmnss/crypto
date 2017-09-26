@@ -3,7 +3,7 @@
  * Helper wraps quickCrud config to simplify configuration of config objects
  */
 ( function() {
-  function QuickListConfigHelper( sh, pubSub ) {
+  function QuickListConfigHelper( sh, pubSub, $restHelper ) {
     var self = this;
     var p = this;
 
@@ -30,6 +30,10 @@
       p.listTitle = function showTitle(title ) {
         self.config.title =title;
       }
+      p.list_fxSelectItem = function list_fxSelectItem(fxItemSelected ) {
+        self.config.fxItemSelected = fxItemSelected
+      }
+
       p.list_fxEditItem = function addQuickFormConfig(fxEdit ) {
         self.config.fxEditItem = fxEdit
       }
@@ -84,6 +88,14 @@
         self.config.restHelperConfig = rHC;
       }
 
+      p.connectToInMemory = function connectToInMemory(items ) {
+        var rHC = {}
+        var t  = $restHelper.createInMemory();
+        t.loadItems(items);
+        rHC.dataSrc = t;
+        self.config.items = items; 
+        self.config.restHelperConfig = rHC;
+      }
 
     };
     defineBasics();

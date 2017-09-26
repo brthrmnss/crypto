@@ -1,0 +1,570 @@
+/usr/sbin/node user_server.js
+10.211.55.4 ip address
+resolved /media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/sequelize/lib/sequelize.js false
+DEPRECATION WARNING: The logging-option should be either a function or false. Default: console.log
+starting...
+starting/ { loginAPI:
+   { port: 33031,
+     dir_sessions: '/home/user/ritv/dir_sessions',
+     warning: 'this is the main port for the whole server',
+     dirSesstions: '/home/user/sessions_login_api',
+     publicRoutes:
+      [ 'favicon.ico',
+        'output.html',
+        'output/sparrow',
+        '/output/scripts',
+        '/output/',
+        '/proxy?' ],
+     fxPreLoginRoutes: [Function: fxPreLoginRoutes],
+     debugMiddleware: false,
+     fxGenericPreUserAuthBounceRouteHandler: [Function: fxGenericPreUserAuthBounceRouteHandler],
+     fxUserNotLoggedInResultSize: 3917,
+     fxGenericRouteHandler: [Function: fxGenericRouteHandler],
+     server: undefined,
+     dirSessions: '/home/user/trash/vidserv/login_api_sessions' },
+  loginAPIConsumer:
+   { dirSesstions: '/home/user/ritv/sessions_login_consumer_api',
+     portProducer: 33031,
+     port: 37331,
+     dirSessions: '/home/user/trash/vidserv/test_login_consumer_api_sessions',
+     baseUrl: null },
+  sequelize:
+   { options:
+      { dialect: 'mysql',
+        dialectModulePath: null,
+        host: '127.0.0.1',
+        protocol: 'tcp',
+        define: [Object],
+        query: {},
+        sync: {},
+        timezone: '+00:00',
+        logging: [Function],
+        omitNull: false,
+        native: false,
+        replication: false,
+        ssl: undefined,
+        pool: {},
+        quoteIdentifiers: true,
+        hooks: {},
+        port: '12889' },
+     config:
+      { database: 'yetidb',
+        username: 'yetidbuser',
+        password: 'aSDDD545y^',
+        host: '127.0.0.1',
+        port: '12889',
+        pool: [Object],
+        protocol: 'tcp',
+        native: false,
+        ssl: undefined,
+        replication: false,
+        dialectModulePath: null,
+        keepDefaultTimezone: undefined,
+        dialectOptions: undefined },
+     dialect:
+      { sequelize: [Circular],
+        connectionManager: [Object],
+        QueryGenerator: [Object] },
+     models: {},
+     daoFactoryManager: { daos: [], sequelize: [Circular] },
+     modelManager: { daos: [], sequelize: [Circular] },
+     connectionManager:
+      { sequelize: [Circular],
+        config: [Object],
+        dialect: [Object],
+        onProcessExit: [Function],
+        lib: [Object],
+        pool: [Object] },
+     importCache: {},
+     test:
+      { '$trackRunningQueries': false,
+        '$runningQueries': 0,
+        trackRunningQueries: [Function],
+        verifyNoRunningQueries: [Function] },
+     Sequelize:
+      { [Function]
+        options: [Object],
+        Utils: [Object],
+        Promise: [Object],
+        QueryTypes: [Object],
+        Validator: [Object],
+        Model: [Object],
+        ABSTRACT: [Function],
+        STRING: [Object],
+        CHAR: [Object],
+        TEXT: [Object],
+        NUMBER: [Object],
+        INTEGER: [Object],
+        BIGINT: [Object],
+        FLOAT: [Object],
+        TIME: [Object],
+        DATE: [Object],
+        DATEONLY: [Object],
+        BOOLEAN: [Object],
+        NOW: [Object],
+        BLOB: [Object],
+        DECIMAL: [Object],
+        UUID: [Object],
+        UUIDV1: [Object],
+        UUIDV4: [Object],
+        HSTORE: [Object],
+        JSON: [Object],
+        JSONB: [Object],
+        VIRTUAL: [Object],
+        ARRAY: [Object],
+        NONE: [Object],
+        ENUM: [Object],
+        RANGE: [Object],
+        Transaction: [Object],
+        Instance: [Function],
+        replaceHookAliases: [Function],
+        runHooks: [Function],
+        hook: [Function],
+        addHook: [Function],
+        hasHook: [Function],
+        hasHooks: [Function],
+        Error: [Object],
+        ValidationError: [Object],
+        ValidationErrorItem: [Function],
+        DatabaseError: [Object],
+        TimeoutError: [Object],
+        UniqueConstraintError: [Object],
+        ExclusionConstraintError: [Object],
+        ForeignKeyConstraintError: [Object],
+        ConnectionError: [Object],
+        ConnectionRefusedError: [Object],
+        AccessDeniedError: [Object],
+        HostNotFoundError: [Object],
+        HostNotReachableError: [Object],
+        InvalidConnectionError: [Object],
+        ConnectionTimedOutError: [Object],
+        fn: [Function],
+        col: [Function],
+        cast: [Function],
+        asIs: [Function],
+        literal: [Function],
+        and: [Function],
+        or: [Function],
+        json: [Function],
+        condition: [Function],
+        where: [Function] } },
+  setupRoutes: [Function: setupGenericRoutes],
+  fxDone: [Function: loginServerRunning],
+  forceDB: false,
+  port: 33031,
+  name: 'test login server',
+  silentToken: true }
+testChain
+testChain
+creating tables
+starting...
+starting/ { fxDone: [Function: tablesSycnedOrCreated],
+  name: 'recipe to sync table',
+  silentToken: true }
+Executing (default): SELECT 1+1 AS result
+Syced successfully.
+Executing (default): CREATE TABLE IF NOT EXISTS `sessions` (`id` VARCHAR(255) NOT NULL , `data` TEXT NOT NULL, `updated_on` DATETIME, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `sessions`
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `username` VARCHAR(255) NOT NULL, `password` VARCHAR(255), `level` ENUM('FREE USER', 'INVITED', 'NEOPHITE', 'PAID USER', 'ADMIN'), `email` VARCHAR(255), `lastlogindate` DATETIME, `lastloginip` VARCHAR(255), `status` ENUM('ACTIVE', 'PENDING', 'DISABLED', 'SUSPENDED') NOT NULL DEFAULT 'active', `title` VARCHAR(255), `firstname` VARCHAR(255) DEFAULT '', `lastname` VARCHAR(255) DEFAULT '', `createdip` VARCHAR(255), `lastPayment` DATETIME DEFAULT NULL, `paidExpiryDate` DATETIME DEFAULT NULL, `paymentTracker` VARCHAR(255) DEFAULT '', `passwordResetHash` VARCHAR(255) DEFAULT '', `identifier` VARCHAR(255) DEFAULT '', `apikey` VARCHAR(255) DEFAULT '', PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `users`
+Connection has been established successfully.
+>>>*>  self startNextMethod [as _onTimeout] ***Chain Complete recipe to sync table (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/PromiseHelperV3.js:45:30)
+Mon, 15 Feb 2016 06:03:13 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at example/ExampleCredentialsAPIProducerService.js:86:17
+Mon, 15 Feb 2016 06:03:14 GMT body-parser deprecated undefined extended: provide extended option at node_modules/body-parser/index.js:85:29
+fxPreLoginRoutes
+Credential Server Started on 33031
+Credential Server Started on http://localhost:33031
+setup routes
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER NOT NULL auto_increment , `username` VARCHAR(255) NOT NULL, `password` VARCHAR(255), `level` ENUM('FREE USER', 'INVITED', 'NEOPHITE', 'PAID USER', 'ADMIN'), `email` VARCHAR(255), `lastlogindate` DATETIME, `lastloginip` VARCHAR(255), `status` ENUM('ACTIVE', 'PENDING', 'DISABLED', 'SUSPENDED') NOT NULL DEFAULT 'active', `title` VARCHAR(255), `firstname` VARCHAR(255) DEFAULT '', `lastname` VARCHAR(255) DEFAULT '', `createdip` VARCHAR(255), `lastPayment` DATETIME DEFAULT NULL, `paidExpiryDate` DATETIME DEFAULT NULL, `paymentTracker` VARCHAR(255) DEFAULT '', `passwordResetHash` VARCHAR(255) DEFAULT '', `identifier` VARCHAR(255) DEFAULT '', `apikey` VARCHAR(255) DEFAULT '', PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): CREATE TABLE IF NOT EXISTS `sessions` (`id` VARCHAR(255) NOT NULL , `data` TEXT NOT NULL, `updated_on` DATETIME, PRIMARY KEY (`id`)) ENGINE=InnoDB COLLATE utf8_general_ci;
+Executing (default): SHOW INDEX FROM `sessions`
+    $
+testing...
+login check 2 true /api/login
+-- someone is logging in
+topMiddleware_BlockUsersWithoutSessions logged in... /api/login
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark' AND `users`.`password` = '0932217b636fcb32fc83c2e9355a3bf5' LIMIT 1;
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"}}
+>>>*>  Request _callback test (http://localhost:33031/api/login) (login_withBadUsername (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:227:15)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'no user found', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark' LIMIT 1;
+Executing (default): DELETE FROM `users` WHERE `id` = 268 LIMIT 1
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark2' LIMIT 1;
+Executing (default): DELETE FROM `users` WHERE `id` = 269 LIMIT 1
+Executing (default): INSERT INTO `users` (`id`,`username`,`password`,`status`,`firstname`,`lastname`,`lastPayment`,`paidExpiryDate`,`paymentTracker`,`passwordResetHash`,`identifier`,`apikey`) VALUES (DEFAULT,'mark','0fd78fd8db9f2455ccf8fdcc642ce04c','active','','',NULL,NULL,'','','','');
+We have a persisted instance now
+Executing (default): INSERT INTO `users` (`id`,`username`,`password`,`status`,`firstname`,`lastname`,`lastPayment`,`paidExpiryDate`,`paymentTracker`,`passwordResetHash`,`identifier`,`apikey`) VALUES (DEFAULT,'mark2','0fd78fd8db9f2455ccf8fdcc642ce04c','active','','',NULL,NULL,'','','','');
+We have a persisted instance now
+    $
+testing...
+login check 2 false /api/test?key=undefined
+topMiddleware_BlockUsersWithoutSessions not logged in
+404 for  test (http://localhost:33031/api/test?key=undefined) { msg: 'user not logged in', success: false }
+bodoy { msg: 'user not logged in', success: false }
+3917 'what is this....'
+>>>*>  Request _callback test (http://localhost:33031/api/test?key=undefined) (tryToMakeRequestAgainstServer_ExpectFailure (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:727:19)) http://localhost:33031/api/test?key=undefined [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/test?key=undefined) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'user not logged in', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/test?key=undefined received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+    $
+testing...
+-- someone is logging in
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark' AND `users`.`password` = '0fd78fd8db9f2455ccf8fdcc642ce04c' LIMIT 1;
+login check 2 true /api/login
+topMiddleware_BlockUsersWithoutSessions logged in... /api/login
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196187,"key":"5bd4e624520f7b7791d49fc97704752d","username":"mark","user_id":271}
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196339,"key":"5bd4e624520f7b7791d49fc97704752d","username":"mark","user_id":271}
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): START TRANSACTION;
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): SET autocommit = 1;
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): SELECT `id`, `data`, `updated_on` FROM `sessions` AS `sessions` WHERE `sessions`.`id` = '5bd4e624520f7b7791d49fc97704752d' AND `sessions`.`data` = '{\"username\":\"mark\",\"user_id\":271}';
+save complete null
+Executing (default): UPDATE `users` SET `lastlogindate`='2016-02-15 06:03:16',`lastloginip`='::ffff:127.0.0.1' WHERE `id` = 271
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): INSERT INTO `sessions` (`id`,`data`,`updated_on`) VALUES ('5bd4e624520f7b7791d49fc97704752d','{\"username\":\"mark\",\"user_id\":271}','2016-02-15 06:03:16');
+>>>*>  Request _callback test (http://localhost:33031/api/login) (testLoginWithNewUser (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:272:15)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success',
+  success: true,
+  key: '5bd4e624520f7b7791d49fc97704752d',
+  user_id: 271 }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+Executing (3960316d-6f8d-4905-ab93-d6b527fcf370): COMMIT;
+    $
+testing...
+login check 2 true /api/test?key=5bd4e624520f7b7791d49fc97704752d
+topMiddleware_BlockUsersWithoutSessions logged in... /api/test?key=5bd4e624520f7b7791d49fc97704752d
+---test route
+---expires 0
+>>>*>  Request _callback test (http://localhost:33031/api/test?key=5bd4e624520f7b7791d49fc97704752d) (tryToMakeRequestAgainstServer (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:717:19)) http://localhost:33031/api/test?key=5bd4e624520f7b7791d49fc97704752d [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/test?key=5bd4e624520f7b7791d49fc97704752d) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { success: true, test: 'test route' }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/test?key=5bd4e624520f7b7791d49fc97704752d received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'markExpired' LIMIT 1;
+Executing (default): DELETE FROM `users` WHERE `id` = 270 LIMIT 1
+Executing (default): INSERT INTO `users` (`id`,`username`,`password`,`level`,`status`,`firstname`,`lastname`,`lastPayment`,`paidExpiryDate`,`paymentTracker`,`passwordResetHash`,`identifier`,`apikey`) VALUES (DEFAULT,'markExpired','0fd78fd8db9f2455ccf8fdcc642ce04c','NEOPHITE','active','','',NULL,'2016-02-12 06:03:13','','','','');
+We have a persisted instance now
+logging in with markExpired randomTask2
+    $
+testing...
+-- someone is logging in
+login check 2 true /api/login
+topMiddleware_BlockUsersWithoutSessions logged in... /api/login
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'markExpired' AND `users`.`password` = '0fd78fd8db9f2455ccf8fdcc642ce04c' LIMIT 1;
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196341,"key":"a03a2f7a74dc4892ae59786ba6ca3ec0","username":"markExpired","user_id":273}
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196563,"key":"a03a2f7a74dc4892ae59786ba6ca3ec0","username":"markExpired","user_id":273,"accountExpired":true}
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): START TRANSACTION;
+Executing (default): UPDATE `users` SET `lastlogindate`='2016-02-15 06:03:16',`lastloginip`='::ffff:127.0.0.1' WHERE `id` = 273
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+save complete null
+>>>*>  Request _callback test (http://localhost:33031/api/login) (login_withBadUsername (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:155:23)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success',
+  success: true,
+  key: 'a03a2f7a74dc4892ae59786ba6ca3ec0',
+  user_id: 273,
+  accountExpired: true }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): SET autocommit = 1;
+logging in with { msg: 'success',
+  success: true,
+  key: 'a03a2f7a74dc4892ae59786ba6ca3ec0',
+  user_id: 273,
+  accountExpired: true }
+    $
+testing...
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): SELECT `id`, `data`, `updated_on` FROM `sessions` AS `sessions` WHERE `sessions`.`id` = 'a03a2f7a74dc4892ae59786ba6ca3ec0' AND `sessions`.`data` = '{\"username\":\"markExpired\",\"user_id\":273,\"account_expired\":true}';
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): INSERT INTO `sessions` (`id`,`data`,`updated_on`) VALUES ('a03a2f7a74dc4892ae59786ba6ca3ec0','{\"username\":\"markExpired\",\"user_id\":273,\"account_expired\":true}','2016-02-15 06:03:16');
+Executing (a18dad74-052d-4f98-b9e2-1a952db05d47): COMMIT;
+login check 2 true /api/logout
+topMiddleware_BlockUsersWithoutSessions logged in... /api/logout
+>>>*>  Request _callback test (http://localhost:33031/api/logout) (testLoginAction (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:172:23)) http://localhost:33031/api/logout [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+404 for  test (http://localhost:33031/api/logout) Cannot POST /api/logout
+
+>>>*>  Request _callback 	 test (http://localhost:33031/api/logout) Cannot POST /api/logout
+ (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: Cannot POST /api/logout
+
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/logout received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+    $
+testing...
+login check 2 true /api/logout
+topMiddleware_BlockUsersWithoutSessions logged in... /api/logout
+>>>*>  Request _callback test (http://localhost:33031/api/logout) (testLoginAction (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:180:23)) http://localhost:33031/api/logout [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/logout) Cannot POST /api/logout
+ (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: Cannot POST /api/logout
+
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/logout received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+404 for  test (http://localhost:33031/api/logout) Cannot POST /api/logout
+
+body 'Cannot POST /api/logout
+'
+    $
+testing...
+logging in with mark randomTask2
+login check 2 true /api/login
+-- someone is logging in
+topMiddleware_BlockUsersWithoutSessions logged in... /api/login
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark' AND `users`.`password` = '0fd78fd8db9f2455ccf8fdcc642ce04c' LIMIT 1;
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196573,"key":"b69c66a2cfa3715db3661fdd0d9627bc","username":"mark","user_id":271,"accountExpired":true}
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196836,"key":"b69c66a2cfa3715db3661fdd0d9627bc","username":"mark","user_id":271,"accountExpired":true}
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): START TRANSACTION;
+Executing (default): UPDATE `users` SET `lastlogindate`='2016-02-15 06:03:16' WHERE `id` = 271
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): SET autocommit = 1;
+save complete null
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): SELECT `id`, `data`, `updated_on` FROM `sessions` AS `sessions` WHERE `sessions`.`id` = 'b69c66a2cfa3715db3661fdd0d9627bc' AND `sessions`.`data` = '{\"username\":\"mark\",\"user_id\":271,\"account_expired\":true}';
+>>>*>  Request _callback test (http://localhost:33031/api/login) (login_withBadUsername (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:155:23)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success',
+  success: true,
+  key: 'b69c66a2cfa3715db3661fdd0d9627bc',
+  user_id: 271 }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+logging in with { msg: 'success',
+  success: true,
+  key: 'b69c66a2cfa3715db3661fdd0d9627bc',
+  user_id: 271 }
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): INSERT INTO `sessions` (`id`,`data`,`updated_on`) VALUES ('b69c66a2cfa3715db3661fdd0d9627bc','{\"username\":\"mark\",\"user_id\":271,\"account_expired\":true}','2016-02-15 06:03:16');
+Executing (01e2ad7e-c818-41c3-afee-cc24149e761e): COMMIT;
+Mon, 15 Feb 2016 06:03:16 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at api/CredentialConsumerAPI.js:25:17
+starting LoginAPIConsumerService /home/user/trash/vidserv/test_login_consumer_api_sessions
+LoginConsumerAPI Server Started on 37331
+http://localhost:37331
+    $
+testing...
+checking if user is logged in /api/test?username=mark&password=randomTask
+LoginAPIConsumerService key undefined { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true } } undefined { username: 'mark', password: 'randomTask' }
+
+ consumer not logged in
+>>>*>  Request _callback test (http://localhost:37331/api/test) (makeRequestToConsumerAPI_WithoutLoggingIn (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:358:19)) http://localhost:37331/api/test [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/api/test) {"msg":"user not logged in","success":false} (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: {"msg":"user not logged in","success":false}
+>>>*>  Object storeContents [as fx2] http://localhost:37331/api/test received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+404 for  test (http://localhost:37331/api/test) {"msg":"user not logged in","success":false}
+    $
+testing...
+checking if user is logged in /api/logout
+LoginAPIConsumerService key undefined { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true } } undefined {}
+
+ consumer not logged in
+404 for  test (http://localhost:37331/api/logout) { msg: 'user not logged in', success: false }
+>>>*>  Request _callback test (http://localhost:37331/api/logout) (testLateAddedRoute (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:328:27)) http://localhost:37331/api/logout [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/api/logout) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'user not logged in', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:37331/api/logout received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+    $
+testing...
+login check 2 true /api/logout
+topMiddleware_BlockUsersWithoutSessions logged in... /api/logout
+404 for  test (http://localhost:33031/api/logout) Cannot POST /api/logout
+
+>>>*>  Request _callback test (http://localhost:33031/api/logout) (testLoginAction (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:172:23)) http://localhost:33031/api/logout [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/logout) Cannot POST /api/logout
+ (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: Cannot POST /api/logout
+
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/logout received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+    $
+testing...
+login check 2 true /api/logout
+topMiddleware_BlockUsersWithoutSessions logged in... /api/logout
+404 for  test (http://localhost:33031/api/logout) Cannot POST /api/logout
+
+body 'Cannot POST /api/logout
+'
+>>>*>  Request _callback test (http://localhost:33031/api/logout) (testLoginAction (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:180:23)) http://localhost:33031/api/logout [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/logout) Cannot POST /api/logout
+ (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: Cannot POST /api/logout
+
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/logout received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+logging in with mark randomTask2
+    $
+testing...
+-- someone is logging in
+Executing (default): SELECT `id`, `username`, `password`, `level`, `email`, `lastlogindate`, `lastloginip`, `status`, `title`, `firstname`, `lastname`, `createdip`, `lastPayment`, `paidExpiryDate`, `paymentTracker`, `passwordResetHash`, `identifier`, `apikey` FROM `users` AS `users` WHERE `users`.`username` = 'mark' AND `users`.`password` = '0fd78fd8db9f2455ccf8fdcc642ce04c' LIMIT 1;
+login check 2 true /api/login
+topMiddleware_BlockUsersWithoutSessions logged in... /api/login
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516196837,"key":"e18ec0aa4260edef16a4aae843194e64","username":"mark","user_id":271,"accountExpired":true}
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"__lastAccess":1455516198021,"key":"e18ec0aa4260edef16a4aae843194e64","username":"mark","user_id":271,"accountExpired":true}
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): START TRANSACTION;
+Executing (default): UPDATE `users` SET `lastlogindate`='2016-02-15 06:03:18' WHERE `id` = 271
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): SET autocommit = 1;
+save complete null
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): SELECT `id`, `data`, `updated_on` FROM `sessions` AS `sessions` WHERE `sessions`.`id` = 'e18ec0aa4260edef16a4aae843194e64' AND `sessions`.`data` = '{\"username\":\"mark\",\"user_id\":271,\"account_expired\":true}';
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): INSERT INTO `sessions` (`id`,`data`,`updated_on`) VALUES ('e18ec0aa4260edef16a4aae843194e64','{\"username\":\"mark\",\"user_id\":271,\"account_expired\":true}','2016-02-15 06:03:18');
+>>>*>  Request _callback test (http://localhost:33031/api/login) (login_withBadUsername (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:155:23)) http://localhost:33031/api/login [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:33031/api/login) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success',
+  success: true,
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  user_id: 271 }
+>>>*>  Object storeContents [as fx2] http://localhost:33031/api/login received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+Executing (0c399c1f-1726-4895-8fca-9d3597fc2259): COMMIT;
+logging in with { msg: 'success',
+  success: true,
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  user_id: 271 }
+    $
+testing...
+checking if user is logged in /test2
+LoginAPIConsumerService key undefined { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true } } undefined {}
+
+ consumer not logged in
+404 for  test (http://localhost:37331/test2) {"msg":"user not logged in","success":false}
+>>>*>  Request _callback test (http://localhost:37331/test2) (testLateAddedRoute_EnsuresConsumerHelperGuardsPreExistingRoutes (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:372:19)) http://localhost:37331/test2 [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/test2) {"msg":"user not logged in","success":false} (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: {"msg":"user not logged in","success":false}
+>>>*>  Object storeContents [as fx2] http://localhost:37331/test2 received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+    $
+testing...
+isUser { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true } } undefined
+checking if user is logged in /api/verify?key=e18ec0aa4260edef16a4aae843194e64
+
+ /api/verify sent session key e18ec0aa4260edef16a4aae843194e64
+Producer: api verify /api/verify?key=e18ec0aa4260edef16a4aae843194e64 e18ec0aa4260edef16a4aae843194e64
+login check 2 true /api/verify?key=e18ec0aa4260edef16a4aae843194e64
+topMiddleware_BlockUsersWithoutSessions logged in... /api/verify?key=e18ec0aa4260edef16a4aae843194e64
+Executing (default): SELECT `id`, `data`, `updated_on` FROM `sessions` AS `sessions` WHERE `sessions`.`id` = 'e18ec0aa4260edef16a4aae843194e64';
+setting path on session to  /home/user/trash/vidserv/login_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"}}
+isUserLoggedInAtMainCreateLocalSession result { msg: 'success',
+  success: true,
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  username: 'mark',
+  user_id: 271,
+  account_expired: true }
+{ cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  account_expired: true } '...' '7'
+setting path on session to  /home/user/trash/vidserv/test_login_consumer_api_sessions {"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"key":"e18ec0aa4260edef16a4aae843194e64","account_expired":true}
+>>>>>>>>>>>>>>>>account is expired .......
+headers undefined undefined
+>>>*>  Request _callback test (http://localhost:37331/api/verify?key=e18ec0aa4260edef16a4aae843194e64) (tryVerify_LoginUserToRemoveAPI (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:381:19)) http://localhost:37331/api/verify?key=e18ec0aa4260edef16a4aae843194e64 [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/api/verify?key=e18ec0aa4260edef16a4aae843194e64) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'success', success: true }
+>>>*>  Object storeContents [as fx2] http://localhost:37331/api/verify?key=e18ec0aa4260edef16a4aae843194e64 received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+what is body { msg: 'success', success: true }
+    $
+testing...
+checking if user is logged in /api/test
+LoginAPIConsumerService key e18ec0aa4260edef16a4aae843194e64 { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  account_expired: true,
+  __lastAccess: 1455516198081 } undefined {}
+isUser { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  account_expired: true,
+  __lastAccess: 1455516198081 } true
+>>>*>  Request _callback test (http://localhost:37331/api/test) (tryRouteAFterVerify (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:390:19)) http://localhost:37331/api/test [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/api/test) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'account expired', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:37331/api/test received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+404 for  test (http://localhost:37331/api/test) { msg: 'account expired', success: false }
+    $
+testing...
+checking if user is logged in /test2
+LoginAPIConsumerService key e18ec0aa4260edef16a4aae843194e64 { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  account_expired: true,
+  __lastAccess: 1455516198081 } undefined {}
+>>>*>  Request _callback test (http://localhost:37331/test2) (testLateAddedRoute (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:401:19)) http://localhost:37331/test2 [object Object]  (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:178:17)
+>>>*>  Request _callback 	 test (http://localhost:37331/test2) [object Object] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:213:21)
+	body contents: { msg: 'account expired', success: false }
+isUser { cookie:
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'e18ec0aa4260edef16a4aae843194e64',
+  account_expired: true,
+  __lastAccess: 1455516198081 } true
+404 for  test (http://localhost:37331/test2) { msg: 'account expired', success: false }
+>>>*>  Object storeContents [as fx2] http://localhost:37331/test2 received result ok... (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:71:22)
+    ^E
+/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/shelpers.js:716
+    throw(e);
+          ^
+Error: user was able to communicate without trying
+    at result (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:404:23)
+    at Object.storeContents [as fx2] (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:83:21)
+    at Request._callback (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/TestHelper.js:237:42)
+    at Request.self.callback (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/request/request.js:368:22)
+    at Request.emit (events.js:110:17)
+    at Request.<anonymous> (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/request/request.js:1219:14)
+    at Request.emit (events.js:129:20)
+    at IncomingMessage.<anonymous> (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/request/request.js:1167:12)
+    at IncomingMessage.emit (events.js:129:20)
+    at _stream_readable.js:908:16
+    at process._tickCallback (node.js:355:11)
+
+from
+    at CredentialServerQuickStartHelper.runFunctionalTestCredentialServers (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:567:9)
+    at CredentialServerQuickStartHelper.setupCredentialProducerAndConsumer (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:121:14)
+    at CredentialServerQuickStartHelper.testCredentialsServer (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/CredentialServerQuickStartHelper.js:76:14)
+    at UserServer.defineCredentialServer_Settings (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:348:18)
+    at UserServer.createCredentialServer (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:90:14)
+    at UserServer.createSessionsDirs (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:80:14)
+    at UserServer.loadSettings (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:40:14)
+    at UserServer.init (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:31:14)
+    at Object.<anonymous> (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/user_server.js:367:7)
+    at Module._compile (module.js:460:26)
+    at Object.Module._extensions..js (module.js:478:10)
+
+via
+    at Object.assert (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:175:39)
+    at EasyRemoteTester.assert (/media/psf/Dropbox/projects/ritv2/videoproject/Code/node_scripts/credentials_server/node_modules/shelpers/lib/EasyRemoteTester.js:262:25)
+
+Process finished with exit code 1

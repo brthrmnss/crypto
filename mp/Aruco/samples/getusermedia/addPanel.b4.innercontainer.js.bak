@@ -1,0 +1,360 @@
+/**
+ * Created by user1 on 10/24/2014.
+ */
+
+
+var globalSettings = {}
+globalSettings.annotations = {}
+var markerAnnotations  ={}
+globalSettings.annotations = markerAnnotations;
+
+/**
+ * Object that stores annotation types
+ * @type {{}}
+ */
+var types = {}
+types.HANDLEBARS = 'HANDLEBARS'
+types.IMAGES = 'IMAGES'
+/**
+ * Add a text element ....
+ * @type {string}
+ */
+types.TEXT = 'TEXT'
+
+
+
+mA = markerAnnotations;
+mA[808]={
+    type:'image',
+    data:'image.png'
+}
+
+mA[605]={
+    type:'image',
+    data:'image.png',
+    rotateX:90
+}
+
+
+function AnotMaster() {
+    var p = AnotMaster.protype;
+    var p = this;
+    var self = this;
+
+    p.drawMarkers = function drawMarkers(markers) {
+
+    }
+
+    p.drawMarker = function drawMarker(marker) {
+
+    }
+
+    /**
+     * Convert marker coordinates into 3d post
+     * @param marker
+     */
+    p.getPose = function getPose(marker) {
+        var marker =  markers[i]
+        //continue;
+        corners = marker.corners;
+        corners = JSON.parse(JSON.stringify(corners))
+        for (y = 0; y < corners.length; ++y) {
+            corner = corners[y];
+
+            corner.x = corner.x - (canvas.width / 2);
+            corner.y = (canvas.height / 2) - corner.y;
+        }
+
+        var pose = posit.pose(corners);
+    }
+
+    /**
+     * Inner methods will draw the marker, using
+     * various methods
+     */
+    function defineDrawingFunctions() {
+        p.drawMarker2D = function drawMarker2D(marker) {
+            var pose = self.getPose(marker)
+            var annotation = self.getAnnotation(marker.id)
+        }
+
+        p.drawMarker3D = function drawMarker2D(marker) {
+            var pose = self.getPose(marker)
+
+        }
+
+        p.drawMarkerThreeJS = function drawMarkerThreeJS(marker) {
+            var pose = self.getPose(marker)
+
+        }
+    }
+
+    /**
+     * Get specified annotation for marker id
+     * @param marker
+     */
+    p.getAnnotation = function getAnnotation(markerId) {
+        var annotation =globalSettings.annotations[markerId]
+        //TODO: what actions are required to render component
+        return annotation;
+    }
+
+    /**
+     * Get specified annotation for marker id
+     * @param marker
+     */
+    p.drawAnnotation = function drawAnnotation(annotation) {
+        var annotation =globalSettings.annotations[marker_id]
+        return annotation;
+    }
+
+    p.loadFakeAnnotation = function loadFakeAnnotation(markerId){
+
+    }
+
+
+
+    p.addMarker = function addMarker(marker, drawSettings){
+        var markerId = marker.id;
+
+        if ( drawSettings == null ) {
+            drawSettings = {}
+            self.drawMarker2D(marker);
+        }
+        if ( drawSettings.twoD   ) {
+            self.drawMarker2D(marker);
+        }
+        if ( drawSettings.threeD   ) {
+            self.drawMarker3D(marker);
+        }
+        if ( drawSettings.threeJS   ) {
+            self.drawMarkerThreeJS(marker);
+        }
+    }
+
+
+
+}
+
+
+/**
+ * Underscore template
+ * 
+ * @param markers
+ */
+
+/**
+ * Copy of original drawId, but understands the marker id
+ * @param markers
+ */
+function drawId(markers){
+    if ( context == null ) {
+     //   context = context.getdf();
+    }
+    var corners, corner, x, y, i, j;
+
+    context.strokeStyle = "blue";
+    context.lineWidth = 1;
+
+    for (i = 0; i !== markers.length; ++ i){
+        corners = markers[i].corners;
+        var marker = markers[i];
+        drawMarkerAnnotation(marker.id)
+        x = Infinity;
+        y = Infinity;
+
+        for (j = 0; j !== corners.length; ++ j){
+            corner = corners[j];
+
+            x = Math.min(x, corner.x);
+            y = Math.min(y, corner.y);
+        }
+
+        context.strokeText(markers[i].id, x, y)
+    }
+}
+
+/**
+ * Take a marker and draws the annotations
+ * @param markers
+ */
+function drawMarkerAnnotation(marker) {
+    if ( marker == null) {
+        return
+    }
+
+    var annotation = globalSettings.annotations[marker.id];
+    var pose2D = get2DPose(marker)
+    var pose3D = get2DPose(marker)
+
+    if ( annotation.type == types.IMAGE ) {
+        //add to canvas image
+    }
+    if ( annotation.type == types.HANDLEBARS ) {
+        //add to canvas image
+    }
+}
+
+function drawPose() {
+
+}
+
+function drawPoint(x,y,z, rY, rX, rZ , w,h) {
+    //http://westciv.com/tools/3Dtransforms/
+    document.getElementById("outerContainer").style.color = "blue";
+
+    var transform = ''
+
+    var xOffset = 0
+    //xOffset = -165
+     var yOffset =  0
+    // xOffset = -150
+    var translateX = (w*.5)  + x + xOffset
+
+    var translateX = (w*.5)  + (x/z)*(w) + xOffset
+
+
+
+    var translateY = (h*.5)  - y + yOffset
+
+    //  var yCenter =
+    //        var xCenter =
+
+    translateY = (h*.5)  - (y/z)*(h) + yOffset
+
+
+
+
+    var feet = z/150;
+    var dHeight = feet*7;
+    var dWidth = feet*7;
+
+    var zPrime = z-50
+    var zZ = 1/zPrime
+    dWidth =zZ *  h*.90
+    dHeight = dWidth;
+
+
+    //y = 9.315088069·10-5 x2 - 1.534477235·10-1 x + 50
+
+    //http://www.xuru.org/rt/PR.asp#CopyPaste
+    var eqXx = z;
+    //7.083833086·10-4 x2 - 9.253516337·10-1 x + 301.5039284
+    var ratio =( 9.315088069*Math.pow(10,-4)* Math.pow(eqXx ,2) ) -  eqXx*Math.pow(10,-1)  + 50
+
+
+
+    dWidth = ratio * h*.01
+    var ratio =(  6.935096645*Math.pow(10,-4)* Math.pow(eqXx ,2) ) - 9.163019615 * eqXx*Math.pow(10,-1)  + 301
+    dWidth = ratio*1 //20
+
+    dHeight = dWidth = ratio*2
+    dHeight = dWidth;
+
+
+    /*
+     80  250
+     408 60
+     334 9.14
+     600 40
+     900 25
+     */
+    //0.80/50 = .04/900
+
+    //translateX -= dWidth*.3
+    //translateY -= dWidth*1.05
+
+    //add offset , but needs to be in a manner that makes sense
+    if ( translateX > 0 ) {
+        translateX -= dWidth * .5
+    } else   {
+       // translateX += dWidth * .5
+    }
+
+    if ( translateY > 0 ) {
+        translateY -= dWidth * .5
+    } else   {
+       // translateY += dWidth * .5
+    }
+   // translateY -= dWidth*.5
+
+
+     transform += "translateX("+translateX+"px) ";
+     transform += "translateY("+translateY+"px) ";
+
+
+
+    var translateZ =  -0//(480*.5)  - 100
+    translateZ  = z*-1
+    translateZ =  -0
+
+    //translateZ -=  200
+    transform += "translateZ("+translateZ+"px) ";
+
+    var perspective =  2//(480*.5)  - 100
+    // document.getElementById("demodd").style.transform = "perspective("+perspective+")";
+    //    transform += "perspective("+perspective+"px)";
+
+
+    var innerTransform = ''
+    //http://theboredengineers.com/2012/05/the-quadcopter-basics/
+    var rotateX = -0
+    rotateX = rX
+    var rotateY = rY
+    var rotateZ =  rZ
+
+    //rotateY = 0
+    //identify
+    //rotateX = 0 //pushing back like card deck
+    //rotateY = 50 //spinnign on vertical axis
+    //rotateZ = 50 //spinning around z axis
+
+   //  rotateX += 20
+   // transform += "rotateX("+90+"deg) ";
+    innerTransform += "rotateX("+rotateX+"deg) ";
+
+    innerTransform += "rotateY("+rotateY+"deg) ";
+
+    innerTransform += "rotateZ("+-rotateZ+"deg) ";
+
+
+
+    function addDiv(){
+
+        return
+        /*
+        <div class="Center-Container">
+            <div class="Center-Block Absolute-Center">
+                <h4 class="Title">Absolute Center,<br>Within Container.</h4>
+                    <p>          This box is absolutely centered, horizontally and vertically, within its container using <br><code>position: relative</code></p></div>
+                    <p></p></div>
+                */
+
+    }
+
+
+    //var transformO = -55
+    //  document.getElementById("innerContainer").style.transformOrigin="0 0";
+    //  document.getElementById("innerContainer").style.transformOrigin=translateX+100 + "px " + translateY
+    document.getElementById("innerContainer").style.transformOrigin="100 0"
+    document.getElementById("innerContainer").style.transformOrigin=translateX + " " + translateY
+    document.getElementById("innerContainer").style.transformOrigin=0 + " " + 0
+    //  document.getElementById("innerContainer").style.transformOrigin=w/2 + " " + h/2
+    // document.getElementById("innerContainer").style.transformOrigin=x + " " + y
+    //http://www.w3schools.com/cssref/css3_pr_perspective.asp
+    //http://css-tricks.com/almanac/properties/p/perspective/
+    var perspective =  10000//(480*.5)  - 100
+    //var btransform = "perspective("+perspective+"px)";
+
+    document.getElementById("canvasBackboard").style.perspective = perspective
+
+    document.getElementById("outerContainer").style.transform = transform
+
+    document.getElementById("innerContainer").style.transform = innerTransform
+
+
+    document.getElementById('innerContainer').style.width= dWidth+'px';
+    document.getElementById('innerContainer').style.height= dHeight+'px';
+    //   document.getElementById("outerContainer").setAttribute("style","width:50px");
+    // document.getElementById("outerContainer").setAttribute("style","width:50px");
+}

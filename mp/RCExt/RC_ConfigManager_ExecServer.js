@@ -12,7 +12,7 @@ var sh = require('shelpers').shelpers;
 var PromiseHelperV3 = shelpers.PromiseHelperV3;
 var EasyRemoteTester = shelpers.EasyRemoteTester;
 
-var fileScript = sh.fs.join(__dirname,'supporting', 'TestRCScripts.js');
+var fileScript = sh.fs.join(__dirname, 'supporting', 'TestRCScripts.js');
 var RCScripts = require(fileScript).RCScripts;
 
 var Workflow_ImportVidsAgain = require('./supporting/Workflow_ImportVidsAgain.js').Workflow_ImportVidsAgain
@@ -32,8 +32,8 @@ function RCConfigExecServer() {
     p.loadConfig = function loadConfig(config) {
         self.settings = config;
         config.port = sh.dv(config.port, 6018);
-        self.proc('go to ', 'http://localhost:'+ config.port);
-        self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'index.html'+indexPageSecurityEnding);
+        self.proc('go to ', 'http://localhost:' + config.port);
+        self.proc('go to ', 'http://' + sh.getIpAddress() + ':' + config.port + '/' + 'index.html' + indexPageSecurityEnding);
 
         config.port2 = config.port;
         config.port += 2; //express can use any available port, we will forward to it 
@@ -42,10 +42,13 @@ function RCConfigExecServer() {
         self.data.id = exports.RCExtV
         console.error('RCConfigExecServer', exports.RCExtV)
         //   asdf3g.f
-        self.data.dirDlManifests = sh.fs.makePath(__dirname,  'manifests')
+        self.data.dirDlManifests = sh.fs.makePath(__dirname, 'manifests')
         self.data.dirFileList = sh.fs.join(__dirname, 'data', 'fileList')
 
+
+
         // asd.g
+        self.runTests();
     }
 
     self.runServer = function runServer() {
@@ -58,9 +61,10 @@ function RCConfigExecServer() {
         app.use(function addCrossDomainMiddlware(req, res, next) {
             //asdf.g
             res.header("Access-Control-Allow-Origin", "*");
-            if ( req.headers.origin != null ) {
+            if (req.headers.origin != null) {
                 res.header("Access-Control-Allow-Origin", req.headers.origin);
-            };
+            }
+            ;
             res.header("Access-Control-Allow-Headers", "X-Requested-With");
             res.header("Access-Control-Allow-Headers", "Content-Type");
             res.header("Access-Control-Allow-Credentials", "true");
@@ -68,7 +72,7 @@ function RCConfigExecServer() {
             next();
         });
 
-        var bodyParser  = require("body-parser");
+        var bodyParser = require("body-parser");
         //var multer = require('multer');
 
         app.use(bodyParser.json({limit: '50mb'}));
@@ -78,10 +82,28 @@ function RCConfigExecServer() {
             extended: true
         }));
 
-        app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
+        app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse application/vnd.api+json as json
 
-        app.use(express.static(__dirname + '/'+'public_html'));
-        app.get('/C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js', function onReadFile (req, res) {
+        app.use(express.static( __dirname + '/' + 'public_html'));
+        //uiutils in local
+        var dirUIUtils = sh.require(
+            /*sh.fs.join('mp', 'testingFramework'),*/
+            'mp/testingFramework/',
+            true)
+        //console.log('ok, ', dirUIUtils)
+        //sh.x()
+        sh.fs.exists(dirUIUtils, 'wh not here')
+        app.use('/js/lib',express.static(dirUIUtils));
+        app.get('/js/lib/ui_utils.js', function onReadFile(req, res) {
+            var content = sh.readFile(dirUIUtils+'shelpers-mini.js')
+            res.send(content);
+        });
+        app.get('/js/lib/shelpers-mini.js', function onReadFile(req, res) {
+            var content = sh.readFile(dirUIUtils+'ui_utils.js')
+            res.send(content);
+        });
+
+        app.get('/C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js', function onReadFile(req, res) {
             var content = sh.readFile('C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework/ui_utils.js')
             res.send(content);
         });
@@ -92,42 +114,42 @@ function RCConfigExecServer() {
          sh.mkdirp(dirSaves);
          sh.writeFile(dirSaves + 'test.html', 'Test content <br /> ok ok ok ?');
          */
-        app.get('/readFile', function onReadFile (req, res) {
+        app.get('/readFile', function onReadFile(req, res) {
             var name = req.query.name;
-            var content = sh.readFile(dirSaves+name+'.html')
+            var content = sh.readFile(dirSaves + name + '.html')
             res.send(content);
 
         });
 
-        app.post('/saveFile', function onSaveFile (req, res) {
+        app.post('/saveFile', function onSaveFile(req, res) {
             var body = req.body;
             var name = body.name;
             var contents = body.body;
             //var name = req.params.name;
             console.log(req.body)
-            sh.writeFile(dirSaves+name+'.html', contents)
+            sh.writeFile(dirSaves + name + '.html', contents)
 
             res.send('Hello World!');
         });
 
 
-        app.get('/goToFile', function onReadFile (req, res) {
+        app.get('/goToFile', function onReadFile(req, res) {
             var name = req.query.file;
             name = name.replace('/media/sf_Dropbox', 'G:/Dropbox/')
             console.log(name)
             var opened = false;
-            if ( sh.fs.exists(name) ) {
-                if ( sh.fs.isDir(name)) {
-                    sh.run('start "" '+sh.qq(name))
-                    opened  = true
+            if (sh.fs.exists(name)) {
+                if (sh.fs.isDir(name)) {
+                    sh.run('start "" ' + sh.qq(name))
+                    opened = true
                 } else {
                     var dir = sh.fs.goUpOneDir(name)
-                    sh.run('start "" '+sh.qq(name))
+                    sh.run('start "" ' + sh.qq(name))
                     opened = true
                 }
             }
 
-            if ( opened == false ) {
+            if (opened == false) {
                 res.status(404)
                 res.send('no found ' + name)
                 return;
@@ -147,45 +169,45 @@ function RCConfigExecServer() {
 
             var j = new JSONFileHelper();
             var config = {};
-            config.file = __dirname + '/'+'recent_files.json';
+            config.file = __dirname + '/' + 'recent_files.json';
             j.init(config);
             self.data.j = j;
 
-            app.post('/saveFile', function onSaveFile (req, res) {
+            app.post('/saveFile', function onSaveFile(req, res) {
                 var body = req.body;
                 var name = body.name;
                 var contents = body.body;
                 //var name = req.params.name;
                 console.log(req.body);
-                var fileJSON = dirSaves+name+'.html';
+                var fileJSON = dirSaves + name + '.html';
                 sh.writeFile(fileJSON, contents);
 
 
                 var bookJSON = {
-                    file:fileJSON,
-                    name:name
+                    file: fileJSON,
+                    name: name
                 }
                 self.data.j.addRecent(bookJSON, true, 'file');
 
                 res.send('Hello World!');
             });
 
-            app.get('/removeFile', function onRemoveFile (req, res) {
+            app.get('/removeFile', function onRemoveFile(req, res) {
                 var body = req.query;
                 var name = body.name;
-                var fileJSON = dirSaves+name+'.html';
+                var fileJSON = dirSaves + name + '.html';
                 self.proc('removing', name)
 
                 var bookJSON = {
-                    file:fileJSON,
-                    name:name
+                    file: fileJSON,
+                    name: name
                 }
                 self.data.j.removeRecent(bookJSON, 'file');
 
                 res.send('removed');
             });
 
-            app.get('/listFiles', function onSaveFile (req, res) {
+            app.get('/listFiles', function onSaveFile(req, res) {
 
                 var files = [];//self.utils.getfilesInDir();
 
@@ -198,12 +220,13 @@ function RCConfigExecServer() {
                 var contents = body.body;
                 //var name = req.params.name;
                 console.log(req.body)
-                sh.writeFile(dirSaves+name+'.html', contents)
+                sh.writeFile(dirSaves + name + '.html', contents)
 
                 res.send('Hello World!');
             });
 
         }
+
         defineResumeMethods();
 
 
@@ -212,87 +235,150 @@ function RCConfigExecServer() {
 
             var j = new JSONFileHelper();
             var config = {};
-            config.file = __dirname + '/'+'recent_tasks.json';
+            config.file = __dirname + '/' + 'recent_tasks.json';
             config.propUpsert = 'name';
-
 
 
             j.init(config);
             self.data.j2 = j;
 
-            app.post('/saveTask', function onSaveFile (req, res) {
+            app.post('/saveTask', function onSaveFile(req, res) {
                 var body = req.body;
                 var name = body.name;
                 var contents = body.body;
                 //var name = req.params.name;
                 console.log('why?', name, body);
 
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
+                var fileJSON = sh.fs.join(__dirname, 'tasks', name + '.json')
                 sh.fs.mkdirp(fileJSON, true)
                 sh.writeJSONFile(fileJSON, contents)
 
                 //var fileJSON = dirSaves+name+'.html';
                 //sh.writeFile(fileJSON, contents);
                 var bookJSON = {
-                    contents:contents,
-                    name:name
+                    contents: contents,
+                    name: name
                 }
                 self.data.j2.addRecent(bookJSON, true, 'name');
                 res.send('Hello World!');
             });
 
-            app.get('/getTask', function getTask (req, res) {
+            app.get('/getTask', function getTask(req, res) {
                 var body = req.query;
                 var name = body.name;
-                self.proc('removing', name);
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
+
+                if ( name.endsWith('.json')==false) {
+                    name += '.json'
+                }
+                var fileJSON = sh.fs.join(__dirname, 'tasks', name  )
+                self.proc('getTask', name, fileJSON);
                 res.sendfile(fileJSON);
                 //res.send('removed');
             });
 
-            app.get('/removeTask', function onRemoveFile (req, res) {
+            app.get('/removeTask', function onRemoveFile(req, res) {
                 var body = req.query;
                 var name = body.name;
-                self.proc('removing', name)
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name+'.json')
+                self.proc('removingTasls', name)
+                if ( name.endsWith('.json')==false) {
+                    name += '.json'
+                }
+
+                var fileJSON = sh.fs.join(__dirname, 'tasks', name)
 
                 var bookJSON = {
-                    name:name  }
+                    name: name
+                }
                 removedresult = self.data.j2.removeRecent(bookJSON, 'name');
-                if ( removedresult ) {
+                if (removedresult) {
                     sh.fs.delete(fileJSON, true)
                 }
                 res.send('removed');
             });
 
-            app.get('/listTasks', function onSaveFile (req, res) {
+            app.get('/listTasks', function onSaveFile(req, res) {
                 var files = [];//self.utils.getfilesInDir();
                 files = self.data.j2.readFile();
                 res.json(files)
                 return;
             });
 
-        }
-        defineResumeMethods2();
+            var dirSaveNewTaskPath = sh.fs.join(__dirname, 'data', 'uploadTasks') //(app,)
+            sh.uploadFileHelper({
+                app: app,
+                uploadPath: '/uploadTask',
+                dirStore: dirSaveNewTaskPath,
+                fxDone: function onUploadedFile(file, bbb) {
+                    self.proc('file', file, bbb);
+                    self.newTask(file)
+                }
+            })
 
+
+
+
+            p.newTask  = function newTask(file) {
+                var fileDlManifest = file;
+                var leaf = sh.fs.leaf(file)
+                leaf = leaf.replace('.json', '')
+
+                var dirUploadedLists = sh.fs.join(__dirname, 'data', 'uploadedLists')
+                sh.fs.mkdirp(dirUploadedLists)
+                var fileUploadedManifest = sh.fs.join(dirUploadedLists, sh.fs.leaf(file))
+                var fileTask = sh.fs.join(__dirname, 'tasks', leaf )
+                //asdf.g
+                sh.fs.cp2(file, fileUploadedManifest ) ;
+
+                var json =  {
+                    "name": leaf,
+                    //"fileFileList": "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_6024_.txt",
+                    "listDlManifest": fileUploadedManifest,
+                    //"G:\\Dropbox\\projects\\crypto\\ritv/imdb_movie_scraper/IMDB_App_Output/dlListsWrapC/List ls Ids_ls05139_11.json",
+                    "props": {
+                        "upload from a file": new Date(),
+                    }
+                }
+
+                //store json
+                sh.writeJSONFile(fileTask, json)
+
+
+                self.utils.storeConfig(leaf, fileTask);
+                //update recent
+            }
+
+
+
+            self.addTest(function onTestSavingFile() {
+                //G:\Dropbox\projects\crypto\mp\RCExt\data\uploadTasks\test_dl_manifest.json
+                var fileTestUpload = sh.fs.join(__dirname, 'testData', 'test_dl_manifest.json')
+                var orig = self.data.j2.settings.addToTop;
+                self.data.j2.settings.addToTop = false;
+                self.newTask( fileTestUpload);
+                self.data.j2.settings.addToTop = orig;
+            })
+
+        }
+
+        defineResumeMethods2();
 
 
         var file = 'mp/SpeakerJava2/SpeakServer/public_html/powershell/goto/OpenFileInWebstorm.js'
         var file2 = sh.require(file, true)
-        if ( sh.fs.exists(file2)) {
+        if (sh.fs.exists(file2)) {
             //asdf.g
             var OpenFileInWebstorm = sh.require(file)
-            .OpenFileInWebstorm
+                .OpenFileInWebstorm
             self.data.openFile = new OpenFileInWebstorm();
         }
 
 
-        app.get('/openFile', function openFile (req, res) {
+        app.get('/openFile', function openFile(req, res) {
             var body = req.query;
             var file = body.file;
             //var fileJSON = dirSaves+name+'.html';
             self.proc('...', file)
-            if ( file == null || file == 'undefined') {
+            if (file == null || file == 'undefined') {
                 res.send('abort')
                 return;
             }
@@ -305,20 +391,20 @@ function RCConfigExecServer() {
         });
 
 
-        app.get('/nudgetSocket', function nudgetSocket (req, res) {
+        app.get('/nudgetSocket', function nudgetSocket(req, res) {
             var body = req.query;
             var file = body.file;
             //var fileJSON = dirSaves+name+'.html';
             self.proc('... nudget socket', file)
-           
+
             self.socket
-            
+
             res.send('nudged ....');
         });
-        
+
         function defineVerifyStep() {
             //move to other server
-            app.get('/getFiles', function onGetFiles (req, res) {
+            app.get('/getFiles', function onGetFiles(req, res) {
                 //start here and move to socket in other server
 
 
@@ -327,16 +413,16 @@ function RCConfigExecServer() {
 
                 var dir3 =
 
-                    sh.async(dirs, function onEachDir(dir,fx) {
+                    sh.async(dirs, function onEachDir(dir, fx) {
 
-                    }, function onEachDirsDione(){
+                    }, function onEachDirsDione() {
                         res.send('onGetFiles');
                     })
 
                 return
             });
 
-            app.get('/listFiles', function onSaveFile (req, res) {
+            app.get('/listFiles', function onSaveFile(req, res) {
                 var files = [];
 
                 files = self.data.j.readFile();
@@ -348,14 +434,13 @@ function RCConfigExecServer() {
                 var contents = body.body;
                 //var name = req.params.name;
                 console.log(req.body)
-                sh.writeFile(dirSaves+name+'.html', contents)
+                sh.writeFile(dirSaves + name + '.html', contents)
 
                 res.send('Hello World!');
             });
 
 
-
-            app.get('/resetSockets', function resetSockets (req, res) {
+            app.get('/resetSockets', function resetSockets(req, res) {
                 var body = req.query;
                 var name = body.name;
                 self.proc('removing', name);
@@ -375,20 +460,21 @@ function RCConfigExecServer() {
                 var name = body.name;
                 self.proc('removing', name);
                 console.log('.............clear log..................')
-                sh.each.times(30, function onAdd(){
-                   console.log('')
+                sh.each.times(30, function onAdd() {
+                    console.log('')
                 })
                 res.send('clearLog');
             });
 
 
         }
+
         defineVerifyStep();
 
         //asdf.g
 
         self.active_server = app.listen(self.settings.port, function () {
-            console.log('Listening on ' +  self.settings.port)
+            console.log('Listening on ' + self.settings.port)
         });
 
         return self.active_server;
@@ -410,40 +496,42 @@ function RCConfigExecServer() {
         io.sockets.on('connection', function (socket) {
             console.log('new connnnn')
             self.pSocket = socket;
-            socket.emit('news', { hello: 'world' });
+            socket.emit('news', {hello: 'world'});
             socket.on('my other event', function (data) {
                 console.log(data);
             });
             /*socket.on('chat message', function (data) {
              console.log(data);
              });*/
-            socket.on('chat message', function(msg){
+            socket.on('chat message', function (msg) {
                 io.emit('chat message', msg);
             });
 
 
-            socket.on('runcmd', function onRunCmd(data){
-                self.proc('what is command', data.cmd, sh.toJSONString(data) )
+            socket.on('runcmd', function onRunCmd(data) {
+                self.proc('what is command', data.cmd, sh.toJSONString(data))
                 //  self.proc('cmd no match', data)
 
 
-                self.handleSocket(data, function onFinished (a,b,c) {
+                self.handleSocket(data, function onFinished(a, b, c) {
                     var result = {}
 
                     result.a = a;
                     /* if  ( sh.isObject(a) )  {
                      result = a; 
                      }*/
-                    result.b = b; result.c = c;
-                    if ( data.noreturn != true  ) {
+                    result.b = b;
+                    result.c = c;
+                    if (data.noreturn != true) {
                         var str = data.cmd + '' + '_results'
                         self.proc('socket handled ... str', str)
                         io.emit(str, result);
-                    };
+                    }
+                    ;
                 })
 
                 return
-                if ( data.noreturn != true  ) {
+                if (data.noreturn != true) {
                     var str = data.cmd + '' + '_results'
                     console.log('str', str)
                     io.emit(str, data);
@@ -457,18 +545,13 @@ function RCConfigExecServer() {
             })
 
 
-
-
-
-            socket.on('getLocalFiles', function onGetLocalFiles(data){
-                self.proc('what is command', data.cmd, sh.toJSONString(data) )
+            socket.on('getLocalFiles', function onGetLocalFiles(data) {
+                self.proc('what is command', data.cmd, sh.toJSONString(data))
 
                 socket.emit('getLocalFiles_results', 'cool');
 
                 return
             });
-
-
 
 
         });
@@ -477,74 +560,92 @@ function RCConfigExecServer() {
     }
 
 
-    var dirCrypto = __dirname + '/'+'../'+'../'
+    var dirCrypto = __dirname + '/' + '../' + '../'
 
     function defineCMD() {
         p.handleSocket = function handleSocket(data, fx) {
+
+
+            if ( sh.isWin() == false && data.fileManifest ) {
+                data.fileManifest =  sh.fs.slash(data.fileManifest)
+                //asdf.g
+                if ( data.fileManifest.includes('crypto/')) {
+                    data.fileManifest = sh.fs.join(__dirname,
+                        sh.str.after( data.fileManifest, 'RCExt' ) )
+
+                }
+            }
+           /// sh.fs.exists(fileDlRecManifest)
+
+
             console.log(data.cmd, 'cmd')
-            if ( data.cmd == 'searchpb'){
+            if (data.cmd == 'searchpb') {
                 self.cmds.searchPb(data, fx)
             }
-            if ( data.cmd == 'listids'){
+            if (data.cmd == 'listids') {
                 self.cmds.listids(data, fx)
             }
-            if ( data.cmd == 'makemani') {
+            if (data.cmd == 'makemani') {
                 console.log('..dfsd.')
-                var dirManifest = __dirname+'/'+'manifests/'
+                var dirManifest = __dirname + '/' + 'manifests/'
                 sh.makePathIfDoesNotExist(dirManifest);
 
                 sh.throwIfNull(data.title, 'need a title')
 
-                if ( data.file) {
+                if (data.file) {
 
                 }
-                if ( data.tor ) {
+                if (data.tor) {
                     var tors = [data.tor]
                 }
-                var fileDLManifest = sh.fs.join(dirManifest,data.title+'.json')
+                var fileDLManifest = sh.fs.join(dirManifest, data.title + '.json')
                 sh.writeJSONFile(fileDLManifest, tors)
                 self.proc('makemani', 'storing file here', fileDLManifest)
 
-                fx({fileDLManifest:fileDLManifest})
+                fx({fileDLManifest: fileDLManifest})
             }
-            if ( data.cmd == 'dlFileList'){
+            if (data.cmd == 'dlFileList') {
                 self.cmds.dlFileList(data, fx)
             }
-            if ( data.cmd == 'dlListTypeConfig'){
+            if (data.cmd == 'dlListTypeConfig') {
                 self.cmds.dlListTypeConfig(data, fx)
             }
 
-            if ( data.cmd == 'dlRemoteFileList'){
+            if (data.cmd == 'dlRemoteFileList') {
                 self.cmds.dlRemoteFileList(data, fx)
             }
+            if (data.cmd == 'dlRemoteFileListWithSizes') {
+                self.cmds.dlRemoteFileList(data, fx, true)
+            }
 
-            if ( data.cmd == 'taskCheckProgressLite'){
+            if (data.cmd == 'taskCheckProgressLite') {
                 self.cmds.taskCheckProgressLite(data, fx)
             }
 
-            if ( data.cmd == 'sanitizeFileList'){
+            if (data.cmd == 'sanitizeFileList') {
                 self.cmds.sanitizeFileList(data, fx)
             }
 
-            if ( data.cmd == 'importRecFile'){
+            if (data.cmd == 'importRecFile') {
                 self.cmds.importRecFile(data, fx)
             }
 
-            if ( data.cmd == 'uploadAndRun'){
+            if (data.cmd == 'uploadAndRun') {
                 self.cmds.uploadAndRun(data, fx)
             }
 
             return;
         };
     }
+
     defineCMD()
 
 
     function defineCmds() {
         p.cmds = {}
-        p.cmds.sendStatus = function sendStatus(msg,type,data1) {
+        p.cmds.sendStatus = function sendStatus(msg, type, data1) {
             var data = {};
-            if ( data1 ) {
+            if (data1) {
                 data = data1;
             }
             data.msg = msg;
@@ -567,16 +668,16 @@ function RCConfigExecServer() {
             options.pbCategory2 = token.pbCategory2;
             options.showAllMatches = true
 
-            if ( data.searchInCategory != null ) {
+            if (data.searchInCategory != null) {
                 options.pbCategory = data.searchInCategory;
             }
             options.pbMinSeederCount = token.pbMinSeederCount;
 
             var go = new SearchPB()
-            options.callback = function onDone(_urlTorrent, token){
+            options.callback = function onDone(_urlTorrent, token) {
                 token.urlTorrent = _urlTorrent;
                 self.proc('token.urlTorrent', token.query, _urlTorrent)
-                if ( token.testPbQuery ) {
+                if (token.testPbQuery) {
                     token.fxCallback()
                     return;
                 }
@@ -592,12 +693,12 @@ function RCConfigExecServer() {
                 //TODO: if have to add a 3rd category, store searchInCategory in array
                 //and verify each attempt
                 //feature: bookmark.searchAgain without category restrictions
-                if ( token.pbCategory != null ) {
-                    if ( token.pbCategory2 == null ) {
+                if (token.pbCategory != null) {
+                    if (token.pbCategory2 == null) {
                         bailOnQuery = true
                     } else {
-                        var haveSearchedCategory2 =  token.pbCategory2 == searchInCategory;
-                        if ( haveSearchedCategory2 == true ) {
+                        var haveSearchedCategory2 = token.pbCategory2 == searchInCategory;
+                        if (haveSearchedCategory2 == true) {
                             bailOnQuery = true
                         } else {
                             //retry
@@ -609,7 +710,7 @@ function RCConfigExecServer() {
                     bailOnQuery = true
                 }
 
-                if ( bailOnQuery  ) {
+                if (bailOnQuery) {
                     console.error('bailing bc', msg)
                     //  token.fxBail(msg)
                     fx(null, msg);
@@ -634,8 +735,8 @@ function RCConfigExecServer() {
                 fx.data.listIds = listIds;
 
                 fx.data.taskName = cmd.taskName;
-                if ( fx.data.taskName == null ) {
-                    fx.data.taskName = listIds[0]+listIds.length+'_more_'+sh.getTimeStamp();
+                if (fx.data.taskName == null) {
+                    fx.data.taskName = listIds[0] + listIds.length + '_more_' + sh.getTimeStamp();
                 }
                 console.log(sh.n)
                 console.log('list', fx.data);
@@ -645,27 +746,8 @@ function RCConfigExecServer() {
                 cb();
             }
 
-            self.utils.storeConfig = function storeConfig_ForRecent(name, file) {
-                //var fileConfig = sh.fs.makePath(__dirname, /*'../',*/ 'configs', name+'')
-                // sh.fs.copy(file, fileConfig, true)
 
-                var fileConfig = sh.fs.makePath(__dirname,  'manifests', name+'.json');
-                self.proc('copy', file, 'to', fileConfig);
-                sh.fs.copy(file, fileConfig, true);
-
-
-                var bookJSON = {
-                    file:fileConfig,
-                    created_at:new Date(),
-                    name:name
-                }
-                self.data.j.addRecent(bookJSON, true, 'file');
-                //self.data.j.addRecent(j)
-
-            }
-
-
-            var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/'+
+            var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/' +
                 'wrappers/imdb_app_v3_wrapper.js'
             var ConvertXToIMDB_PB_List = require(dirScript).ConvertXToIMDB_PB_List
 
@@ -696,7 +778,7 @@ function RCConfigExecServer() {
                     console.log('finished with lax', file);
                     self.utils.storeConfig(fx.data.taskName, file);
                     fx.data.fileDLManifest = file;
-                    var fileMissing = file+'.missing.json';
+                    var fileMissing = file + '.missing.json';
                     //clear
                     self.proc('do have file', sh.fs.exists(fileMissing), fileMissing)
                     sh.fs.delete(fileMissing, true)
@@ -710,7 +792,7 @@ function RCConfigExecServer() {
             }
             fH.storeInFile = function storeInFile(token, cb) {
                 self.proc('storeInFile', fx.data.fileDLManifest)
-                fx({fileDLManifest:fx.data.fileDLManifest});
+                fx({fileDLManifest: fx.data.fileDLManifest});
                 //create manifest and return manifest name
                 cb();
             }
@@ -732,10 +814,8 @@ function RCConfigExecServer() {
             return;
 
 
-
             var dirScript = dirCrypto + '/ritv/distillerv3/utils/SearchPB.js'
             var SearchPB = require(dirScript).SearchPB
-
 
 
             var token = {};
@@ -748,23 +828,23 @@ function RCConfigExecServer() {
             options.pbCategory2 = token.pbCategory2;
             options.showAllMatches = true
 
-            if ( data.searchInCategory != null ) {
+            if (data.searchInCategory != null) {
                 options.pbCategory = data.searchInCategory;
             }
             options.pbMinSeederCount = token.pbMinSeederCount;
 
             var go = new SearchPB()
-            options.callback = function onDone(_urlTorrent, token){
+            options.callback = function onDone(_urlTorrent, token) {
                 token.urlTorrent = _urlTorrent;
                 self.proc('token.urlTorrent', token.query, _urlTorrent)
-                if ( token.testPbQuery ) {
+                if (token.testPbQuery) {
                     token.fxCallback()
                     return;
                 }
                 var result = {}
                 //  result.title = token.title;
                 //  result.urlMagnet = token.urlMagnet;
-                    ,   result = token.selectedLink;
+                    , result = token.selectedLink;
                 fx(result, token.linkz);
             }
             options.fxBail = function bailX(msg) {
@@ -773,12 +853,12 @@ function RCConfigExecServer() {
                 //TODO: if have to add a 3rd category, store searchInCategory in array
                 //and verify each attempt
                 //feature: bookmark.searchAgain without category restrictions
-                if ( token.pbCategory != null ) {
-                    if ( token.pbCategory2 == null ) {
+                if (token.pbCategory != null) {
+                    if (token.pbCategory2 == null) {
                         bailOnQuery = true
                     } else {
-                        var haveSearchedCategory2 =  token.pbCategory2 == searchInCategory;
-                        if ( haveSearchedCategory2 == true ) {
+                        var haveSearchedCategory2 = token.pbCategory2 == searchInCategory;
+                        if (haveSearchedCategory2 == true) {
                             bailOnQuery = true
                         } else {
                             //retry
@@ -790,7 +870,7 @@ function RCConfigExecServer() {
                     bailOnQuery = true
                 }
 
-                if ( bailOnQuery  ) {
+                if (bailOnQuery) {
                     console.error('bailing bc', msg)
                     //  token.fxBail(msg)
                     fx(null, msg);
@@ -806,7 +886,7 @@ function RCConfigExecServer() {
             //dl file
             //put in fileOutput dir
 
-            var t = EasyRemoteTester.create('Dl List',{});
+            var t = EasyRemoteTester.create('Dl List', {});
             var data = {};
             var urls = {};
             urls.notes = {};
@@ -822,8 +902,8 @@ function RCConfigExecServer() {
             fileFileList = sh.fs.join(self.data.dirFileList, fileFileList)
 
             t.add(function dlFile() {
-                    t.quickRequest(  urls.file,
-                        'get', onResult )
+                    t.quickRequest(urls.file,
+                        'get', onResult)
                     function onResult(body) {
 
                         self.proc('saving file to ', fileFileList)
@@ -845,7 +925,7 @@ function RCConfigExecServer() {
             //dl file
             //put in fileOutput dir
 
-            var t = EasyRemoteTester.create('Dl List',{});
+            var t = EasyRemoteTester.create('Dl List', {});
             var data = {};
             var urls = {};
             urls.notes = {};
@@ -861,8 +941,8 @@ function RCConfigExecServer() {
             fileFileList = sh.fs.join(self.data.dirFileList, fileFileList)
 
             t.add(function dlFile() {
-                    t.quickRequest(  urls.file,
-                        'get', onResult )
+                    t.quickRequest(urls.file,
+                        'get', onResult)
                     function onResult(body) {
 
                         self.proc('saving file to ', fileFileList)
@@ -879,15 +959,15 @@ function RCConfigExecServer() {
         }
 
 
-
     }
+
     defineCmds();
 
 
     function defineCrossCmds() {
-        p.cmds.dlRemoteFileList = function dlRemoteFileList(cmd, fx) {
+        p.cmds.dlRemoteFileList = function dlRemoteFileList(cmd, fx, withSizes) {
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
-            var fileScript = sh.fs.join(__dirname, 'supporting','WorkflowGetFilesFromRemoteMachine.js');
+            var fileScript = sh.fs.join(__dirname, 'supporting', 'WorkflowGetFilesFromRemoteMachine.js');
             var GetFileListFromRemote = require(fileScript).GetFileListFromRemote;
 
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
@@ -895,10 +975,13 @@ function RCConfigExecServer() {
             var data = cmd;
 
             var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
-            var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+            var fileFileList = sh.fs.join(self.data.dirFileList, cmd.fileFileList);
 
             //self.cmds.sendStatus('running dlRemoteFileList');
             var type = 'dlRemoteFileList'
+            if ( withSizes ) {
+                type+='WithSizes'; //dlRemoteFileListWithSizes
+            }
             self.cmds.sendStatus('running dlRemoteFileList', type);
 
             var instance = new GetFileListFromRemote();
@@ -907,7 +990,7 @@ function RCConfigExecServer() {
             //config.port = '6014'
 
             config.socket = self.data.socketBreed;
-            if ( cmd.url ) {
+            if (cmd.url) {
                 self.proc('port ip set')
                 var split = cmd.url.split(':')
                 config.ip = split[0];
@@ -917,11 +1000,12 @@ function RCConfigExecServer() {
             config.ip = data.ip;
             config.port = data.port;
 
+            if ( withSizes ) {
+                config.withSizes = true;
+            }
 
 
-
-
-            if ( data.initGFFRM ) {
+            if (data.initGFFRM) {
                 self.proc('data.initGFFRM', '... ... ...')
                 config.initGFFRM = data.initGFFRM;
             }
@@ -929,24 +1013,26 @@ function RCConfigExecServer() {
             config.fxDone = function fxDone(file, dataResult) {
                 //console.log('...', 'y')
                 self.proc('sending a result back.....')
+               // console.log('-----------------what is reuslt', dataResult, 'ok')
                 // self.cmds.sendStatus('done dlRemoteFileList '+ file);
 
-                if ( instance.data.socket && self.data.socketBreed == null ) {
+                if (instance.data.socket && self.data.socketBreed == null) {
                     self.data.socketBreed = instance.data.socket;
                 }
 
+                var output = {};
+                output.data = file;
                 /// self.cmds.sendStatusType('dlRemoteFileList')
-                self.cmds.sendStatus('done dlRemoteFileList '+ file,  type);
+                self.cmds.sendStatus('done dlRemoteFileList ' + file, type, output);
 
-                if ( data.initGFFRM ) {
-                    self.cmds.sendStatus('done dlRemoteFileList '+ file,  'initGFFRM', dataResult);
+                if (data.initGFFRM) {
+                    self.cmds.sendStatus('done dlRemoteFileList ' + file, 'initGFFRM', dataResult);
                 }
             }
             instance.init(config)
 
 
         }
-
 
 
         p.cmds.taskCheckProgressLite = function taskCheckProgressLite(cmd, fx) {
@@ -956,14 +1042,17 @@ function RCConfigExecServer() {
 
             var fileDlManifest = cmd.fileManifest
             //  var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
-            if ( fileDlManifest.includes('/') == false &&  fileDlManifest.includes('\\') == false  ) {
-                var fileDlManifest = sh.fs.join(self.data.dirDlManifests,  cmd.fileManifest);
+            if (fileDlManifest.includes('/') == false && fileDlManifest.includes('\\') == false) {
+                var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
             }
 
             var fileFileList = cmd.fileFileList
             console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
-            if ( fileFileList.includes('/') == false &&  fileFileList.includes('\\') == false  ) {
-                var fileFileList = sh.fs.join(self.data.dirFileList,  cmd.fileFileList);
+            if ( fileFileList ) {
+                console.log('...', '')
+            }
+            if (fileFileList.includes('/') == false && fileFileList.includes('\\') == false) {
+                var fileFileList = sh.fs.join(self.data.dirFileList, cmd.fileFileList);
             }
 
             console.log('fileFileList', '------------', fileFileList)
@@ -977,18 +1066,15 @@ function RCConfigExecServer() {
                 output.itemsValid = null;
                 output.itemsFound = null;
                 output.lines = output.lines.length
-                output.result = 'found '+output.foundCount;
+                output.result = 'found ' + output.foundCount;
                 // sh.throwIf(output.foundCount != 2, 'did not match write count of items');
                 fx(output);
                 self.cmds.sendStatus('done with  ' +
-                    type + ' '+ output.foundCount, type, output);
+                    type + ' ' + output.foundCount, type, output);
             });
 
             return;
         }
-
-
-
 
 
         p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
@@ -996,11 +1082,11 @@ function RCConfigExecServer() {
                 exports.RCExtV, self.data.id)
             //why: will import files into db, 
             //will search manifest for files in db 
-            
+
             //2 check globally for path of file
             //make test dmoe file 
             //see if it can find fake demo file 
-            
+
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
 
             //var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
@@ -1028,13 +1114,12 @@ function RCConfigExecServer() {
             self.cmds.sendStatus('running sanitizeFileList', type);
 
 
-            
             var cfg = {}
 
             cfg.fileList = fileFileList
             cfg.fileManifest = fileDlManifest
 
-            cfg.fxDone =  function onDone(output) {
+            cfg.fxDone = function onDone(output) {
                 console.log('found how many?', output.foundCount);
                 output.itemsValid = null;
                 output.itemsFound = null;
@@ -1045,30 +1130,30 @@ function RCConfigExecServer() {
 
 
                 if (self.data.createFilteredList) {
-                    var fileDlRecManifest=fileDlManifest+'.recipet.json'
+                    var fileDlRecManifest = fileDlManifest + '.recipet.json'
                 }
 
                 console.log('xoutput', outputLite)
 
                 fx(output);
-                self.cmds.sendStatus('done with sanitizeFileList '+ output.foundCount, type, outputLite);
+                self.cmds.sendStatus('done with sanitizeFileList ' + output.foundCount, type, outputLite);
             }
             //cfg.searchGlobalAllServers = true;
 
-/*
-            cfg.checkFileSizes = true; //import the size in the filelist 
-            //make dl list get the import dl list
-            cfg.checkForIMDB = true; //
-            cfg.checkForFilePath = true; //match if ay portion is in file name ///so it would not concern with the end of file name ... 
-            //that's enough 
-            */
-            
+            /*
+             cfg.checkFileSizes = true; //import the size in the filelist
+             //make dl list get the import dl list
+             cfg.checkForIMDB = true; //
+             cfg.checkForFilePath = true; //match if ay portion is in file name ///so it would not concern with the end of file name ...
+             //that's enough
+             */
+
             RCScripts.checkPercentageCompleteDeep(cfg);
 
             return;
         }
-        
-        
+
+
         p.cmds.importRecFile = function importRecFile(cmd, fx) {
             console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
             // var dirFileLists = sh.fs.makePath(__dirname,  'data', 'files')
@@ -1077,12 +1162,12 @@ function RCConfigExecServer() {
             var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
             //var fileFileList = self.utils.appendDirIfRelative(self.data.dirFileList, cmd.fileFileList)
 
-            var fileDlRecManifest=fileDlManifest+'.recipet.json'
+            var fileDlRecManifest = fileDlManifest + '.recipet.json'
 
             /*
-            sh.fs.exists(fileDlManifest, 'this file must exist', function onError(err) {
-            })
-            */
+             sh.fs.exists(fileDlManifest, 'this file must exist', function onError(err) {
+             })
+             */
 
             console.log('fileFileList', '<<<<<<<<<<<', fileDlRecManifest)
 
@@ -1091,27 +1176,27 @@ function RCConfigExecServer() {
             var type = 'importRecFile'
             self.cmds.sendStatus('running importRecFile', type);
 
-            if ( sh.fs.exists(fileDlRecManifest ) == false) {
+            if (sh.fs.exists(fileDlRecManifest) == false) {
                 self.cmds.sendStatus('FAILED .... do the import first ', type);
                 return;
             }
 
-            Workflow_ImportVidsAgain.importRecFile(fileDlRecManifest,  function onDone(output) {
+            Workflow_ImportVidsAgain.importRecFile(fileDlRecManifest, function onDone(output) {
                 console.log('found how many?', output);
                 output.complete = true
-                output.result = 'fxed' +output.count
+                output.result = 'fxed' + output.count
                 fx(output);
                 self.cmds.sendStatus('done with importRecFile ', type, output);
             });
 
             return;
         }
-        
+
         p.cmds.uploadAndRun = function uploadAndRun(cmd, fx) {
             self.proc('.....!@uploadAndRun#d$', exports.RCExtV, self.data.id)
-            var fileDlManifest  = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
+            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
             //var fileDlRecManifest=fileDlManifest+'.recipet.json'
-            var fileDlManifestMissingFilesOnly = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest+'.missing.json')
+            var fileDlManifestMissingFilesOnly = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest + '.missing.json')
 
             console.log('fileFileList', '<<<<<<<<<<<', fileDlManifest)
 
@@ -1120,32 +1205,32 @@ function RCConfigExecServer() {
             var type = 'uploadAndRun'
             self.cmds.sendStatus('running uploadAndRun', type);
 
-            if ( sh.fs.exists(fileDlManifest ) == false) {
+            if (sh.fs.exists(fileDlManifest) == false) {
                 self.cmds.sendStatus('FAILED .... do the import first ', type);
                 return;
             }
-            
-            if ( sh.fs.exists(fileDlManifestMissingFilesOnly) ) {
+
+            if (sh.fs.exists(fileDlManifestMissingFilesOnly)) {
                 self.proc('...', 'fileDlManifestMissingFilesOnly')
                 fileDlManifest = fileDlManifestMissingFilesOnly
                 self.cmds.sendStatus('running uploadAndRun with fileDlManifestMissingFilesOnly file---', type);
             }
 
-            var cfg             = sh.clone(cmd);
-            cfg.fileManifest    = fileDlManifest;
-            cfg.ip              = cmd.ip;
-            cfg.port            = cmd.port;
+            var cfg = sh.clone(cmd);
+            cfg.fileManifest = fileDlManifest;
+            cfg.ip = cmd.ip;
+            cfg.port = cmd.port;
             delete cfg.url;
-            cfg.socket          = self.data.socketBreed2;
+            cfg.socket = self.data.socketBreed2;
             console.log('111what is socket', cfg.socket)
 
-            Workflow_UploadAndRun.uploadAndRun(cfg,  function onDone(output) {
+            Workflow_UploadAndRun.uploadAndRun(cfg, function onDone(output) {
                 console.log('found how many?', output);
                 output.complete = true;
-                output.result = 'fxed' +output.count;
+                output.result = 'fxed' + output.count;
                 fx(output);
                 self.data.socketBreed2 = cfg.socket
-                self.cmds.sendStatus('done with '+type, type, output);
+                self.cmds.sendStatus('done with ' + type, type, output);
             });
 
             return;
@@ -1153,14 +1238,36 @@ function RCConfigExecServer() {
 
 
     }
+
     defineCrossCmds()
 
     function defineUtils() {
         p.utils = {}
+
+        p.utils.storeConfig = function storeConfig_ForRecent(name, file) {
+            //var fileConfig = sh.fs.makePath(__dirname, /*'../',*/ 'configs', name+'')
+            // sh.fs.copy(file, fileConfig, true)
+
+            var fileConfig = sh.fs.makePath(__dirname, 'manifests', name + '.json');
+            self.proc('copy', file, 'to', fileConfig);
+            sh.fs.copy(file, fileConfig, true);
+
+
+            var bookJSON = {
+                file: fileConfig,
+                created_at: new Date(),
+                name: name
+            }
+            self.data.j2.addRecent(bookJSON, true, 'file');
+            //self.data.j.addRecent(j)
+
+        }
+
+
         p.utils.appendDirIfRelative = function appendDirIfRelative(dir, file) {
             var fileOutput = file;
-            if ( file.includes('/') == false &&  file.includes('\\') == false  ) {
-                var fileOutput = sh.fs.join(dir,  file);
+            if (file.includes('/') == false && file.includes('\\') == false) {
+                var fileOutput = sh.fs.join(dir, file);
             }
 
             return fileOutput;
@@ -1168,9 +1275,9 @@ function RCConfigExecServer() {
         p.utils.flatten = function flatten(output, file) {
             var lite = sh.clone(output)
             var outputLite = {}
-            sh.each(output, function copyOrCondense(k,v) {
+            sh.each(output, function copyOrCondense(k, v) {
                 var val = v;
-                if ( sh.isArray(v) ) {
+                if (sh.isArray(v)) {
                     val = v.length;
                 }
                 outputLite[k] = val;
@@ -1181,6 +1288,19 @@ function RCConfigExecServer() {
 
     defineUtils();
 
+
+    function defineTestsMethods() {
+        p.addTest = function onAddTest(fx) {
+            self.data.fxTests = sh.dv(self.data.fxTests, [])
+            self.data.fxTests.push(fx)
+        }
+        p.runTests = function runTests() {
+            sh.each(self.data.fxTests, function onTests(k,v) {
+                v();
+            })
+        }
+    }
+    defineTestsMethods()
     /**
      * Receive log commands in special format
      */
@@ -1193,7 +1313,7 @@ exports.RCExtV = 1;
 exports.RCConfigExecServer = RCConfigExecServer;
 exports.reloadServer = function reloadServer(oldServer, fxFin, count, dict, classFx) {
 
-    console.log(sh.n, 'reloadServer', count, oldServer!= null, sh.n)
+    console.log(sh.n, 'reloadServer', count, oldServer != null, sh.n)
     exports.RCExtV = count
 
     var t = new RCConfigExecServer()
@@ -1206,21 +1326,19 @@ if (module.parent == null) {
         //  sh.get('127.0.0.1:6010/exitQuit')
         sh.get('127.0.0.1:6008/exitQuit')
         setTimeout(function startup() {
-            if  (RCConfigExecServer.oldServer) {
+            if (RCConfigExecServer.oldServer) {
                 RCConfigExecServer.oldServer.active_server.close();
             }
             exports.reloadServer()
-        },1000)
-
+        }, 1000)
 
 
         /*     setTimeout(function onReload() {
          exports.reloadServer(RCConfigExecServer.oldServer)
          }, 1500)*/
     }
+
     runServer()
-
-
 
 
     function testScript() {
@@ -1236,6 +1354,7 @@ if (module.parent == null) {
             sh.throwIf(output.foundCount != 2, 'did not match write count of items');
         });
     }
+
     //  testScript()
 
 }

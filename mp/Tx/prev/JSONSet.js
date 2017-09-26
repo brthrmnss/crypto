@@ -174,12 +174,17 @@ function JSONSet() {
         var inst = new IteratorClass();
         inst.runner = self;
         sh.callIfDefined(inst.init, self.settings)
+
+
+        if ( self.settings.itemsSkip ) {
+            self.data.work.list = self.settings.itemsSkip
+            console.error('warning ... this is a skip section')
+          //  asdf.g
+        }
+
         sh.async(self.data.work.list, function procEachItem(item, _fxDone) {
-
-
             if ( self.settings.fxPreProcess ) {
-                item =
-                    self.settings.fxPreProcess(item);
+                item = self.settings.fxPreProcess(item);
             }
 
             function fxDone(){
@@ -223,6 +228,13 @@ function JSONSet() {
             inst.index = self.index;
             inst.runner = self;
             inst.utils2 = self.utils2;
+
+           /* if ( self.settings.itemsSkip ) {
+                item.filtered = true
+                item.matched = true; //TODO: remove filtered and go to matched...
+                fxIteratorDone();
+                return;
+            }*/
             inst.fxCallback(item, fxIteratorDone, self.index, self)
         }, function allDone() {
             inst.runner = self;
@@ -287,6 +299,8 @@ function JSONSet() {
         //self.proc('...', 'finished')
         if ( sh.isArray(data)) {data = data.join("\n")};
         sh.writeFile(fileStore, data);
+        
+        return fileStore;
     }
 
     p.test = function test(config) {
@@ -336,6 +350,7 @@ function JSONSet() {
 
         }
 
+       // asdf.g
         u2.percentageOfWorkList =
             function percentageOfWorkList(arr, extratxt, length_) {
                 extratxt = sh.dv(extratxt, '')

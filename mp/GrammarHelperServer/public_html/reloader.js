@@ -16,6 +16,17 @@ var baseUrl = 'https://127.0.0.1:8043/apps/speak/'
 var baseBaseUrl = 'https://127.0.0.1:8043/'
 var baseBaseUrl = 'http://127.0.0.1:4080/'
 var baseBaseUrl = 'http://127.0.0.1:14002/'
+
+
+if ( window.reloaderNonLocal ) {
+
+}
+var ip = window.location.host;
+if ( ip.includes(':')) { ip = ip.split(':')[0] }
+baseBaseUrl = 'http://'+ip+':'+14002
+
+
+
 var loadEval = true
 if ( loadEval ) {
     function loadEvalApp(){
@@ -201,7 +212,17 @@ window.reloadFile = function reloadFile(file, fx) {
                     slash = '/'
                 }
             }
-            file = 'http://'+window.location.host + slash + file
+
+            var host = 'http://'+window.location.host;
+
+            if ( window.xReloadFromGram ) {
+
+                //var ip = window.location.host;
+              //  if ( ip.includes(':')) { ip = ip.split(':')[0] }
+                host = 'http://'+ip+':'+10110+'/file'
+            }
+
+            file =  host + slash + file
             console.log('change file')
         }
 

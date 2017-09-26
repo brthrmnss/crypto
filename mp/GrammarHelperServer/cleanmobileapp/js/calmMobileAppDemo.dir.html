@@ -17,70 +17,367 @@
         ok????
     </div>
 
-
-    <div abs xpad10 gray-border
+    <div abs gray-border
+         horizontal-layout
+         xhide
          style="width:315px; height:519px;
          color:#0D0D0D;
-         left:960px; top:385px; "
+         top:380px; left:1020px;"
          bg-white>
-        <!-- ok????-->
-        <div horizontal-layout>
-            <div class="horizontal-flex-container-flex-item">
-                icon
-            </div>
-            <div center upcase stretch>
-                <center-content>
-                    5:47PM
-                </center-content>
 
-            </div>
-            <div class="horizontal-flex-container-flex-item">
-                cart
-            </div>
+        <div YYhide YYabs xpad10 gray-border
+             bg-black white
+             style="width:315px; height:519px;
+             min-width:315px;
+         color:#0D0D0D; ">
+          <!--  {{navMenu_quickListConfig}}
+            -&#45;&#45;-->
+            Menu
+            <br />
+            <quicklist2 config="navMenu_quickListConfig">
+            </quicklist2>
         </div>
-        <!-- <glyph plus/>-->
-        <div horizontal-layout padnochildren padlr20>
-            <div class="">
-                <btn title="Back to menu">
-                    <glyph align-left/>
-                </btn>
-                <glyph align-left/>
+
+
+        <div YYabs xpad10 ygray-border
+             style="width:315px; height:519px;
+         color:#0D0D0D;
+            min-width:315px;
+         left:960px; top:385px; "
+             bg-white>
+            <!-- ok????-->
+            <div horizontal-layout>
+                <div class="horizontal-flex-container-flex-item">
+                    icon
+                </div>
+                <div center upcase stretch>
+                    <center-content>
+                        5:47PM
+                    </center-content>
+
+                </div>
+                <div class="horizontal-flex-container-flex-item">
+                    cart
+                </div>
             </div>
-            <div center-content bold upcase stretch pad10>
-                <center-content>
+            <!-- <glyph plus/>-->
+            <div horizontal-layout padnochildren padlr20>
+                <div class="">
+                    <btn title="Back to menu">
+                        <glyph align-left/>
+                    </btn>
+                    <glyph align-left/>
+                </div>
+                <div center-content bold upcase stretch pad10>
+                    <center-content>
                     <span red>
                         shopping bag
                     </span>
-                </center-content>
-            </div>
-            <div class="">
-                <glyph icon="shopping-cart"></glyph>
+                    </center-content>
+                </div>
+                <div class="">
+                    <glyph icon="shopping-cart"></glyph>
 
+                </div>
             </div>
-        </div>
-        <div lrpad20 w100>
-            <div bg-lightgray h1/>
-            <div style="background-color:#F5F5F5" h1/>
+            <div lrpad20 w100>
+                <div bg-lightgray h1/>
+                <div style="background-color:#F5F5F5" h1/>
+            </div>
+
+            <div w100 xpad20
+                 style="max-height:442px;"
+                 scroll
+                 clip-y
+                 class="parentWidthWrapper"
+            >
+                <!-- sdfdsf-->
+
+                <div id="wrapB" parentWidth>
+
+                    <quickcrud2 config="configCrud">
+                        <list_partial>
+                            <ul id="listHolder"
+                                xbg-red
+                                parentWidth="100"
+                                class="quick-crud-list">
+                                <li ng-repeat="item in vmC.items" relative>
+
+                                    <div horizontal-layout padnochildren padlr20 h125px
+                                         ng-click="goTo(item)"
+                                    >
+                                        <div class="">
+                                            <div
+                                                    xclass="sideNavTextRow2">
+                                                {{item.name}}
+                                                {{item.first_name}}
+                                                {{item.last_name}}
+                                            </div>
+                                            <div
+                                                    style="font-size:14px;"
+                                                    right10 top10
+                                                    tr ng-click="vmC.$scope.$parent.deleteItem(item)">x
+                                            </div>
+                                            <div ng-if="item.selected==true">selected</div>
+
+                                            <div w100
+                                                 bottom
+                                                 bg-white
+                                                 left0
+                                                 style="height:2px;"
+                                                 h2
+                                                 ng-if="item.selected==true"></div>
+                                        </div>
+                                        <div center-content bold upcase stretch pad10>
+                                            <center-content>
+
+                                            </center-content>
+                                        </div>
+                                        <div class="">
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <hr4 bottom></hr4>
+                                    <!-- <div relative pad10
+                                          zmw250 mh50>
+
+                                     </div>-->
+                                </li>
+
+
+                            </ul>
+                        </list_partial>
+                    </quickcrud2>
+
+                    <br/>
+                    <!--
+                    <hr3 bg-red marlr20 ></hr3>
+                    -->
+
+                    <!-- <w100>
+                         &lt;!&ndash; TODO: fix isisue where you pick up children &ndash;&gt;
+                         <hr4 marlr20  ></hr4>
+                     </w100>-->
+                    <hr4></hr4>
+                    <hr4></hr4>
+
+                    <div bold lightgray stretch pad10 padlr20>
+                        Enter your discount code here
+                    </div>
+                    <hr4></hr4>
+                    <div bold pad10 padlr20>
+                        <div horizontal-layout padnochildren>
+                            <div class="horizontal-flex-container-flex-item">
+                                Subtotal
+                            </div>
+                            <div center upcase stretch>
+                            </div>
+                            <div class="horizontal-flex-container-flex-item">
+                                $1340
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <hr2 bg-lightgray />-->
+
+                </div>
+            </div>
+
+
+            <!--<span class="glyphicon glyphicon-plus"></span>-->
+
         </div>
 
-        <div w100 bg-llgray xpad20
-             style="max-height:442px;"
-             scroll
-             class="parentWidthWrapper"
+        <div YYhide YYabs xpad10 gray-border
+             bg-white
+             style="width:315px; height:519px;
+             min-width:315px;
+         color:#0D0D0D; "
         >
-            <!-- sdfdsf-->
-            <quickcrud2 config="configCrud">
-                <list_partial>
+            <!-- ok????-->
+            <div class="horizontal-flex-container" pad10>
+                <div class="horizontal-flex-container-flex-item">
+                    icon
+                </div>
+                <div center upcase
+                     class="horizontal-flex-container-flex-item-stretch">
+                    details
+                </div>
+                <div class="horizontal-flex-container-flex-item">
+                    cart
+                </div>
+            </div>
+            <!-- <glyph plus/>-->
+            <div horizontal-layout>
+                <div class="">
+                    <btn title="Back to menu">
+                        <glyph align-left/>
+                    </btn>
+                    <glyph align-left/>
+                </div>
+                <div center-content bold upcase stretch>
+                    <center-content>
+                    <span red>
+                        details
+                    </span>
+                    </center-content>
+                </div>
+                <div class="">
+                    <glyph icon="shopping-cart"></glyph>
+
+                </div>
+            </div>
+
+            <div w100 bg-llgray pad20
+                 style="max-height:430px;"
+                 scroll>
+                <!-- sdfdsf-->
+                <div id="currentProduct_pic"
+                     style="max-height:130px;"
+                     is-square
+                     bg-black
+                     mar20
+                     mw100
+                     white
+                >
+
+                    sdfsdfsdf
+
+                </div>
+
+                <div id="tagList" horizontal-list white>
+            <span style="font-size:8px;" upcase class="tagListItem">
+                handmade
+            </span>
+                </div>
+
+                <spacer/>
+
+                <div id="cP_title" upcase loose
+
+                     style="font-size:24px;
+                 line-height:93%">Marble candle holder
+                </div>
+
+                <div id="cP_price" upcase loose lightgray
+                     style="font-size:15px;">$60.00
+                </div>
+
+                <spacer/>
+
+                <!-- <hr2 bg-lightgray />-->
+                <div bg-lightgray w100 h2/>
+
+                <spacer/>
+
+                <div id="cP_content"
+                     ng-bind-html="gen.productDescription"
+                     style="font-size:10px;">
+
+
+                </div>
+
+
+            </div>
+
+
+            <!--<span class="glyphicon glyphicon-plus"></span>-->
+
+        </div>
+
+    </div>
+
+
+    <div abs
+         style="
+         color:#0D0D0D;
+         top:900px; left:1020px;"
+         bg-white
+
+         horizontal-layout
+    >
+        <dscreen>
+           <!-- <button>7777</button>
+            fgdfgdfg-->
+           <!-- {{configPromptsCrud}}-->
+           <!-- <button>booty</button>-->
+           <!-- <button>booty</button>
+             <quickcrud2 config="configPromptsCrud">
+
+
+                 <list_partial>
+                     <ul id="listHolder"
+                         xbg-red
+                         parentWidth="100"
+                         class="quick-crud-list">
+                         <li ng-repeat="item in vmC.items" relative>
+
+                             <div horizontal-layout padnochildren padlr20 h125px
+                                  ng-click="goTo(item)"
+                             >
+                                 <div class="">
+                                     <div
+                                             xclass="sideNavTextRow2">
+                                         {{item.name}}
+                                         {{item.first_name}}
+                                         {{item.last_name}}
+                                     </div>
+                                     <div
+                                             style="font-size:14px;"
+                                             right10 top10
+                                             tr ng-click="vmC.$scope.$parent.deleteItem(item)">x
+                                     </div>
+                                     <div ng-if="item.selected==true">selected</div>
+
+                                     <div w100
+                                          bottom
+                                          bg-white
+                                          left0
+                                          style="height:2px;"
+                                          h2
+                                          ng-if="item.selected==true"></div>
+                                 </div>
+                                 <div center-content bold upcase stretch pad10>
+                                     <center-content>
+
+                                     </center-content>
+                                 </div>
+                                 <div class="">
+
+                                 </div>
+
+
+                             </div>
+
+                             <hr4 bottom></hr4>
+                             &lt;!&ndash; <div relative pad10
+                                   zmw250 mh50>
+
+                              </div>&ndash;&gt;
+                         </li>
+
+
+                     </ul>
+                 </list_partial>
+             </quickcrud2>-->
+            <quickcrud2 config="configPromptsCrud">
+
+
+                <clist_partial>
                     <ul id="listHolder"
                         xbg-red
                         parentWidth="100"
                         class="quick-crud-list">
-                        <li ng-repeat="item in vmC.items">
+                        <li ng-repeat="item in vmC.items" relative>
 
-                            <div   horizontal-layout padnochildren padlr20>
+                            <div horizontal-layout padnochildren padlr20 h125px
+                                 ng-click="goTo(item)"
+                            >
                                 <div class="">
-                                    <div ng-click="goTo(item)"
-                                         xclass="sideNavTextRow2">
+                                    <div
+                                            xclass="sideNavTextRow2">
                                         {{item.name}}
                                         {{item.first_name}}
                                         {{item.last_name}}
@@ -112,124 +409,41 @@
 
                             </div>
 
-                            <div bg-lightgray w100 h1/>
-                           <!-- <div relative pad10
-                                 zmw250 mh50>
+                            <hr4 bottom></hr4>
+                            &lt;!&ndash; <div relative pad10
+                                              zmw250 mh50>
 
-                            </div>-->
+                        </div>&ndash;&gt;
                         </li>
 
 
                     </ul>
-                </list_partial>
+                </clist_partial>
             </quickcrud2>
+        </dscreen>
+        <dscreen>
 
-            <!-- <hr2 bg-lightgray />-->
+            <quickcrud2 config="configPromptsCrud2">
+            </quickcrud2>
+        </dscreen>
+        <!--<screen nudge-left-2 >
+
+            booty
+        </screen>
 
 
-        </div>
+        <screen nudge-left-2 >
 
-
-        <!--<span class="glyphicon glyphicon-plus"></span>-->
-
+            booty
+        </screen>-->
     </div>
 
-    <div abs xpad10 gray-border
-         hide
+    <div abs gray-border
          style="width:315px; height:519px;
          color:#0D0D0D;
-         top:515px; left:1020px;"
-         bg-white>
-        <!-- ok????-->
-        <div class="horizontal-flex-container" pad10>
-            <div class="horizontal-flex-container-flex-item">
-                icon
-            </div>
-            <div center upcase
-                 class="horizontal-flex-container-flex-item-stretch">
-                details
-            </div>
-            <div class="horizontal-flex-container-flex-item">
-                cart
-            </div>
-        </div>
-        <!-- <glyph plus/>-->
-        <div horizontal-layout>
-            <div class="">
-                <btn title="Back to menu">
-                    <glyph align-left/>
-                </btn>
-                <glyph align-left/>
-            </div>
-            <div center-content bold upcase stretch>
-                <center-content>
-                    <span red>
-                        details
-                    </span>
-                </center-content>
-            </div>
-            <div class="">
-                <glyph icon="shopping-cart"></glyph>
-
-            </div>
-        </div>
-
-        <div w100 bg-llgray pad20
-             style="max-height:442px;"
-             scroll>
-            <!-- sdfdsf-->
-            <div id="currentProduct_pic"
-                 style="max-height:130px;"
-                 is-square
-                 bg-black
-                 mar20
-                 mw100
-                 white
-            >
-
-                sdfsdfsdf
-
-            </div>
-
-            <div id="tagList" horizontal-list white>
-            <span style="font-size:8px;" upcase class="tagListItem">
-                handmade
-            </span>
-            </div>
-
-            <spacer/>
-
-            <div id="cP_title" upcase loose
-
-                 style="font-size:24px;
-                 line-height:93%">Marble candle holder
-            </div>
-
-            <div id="cP_price" upcase loose lightgray
-                 style="font-size:15px;">$60.00
-            </div>
-
-            <spacer/>
-
-            <!-- <hr2 bg-lightgray />-->
-            <div bg-lightgray w100 h2/>
-
-            <spacer/>
-
-            <div id="cP_content"
-                 ng-bind-html="gen.productDescription"
-                 style="font-size:10px;">
-
-
-            </div>
-
-
-        </div>
-
-
-        <!--<span class="glyphicon glyphicon-plus"></span>-->
-
+         top:1400px; left:1020px;"
+         bg-white
+    >
+        <quick-nav config="configNavBar" ></quick-nav>
     </div>
-
-
 </div>

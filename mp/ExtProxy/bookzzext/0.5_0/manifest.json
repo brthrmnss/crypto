@@ -9,7 +9,7 @@
          "js/lib/ListExtractorScraper.js",
          "js/bookzzAnotSearcher.js"
       ],
-      "matches": [ "*://*.bookzz.org/*" , "*://*.book4you.org/*" ]
+      "matches": [ "*://*.bookzz.org/*" , "*://*.book4you.org/*", "*://b-ok.org/*" ]
    } ],
    "description": "This extension compares amazon against ebooks.wtf",
    "homepage_url": "https://book4you.wtf/",

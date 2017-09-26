@@ -168,8 +168,13 @@ window.reloadFile = function reloadFile(file, fx) {
     if ( file.endsWith('.js')) {
 
         if ( false == file.includes('://')) {
-            file = 'http://'+'localhost:10110/' +  'file/'+ file
-           // file = 'http://'+window.location.host + '/' + file
+            if ( file.startsWith('/')) {
+                file = 'http://' + 'localhost:10110/' + 'file' + file
+
+            } else {
+                file = 'http://' + 'localhost:10110/' + 'file/' + file
+                // file = 'http://'+window.location.host + '/' + file
+            }
             console.log('change file')
         }
 

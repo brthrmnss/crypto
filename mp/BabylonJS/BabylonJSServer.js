@@ -26,7 +26,9 @@ function RCConfigExecServer() {
         config.port = sh.dv(config.port, 6015);
         self.proc('go to ', 'http://localhost:'+ config.port);
         self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'index.html'+indexPageSecurityEnding);
-        
+        self.proc('go to ', 'http://'+sh.getIpAddress()+':'+ config.port+'/'+'babylonjs.html'
+            );
+
         //config.port2 = config.port;
         //config.port += 2; //express can use any available port, we will forward to it
         self.runServer();

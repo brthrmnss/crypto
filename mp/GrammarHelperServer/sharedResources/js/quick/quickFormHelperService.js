@@ -186,7 +186,15 @@
       };
 
       p.addSelectList = function addSelectList(name, values, label, valueNames) {
-        var options = self.utils.mergeValuePairs(values, valueNames);
+        if ( valueNames ) {
+            var options = self.utils.mergeValuePairs(values, valueNames);
+        } else {
+          if ( sh.isObject(values)) {
+              options =
+                  self.utils.convertObjectToArrayOfNameValuePairs(values)
+          }
+        }
+        //debugger
         var obj = {
           label: label,
           type: self.types.select,
