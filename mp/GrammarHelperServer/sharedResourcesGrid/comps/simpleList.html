@@ -1,0 +1,97 @@
+<body class="home">
+
+<div id="dialogMyLibrary_DialogWrapper">
+    <div class="" id="dialogMyLibrary_Content">
+        <div class="dialog-row" id="dialogMyLibrary_TitleHolder" >
+            <span class="dialog-search-header
+            unselectable">
+                <span id="dialogMyLibrary_Title"
+                 style="padding-left:10px; padding-top:10px;"
+                >My Library</span>
+            <span id="dialogMyLibrary_txtCount" title="Size of library" style="opacity: 0.65;">(55)</span>
+            <span id="dialogMyLibrary_LoadingHolder" class="textLoading">Loading...</span>
+            <span id="dialogMyLibrary_divLoadingError" class="textLoading">
+                Error
+                <button type="submit" id="dialogMyLibrary_btnRetry"
+                        title="Retry Search"
+                        class="contour-btn red js-restartBtc Payment btn btn-default ">
+                    Retry
+                </button>
+            </span>
+            <span id="dialogMyLibrary_LoadingHolderToken"></span>
+                 <span id="dialogMyLibrary_btnClear">clear</span>
+</span>
+
+
+        </div>
+        <div id="dialogMyLibrary_UserAction_Holder" class="dialog-row">
+                <span class="userAction unselectable" id="dialogMyLibrary_UserAction">
+                            View to watch an item
+                </span>
+        </div>
+        <div id="dialogMyLibrary_ListContainer" class="view-content-list">
+            <h2 id="dialogMyLibrary_SearchBar" class="searchbar">
+                <input id="dialogMyLibrary_txtSearch"
+                       class="xsearch dialog_search_input transitionAll"
+                       xplaceholder="filter..." type="search">
+            </h2>
+            <div id="dialogMyLibrary_ListNoResults" class="userAction">
+                <span id="dialogMyLibrary_List_NoResults_NoMatches">
+                      No library matches found
+                </span>
+                <!--<span id="dialogMyLibrary_List_NoResults_EmptyLibrary" class="userAction hide">
+                    Your library is empty, use a credit to purchase something.
+                </span>-->
+            </div>
+            <!--     <input class="search" />-->
+            <!--  <span class="sort" data-sort="name">Sort by name</span>
+              <span class="sort" data-sort="city">Sort by city</span>-->
+            <div id="dialogMyLibrary_ListAutoScroll" style="background-color: #0b97c4;">
+
+            </div>
+            <ul id="dialogMyLibrary_ListUl"
+                class="list
+                dialogMyLibrary_ListUl
+                list-search-list">
+                <li id="dialogMyLibrary_ListLi"
+                    class="dialogMyLibrary_ListLi
+                        view-content-list-item list-search-list-item
+                    transitionAll">
+                    <div class="contentListHolder" xstyle="min-height: inherit;">
+                        <span class="number contentListNumber">
+                        </span>
+                        <img class="image contentListPic" src=""/>
+                        <div class="contentListDataHolder">
+                            <div class="contentListPic_textHolder" style="width: 80%">
+                                <a hrefx="http://javve.com" onclick="return false;"
+                                   class=" link  name">Jonny</a>
+                            </div>
+                            <p class="timeAgo contentListRating"></p>
+                            <!-- <p class="born timestamp" data-timestamp="1234">1986</p>-->
+                            <!--    <p class="desc contentListDesc" data-timestamp="1234">1986</p>-->
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <br/>
+            <div id="dialogMyLibrary_footer" >
+                <button type="submit" id="dialogMyLibrary_btnMore"
+                        class="contour-btn red js-restartBtc Payment btn btn-default ">
+                    More <span id="dialogMyLibrary_btnMoreLoadingHolder"></span>
+                </button>
+
+                <span id="dialogMyLibrary_btnEndOfResults" class="hide">End of Results</span>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <button id="dialogMyLibrary_btnBackToTop"
+            style="bottom:20px; right:40px;"
+            class="contour-btn red js-restartBtc Payment btn btn-default fixed br">
+        Back to top
+    </button>
+</div>
+</body>
