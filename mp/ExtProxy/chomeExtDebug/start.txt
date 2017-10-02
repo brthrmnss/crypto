@@ -1,0 +1,1 @@
+chromium-browser --user-data-dir=~/Documents/userdirchrome --no-default-browser-check      --no-first-run     --disable-web-security      --allow-file-access-from-files --disk-cache-size=1 --enable-easy-off-store-extension-install  -allow-running-insecure-content  --ignore-certificate-errors

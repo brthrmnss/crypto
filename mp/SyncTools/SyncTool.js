@@ -157,17 +157,25 @@ if (module.parent == null) {
     var config = {};
     instance.init(config)
 
+    var dirIncomingFiles = sh.fs.trash('syncTool/incoming/')
+    var dirUnzipped =  sh.fs.trash('syncTool/unziped/')
+    var dirOutputZips =  sh.fs.trash('syncTool/outputZips/')
+    sh.fs.mkdirp(dirIncomingFiles)
+    sh.fs.mkdirp(dirUnzipped)
+    sh.fs.mkdirp(dirOutputZips)
+
+
     var dirs = []
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/node_modules/shelpers')
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/SlickRun')
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/GrammarHelperServer')
+    dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/Tx')
     instance.zipDirs(dirs)
 
     var listFiles = []
     //instance.downloadFiles(listFile, true)
     var fileDownloaded = "C:/Users/user1/trash/syncTool/outputZips/shelpers.zip"
-    var dirIncomingFiles = sh.fs.trash('syncTool/incoming/')
-    var dirUnzipped =  sh.fs.trash('syncTool/unziped/')
+
     var outputFile = instance.moveFiles(fileDownloaded, dirIncomingFiles);
     //instance.unZip(outputFile, dirUnzipped)
     //startBeyondCompareDiff
