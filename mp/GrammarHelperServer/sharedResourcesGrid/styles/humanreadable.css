@@ -1,0 +1,24 @@
+/* css in example dir */
+
+
+
+.layout-horizontal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+}
+
+.layout-horizontal-item {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+.layout-horizontal-item-stretch {
+    order: 0;
+    flex: 10 1 auto;
+    align-self: auto;
+}

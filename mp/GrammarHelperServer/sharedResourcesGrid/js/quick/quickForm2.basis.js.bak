@@ -1,0 +1,309 @@
+//'use strict';
+(function(){
+
+    var reload_name = 'quickForm2';
+    var urlPath= 'lib/reloadable/comps/';
+
+    /*    var reload_name = 'pivotTableEditor2';
+     var urlPath= 'lib/reloadable/comps/';*/
+    //   debugger
+    /** s
+     * Component take data form and data object
+     * @param $templateRequest
+     * @param $compile
+     * @param $interpolate
+     * @param transcludeHelper
+     * @returns {{scope: {title: string, fxItemSelected: string}, controller: string, controllerAs: string, bindToController: boolean, compile: Function}}
+     * @private
+     */
+    var quickForm2 = function quickForm2_($templateRequest,
+                                          $compile, $interpolate,
+                                          transcludeHelper,
+                                          $templateCache,
+                                          // reloadableHelperTestService,
+                                          quickUI,
+                                          appService,
+                                          /*angFunc,*/
+                                          xUI
+    ) {
+
+        if ( reloadableHelper ) {
+            reloadableHelper.saveDirectiveCtx(reload_name, arguments)
+        }
+        // debugger;
+        var utilsParent = transcludeHelper.new(this);
+        function link(scope, element, attrs, ctrl, transclude){
+
+            var urlTemplate = '';
+            urlTemplate = urlPath + reload_name + '.dir.html'
+            //console.error('reload', urlTemplate);
+
+            $templateRequest(urlTemplate ).then(
+                function onCreateDomElements(html){
+
+                    element.on('$destroy', function(){
+                        //alert('qf destroyed');
+                    })
+                    scope.id = Math.random();
+                    //alert('created ' +  scope.id);
+                    //var utilsParentDict = utils.dictTemplates;
+                    var utils = transcludeHelper.new();
+                    utils.dictTemplates = utilsParent.dictTemplates; //copy over dictionary of templates
+                    utils.$compile = $compile;
+
+                    utilsParent.destroyDuplicateScopes(element,scope);
+                    utils.loadTemplate(html, element, attrs);
+
+                    //console.error('qf', 'pre-', scope.vm)
+                    scope.render(utils);
+
+                    scope.$watch('vm.formObject', function (v, oldVal) {
+                        if (scope.vm.formObject != null) {
+                            console.log('scope.vm.formObject... changed: ',
+                                scope.vm.formObject, v);
+                        }
+                        console.log('quick-form scope.vm.formObject... changed: ',
+                            scope.vm, v,oldVal);
+                    });
+                    scope.$watch('vm.dataObject', function (v, oldVal) {
+                        if (scope.vm.dataObject != null) {
+                            console.log('quickform',
+                                'scope.vm.dataObject... changed: ',
+                                scope.vm.dataObject, v);
+                            // asdf.g
+                            scope.dataObject = v;
+                        }
+                        console.log('quickform',
+                            'scope.vm.dataObject... changed: ')
+                    });
+                    scope.$watch('vm.dataObject', function (v, oldVal) {
+                        if (scope.vm.dataObject != null) {
+                            console.log('quickform',
+                                'scope.vm.dataObject...', 'inner', 'changed: ',
+                                scope.vm.dataObject, v);
+                            if ( scope.vm.config != null ) {
+                                if ( scope.vm.config.fxChange != null ) {
+                                    scope.vm.config.fxChange(v);
+                                }
+                            }
+                            // scope.dataObject = v;
+                        }
+
+                    }, true);
+
+
+                    scope.$watch('dataObject', function (v, oldVal) {
+                        if (scope.dataObject != null) {
+                            /* console.log('quickform',
+                             '--dataObject...', 'inner', 'changed: ',
+                             scope.dataObject, v);*/
+                            scope.userChangedForm( );
+                        }
+                    }, true);
+                    //keep in mind 'formData' is an alias for 'dataObject'
+                    scope.$watch('vm.formData', function (v, oldVal) {
+                        if (scope.vm.formData != null) {
+                            console.log('quickform',
+                                'scope.vm.formData... changed: ',
+                                scope.vm.formData, v);
+                            scope.formData = v;
+                            scope.dataObject = v;
+
+
+                            scope.setDefaults();
+                        }
+                        /*console.log('quickform',
+                         'scope.vm.formData... changed: ')*/
+                    });
+
+                    /* scope.$watch('vm.dataObject', function (v, oldVal) {
+                     if (scope.vm.dataObject != null) {
+                     console.log('quickform',
+                     'scope.vm.dataObject... changed: ',
+                     scope.vm.dataObject, v);
+                     scope.dataObject = v;
+                     }
+                     //console.log('quickform',
+                     //  'scope.vm.dataObject... changed: ');
+                     });*/
+
+                    scope.$watch('vm.refresh',
+                        function (v, oldVal) {
+                            console.log('quickform.refresh',
+                                scope.vm.dataObject,
+                                scope.vm, scope,
+                                'scope.vm.dataObject... changed: ')
+
+                            if ( oldVal == null ) {
+                                return;
+                            }
+                            if ( scope.dataObject != scope.vm.dataObject ) {
+                                console.error('scope diff',
+                                    scope.vm.dataObject,
+                                    scope.dataObject)
+                                // scope.dataObject = scope.vm.dataObject;
+                            }
+
+                            if ( scope.vm.formObject.reload == true ) {
+                                console.log('quickform', 'refreshing', scope.vm.config.name)
+                                delete scope.vm.formObject['reload'];
+
+                                scope.render(null, element);
+                                //scope.element.html('ldddlllll')
+                                ///element.html('......dd')
+                            }
+                        });
+
+                    /*if ( scope.vm.dataObject == null ) {
+                     scope.vm.dataObject = {};
+                     }*/
+
+
+                    scope.$watch('vm.config',
+                        function (v, oldVal) {
+                            console.log('quickform.vm.config',
+                                scope.vm.dataObject,
+                                scope.vm, scope,
+                                'scope.vm.dataObject... changed: ')
+
+                            if ( v == null ) {
+                                return; //no config
+                            }
+                            var updateNeeded = false
+                            if (  scope.dataObject != v.dataObject && v.dataObject != null  ) {
+                                console.error('scope reset config',
+                                    v.dataObject,
+                                    scope.dataObject)
+                                // scope.dataObject = scope.vm.dataObject;
+                                scope.vm.dataObject = v.dataObject;
+                                scope.vm.formObject = v.dataObject;
+                                updateNeeded = true
+                            }
+
+                            if (  scope.formObject != v.formObject && v.formObject != null  ) {
+                                console.error('scope reset config formObject',
+                                    v.formObject,
+                                    scope.formObject)
+                                // scope.dataObject = scope.vm.dataObject;
+                                scope.vm.formObject = v.formObject;
+                                updateNeeded = true
+                            }
+                            if ( updateNeeded == true ) {
+                                scope.render();
+                            }
+
+                        });
+                }
+
+
+            )
+
+            controllerReference.$id = Math.random();
+            console.log('top', controllerReference.$id, controllerReference.title, controllerReference.items, controllerReference.items2 );
+        };
+        var controllerReference = null;
+        var compile = function (tElem, attrs, repeat) {
+
+
+            var newerDdo = reloadableHelper.recompileDirective(reload_name,arguments, this,  repeat)
+            if ( newerDdo ) {
+                return newerDdo
+            };
+
+            utilsParent.storeTemplate(tElem, attrs);
+            function defineDirectiveDefaults() {
+                if ( attrs.selectedIndex === null  ) {
+                    attrs['selectedIndex'] = "-1";
+                };
+                if ( attrs.formObject == null  ) {
+                    console.log('...?')
+                    attrs['formObject'] = "{}";
+                    attrs['form-object'] = "{}";
+                };
+                if ( attrs.dataObject == null  ) {
+                    console.log('...?')
+                    attrs['dataObject'] = "{}";
+                    attrs['data-object'] = "{}";
+                };
+                //utils.defaultAttr('dataObject', "{}", attrs);
+            }
+            defineDirectiveDefaults();
+            return {
+                pre: function(scope, element, attrs, controller){
+                    controllerReference = controller;
+                    return;
+                },
+                post: link
+            };
+        };
+
+        var ddo = {
+            scope: {
+                title: '@',
+                config:'=',
+                refresh: '=',
+                positions:'=',
+                idx:'='
+            },
+            controller: reload_name+'Ctrl',
+            controllerAs: 'vm',
+            bindToController:true,
+            compile: compile,
+        };
+        return ddo;
+    };
+
+
+    var quickForm2Controller2 = function
+        quickForm2Controller2_ ($scope,
+                                transcludeHelper,
+                                sh,
+                                quickFormHelper,
+                                //dialogService,
+                                //pubSub,
+                                quickUI,
+                                appService) {
+
+        $scope.$on('$destroy', function() {
+            //alert("In destroy of:" + $scope);
+        });
+
+        var config = $scope.vm.config;
+        if
+
+
+
+
+            }
+}
+
+
+if ( window.reloadableHelper ) {
+    // debugger;
+    function defineQuickReloadingDir() {
+        var app = angular.module('com.sync.quick');
+        window.reloadableHelper.upgradeApp(app)
+        return app;
+
+    }
+    var _app = defineQuickReloadingDir()
+    _app
+        .reloadableController(reload_name+'Ctrl',
+            quickForm2Controller2);
+
+    //console.log('reload', app.reloadableDirective)
+    _app
+        .reloadableDirective(reload_name, quickForm2);
+    //var wrapperRelodableService = window.reloadableHelper
+    //    .makeServiceReloadable('QuickCrudConfigHelper', QuickCrudConfigHelper);
+    //app.factory('quickCrudHelper', wrapperRelodableService );
+    //app.factory('qCH', wrapperRelodableService );
+} else {
+    //debugger;
+    app.reloadableController(reload_name+'Ctrl',
+        quickForm2Controller2);
+
+    app.reloadableDirective(reload_name, quickForm2);
+}
+
+}());

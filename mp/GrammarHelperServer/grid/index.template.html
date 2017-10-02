@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <title>Framework Lite App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/main.css"/>
+
+
+    <script>
+        window.skipDefaultErrorAlerter = true;
+        window.onerror = function onError(errorMsg, url, lineNumber, d, e) {
+            //debugger;
+            if (errorMsg.includes('app is not defined')) {
+                console.warn('ignore app')
+                return;
+            }
+
+            var msg = [errorMsg, url, lineNumber].join(' ')
+            console.log('error', errorMsg, url, lineNumber)
+            if (errorMsg.includes('Uncaught SyntaxError:')) {
+                alert(msg, 'syntax error')
+            }
+
+            return;
+
+
+            document.getElementById("p1").innerHTML = [errorMsg, url, lineNumber
+                ,
+                e.stack].join('<br />');
+            //  alert('issue with this page ' + errorMsg + ' ' + lineNumber)
+        }
+    </script>
+</head>
+<body>
+
+
+<script src="../../g/js/testBrowserEvalGH.js"></script>
+<script src="jquery.js"></script>
+<!-- endbuild -->
+<div>
+    df
+</div>
+
+sdf
+</body>
+</html>

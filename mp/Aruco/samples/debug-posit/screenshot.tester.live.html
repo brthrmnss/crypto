@@ -1,0 +1,603 @@
+<html>
+
+<head>
+    <title>Augmented Reality</title>
+
+    <script type="text/javascript" src="libs/Three.js"></script>
+
+    <script type="text/javascript" src="svd.js"></script>
+    <script type="text/javascript" src="posit1.js"></script>
+    <script type="text/javascript" src="cv.js"></script>
+    <script type="text/javascript" src="aruco.js"></script>
+
+    <!--
+        <script type="text/javascript" src="http://192.168.1.165:10110/jquery.js"></script>
+        <script type="text/javascript" src="http://192.168.1.165:10110/ui_utils.js"></script>-->
+    <!--   <script type="text/javascript" src="http://127.0.0.1:10110/g/js/reloaderInt.js"></script>
+       <xscript type="text/javascript" src="http://192.168.1.165:10110/g/js/reloaderGH.js"></xscript>
+
+   -->
+    <script type="text/javascript" src="http://127.0.0.1:10110/jquery.js"></script>
+    <script type="text/javascript" src="http://127.0.0.1:10110/ui_utils.js"></script>
+    <script type="text/javascript" src="http://127.0.0.1:10110/g/js/reloaderGH.js"></script>
+    <script type="text/javascript" src="ArucoBaby.js"></script>
+
+    <script>
+
+
+
+        var video, canvas, context, imageData, detector, posit;
+        var renderer1, renderer2, renderer3;
+        var scene1, scene2, scene3, scene4;
+        var camera1, camera2, camera3, camera4;
+        var plane1, plane2, model, texture;
+        var step = 0.0;
+
+        var modelSize = 35.0; //millimeters
+
+        function onLoad() {
+            console.debug('ok')
+            video = document.getElementById("video");
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+
+            canvas.width = parseInt(canvas.style.width);
+            canvas.height = parseInt(canvas.style.height);
+
+
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            if (navigator.getUserMedia) {
+                init();
+            }
+
+
+            var renderCanvas3d = document.getElementById('renderCanvas3d_1')
+            renderCanvas3d = 'renderCanvas3d_1'
+            var img = document.getElementById('pic')
+            var id  = 1
+            var instance = new ArucoMarker();
+            var config = {};
+            instance.init(config)
+            instance.test();
+            instance.src(img, id)
+
+            instance.make3d(renderCanvas3d)
+            window.instance = instance;
+            return;
+
+
+
+            var u = uiUtils
+            window.u = uiUtils;
+            var table = u.tag('table')
+            $('#holderTable').append(table)
+
+            var tr = null;
+
+            function addRow() {
+                tr = u.tag('tr')
+                table.append(tr)
+            }
+
+            function addCell(ui) {
+                var td = u.tag('td')
+                tr.append(td)
+                td.append(ui)
+                td.css('border-bottom', 'black soild 2px')
+                //td.css('border-bottom', ' 2px')
+                //td.css('background-color', ' red')
+                u.lastUI = td
+            }
+
+
+            /*$.each([1,2,3], function on(k,v) {
+             addRow();
+             addCell('boom4')
+             addCell('boom4')
+             addCell('boomd'+Math.random())
+             })
+
+             */
+            $('body').css('zoom', 0.8)
+            addRow()
+            addCell('')
+            addCell('pic')
+            u.minW(250)
+            addCell('proc')
+            addCell('info')
+            addCell('pos')
+            addCell('3d')
+
+
+
+            u.getUrl('/listPics', function onK(k) {
+                console.log('listpicks', k)
+                //k = k.slice(0,1)
+             //  k = k.slice(9+7)//.slice(0,1)
+                k = k.slice(9+7)//.slice(0,1)
+             //   k = k.slice(0,1)
+                var imax = null;
+               // k = k.slice(0,6)
+                //imax = 1;
+
+                $.each(k, function onADd(k, v) {
+                    var id = k + 1
+
+                    addRow()
+                    addCell(id)
+                    var img = u.tag('img')
+                    img.attr('src', v)
+                    addCell(img)
+
+                    var divCanvas = u.tag('canvas')
+                    divCanvas.attr('id', 'canvas_' + id)
+                    divCanvas.text(divCanvas.attr('id'))
+                    divCanvas.attr('height', '240px'); //'canvas_'+id)
+                    divCanvas.attr('width', '320px')
+                    addCell(divCanvas)
+
+
+                    var divOutput = u.tag('div')
+                    var d = u.tag('div')
+                    d.attr('id', 'output1_' + id)
+                    divOutput.append(d)
+                    var d = u.tag('div')
+                    d.attr('id', 'output2_' + id)
+                    divOutput.append(d)
+                    addCell(divOutput)
+                    var d = u.tag('div')
+                    d.attr('id', 'output3_' + id)
+                    divOutput.append(d)
+                    addCell(divOutput)
+
+
+                    var divCanvas = u.tag('canvas')
+                    var renderCanvas3d = 'renderCanvas_' + id;
+                    divCanvas.attr('id', renderCanvas3d)
+                    divCanvas.text(divCanvas.attr('id'))
+                    divCanvas.attr('height', '240px'); //'canvas_'+id)
+                    divCanvas.attr('width', '320px');
+                    addCell(divCanvas)
+
+
+                    function processImage() {
+                        var instance = new ArucoMarker();
+                        var config = {};
+                        instance.init(config)
+                        instance.test();
+                        instance.src(img, id)
+
+                        if (imax && imax < id) {
+                            asdf.g
+                            return;
+                        }
+                        instance.make3d(renderCanvas3d)
+                    }
+
+                    setTimeout(processImage, 500)
+
+                })
+            })
+
+
+            return;
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            if (navigator.getUserMedia) {
+                init();
+            }
+        };
+
+        function init() {
+            navigator.getUserMedia({video: true},
+                function (stream) {
+                    if (window.webkitURL) {
+                        video.src = window.webkitURL.createObjectURL(stream);
+                    } else if (video.mozSrcObject !== undefined) {
+                        video.mozSrcObject = stream;
+                    } else {
+                        video.src = stream;
+                    }
+                    window.stream = stream;
+                },
+                function (error) {
+                }
+            );
+            detector = new AR.Detector();
+            posit = new POS.Posit(modelSize, canvas.width);
+
+            createRenderers();
+            createScenes();
+
+            requestAnimationFrame(tick);
+        };
+
+        function tick() {
+
+            requestAnimationFrame(tick);
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                snapshot();
+
+                var markers = detector.detect(imageData);
+                drawCorners(markers);
+                updateScenes(markers);
+
+                render();
+            }
+        };
+
+        function snapshot() {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            //var pic = document.getElementById("pic");
+            //context.drawImage(pic, 0, 0, pic.width, pic.height);
+
+
+            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        };
+
+
+        function drawCorners(markers) {
+            var corners, corner, i, j;
+
+            context.lineWidth = 3;
+
+            for (i = 0; i < markers.length; ++i) {
+                corners = markers[i].corners;
+
+                context.strokeStyle = "red";
+                context.beginPath();
+
+                for (j = 0; j < corners.length; ++j) {
+                    corner = corners[j];
+                    context.moveTo(corner.x, corner.y);
+                    corner = corners[(j + 1) % corners.length];
+                    context.lineTo(corner.x, corner.y);
+                }
+
+                context.stroke();
+                context.closePath();
+
+                context.strokeStyle = "green";
+                context.strokeRect(corners[0].x - 2, corners[0].y - 2, 4, 4);
+            }
+        };
+
+        function createRenderers() {
+            renderer1 = new THREE.WebGLRenderer();
+            renderer1.setClearColorHex(0xffff00, 1);
+            renderer1.setSize(canvas.width, canvas.height);
+            document.getElementById("container1").appendChild(renderer1.domElement);
+            scene1 = new THREE.Scene();
+            camera1 = new THREE.PerspectiveCamera(40, canvas.width / canvas.height, 1, 1000);
+            scene1.add(camera1);
+
+            renderer2 = new THREE.WebGLRenderer();
+            renderer2.setClearColorHex(0xffff00, 1);
+            renderer2.setSize(canvas.width, canvas.height);
+            document.getElementById("container2").appendChild(renderer2.domElement);
+            scene2 = new THREE.Scene();
+            camera2 = new THREE.PerspectiveCamera(40, canvas.width / canvas.height, 1, 1000);
+            scene2.add(camera2);
+
+            renderer3 = new THREE.WebGLRenderer();
+            renderer3.setClearColorHex(0xffffff, 1);
+            renderer3.setSize(canvas.width, canvas.height);
+            document.getElementById("container").appendChild(renderer3.domElement);
+
+            scene3 = new THREE.Scene();
+            camera3 = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5);
+            scene3.add(camera3);
+
+            scene4 = new THREE.Scene();
+            camera4 = new THREE.PerspectiveCamera(40, canvas.width / canvas.height, 1, 1000);
+            scene4.add(camera4);
+        };
+
+        function render() {
+            renderer1.clear();
+            renderer1.render(scene1, camera1);
+
+            renderer2.clear();
+            renderer2.render(scene2, camera2);
+
+            renderer3.autoClear = false;
+            renderer3.clear();
+            renderer3.render(scene3, camera3);
+            renderer3.render(scene4, camera4);
+        };
+
+        function createScenes() {
+            plane1 = createPlane();
+            scene1.add(plane1);
+
+            plane2 = createPlane();
+            scene2.add(plane2);
+
+            texture = createTexture();
+            scene3.add(texture);
+
+            model = createModel();
+            scene4.add(model);
+        };
+
+        function createPlane() {
+            var object = new THREE.Object3D(),
+                geometry = new THREE.PlaneGeometry(1.0, 1.0, 0.0),
+                material = new THREE.MeshNormalMaterial(),
+                mesh = new THREE.Mesh(geometry, material);
+
+            object.add(mesh);
+
+            return object;
+        };
+
+        function createTexture() {
+            var texture = new THREE.Texture(video),
+                object = new THREE.Object3D(),
+                geometry = new THREE.PlaneGeometry(1.0, 1.0, 0.0),
+                material = new THREE.MeshBasicMaterial({map: texture, depthTest: false, depthWrite: false}),
+                mesh = new THREE.Mesh(geometry, material);
+
+            object.position.z = -1;
+
+            object.add(mesh);
+
+            return object;
+        };
+
+        function createModel() {
+            var object = new THREE.Object3D(),
+                geometry = new THREE.SphereGeometry(0.5, 15, 15, Math.PI),
+                texture = THREE.ImageUtils.loadTexture("textures/earth.jpg"),
+                material = new THREE.MeshBasicMaterial({map: texture}),
+                mesh = new THREE.Mesh(geometry, material);
+
+            object.add(mesh);
+
+            return object;
+        };
+
+        function updateScenes(markers) {
+            var corners, corner, pose, i;
+            window.markers = markers;
+            if (markers.length > 0) {
+                corners = markers[0].corners;
+
+                for (i = 0; i < corners.length; ++i) {
+                    corner = corners[i];
+
+                    corner.x = corner.x - (canvas.width / 2);
+                    corner.y = (canvas.height / 2) - corner.y;
+                }
+
+                pose = posit.pose(corners); //get the pose
+
+                window.dbg = {};
+                window.dbg.corners = corners;
+                updateObject(plane1, pose.bestRotation, pose.bestTranslation);
+                updateObject(plane2, pose.alternativeRotation, pose.alternativeTranslation);
+                updateObject(model, pose.bestRotation, pose.bestTranslation);
+
+                updatePose("pose1", pose.bestError, pose.bestRotation, pose.bestTranslation);
+                updatePose("pose2", pose.alternativeError, pose.alternativeRotation, pose.alternativeTranslation);
+
+                step += 0.025;
+
+                model.rotation.z -= step;
+            }
+
+            texture.children[0].material.map.needsUpdate = true;
+        };
+
+        function updateObject(object, rotation, translation) {
+            object.scale.x = modelSize;
+            object.scale.y = modelSize;
+            object.scale.z = modelSize;
+
+            object.rotation.x = -Math.asin(-rotation[1][2]);
+            object.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+            object.rotation.z = Math.atan2(rotation[1][0], rotation[1][1]);
+
+            object.position.x = translation[0];
+            object.position.y = translation[1];
+            object.position.z = -translation[2];
+        };
+
+        function updatePose(id, error, rotation, translation) {
+            var yaw = -Math.atan2(rotation[0][2], rotation[2][2]);
+            var pitch = -Math.asin(-rotation[1][2]);
+            var roll = Math.atan2(rotation[1][0], rotation[1][1]);
+
+            var dist = window.utils.distance(window.dbg.corners[0],
+                window.dbg.corners[1])
+            console.log('dist', dist)
+
+            function x2() {
+                if ( window.markers.length == 0 ) {
+                    return
+                }
+                var renderCanvas3d = document.getElementById('renderCanvas3d_1')
+                renderCanvas3d = 'renderCanvas3d_1'
+                var img = document.getElementById('pic')
+                var id = 1
+                var instance = new ArucoMarker();
+                //var instance = window.instance;
+                var config = {};
+                instance.init(config)
+                //instance.test();
+               // instance.src(img, id)
+               // instance.detect(window.markers)
+
+
+                instance.src(video, id)
+               // instance.detect()
+                instance.make3d(renderCanvas3d)
+
+
+
+            }
+            x2()
+
+            //debugger
+            var d = document.getElementById(id);
+            d.innerHTML = " error: " + error
+                + "<br/>"
+                + " x: " + (translation[0] | 0) // /dist
+                + " y: " + (translation[1] | 0)// / dist
+                + " z: " + (translation[2] | 0) ///dist
+                + "<br/>"
+                + " yaw: " + Math.round(-yaw * 180.0 / Math.PI)
+                + " pitch: " + Math.round(-pitch * 180.0 / Math.PI)
+                + " roll: " + Math.round(roll * 180.0 / Math.PI)
+                +
+                "<br/>jjjjj"
+                + " x: " + utils.toNum((translation[0] | 0) / dist)
+                + " y: " + utils.toNum((translation[1] | 0) / dist)
+                + " z: " + utils.toNum((translation[2] | 0) / dist)
+                + "<br/>"
+
+        };
+        //alert('d')
+        window.onload = onLoad;
+
+        function defineUtils() {
+            window.utils = {};
+            utils.distance = function distance(pt1, pt2) {
+                var distance = 0;
+                var distance = Math.sqrt((Math.pow(pt1.x - pt2.x, 2)) + (Math.pow(pt1.y - pt2.y, 2)))
+                return distance;
+            }
+            utils.toNum = function toNum(num, pt2) {
+                return num.toFixed(2)
+            }
+        }
+
+        defineUtils();
+
+        function onTakeScreenshot() {
+            var pic = document.getElementById("canvas").toDataURL("image/png");
+
+            pic = pic.replace(/^data:image\/(png|jpg);base64,/, "");
+            $.ajax({
+                url: '/uploadPic',
+                type: 'POST',
+                data: '{ "uploadPic" : "' + pic + '" }',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function onUpaded(msg) {
+                    console.debug("Done, Picture Uploaded.");
+                },
+                error: function (jqXHR, status, err) {
+                    console.error(err)
+                    console.error("Local error callback.");
+                }
+
+            });
+        }
+
+
+    </script>
+
+</head>
+
+<body style="text-align: center; font-family: monospace;">
+<!--<img id="pic" src="/demo.png" style="position:absolute; bottom:0px; right:0px;"/>-->
+<video id="video" width=320 height=240 autoplay="true" style="display:none;"></video>
+
+<div style="margin: 10px;"><strong>-= Augmented Reality =-</strong></div>
+<button onclick="onTakeScreenshot()">Screenshot</button>
+
+<div id="holderTable"></div>
+<div style="width: 100%;">
+    <div style=" width: 650px; margin-left:auto; margin-right:auto;">
+        <canvas id="canvas" style="width: 320px; height: 240px; float: left; border: solid 1px black;"></canvas>
+
+        <div id="container"
+             style="width: 320px; height: 240px; float: left; border: solid 1px black; background: green;"></div>
+        <div style="clear: both;"></div>
+        <div style="float: left; border: solid 1px black;">
+            <div id="container1" style="width: 320px; height: 240px; background: red;"></div>
+            <div id="pose1"></div>
+        </div>
+        <div style="float: left; border: solid 1px black;">
+            <div id="container2" style="width: 320px; height: 240px; background: blue;"></div>
+            <div id="pose2"></div>
+        </div>
+        <canvas id="canvas_1" style="width: 320px; height: 240px;   border: solid 1px black;"></canvas>
+        <canvas id="renderCanvas3d_1" style="width: 320px; height: 240px;   border: solid 1px black;"></canvas>
+
+        <div id="output1_1"></div>
+        <div id="output2_1"></div>
+        <div id="output3_1"></div>
+        <img id="pic" src="/upload/9-17-2017_20_48_04.png" />
+    </div>
+</div>
+<div style="clear: both;"></div>
+<div style="margin: 15px;"><strong>Powered by <a href="http://code.google.com/p/js-aruco/">js-aruco</a> and <a
+        href="https://github.com/mrdoob/three.js">Three.js</a></strong></div>
+
+<script src="/js/lib/babylon.custom.js"></script>
+
+<script src="/3d/baby_lib3.js"></script>
+<script src="/3d/baby_lib_extended2.js"></script>
+<script src="/3d/baby_rend2.js"></script>
+
+<script>
+    function onReloader() {
+
+
+        var href = window.location.toString();
+        if (href.includes('?updrel=')) {
+            href = href.split('?updrel=')[0];
+            window.location = href
+            //alert('ok')
+            return;
+        }
+
+
+        window.debugReloader = true;
+
+        var leaf = window.location.toString().split('/').slice(-1)[0]
+        if (leaf.includes('?')) {
+            leaf = leaf.split('?')[0]
+        }
+        console.debug('leaf', leaf)
+        //  debugger
+        reloader.reloadWhen(leaf);
+        //reloader.reloadWhen('index.html');
+        reloader.reloadWhen('baby_rend2.js');
+        reloader.reloadWhen('ArucoBaby.js');
+        reloader.reloadWhen('baby_lib');
+
+
+        reloader.reloadWhenFx('baby_rend2.js', function onTestOneJs(a, b, c) {
+            console.log('reload it', a, b, c);
+        })
+        reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
+            console.log('reload it', a, b, c);
+            window.bendIt()
+        })
+
+        // var x = document.currentScript
+
+        //  debugger;
+        //C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/test3/testFramework.js
+        reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/', '')
+        reloader.filter = '/Aruco/';
+        reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/crypto/mp/RCExt/public_html/', '')
+        //reloader
+
+        //reloader.delayReload = 2000
+    }
+
+    try {
+        onReloader()
+    } catch (e) {
+        console.error('e', e)
+    }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+/* css in example dir */
+
+/*
+
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700');
+
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700');
+*/
+
+@font-face { font-family: roboto-regular;
+    src: url('Roboto-Regular.ttf'); }
+
+body{
+    font-family: 'Roboto',serif;
+}

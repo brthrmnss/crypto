@@ -1,0 +1,48 @@
+<div    id="quickListTemplate" xclass="panel panel-default">
+  <div id="headerContent" class="panel-heading" ></div>
+  <md-toolbar id="subHeaderContent" class="md-theme-light md-default-theme">
+    <!--<h2 class="md-toolbar-tools">
+      <span>Full Bleed</span>
+    </h2>-->
+  </md-toolbar>
+
+  <span class="debugInfo hide">
+     SelIndex: {{vmC.selectedIndex}}
+  </span>
+
+  <div id="listContentHolder" class="panel-bodyx" >
+  <!--  <md-grid-list id="grid" class="gridListdemoDynamicTiles" ng-non-bindable=""
+                  md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6"
+                  md-row-height-gt-md="1:1" md-row-height="4:3"
+                  md-gutter="8p
+                  x" md-gutter-gt-sm="4px" >
+      <md-grid-tile ng-repeat="tile in vmC.items"
+                    md-rowspan="{{tile.span.row}}"
+                    md-colspan="{{tile.span.col}}"
+                    md-colspan-sm="1"
+                    ng-class="tile.background" >
+        <md-icon md-svg-icon="{{tile.icon}}"></md-icon>
+        <md-grid-tile-footer><h3>{{tile.title}}</h3></md-grid-tile-footer>
+      </md-grid-tile>
+    </md-grid-list>-->
+
+    <div id="listContent" class="no-padding">
+    </div>
+  </div>
+
+  <div id="emptySet" ng-if="vmC.items.length == 0" >
+    Empty Set
+  </div>
+<!--
+
+  xcv.
+  xcb
+  {{vmC.items.length}}
+  <br />
+items: <br />
+  {{vmC.items}}
+  {{vmC.selectedIndex}}
+-->
+
+  <div id="footerContent" class="panel-footer clearfix"></div>
+</div>
