@@ -141,7 +141,11 @@ defineUtils2();
 
 
 var uiUtils = {};
+if ( typeof sh !== 'undefined' ) {
+    uiUtils = sh;
+}
 window.uiUtils = uiUtils;
+
 
 function defineUtils() {
     var self = uiUtils;
@@ -186,7 +190,7 @@ function defineUtils() {
             var err2 = sh.joinArgs(arguments)
             throw new Error(err2)
         }
-        u.retryFx = function retryFx(cond, fx) {
+        u.retryFx = function retryFx(cond, fx, cfg) {
             if (cond == false) {
                 setTimeout(fx, 200)
                 return true;
@@ -220,6 +224,24 @@ function defineUtils() {
             return ui;
         };
 
+
+        u.findJquery = function findJquery(jq) {
+            function findX() {
+                var exists = $(jq).length > 0
+                return exists
+            }
+
+            return findX
+        }
+
+        u.requireJquery = function requireJquery(jq, fxOnComplete, maxTimes, message) {
+            //u.findJquery(jq)
+            if ($(jq).length == 0) {
+                throw new Error('did not find ' + jq)
+                return;
+            }
+        }
+
     }
 
     defineExtras();
@@ -241,6 +263,70 @@ function defineUtils() {
         //return (objectOrString instanceof String)
         return typeof objectOrString == 'string'
     }
+
+    function defineStrings() {
+        uiUtils.titleCase  = function titleCase(str) {
+            str = str.toLowerCase().split(' ');
+            for (var i = 0; i < str.length; i++) {
+                str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+            }
+            return str.join(' ');
+        }
+
+        uiUtils.fixStr  = function fixStr(chars) {
+            //str = str.toLowerCase().split(' ');
+            var symbols = [',', '.', '?'];
+            if ( chars == null )
+                return chars;
+            var outputStr = '';
+            for (var i = 0; i < chars.length; i++) {
+
+                var char = chars[i]
+                var nextChar = chars[i+1];
+                var prevChar = chars[i-1];
+
+                nextChar =dv(nextChar, '')
+                prevChar =dv(prevChar, '')
+
+                outputStr += char;
+
+                var isNotUpperCase = prevChar.toUpperCase() != prevChar
+                if ( isNotUpperCase &&
+                    symbols.includes(char) && nextChar.trim() != '' ) {
+                    outputStr += ' '
+                }
+
+
+            }
+            return outputStr;
+        }
+
+        uiUtils.fixTitle  = function fixTitle(chars) {
+            var outputStr = chars;
+            var isAllUpperCase = true;
+            var isAllLowerCase = true;
+            for (var i = 0; i < chars.length; i++) {
+                var char = chars[i]
+                var isNotUpperCase = char.toUpperCase() != char
+                if ( isNotUpperCase  ) {
+                    isAllUpperCase = false;
+                }
+                var isNotLowerCase = char.toLowerCase() != char
+                if ( isNotLowerCase  ) {
+                    isAllLowerCase = false;
+                }
+            }
+
+            if ( isAllUpperCase ) {
+                outputStr = uiUtils.titleCase(chars)
+            }
+            if ( isAllLowerCase ) {
+                outputStr = uiUtils.titleCase(chars)
+            }
+            return outputStr;
+        }
+    }
+    defineStrings();
 
     p.convertArgumentsToArray =
         p.args = function convertArgumentsToArray_(_arguments) {
@@ -1535,7 +1621,7 @@ function defineUtils() {
     defineBasicMethods();
 
     function defineSetValues() {
-        p.setText = function setText(jq, val, bdg) {
+        p.setText = function setText(jq, val, dbg) {
             var ui = $(jq)
             //console.log('what is ', jq, ui, val)
             if (ui.length == 0) {
@@ -2357,6 +2443,9 @@ function defineUtils() {
                         newHTML = $(output.raw).html().trim();
                     }
 
+                    if (newHTML == null ) {
+                        newHTML = $(output.raw).html().trim();
+                    }
 
                     if (cfg.noGet != true) {
 
@@ -2371,13 +2460,13 @@ function defineUtils() {
 
                     }
                     output.addStyles();
-
+                    //debugger;
                     cfg.ui = div;
 
                     callIfDefined(cfg.fxDone, data, output.body)
                 },
                 error: function (a, b, c) {
-                    //debugger;
+                    // debugger;
                     console.error('cannot get loadPage info', cfg.url);
                     uiUtils.remoteFailed(a, b, c)
                 }
@@ -2621,6 +2710,57 @@ function defineUtils() {
 
         p.utils.getR = p.getUrl;
         p.utils.postR = p.postUrl;
+
+        p.utils.request2 = function request2(cfg) {
+
+
+            if ( cfg.divLoading ) {
+                u.show(cfg.divLoading)
+            }
+            if ( cfg.divUpdateMessage ) {
+                $(cfg.divUpdateMessage).text('- Loading...')
+            }
+            u.hide(cfg.divLoadingError)
+            if ( cfg.inMemory == true ) {
+                //debugger
+                onSuccess(cfg.items)
+                return;
+            }
+
+            $.ajax({
+                url: cfg.url,
+                data: cfg.data,
+                success: onSuccess,
+                error: function (a,b,c) {
+                    u.hide(cfg.divLoading)
+                    u.addToken(cfg.divLoadingToken)
+                    callIfDefined(cfg.fxError)
+                    console.error('cannot get info', cfg.url)
+                    u.remoteFailed(a,b,c)
+                    if ( cfg.divUpdateMessage ) {
+                        $(cfg.divUpdateMessage).text('- Loading failed')
+                    }
+                }
+            });
+
+
+
+            function onSuccess (data) {
+                if ( cfg.inMemory != true ) {
+                    callIfDefined(cfg.fxDone, data)
+                } else {
+                    setTimeout(function ok(){
+                        callIfDefined(cfg.fxDone, data)
+                    },50)
+                }
+                u.hide(cfg.divLoading)
+                if ( cfg.divUpdateMessage ) {
+                    $(cfg.divUpdateMessage).text('')
+                }
+                //debugger;
+            }
+        }
+
     }
 
     defineUrl();

@@ -862,15 +862,17 @@ function GrammarHelperServer() {
                                         self.proc('file length', files.length);
                                     }
                                     //files.push('../../js/socket.io-1.2.0.js.')
-                                    files.unshift('../../js/reloaderGH1.js') //put at top
-                                    files.unshift('../../../ui_utils.js') //put at top
+                                    //files.unshift('../../js/reloaderGH1.js') //put at top
+                                   // files.unshift('../../../ui_utils.js') //put at top
                                     var contents = sh.readFile(fileTemplate)
                                     var cSplit = contents.split('</body>')
                                     var start = cSplit[0]
                                     sh.each(files, function onRecurseAllFiles_AddFilesToIndexPage(k, v) {
-
                                         if (v == null) {
                                             self.proc('this is null', k, v)
+                                            return;
+                                        }
+                                        if ( v.includes('ignore/') )  {
                                             return;
                                         }
                                         if (sh.endsWith(v, '.js')) {
@@ -925,7 +927,7 @@ function GrammarHelperServer() {
                                     if (sh.fileExists(userTemplateContent)) {
                                         var data = sh.readFile(userTemplateContent);
                                         var body = rh.getDataInTag(data, 'body')
-                                        var rep = rh.replaceContent(start, 'quick-crud-demo', body)
+                                        var rep = rh.replaceContent(start, 'transcluded_contents', body)
                                         var dbg = [body, rep]
                                         start = rep;
                                         var body = rh.getDataInTag(data, 'title')
@@ -1065,7 +1067,7 @@ function GrammarHelperServer() {
             cfg.auxAddDir = sh.fs.join(__dirname, 'sharedResourcesGrid/')
             cfg.auxAddDir = sh.fs.slash(cfg.auxAddDir) + '/'
             //cfg.fileTempalte =  self._dirYeomanAppTmp + 'simpleapp.3.html'
-            cfg.fileTemplate = sh.fs.join(__dirname, 'grid/index.template.html')
+            cfg.fileTemplate = sh.fs.join(__dirname, 'grid/index.grid.template.html')
             proc1(cfg);
         }
 

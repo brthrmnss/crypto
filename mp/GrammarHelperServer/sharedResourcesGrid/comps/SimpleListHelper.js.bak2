@@ -16,23 +16,34 @@ function SimpleListHelper() {
         u.require(self.settings.id, 'need an id')
         u.require(self.settings.idPartial, 'need idPartial id')
 
+        u.requireJquery = function requireJquery(jq, fxOnComplete, maxTimes, message) {
+            u.findJquery(jq)
+            if ( $(jq).length == 0 ) {
+                throw new Error('did not find '+jq)
+                return;
+            }
+        }
 
 
+        u.findJquery = function findJquery(jq) {
+            function findX () {
+                var exists = $(jq).length > 0
+                return exists
+            }
+            return findX
+        }
         function reinit() {
             init(cfg)
         }
-
         //var partialFound = $(cfg.idPartial).length > 0
-        u.requireJquery(cfg.idPartial, 'could not find the partial', 10)
-        u.require(self.settings.idPartial, 'need idPartial id')
-
+        u.requireJquery(cfg.idParital, 'could not find the partial', 10)
 
         //debugger
-        /*  if (sh.retryFx(partialFound, function retry() {
-         self.init(cfg)
-         })) {
-         return;
-         }*/
+      /*  if (sh.retryFx(partialFound, function retry() {
+                self.init(cfg)
+            })) {
+            return;
+        }*/
 
 
         //u.dv(sel)
@@ -55,14 +66,12 @@ function SimpleListHelper() {
         // cfg.append = true
         // cfg.divCreatable = u.join2('holder', self.settings.id)
         cfg.id = self.settings.targetId;
-        //cfg.url = "/themes/minimal_v0" + "/js/comps/simpleList.html"
-        cfg.url = '/grid/grid/sharedResourcesGrid/'+'comps/simpleList.html'
-        console.log('log', '...', document.currentScript)
-        //debugger
+        cfg.url = "/themes/minimal_v0" + "/js/comps/simpleList.html"
         cfg.fxDone = fx;
         cfg.replaceThis = 'dialogMyLibrary';
         cfg.withThis = self.settings.id;
-        uiUtils.utils.loadPage(cfg)
+         debugger
+        gUtils.loadPage(cfg)
     }
 
     p.setupUIs = function setupUIs() {
@@ -118,9 +127,9 @@ function SimpleListHelper() {
         self.data.listUL =
             self.utils.addSect('ListUl')
 
-        if (self.settings.addStylesTiList) {
-            sh.each(self.settings.addStylesTiList, function onK(k, listStyle0) {
-                // self.ui.listUL.addClass(listStyle0)
+        if ( self.settings.addStylesTiList ) {
+            sh.each(self.settings.addStylesTiList, function onK(k,listStyle0) {
+               // self.ui.listUL.addClass(listStyle0)
                 uiUtils.lastUI.addClass(listStyle0)
             })
 
@@ -178,7 +187,7 @@ function SimpleListHelper() {
         self.data.ui.btnBackToTop = $(self.data.ui.btnBackToTop)
         self.data.ui.btnBackToTop.hide();
 
-        u.onClick(self.data.ui.btnBackToTop, self.uiHelper.onBackToTop);
+        gUtils.onClick(self.data.ui.btnBackToTop, self.uiHelper.onBackToTop);
 
 
         self.data.pag = new Paginator();
@@ -193,14 +202,14 @@ function SimpleListHelper() {
         var d = self;
         var pd = self.searchLibrary2
         //debugger;
-        u.onEnter(self.data.btnRetry, self.searchLists);
+        gUtils.onEnter(self.data.btnRetry, self.searchLists);
         //debugger
-        u.onClick(self.data.btnMore, self.searchLists2);
-        u.onEnter(self.data.txtSearch, self.searchLists);
-        u.onChangeDebounced(self.data.txtSearch, self.searchLists);
-        //u.onClick(self.data.btnMyLibrary, self.openMyLibraryDialog);
-        u.onClick(self.data.title, self.searchLists, true)
-        u.makeBtn(self.data.title, self.settings.tooltip)
+        gUtils.onClick(self.data.btnMore, self.searchLists2);
+        gUtils.onEnter(self.data.txtSearch, self.searchLists);
+        gUtils.onChangeDebounced(self.data.txtSearch, self.searchLists);
+        //gUtils.onClick(self.data.btnMyLibrary, self.openMyLibraryDialog);
+        gUtils.onClick(self.data.title, self.searchLists, true)
+        gUtils.makeBtn(self.data.title, self.settings.tooltip)
         //$('#header-list').on('click', self.openSearchListDialog);
 
         var btnClear = $(self.data.ui.btnClearSearch);
@@ -208,8 +217,8 @@ function SimpleListHelper() {
         //console.log('reload x init helper', btnClear)
 
         uiUtils.fadeInOnHover(self.data.ui.btnClearSearch);
-        u.onClick(self.data.ui.btnClearSearch, self.clearSearchLists);
-        u.makeBtn(self.data.ui.btnClearSearch, 'clear');
+        gUtils.onClick(self.data.ui.btnClearSearch, self.clearSearchLists);
+        gUtils.makeBtn(self.data.ui.btnClearSearch, 'clear');
 
         var ui = $(self.data.dialogId);
         self.data.dialog = ui;
@@ -223,7 +232,7 @@ function SimpleListHelper() {
 
 
         //self.data.listId = '#view-content-list';
-        u.onChangeDebounced(self.data.txtSearch, self.highlightQueryInSearchResults, 100);
+        gUtils.onChangeDebounced(self.data.txtSearch, self.highlightQueryInSearchResults, 100);
 
 
         self.openContentListDialog()
@@ -290,7 +299,7 @@ function SimpleListHelper() {
             }
 
             console.error('shouldScroll', shouldScroll, canScrollToTop, scrollTop, self.data.ui.btnBackToTop)
-            u.ifShow(canScrollToTop, self.data.ui.btnBackToTop)
+            gUtils.ifShow(canScrollToTop, self.data.ui.btnBackToTop)
 
             if (shouldScroll == false) {
 
@@ -372,7 +381,7 @@ function SimpleListHelper() {
         self.data.list.clear();
         debugger
         var shift = contentList.shift();
-        shift.name = u.fixTitle(shift.name);
+        shift.name = gUtils.fixTitle(shift.name);
         $('#txtContentList').text(shift.name);
         $.each(contentList, function addresult(k, v) {
             /*v.link = window.serverHelper.utils.getUrl(
@@ -414,11 +423,11 @@ function SimpleListHelper() {
                     return;
                 }
 
-                var rep = u.replace(html, '<strong>', '');
-                rep = u.replace(rep, '</strong>', '');
+                var rep = gUtils.replace(html, '<strong>', '');
+                rep = gUtils.replace(rep, '</strong>', '');
                 if (val == '') base.html(rep);
                 ;
-                rep = u.replace(rep, val, '<strong>$&</strong>');
+                rep = gUtils.replace(rep, val, '<strong>$&</strong>');
                 base.html(rep);
             })
         }
@@ -426,7 +435,7 @@ function SimpleListHelper() {
         var contentList = sdf;
         var results = $(self.data.listId).find('.list-search-list').find('.desc,.link')
         contentList = results;
-        u.ifShow(contentList.length == 0, '#contentListNoResults')
+        gUtils.ifShow(contentList.length == 0, '#contentListNoResults')
 
     }
 
@@ -488,7 +497,7 @@ function SimpleListHelper() {
         if (doCheck) {
             //debugger
             if (window.serverHelper.utils.inUrl('#' + self.settings.stateName)) {
-                u.hideTall();
+                gUtils.hideTall();
                 self.showContentListDialog();
                 self.tryToResumeSearch()
                 return;
@@ -497,16 +506,16 @@ function SimpleListHelper() {
         self.ui.dialog.hide();
         $('#dialogModal').hide();
         if (doCheck != true)
-            u.showTall();
+            gUtils.showTall();
     }
     ;
 
 
     p.tryToResumeSearch = function tryToResumeSearch() {
-        u.getParams()
+        gUtils.getParams()
 
         if (self.settings.urlPropResumeSearch) {
-            var seachDialogText = u.params[self.settings.urlPropResumeSearch]; //seachDialogText;
+            var seachDialogText = gUtils.params[self.settings.urlPropResumeSearch]; //seachDialogText;
 
             if (seachDialogText == null) {
                 return;
@@ -517,7 +526,7 @@ function SimpleListHelper() {
 
 
         if (self.settings.urlPropResumeSearch) {
-            var seachDialogText = u.params[self.settings.urlPropResumeSearch]; //seachDialogText;
+            var seachDialogText = gUtils.params[self.settings.urlPropResumeSearch]; //seachDialogText;
             if (seachDialogText == null) {
                 return;
             }
@@ -565,7 +574,7 @@ function SimpleListHelper() {
             }
             self.updateContentListDisplay(results)
         };
-        u.utils.request2(cfg);
+        window.serverHelper.utils.request2(cfg);
     }
 
     function defineSearch() {
@@ -600,11 +609,11 @@ function SimpleListHelper() {
                             return;
                         }
 
-                        var rep = u.replace(html, '<strong>', '');
-                        rep = u.replace(rep, '</strong>', '');
+                        var rep = gUtils.replace(html, '<strong>', '');
+                        rep = gUtils.replace(rep, '</strong>', '');
                         if (val == '') base.html(rep);
                         ;
-                        rep = u.replace(rep, val, '<strong>$&</strong>');
+                        rep = gUtils.replace(rep, val, '<strong>$&</strong>');
                         base.html(rep);
                     })
                 }
@@ -636,11 +645,11 @@ function SimpleListHelper() {
                         return;
                     }
 
-                    var rep = u.replace(html, '<strong>', '');
-                    rep = u.replace(rep, '</strong>', '');
+                    var rep = gUtils.replace(html, '<strong>', '');
+                    rep = gUtils.replace(rep, '</strong>', '');
                     if (val == '') base.html(rep);
                     ;
-                    rep = u.replace(rep, val, '<strong>$&</strong>');
+                    rep = gUtils.replace(rep, val, '<strong>$&</strong>');
                     base.html(rep);
                 })
             }
@@ -671,7 +680,7 @@ function SimpleListHelper() {
 
             if (self.settings.urlPropResumeSearch) {
                 u.setUrlVal(self.settings.urlPropResumeSearch, txt)
-                /*  var seachDialogText = u.params[self.settings.urlPropResumeSearch]; //seachDialogText;
+                /*  var seachDialogText = gUtils.params[self.settings.urlPropResumeSearch]; //seachDialogText;
 
                  debugger;
 
@@ -679,8 +688,9 @@ function SimpleListHelper() {
             }
 
 
+
             if (self.settings.live != false) {
-                if (u.fxRetry(self.utils.getServerUrl, self.searchLists, arguments)) {
+                if (gUtils.fxRetry(self.utils.getServerUrl, self.searchLists, arguments)) {
                     return;
                 }
                 var url = p.utils.getServerUrl(self.settings.searchUrl);
@@ -745,7 +755,7 @@ function SimpleListHelper() {
                 // u.l(function (){ cfg.fxDone(self.settings.items) })
                 // return;
             }
-            u.utils.request2(cfg);
+            window.serverHelper.utils.request2(cfg);
         };
 
         p.clearSearchLists = function clearSearchLists() {
@@ -767,20 +777,20 @@ function SimpleListHelper() {
             var lastIndex = 0;
             $.each(sdf, function addresult(k, v) {
                 v = sh.clone(v)
-                /*v.link = window.serverHelper.utils.getUrl(
+                v.link = window.serverHelper.utils.getUrl(
                     window.serverHelper.data.servers.searchLists.port,
                     '/api/content_lists/view/' + v.list_id
-                );*/
+                );
                 v.content_list_id = v.list_id;
                 v.number = k + 1 + self.data.offset;
                 v.desc = sh.dv(v.desc, '')
-                v.desc = u.fixStr(v.desc)
+                v.desc = gUtils.fixStr(v.desc)
                 var maxLength = 500
                 if (v.desc.length > maxLength) {
                     v.desc = v.desc.slice(0, maxLength)
                 }
                 v.name = sh.dv(v.name, '')
-                v.name = u.fixTitle(v.name);
+                v.name = gUtils.fixTitle(v.name);
 
                 if (self.settings.fxProcessItem) {
                     v = sh.cid(self.settings.fxProcessItem, v)
@@ -803,10 +813,10 @@ function SimpleListHelper() {
             if (self.data.dbg.emptyStr)
                 console.error('additionalpage', additionalPage, isAdditionalPage, isResultEmpty)
             if (isAdditionalPage == false) {
-                u.ifShow(isResultEmpty, self.data.ui.txtNoResults)
+                gUtils.ifShow(isResultEmpty, self.data.ui.txtNoResults)
             } else {
 
-                u.hide(isResultEmpty, self.data.ui.txtNoResults)
+                gUtils.hide(isResultEmpty, self.data.ui.txtNoResults)
             }
 
             var things = ['Rock', 'Paper', 'Scissor'];
@@ -820,10 +830,7 @@ function SimpleListHelper() {
 
 
         p.countLists = function countLists() {
-            if ( self.settings.live == false ) {
-                return;
-            }
-            if (u.fxRetry(self.utils.getServerUrl, self.countLists)) {
+            if (gUtils.fxRetry(self.utils.getServerUrl, self.countLists)) {
                 return;
             }
 
@@ -842,12 +849,12 @@ function SimpleListHelper() {
                 paren = function paren(text) {
                     return "(" + text + ")"
                 }
-                u.setText(self.data.ui.txtResultCount, paren(results))
+                gUtils.setText(self.data.ui.txtResultCount, paren(results))
 
-                //u.ifShow(results == 0, self.data.ui.txtEmptyLibrary);
-                u.ifShow(results == 0, self.data.ui.txtNoResults);
+                //gUtils.ifShow(results == 0, self.data.ui.txtEmptyLibrary);
+                gUtils.ifShow(results == 0, self.data.ui.txtNoResults);
             };
-            u.utils.request2(cfg);
+            window.serverHelper.utils.request2(cfg);
         }
     }
 
@@ -875,7 +882,7 @@ SimpleListHelper.createSimpleList = function createSimpleList(name, divTarget, i
     divTarget = u.dv.id(divTarget)
 
     cfg.targetId = divTarget
-    cfg.id = 'list_' + name.split(' ').join('_')
+    cfg.id = 'list_'+name.split(' ').join('_')
     cfg.idPartial = divTarget + '_partial'
 
     cfg.name = name;
@@ -890,7 +897,7 @@ SimpleListHelper.createSimpleList = function createSimpleList(name, divTarget, i
     cfg.fxEmpty = function onIsEmpty() {
     }
 
-    // cfg.searchPort = window.serverHelper.data.servers.search.port
+   // cfg.searchPort = window.serverHelper.data.servers.search.port
     cfg.searchUrl = 'api/file'
     cfg.limit = 10
 
@@ -986,13 +993,262 @@ if (window.dialogs == null) {
     window.dialogs = [];
 }
 
-var basic = [
+setTimeout(function testGenericList() {
+
+    window.simpleList = new SimpleListHelper();
+    var sL = window.simpleList;
+    var cfg = {};
+
+    cfg.name = "what i\'ve watched"
+    cfg.tooltip = 'recently watched....'
+    cfg.userAction = 'Click to watch'
+    cfg.txtEmptyMessage = 'No search matches your query'
+    cfg.showUserAction = false;
+    cfg.showSearch = false;
+    cfg.showMatchCount = false;
+    cfg.showFooter = false;
+    cfg.titlePadding = 20
+    cfg.fxEmpty = function onIsEmpty() {
+
+    }
+
+   //cfg.searchPort = window.serverHelper.data.servers.search.port
+  //  cfg.searchUrl = 'api/file'
+    cfg.limit = 10
+
+    //cfg.hashUrl = 'searchDialog'
+    //cfg.stateName = 'searchDialog'
+
+    cfg.fieldMappings = [
+        'name',
+        'rating',
+        'number',
+        'desc',
+        'sxe',
+        'series_name',
+        {data: ['id']},
+        {name: 'timestamp', attr: 'data-timestamp'},
+        //{ name: 'link', attr: 'href' },
+        {name: 'image', attr: 'src'},
+        {name: 'idview', attr: 'idview'},
+    ]
+
+
+    cfg.fxProcessItem = function fxProcessItem(o) {
+        sh.dv.ifBlank(o, 'name', 'sanitized_name')
+        sh.dv.ifBlank(o, 'name', 'originalFilename')
+        if (o.season_number) {
+            var sxe = {
+                s: o.season_number.toString(),
+                e: o.episode_number.toString()
+            }
+            o.sxe = [sxe.s.padStart(2, '0'),
+                sxe.e.padStart(2, '0')].join('x')
+        }
+        return o;
+    }
+
+    cfg.debug = {};
+    cfg.debug.showResults = false;
+
+
+    cfg.targetId = '#divDVRList'
+    cfg.id = 'divDVRListX'
+    cfg.idPartial = '#divDVRList_partial'
+
+    cfg.items = [
+        {name: 'ok'},
+
+        {name: 'dirty'}
+    ]
+
+
+    cfg.urlPropResumeSearch = 'searchDialogSearchText'
+
+
+    cfg.fxSearchQuery = function fxSearchQuery(txt) {
+        //debugger
+        var data = {
+            $or: [{name: {$like: "%" + txt + "%"}},
+                {series_name: {$like: "%" + txt + "%"}},
+                {desc: {$like: "%" + txt + "%"}}]
+        }
+
+
+        data.order = ['season_number', 'episode_number']
+
+
+        return data
+    }
+    cfg.fxClick = function fxClick(item, ui) {
+        if (ui.hasClass('series_name')) {
+            sFDH.data.glh.setTextTo(ui.text());
+            sFDH.data.glh.searchLists()
+            return;
+        }
+        sFDH.closeDialog()
+
+        var urlVideo = window.config.files.default_server + item.localFilePath
+        vc.playContent(item, urlVideo)
+        //window.showVideoPlayer(urlVideo)
+        //  debugger;
+        // return data
+    }
+
+
+    cfg.fxOpen = function fxOpen() {
+        $('#header-search').addClass('current');
+    }
+
+    /*
+     cfg.openOnInit = true;
+     cfg.openOnInit = true;
+     cfg.searchTxtInit = 'Sopranos'
+     cfg.searchTxtInit = null;
+     */
+
+    sL.init(cfg)
+    // sFDH.openDialog()
+    window.sL = sL;
+    // window.dialogs.push(sFDH)
+
+    return;
+
+}, 200)
+
+
+setTimeout(function testGenericList2() {
+
+    window.simpleList = new SimpleListHelper();
+    var sL = window.simpleList;
+    var cfg = {};
+
+    cfg.name = "what i\'ve watched"
+    cfg.tooltip = 'recently watched....'
+    cfg.userAction = 'Click to watch'
+    cfg.txtEmptyMessage = 'No search matches your query'
+    cfg.showUserAction = false;
+    cfg.showSearch = false;
+    cfg.showMatchCount = false;
+    cfg.showFooter = false;
+    cfg.titlePadding = 20
+    cfg.fxEmpty = function onIsEmpty() {
+
+    }
+
+    //cfg.searchPort = window.serverHelper.data.servers.search.port
+    cfg.searchUrl = 'api/file'
+    cfg.limit = 10
+
+    cfg.live = false;
+    cfg.items = [
+        {name: 'ok'},
+        {name: 'dirty'}
+    ]
+
+
+    //cfg.hashUrl = 'searchDialog'
+    //cfg.stateName = 'searchDialog'
+
+    cfg.fieldMappings = [
+        'name',
+        'rating',
+        'number',
+        'desc',
+        'sxe',
+        'series_name',
+        {data: ['id']},
+        {name: 'timestamp', attr: 'data-timestamp'},
+        //{ name: 'link', attr: 'href' },
+        {name: 'image', attr: 'src'},
+        {name: 'idview', attr: 'idview'},
+    ]
+
+
+    cfg.fxProcessItem = function fxProcessItem(o) {
+        sh.dv.ifBlank(o, 'name', 'sanitized_name')
+        sh.dv.ifBlank(o, 'name', 'originalFilename')
+        if (o.season_number) {
+            var sxe = {
+                s: o.season_number.toString(),
+                e: o.episode_number.toString()
+            }
+            o.sxe = [sxe.s.padStart(2, '0'),
+                sxe.e.padStart(2, '0')].join('x')
+        }
+        return o;
+    }
+
+    cfg.debug = {};
+    cfg.debug.showResults = false;
+
+
+    cfg.targetId = '#divDVRList2'
+    cfg.id = 'divDVRList2X'
+    cfg.idPartial = '#divDVRList2_partial'
+
+
+    cfg.urlPropResumeSearch = 'searchDialogSearchText'
+
+
+    cfg.fxSearchQuery = function fxSearchQuery(txt) {
+        //debugger
+        var data = {
+            $or: [{name: {$like: "%" + txt + "%"}},
+                {series_name: {$like: "%" + txt + "%"}},
+                {desc: {$like: "%" + txt + "%"}}]
+        }
+
+
+        data.order = ['season_number', 'episode_number']
+
+
+        return data
+    }
+    cfg.fxClick = function fxClick(item, ui) {
+        if (ui.hasClass('series_name')) {
+            sFDH.data.glh.setTextTo(ui.text());
+            sFDH.data.glh.searchLists()
+            return;
+        }
+        sFDH.closeDialog()
+
+        var urlVideo = window.config.files.default_server + item.localFilePath
+        vc.playContent(item, urlVideo)
+        //window.showVideoPlayer(urlVideo)
+        //  debugger;
+        // return data
+    }
+
+
+    cfg.fxOpen = function fxOpen() {
+        $('#header-search').addClass('current');
+    }
+
+    /*
+     cfg.openOnInit = true;
+     cfg.openOnInit = true;
+     cfg.searchTxtInit = 'Sopranos'
+     cfg.searchTxtInit = null;
+     */
+
+    sL.init(cfg)
+    // sFDH.openDialog()
+    window.sL = sL;
+    // window.dialogs.push(sFDH)
+
+    return;
+
+}, 200)
+
+
+var basic =  [
     {name: 'ok'},
     {name: 'dirty 2'},
     {name: 'dirty 3'}
 ]
 
-var basic2 = [
+var basic2 =  [
     {name: 'ok'},
     {name: 'dirty 2'},
     {name: 'dirty 3'}
@@ -1000,15 +1256,13 @@ var basic2 = [
 
 
 var cfg = SimpleListHelper.createSimpleList('Playlists', 'divPlaylistJumpBar', basic)
-cfg.fxInit = function on() {
-    console.log('on built')
-}
+cfg.fxInit = function on() { console.log('on built')}
 cfg.addStylesTiList = ['horizontal-flex-container']
 /*
 
- var cfg = SimpleListHelper.createSimpleList('Playlists', 'divLandingSeries', basic2)
- cfg.fxInit = function on() { console.log('on built')}
+var cfg = SimpleListHelper.createSimpleList('Playlists', 'divLandingSeries', basic2)
+cfg.fxInit = function on() { console.log('on built')}
 
- var cfg = SimpleListHelper.createSimpleList('Playlists', 'divLandingMovies', basic2)
- cfg.fxInit = function on() { console.log('on built')}
- */
+var cfg = SimpleListHelper.createSimpleList('Playlists', 'divLandingMovies', basic2)
+cfg.fxInit = function on() { console.log('on built')}
+*/

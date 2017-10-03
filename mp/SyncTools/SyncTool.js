@@ -170,6 +170,8 @@ if (module.parent == null) {
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/SlickRun')
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/GrammarHelperServer')
     dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/Tx')
+    dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/ExtProxy')
+    dirs.push('C:/Users/user1/Dropbox/projects/crypto/mp/testingFramework')
     instance.zipDirs(dirs)
 
     var listFiles = []

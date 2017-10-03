@@ -6,7 +6,7 @@ var noOp = function () {
 }
 angular.module = noOp
 angular.factory = noOp
-angular.directives = noOp
+angular.directive = noOp
 window.angular= angular;
 
 window.reloadableHelper = {};
@@ -21,3 +21,9 @@ window.reloadableHelper.makeServiceReloadable = function () {
 
 angular.reloadableDirective = noOp
 angular.reloadableController = noOp
+window.app = {};
+window.app.directive = noOp;
+window.app.controller = noOp;
+window.angular.controller = noOp;
+window.app.filter =
+window.angular.filter = noOp;

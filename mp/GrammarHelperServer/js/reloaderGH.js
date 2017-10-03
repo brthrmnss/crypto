@@ -102,6 +102,10 @@ window.fxInvoke = function (classToUpdate) {
     var str = classToUpdate.split('/').slice(-1)[0]
     console.log('updated file', str, classToUpdate)
 
+    if ( reloader.disable ) {
+        console.log('reloader.disabled ignore upload')
+        return;
+    }
 
     if (reloader.filterAll && classToUpdate.includes(reloader.filterAll) == false) {
         return;
@@ -356,6 +360,12 @@ reloader.reloadWhens = [];
 reloader.reloadWhen = function reloadWhen(asdf) {
     reloader.reloadWhens.push(asdf);
 }
+reloader.addWhens = function addWhens(asdf) {
+    $.each(asdf, function asdf2(k,file) {
+        reloader.reloadWhens.push(file);
+    })
+
+}
 reloader.reloadWhenSelf = function reloadWhenSelf(asdf) {
     var leaf = window.location.toString().split('/').slice(-1)[0]
     if (leaf.includes('?')) {
@@ -379,6 +389,14 @@ reloader.addReloadMapping = function addReloadMapping(path, replaceWith) {
     reloader.dictRemappingReloadFileUrls[path] = replaceWith
 }
 
+
+if ( window.fxReloader ) {
+    window.fxReloader(reloader)
+}else{
+    setTimeout(function initLAter() {
+        window.fxReloader(reloader)
+    },25)
+}
 
 window.onerror = function onError(errorMsg, url, lineNumber, d, e) {
     //debugger;

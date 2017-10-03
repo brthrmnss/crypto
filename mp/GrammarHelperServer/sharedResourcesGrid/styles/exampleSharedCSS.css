@@ -8,10 +8,21 @@
 
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700');
 */
-
-@font-face { font-family: roboto-regular;
-    src: url('Roboto-Regular.ttf'); }
+@import url('/grid/sharedResourcesGrid/styles/Roboto-Regular.ttf');
+@font-face {
+    font-family: roboto-regular;
+    src: url('Roboto-Regular.ttf');
+}
+@font-face {
+    font-family: roboto-regular;
+    src: url('/grid/sharedResourcesGrid/styles/Roboto-Regular.ttf');
+}
 
 body{
-    font-family: 'Roboto',serif;
+     font-family: 'Roboto',serif;
+ }
+
+
+body{
+    font-family: roboto-regular,serif;
 }

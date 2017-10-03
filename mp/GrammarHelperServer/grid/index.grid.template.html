@@ -38,13 +38,40 @@
 <body>
 
 
-<script src="../../g/js/testBrowserEvalGH.js"></script>
 <script src="jquery.js"></script>
+<script src="shelpers-mini.js"></script>
+<script src="ui_utils.js"></script>
+<script src="../../g/js/reloaderGH.js"></script>
+
 <!-- endbuild -->
 <div>
-    df
+    start
 </div>
+<transcluded_contents></transcluded_contents>
+end
 
-sdf
+<script>
+    window.fxReloader = function fxReloader(reloader) {
+        //var reloaderSettings = {};
+       // window.reloaderSettings = reloaderSettings;
+        var url = window.location.toString()
+        var split = url.split('/')
+        var subdir = split.slice(-2)[0]
+        var arr = [
+          //  'index.grid.template.html',
+            'sharedResourcesGrid',
+            '/ui_utils.js',
+            '/' + subdir + '/'
+        ]
+        //debugger
+        reloader.addWhens(arr)
+        reloader.disable = true
+
+        setTimeout(function() {
+            reloader.disable = false;
+            console.log('ready....')
+        }, 2500)
+    }
+</script>
 </body>
 </html>
