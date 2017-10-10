@@ -1,5 +1,8 @@
 {
   "author": "booty@protonmail.com",
+  "background": {
+    "scripts": [   "js/background.index.js" ]
+  },
   "content_scripts": [
     {
       "js": [
@@ -31,7 +34,11 @@
   "manifest_version": 4,
   "name": "Chrome Ext Debugger",
   "permissions": [
+    "contextMenus",
     "activeTab",
+    "tabs",
+    "contextMenus",
+    "http://127.0.0.1/",
     "https://bookzz.org/",
     "https://book4you.org/"
   ],

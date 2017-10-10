@@ -34,6 +34,7 @@ function QuickUIConvertor() {/**/
 
     self.data = {}
     self.data.squares = []
+    self.settings = {};
 
     p.getAttributes = function (el) {
         var nodes = [], values = [];
@@ -82,6 +83,11 @@ function QuickUIConvertor() {/**/
         //console.debug('quis','loading version', QuickUIConvertor.version, window.QuickUIConvertor.version)
         var children = elStart.find('*');
         children.push(elStart); //add starting element
+
+        if ( self.settings.doNotModify ) {
+            children = elStart;
+        }
+
         var ifx = function ifXHasPropCallFxWithVal(x, prop, fx) {
             if (x[prop] != null) {
                 fx(x[prop])
@@ -245,6 +251,9 @@ function QuickUIConvertor() {/**/
         });
 
         function onProcessEachElement(i, inputElement) {
+            if ( inputElement.nodeName == '#text') {
+                return; //skip text
+            }
             //console.log(i);
             var q = $(inputElement);
             var element = null;
@@ -253,6 +262,15 @@ function QuickUIConvertor() {/**/
             pre.el = el;
 
             pre.children = $(el).children();
+
+            /*if ( element.tagName ) {
+             var type = element.tagName.toLowerCase();
+             } else {
+             var type = element.nodeName.toLowerCase();
+             }*/
+            if ( element.tagName == null ) {
+                element.tagName = element.nodeName;
+            }
             var type = element.tagName.toLowerCase();
             pre.type = type;
             var attrs = self.getAttributes(element);////.attr();
@@ -994,8 +1012,3 @@ function Morpher() {
 }
 
 
-var m = new Morpher()
-var cfg = {}
-cfg.div = '#holderMorphArea'
-m.init(cfg)
-m.render();

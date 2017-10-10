@@ -54,11 +54,24 @@ function GoToAutoHotKeyQuickWebstorm() {
 
         self.utils.searchForArgOption('noRun', 'norun', 'do not run')
         self.utils.searchForArgOption_startsWith('partialMode', 'partial', 'loading a partial')
+        self.utils.searchForArgOption_startsWith('fileMode', 'wsfile', 'loading a file')
+        self.utils.searchForArgOption_startsWith('startsWith', 'startsWith', 'loading a file')
+
+
+        //https://autohotkey.com/docs/commands/SetTitleMatchMode.htm
+        if ( self.settings.startsWith ) {
+            content = ['SetTitleMatchMode,1',content].join(sh.n)
+        } else {
+            content = ['SetTitleMatchMode,2',content].join(sh.n)
+        }
 
         if ( self.settings.partialMode ) {
             content = sh.replace(content, '; BlockPartialMode', '')
             content = content.replace('=partialFileName=', self.settings.partialMode)
-        } else {
+        }
+        if ( self.settings.fullMode ) {
+            content = sh.replace(content, '; BlockPartialMode', '')
+            content = content.replace('=partialFileName=', self.settings.partialMode)
             content = sh.replace(content, '; BlockFullMode', '')
         }
         /*if ( launchIfNotFound ) {

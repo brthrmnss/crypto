@@ -59,7 +59,7 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
 
 
         var fileStore = sh.fs.makePath(dirTrash, sh.stripBadFiles(dir) + '.filelist.txt')
-        sh.run('> ' + fileStore  )
+
 
         if (false == sh.fs.exists(dir)) {
             console.log('does not exist', dir)
@@ -69,11 +69,12 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
         files.push(fileStore)
         process.chdir(dir)
 
-        var cmd = 'dir /s /b /a >' + fileStore
+
 
         if (sh.isWin()) {
-
+            var cmd = ['dir ',dir,'/s /b /a >' + fileStore].join(' ')
         } else {
+            sh.run('> ' + fileStore  )
             // cmd = 'ls -R ' + dir + ' >' + fileStore
             cmd = 'find ' + dir + ' -name "*.*"  -print ' + ' >> ' + fileStore //+ '; echo;';
             if ( withSizes ) {

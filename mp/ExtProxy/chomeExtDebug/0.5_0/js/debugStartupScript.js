@@ -220,6 +220,13 @@ function onBtn() {
             ])
         }
 
+        if ( urlInc('videos.com') ) {
+            // alert('ok in amazon')
+            loader.loadScripts([
+                'ideas/update_myVideos.js',
+            ])
+        }
+
         if (window.location.host.includes('news.ycombinator.com')) {
             // alert('ok in amazon')
             loader.loadScripts([

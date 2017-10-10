@@ -1631,7 +1631,7 @@ function defineUtils() {
             if (dbg) {
                 console.debug('what is this', jq, val, dbg)
             }
-            if (ui.is('span') || ui.is('h2')) {
+            if (ui.is('span') || ui.is('h2') || ui.is('div')) {
                 ui.text(val)
             }
         }
@@ -2389,10 +2389,37 @@ function defineUtils() {
 
     defineUrlMethods();
 
+    u.copyObjProps = function copyObjProps (a,b) {
+        $.each(a, function copyTo(k,v){
+            if ( $.isFunction(v) ){
+                b[k] =  v;
+            }
+        })
+    }
+
+    u.copyNonObjProps = function copyNonObjProps (a,b) {
+        b = u.dv(b, {})
+       var str =  ['string', 'boolean', 'number']
+        $.each(a, function copyTo(k,v){
+            var type = typeof v
+            if ( str.includes(type)){
+                b[k] =  v;
+            }
+        })
+        return b;
+    }
+
 
     function defineUI() {
         p.utils.loadPage = function loadPage(cfg) {
             var div = $(cfg.div)
+            if ( cfg.baseUI ) {
+                div = cfg.baseUI;
+            }
+            if ( cfg.preload ) {
+                cfg.noGet = true;
+            }
+           // debugger
             if (cfg.noGet != true) {
                 if (cfg.divCreatable) {
                     div = $('#' + cfg.divCreatable)
@@ -2425,52 +2452,75 @@ function defineUtils() {
                     }
                 }
             }
+
+            if (cfg.preloadedTemplate) {
+                //debugger;
+                onLoadedPageContents(cfg.preloadedTemplate)
+                console.error('preloaded')
+
+                return;
+            }
             //debugger
             $.ajax({
                 url: cfg.url,
                 datattype: "html",
                 //data: data,
-                success: function (data) {
-
-                    var output = p.utils.parseBodyHTML(data);
-                    var newHTML = output.body.html()
-
-                    if (cfg.replaceThis) {
-                        output.raw = output.raw.split(cfg.replaceThis).join(cfg.withThis)
-                    }
-
-                    if (data.includes('<body')) {
-                        newHTML = $(output.raw).html().trim();
-                    }
-
-                    if (newHTML == null ) {
-                        newHTML = $(output.raw).html().trim();
-                    }
-
-                    if (cfg.noGet != true) {
-
-                        if (cfg.append) {
-                            div = $('body')
-                            var ui = $(newHTML)
-                            div.append(newHTML)
-                        } else {
-                            //debugger;
-                            div.html(newHTML);
-                        }
-
-                    }
-                    output.addStyles();
-                    //debugger;
-                    cfg.ui = div;
-
-                    callIfDefined(cfg.fxDone, data, output.body)
-                },
+                success: onLoadedPageContents,
                 error: function (a, b, c) {
                     // debugger;
                     console.error('cannot get loadPage info', cfg.url);
                     uiUtils.remoteFailed(a, b, c)
                 }
             });
+
+
+
+            function onLoadedPageContents(data) {
+                 //console.error('okok', cfg.preload, cfg.fxPreloadTemplate)
+                if ( cfg.preload ) {
+                    cfg.preloadedTemplate = data;
+                    if ( cfg.preloadedTemplate_StoreOn ) {
+                        cfg.preloadedTemplate_StoreOn.preloadedTemplate = data;
+                    }
+                    sh.cid(cfg.fxPreloadTemplate, cfg ) // data, output.body, cfg )
+                    return;
+                }
+
+                var output = p.utils.parseBodyHTML(data);
+                var newHTML = output.body.html()
+
+                if (cfg.replaceThis) {
+                    output.raw = output.raw.split(cfg.replaceThis).join(cfg.withThis)
+                }
+
+                if (data.includes('<body')) {
+                    newHTML = $(output.raw).html().trim();
+                }
+
+                if (newHTML == null ) {
+                    newHTML = $(output.raw).html().trim();
+                }
+
+                cfg.newHTML = newHTML;
+
+                if (cfg.noGet != true) {
+
+                    if (cfg.append) {
+                        div = $('body')
+                        var ui = $(newHTML)
+                        div.append(newHTML)
+                    } else {
+                        //debugger;
+                        div.html(newHTML);
+                    }
+
+                }
+                output.addStyles();
+                //debugger;
+                cfg.ui = div;
+
+                callIfDefined(cfg.fxDone, data, output.body, cfg)
+            }
         }
 
 

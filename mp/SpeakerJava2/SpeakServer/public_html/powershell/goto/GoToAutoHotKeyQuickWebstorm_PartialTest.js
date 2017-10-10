@@ -12,10 +12,20 @@ var sh = require('shelpers').shelpers;
 var GoToAutoHotKeyQuickWebstorm = require('./GoToAutoHotKeyQuickWebstorm.js').GoToAutoHotKeyQuickWebstorm
 
 if (module.parent == null) {
+    /*
     var y = new GoToAutoHotKeyQuickWebstorm();
     var cfg = {};
     var cmd = ['crypto - [',
         'partial:db2_ui.js', 'norun']
+    //y.init()
+    y.runGTAHKQW(cmd)
+
+*/
+
+    var y = new GoToAutoHotKeyQuickWebstorm();
+    var cfg = {};
+    var cmd = ['epubV2.h',
+          'xnorun']
     //y.init()
     y.runGTAHKQW(cmd)
 

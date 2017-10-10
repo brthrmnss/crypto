@@ -1,0 +1,22 @@
+{
+	"name": "test_dl_manifest",
+	"fileFileList": "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_6024_.txt",
+	"listDlManifest": "g:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\uploadedLists\\test_dl_manifest.json",
+	"props": {
+		"txtUpdateStatus": "",
+		"radioSearchType": "1off",
+		"searchType_1_off_span": "1 OffGet MagCreate DM",
+		"txtOneOffQuery": "sia mp3 single",
+		"txtQueryResultInfo": "",
+		"searchType_listLsIds_span": "List ls IdsGet Lists & Create DM 2List tt IdsCreate DM 3IMDB SearchMoviesTVPopularityViewsCreate DM 4UploadUpload DM 4",
+		"txtListIds": "ls051393312",
+		"txtTTIds": "tt0068646, tt0108052, tt0108757",
+		"dl config": "",
+		"ddContentType": "MoviesTV",
+		"ddSortType": "PopularityViews",
+		"ddSearchYearStart": "2017",
+		"ddSearchYearEnd": "2017",
+		"ddHowMany": "5",
+		"myId": ""
+	}
+}

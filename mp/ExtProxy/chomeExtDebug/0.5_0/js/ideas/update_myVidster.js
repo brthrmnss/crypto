@@ -76,8 +76,11 @@ function ChromeExtMod() {
             return args
         }
 
+        //http://www.myvidster.com/channel/45142/Favorites#/11
         function display_channel(channel_id, page, thumb_num, count) {
-            thumb_num = parseInt(thumb_num)+120
+            //thumb_num = parseInt(thumb_num)+120
+            //thumb_num = parseInt(thumb_num)+10
+            thumb_num = 250
             x = {
                 action: "display_channel",
                 channel_id: "" + channel_id + "",
@@ -88,6 +91,20 @@ function ChromeExtMod() {
             l = '/processor.php';
             $("#thumb_space2").load(l, x, function () {
                 self.fixImages()
+                var pag = $('div.pagination').last()
+                var a = pag.find('a')
+               // debugger;
+                $.each(a, function onRemoveClick(k,v) {
+                    v.onclick = null;
+                    var a = $(v)
+                    v.onclick=function onClick_PageNumber() {
+                        var y = JSON.parse(JSON.stringify(x))
+                        var pageNum = parseInt(a.text().trim())
+                        y.page = pageNum;
+                        console.log('click', a.text(), y)
+                        display_channel(y.channel_id, y.page, y.thumb_num, y.count);
+                    }
+                })
             });
 
 

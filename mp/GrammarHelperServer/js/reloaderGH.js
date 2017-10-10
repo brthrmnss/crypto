@@ -393,8 +393,10 @@ reloader.addReloadMapping = function addReloadMapping(path, replaceWith) {
 if ( window.fxReloader ) {
     window.fxReloader(reloader)
 }else{
-    setTimeout(function initLAter() {
-        window.fxReloader(reloader)
+    setTimeout(function initLater() {
+        if ( window.fxReloader ) {
+            window.fxReloader(reloader)
+        }
     },25)
 }
 
