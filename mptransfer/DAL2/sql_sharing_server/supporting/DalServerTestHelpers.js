@@ -115,19 +115,30 @@ function DalServerTestHelpers(_self) {
                 if (confirmed != true) {
                     return false;
                 }
-
+                global.countAll4 = new Error();
                 var queryDelete = {}
                 if ( self.data.isSQLlite ) {
 
                 }
+
+                var testDoubleCall = {};
                // queryDelete = {id:{$ne: -1}}
-                self.Table.destroy({where: queryDelete}).then(function () {
+                self.Table.destroy({where: queryDelete}).then(function onDeleted() {
                     self.proc('all records destroyed')
                     self.count = 0;
 
-                    self.dbHelper2.getDBVersionAndCount(fxUpdatedCount)
+                    self.dbHelper2.getDBVersionAndCount(fxUpdatedCount_AfterDelete)
 
-                    function fxUpdatedCount(v, count) {
+                    function fxUpdatedCount_AfterDelete(v, count) {
+                        if ( testDoubleCall.calledOnce ) {
+                            console.error('sdf-destroyAllRecords',testDoubleCall.last.stack )
+                            debugger;
+                            console.error('llll')
+                            return;
+                        }
+                        testDoubleCall.calledOnce = true;
+                        testDoubleCall.last = new Error();
+
                         self.proc('size', v, count)
                         if ( count != 0 ) {
                             throw new Error('could not delete')

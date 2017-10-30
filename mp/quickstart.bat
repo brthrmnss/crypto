@@ -11,6 +11,6 @@ start "pdfrip" node G:\Dropbox\projects\delegation\Reader\TTS-Reader\PdfRipServe
 start "autosave" node G:\Dropbox\projects\delegation\Reader\TTS-Reader\AutosaveServer.js
 start "commandlinespekaer-sayServerLite" node G:\Dropbox\projects\delegation\Reader\TTS-Reader\sayServerLite.js
 
-
-G:\Dropbox\projects\crypto\mp\SlickRun\start_slickrun.bat
+start "sr server" node G:\Dropbox\projects\crypto\mp\SlickRun\SlickRunServer.js
+start "sr" G:\Dropbox\projects\crypto\mp\SlickRun\start_slickrun.bat
 

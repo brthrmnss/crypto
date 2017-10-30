@@ -209,7 +209,8 @@ function onBtn() {
         }
 
         function urlInc(str) {
-           return window.location.host.includes(str)
+            var str = window.location.href;
+           return window.location.href.includes(str)
         }
 
 
@@ -219,6 +220,15 @@ function onBtn() {
                 'ideas/update_myVidster.js',
             ])
         }
+
+
+        if ( urlInc('rapidgator.net/file/') ) {
+            // alert('ok in amazon')
+            loader.loadScripts([
+                'ideas/update_rapidGator.js',
+            ])
+        }
+
 
         if ( urlInc('videos.com') ) {
             // alert('ok in amazon')

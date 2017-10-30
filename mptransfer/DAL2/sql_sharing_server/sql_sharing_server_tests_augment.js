@@ -193,8 +193,8 @@ if (module.parent == null) {
             })
             t.add(function testSize(){
                 if ( size ) {
-                    t.assert(b.size == size, 'sync did not work (sizes different) a' + [a.size, size] + msg)
-                    t.assert(a.size == size, 'sync did not work (sizes different) b' + [b.size, size] + msg)
+                    t.assert(a.size == size, 'sync did not work (sizes different) a' + [a.size, size] + msg)
+                    t.assert(b.size == size, 'sync did not work (sizes different) b' + [b.size, size] + msg)
                 }
                 t.assert(b.size== a.size, 'sync did not work (sizes different)' + [b.size, a.size] + msg)
                 t.cb();

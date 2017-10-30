@@ -368,10 +368,14 @@ function GrammarHelperServer() {
                 file = '/' + file
             }
             else {
-                file = sh.str.after(file, 'projects/crypto/')
-                var dirRoot = sh.fs.up(__dirname, 2)
+                if ( file.slice(1,2)==':') {
+                    //abs val
+                } else {
+                    file = sh.str.after(file, 'projects/crypto/')
+                    var dirRoot = sh.fs.up(__dirname, 2)
 
-                file = dirRoot + '' + file
+                    file = dirRoot + '' + file
+                }
                 file = sh.fs.resolve(file)
             }
 
@@ -1066,6 +1070,7 @@ function GrammarHelperServer() {
             cfg.initPath = 'grid'
             cfg.auxAddDir = sh.fs.join(__dirname, 'sharedResourcesGrid/')
             cfg.auxAddDir = sh.fs.slash(cfg.auxAddDir) + '/'
+            cfg.auxAddDir2 = sh.fs.join(__dirname, 'grid/')
             //cfg.fileTempalte =  self._dirYeomanAppTmp + 'simpleapp.3.html'
             cfg.fileTemplate = sh.fs.join(__dirname, 'grid/index.grid.template.html')
             proc1(cfg);
@@ -1154,11 +1159,11 @@ function GrammarHelperServer() {
          */
 
 
-        t.getR(urls.localFileGlobalPath)
+     /*   t.getR(urls.localFileGlobalPath)
             .why('test with global file to file path')
             .fxDone(function onUrl(result) {
             });
-
+*/
 
         //return;
 

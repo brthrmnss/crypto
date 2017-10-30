@@ -1,0 +1,42 @@
+<div    id="listTester"  >
+    <h1>Nav Bar Demo</h1>
+    <span>This is a quick test of this</span>
+
+    <div style="position:relative;"  xcontent-area>
+        <div horizontal-layout>
+            <div id="areaSpacer" bg-green content-area>
+               Spacer
+            </div>
+            <div id="areaLogin" bg-green content-area>
+                Area 1 Login
+            </div>
+            <div id="area_list" bg-blue content-area>
+                Area 2 List
+            </div>
+            <div id="area_edit" bg-offwhite content-area>
+                Area 3 - Edit List
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="hide">
+        {{configNavBar}}
+    </div>
+-->
+
+    <br />
+
+    <quick-nav config="configNavBar" ></quick-nav>
+
+    <br />
+    <ui-hider title="config for quickNav" button-name="'hiii'">
+        {{configNavBar}}
+    </ui-hider>
+
+
+    <br />
+    <br />
+
+    <br />
+    <br />
+</div>

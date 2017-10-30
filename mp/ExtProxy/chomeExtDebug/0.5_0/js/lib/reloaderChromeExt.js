@@ -53,7 +53,7 @@ if ( loadEval ) {
                 $('#messages').append($('<li>').text(msg));
             });*/
             socket.on('window.invoke', function(msg){
-                console.clear();
+                //console.clear();
                 console.log('invoke.window', msg)
                 if ( window.fxInvoke == null ) {
                     return;

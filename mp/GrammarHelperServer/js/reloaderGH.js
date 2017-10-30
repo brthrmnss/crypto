@@ -112,6 +112,22 @@ window.fxInvoke = function (classToUpdate) {
     }
     console.clear();
 
+    var stopReloadSearch = false;
+    if (reloader.ignoreFilesThatMatch) {
+        $.each(reloader.ignoreFilesThatMatch, function onReloadWhenFxs(i, reloadWhenFxObj) {
+            var match = classToUpdate.toLowerCase().includes(reloadWhenFxObj.toLowerCase())
+            if (match) {
+                stopReloadSearch = true;
+                return false;
+            }
+        })
+    }
+
+    if ( stopReloadSearch ) {
+        return;
+    }
+
+
     var stopSearchingForReloadMatches = false;
 
     if (reloader.reloadWhensFxs) {
@@ -242,6 +258,7 @@ $.getScript2 = function getScript2(url, callback) {
     var script = document.createElement("script");
     script.src = url;
     var existing = $('script[src="' + url + '"]');
+    url+='?timestapm='+(new Date())
     console.log('lll', existing.length)
     existing.remove();
     // Handle Script loading
@@ -276,7 +293,12 @@ window.reloadFile = function reloadFile(file, fx) {
         if (false == file.includes('://')) {
             if (window.reloader.loadFromOrig) {
                 //http://127.0.0.1:10110/file/
-                file = window.xReloaderServer + 'file/' + file
+
+                if ( window.xReloaderServerPath == null ) {
+                    file = window.xReloaderServer + 'file/' + file
+                } else {
+                    file = window.xReloaderServer + window.xReloaderServerPath  + file
+                }
             } else {
                 file = 'http://' + window.location.host + '/' + file
             }
@@ -315,7 +337,12 @@ window.reloadFile = function reloadFile(file, fx) {
         if (false == file.includes('://')) {
             if (window.reloader.loadFromOrig) {
                 //http://127.0.0.1:10110/file/
-                file = window.xReloaderServer + 'file/' + file
+                //file = window.xReloaderServer + 'file/' + file
+                if ( window.xReloaderServerPath == null ) {
+                    file = window.xReloaderServer + 'file/' + file
+                } else {
+                    file = window.xReloaderServer + window.xReloaderServerPath  + file
+                }
             } else {
                 file = 'http://' + window.location.host + '/' + file
             }
@@ -382,6 +409,18 @@ reloader.reloadWhensFxs = [];
 reloader.reloadWhenFx = function reloadWhenFx(asdf, fx) {
     reloader.reloadWhensFxs.push({file: asdf, fx: fx});
 }
+
+reloader.ignoreFilesThatMatch = [];
+reloader.reloadIgnoreIf = function reloadWhenFx(asdf, fx) {
+    reloader.ignoreFilesThatMatch.push(asdf);
+}
+
+
+reloader.reloadBlockFxIfMatch = [];
+reloader.reloadBlockFx = function reloadBlockFx(asdf, fx) {
+    reloader.reloadBlockFxIfMatch.push({file: asdf, fx: fx});
+}
+
 
 
 reloader.dictRemappingReloadFileUrls = {};

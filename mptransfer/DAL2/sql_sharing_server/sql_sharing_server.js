@@ -705,7 +705,7 @@ function SQLSharingServer() {
             var file = sh.sLog('');
             var split = file.split('\\')
             file = split[0] + split.slice(-1)[0] //limit display length
-            console.error(args)
+            console.error(sh.t, str)
             str += ' '+file
             self.listLog.push(str)
             if ( self.logGlobal ) {

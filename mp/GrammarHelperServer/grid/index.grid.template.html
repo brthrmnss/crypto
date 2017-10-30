@@ -53,25 +53,41 @@ end
 <script>
     window.fxReloader = function fxReloader(reloader) {
         //var reloaderSettings = {};
-       // window.reloaderSettings = reloaderSettings;
+        // window.reloaderSettings = reloaderSettings;
         var url = window.location.toString()
         var split = url.split('/')
         var subdir = split.slice(-2)[0]
         var arr = [
-          //  'index.grid.template.html',
-            'sharedResourcesGrid',
-            '/ui_utils.js',
+            //  'index.grid.template.html',
+            //  'sharedResourcesGrid',
+            /* '/ui_utils.js',*/
             '/' + subdir + '/'
         ]
         //debugger
         reloader.addWhens(arr)
         reloader.disable = true
 
-        setTimeout(function() {
+        reloader.reloadWhenFx('/ui_utils.js', function ok() {
+            window.gridAppStart();
+        })
+
+        reloader.reloadWhenFx('sharedResourcesGrid', function ok() {
+            window.gridAppStart();
+        })
+        setTimeout(function () {
             reloader.disable = false;
             console.log('ready....')
         }, 2500)
+
+
+        reloader.loadFromOrig = true
+        window.xReloaderServerPath = 'grid/grid/'
     }
+
 </script>
 </body>
+<!--
+<script src="/grid/grid/gridApp.js"></script>
+-->
+
 </html>

@@ -36,8 +36,8 @@ var p = {};
      console.log('matched tr', file)
      var split = "\\GrammarHelperServer\\"
      if (file.indexOf(split) != -1) {
-         fi = file.split(split)[1];
-         file = '/g/' + fi
+       //  fi = file.split(split)[1];
+       //  file = '/g/' + fi
      } else {
          split = sh.fs.slash(split)
          if (file.includes(split)) {

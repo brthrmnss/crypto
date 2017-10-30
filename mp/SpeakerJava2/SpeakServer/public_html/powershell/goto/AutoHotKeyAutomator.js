@@ -73,6 +73,54 @@ function AutoHotKeyAutomator() {
             }
             self.data.content.push(line)
         }
+
+        p.getTextBox = function getTextBox(fieldName, varName) {
+            var lines = `
+            ControlGetText, =varName= , =fieldName= ; Control name shown by WindowSpy
+            `
+            lines = self.utils.replace(lines, 'fieldName', fieldName)
+            lines = self.utils.replace(lines, 'varName', varName)
+            self.data.content.push(lines)
+        }
+
+        p.showVal = function showVal(varName, openWindow) {
+            var lines = `
+            MsgBox %=varName=%
+            `
+            lines = self.utils.replace(lines, 'varName', varName)
+            self.data.content.push(lines)
+        }
+        p.clickButton = function clickButton(buttonName) {
+            var lines = `
+             ControlClick, =buttonName=
+            `
+            lines = self.utils.replace(lines, 'buttonName', buttonName)
+            self.data.content.push(lines)
+        }
+
+        p.ifVal = function ifVal(varName, openWindow) {
+            var lines = `
+            MsgBox %=varName=%
+            `
+            lines = self.utils.replace(lines, 'varName', varName)
+            self.data.content.push(lines)
+        }
+        p.ifContains = function ifVal(varName, ifVal) {
+            var lines = `
+            if =varName= contains =ifVal= 
+            `
+            lines = self.utils.replace(lines, 'varName', varName)
+            lines = self.utils.replace(lines, 'ifVal', ifVal)
+            self.data.content.push(lines)
+        }
+        p.showMsgBox = function showMsgBox(varName) {
+            var lines = `
+            MsgBox =varName=
+            `
+            lines = self.utils.replace(lines, 'varName', varName)
+            self.data.content.push(lines)
+        }
+
         p.requireWindow = function requireWindow(a, b) {
             var template = `
             SetTitleMatchMode, 2 ; 
@@ -145,6 +193,10 @@ function AutoHotKeyAutomator() {
             }
 
             return undefined;
+        }
+        p.utils.replace = function replace(line, varName, varVal) {
+            line = line.split('='+varName+'=').join(varVal)
+            return line
         }
         p.utils.searchForArgOption_startsWith = function searchForArgOption_startsWith(argName, setPropVal, msg) {
             //asdf.g

@@ -1,0 +1,30 @@
+<div    id="listTester"  >
+
+    <div id="debugStuff" class="hide">
+        {{config}} <br />
+        {{refresh}} <br />
+        {{vm.config}} <br />
+        ... <br />
+    </div>
+
+    <div id="quickFormContent" >
+
+    </div>
+
+
+    <div id="actionPanel">
+        <button ng-hide="showExplode==false" ng-click="onSave()">Save</button>
+        <button id="btnCancel" ng-hide="showExplode==false" ng-click="onCancel()">Cancel</button>
+    </div>
+
+    <div id="containerDbgPanel">
+        <button ng-hide="showExplode==false" ng-click="onExplode()">Explode</button>
+        <button ng-hide="showExplode==false" ng-click="onExplodeReverse()">Combine</button>
+    </div>
+
+
+    <div id="dbgRake" >
+
+    </div>
+
+</div>

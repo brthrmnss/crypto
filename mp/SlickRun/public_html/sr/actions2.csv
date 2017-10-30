@@ -73,6 +73,15 @@ editritvdb,nodejsruntime gtwebstorm "crypto - [G" "partial:eval_client.js"
 gtcrypto,nodejsruntime gthk "crypto - [G"
 gttts,nodejsruntime gthk "TTS-Reader - [G"
 
+grammarhelperapp,nodejsruntime gthk "grid-app-basic"
+processbook,nodejsruntime gthk "127.0.0.1:8080/process_book_in_node"
+ghapp|grammarhelperapp
+
+pdf,nodejsruntime gthk "Reader JS" "http://127.0.0.1:8080/index.html#/player"
+gtpdf,nodejsruntime gthk "TTS-Reader - [G", "Reader JS"
+
+cloth,nodejsruntime gthk "Cloth"
+
 gmail,nodejsruntime gthk "morrisonstephen@gmail.com" "https://mail.google.com/mail/u/0/#inbox" "regex"
 recents,nodejsruntime gthk "http://127.0.0.1:8080/recents" "http://127.0.0.1:8080/recents" "regex"
 
@@ -80,6 +89,9 @@ gtdating,http://localhost:10110/g/datingsim/index.html
 
 listbookstoread,evernote:///view/1269954/s11/6cba0ac4-2db0-453a-b34f-c7923942acb7/6cba0ac4-2db0-453a-b34f-c7923942acb7/
 mpreader,evernote:///view/1269954/s11/b61e2b31-162c-484e-8e70-25672e212b63/b61e2b31-162c-484e-8e70-25672e212b63/
+
+makeevernotelog,nodejsruntime G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\AutoHotKeyEvernote.js
+maketoday,|makeevernotelog
 
 #comment line
 #> means use many aliases until the end

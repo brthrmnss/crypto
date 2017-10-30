@@ -25,8 +25,9 @@ function DalDbHelpers(_self) {
         function defineDbHelpers() {
             var dbHelper = {};
             self.dbHelper2 = dbHelper;
-            dbHelper.count = function (fx, table) {
+            dbHelper.count = function onCountDB(fx, table) {
                 table = sh.dv(table, self.Table);
+                global.err = new Error();
                 //console.error('count', table.name, name)
                 table.count({where: {}}).then(function onResults(count) {
                     self.count = count;
@@ -49,6 +50,8 @@ function DalDbHelpers(_self) {
 
             dbHelper.countAll = function (fx, query) {
                 var fullQuery = dbHelper.utils.queryfy(query)
+                global.countAll2  =  global.countAll11;
+                global.countAll1  = new Error();
                 self.Table.count(fullQuery).then(function onResults(count) {
                     self.count = count;
                     //self.proc('count', count)
@@ -58,6 +61,7 @@ function DalDbHelpers(_self) {
             }
 
             dbHelper.getDBVersion = function (fx, query) {
+                global.countAll3 = new Error();
                 var fullQuery = dbHelper.utils.queryfy(query)
                 fullQuery.limit = 1;
                 fullQuery = {
@@ -255,6 +259,9 @@ function DalDbHelpers(_self) {
                     });
                 })
 
+                if ( self.settings.debugUpsert ) {
+                    self.proc(self.name, ':', 'upsert-statements', statements.length)
+                }
                 if (statements.length > 0) {
                     queryInner = SequelizeHelper.Sequelize.or(statements)
                     queryInner = SequelizeHelper.Sequelize.or.apply(this, statements)
@@ -321,7 +328,14 @@ function DalDbHelpers(_self) {
                         newRecords.push(eRecord);
                     });
 
+
+                    if ( self.settings.debugUpsert ) {
+                        self.proc(self.name, ':', 'upsert-newRecords', newRecords.length)
+                    }
+
                     if (newRecords.length > 0) {
+
+
                         self.Table.bulkCreate(newRecords).then(function (objs) {
 
                             self.proc('all records created', objs.length);

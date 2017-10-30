@@ -42,8 +42,20 @@ var cfg = {};
 i.init(cfg)
 */
 
+window.gridAppStart = function gridAppStart() {
+    var i = new QuickFormDemo();
+    var cfg = {};
+    i.init(cfg)
 
 
-var i = new QuickFormDemo();
-var cfg = {};
-i.init(cfg)
+    var i = new QuickCrudDemo();
+    var cfg = {};
+    i.init(cfg)
+
+
+    var i = new QuickDialogDemo();
+    var cfg = {};
+    i.init(cfg)
+}
+window.gridAppStart();
+

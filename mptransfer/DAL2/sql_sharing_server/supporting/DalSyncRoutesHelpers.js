@@ -70,8 +70,10 @@ function DalSyncRoutesHelpers(_self) {
 
 
             sh.each(self.settings.peers, function onCheckPeer(k, peerIp) {
-                sh.str.isBlank(peerIp, 'peer ip is not set')
-                sh.callIfDefined(cb)
+                var isBlank  =sh.str.isBlank(peerIp, 'peer ip is not set')
+
+                //sh.throw('peer ip not set' , k, peerIp)
+                //sh.callIfDefined(cb)
             })
 
             //self.dalLog("^^^", 'pullRecordsFromPeers', self.settings.name     )
@@ -92,6 +94,7 @@ function DalSyncRoutesHelpers(_self) {
 
             self.pulling = true;
 
+            var testDoubleCall = {};
             sh.async(self.settings.peers,
                 function syncPeer(peerIp, fxDoneSync) {
                     sh.str.isBlank(peerIp, 'peer ip is not set')
@@ -99,6 +102,13 @@ function DalSyncRoutesHelpers(_self) {
                         fxDoneSync()
                     }, incremental);
                 }, function allDone() {
+                    if ( testDoubleCall.calledOnce ) {
+                        debugger;
+                        console.error('llll')
+                        return;
+                    }
+                    testDoubleCall.calledOnce = true;
+                    testDoubleCall.last = new Error();
                     self.proc('all records synced');
                     sh.callIfDefined(cb)
                 })
@@ -194,44 +204,31 @@ function DalSyncRoutesHelpers(_self) {
                 });
 
 
-            /* t.add(function getRecordCount(){
-             var y = t.data.count;
-             t.cb();
-             });*/
-
-
-            /* t.add(function syncRecourds(){
-             t.quickRequest( urls.getRecords,
-             'get', result, reqData);
-             function result(body) {
-             t.assert(body.length!=null, 'no page');
-             t.records = body;
-             t.recordsAll = t.recordsAll.concat(body);
-             t.cb();
-             };
-             });
-
-             t.add(function filterNewRecordsForPeerSrc(){
-             t.cb();
-             })
-             t.add(function upsertRecords(){
-             self.dbHelper2.upsert(t.records, function upserted(){
-             t.cb();
-             })
-             })
-
-             */
-
             if (self.data.breakpoint) {
                 console.error('at breakpoint')
             }
+            var idT = Math.random();
+            idT=idT*1000
+            idT=idT.toFixed(0)
 
+            var vT = {};
+            vT.count = 0;
+            vT.proc1 = function () {
+                var args = sh.args(arguments);
+                vT.count ++
+                args.unshift(vT.count)
+                args.unshift(self.settings.name+'.'+idT)
 
-            t.add(getRecordsUntilFinished);
-            function getRecordsUntilFinished() {
-                self.dalLog("\t\t", 'onGotNextPageX-pre-attempt', actorsStr,
-                    t.offset, urls.getNextPage + getUrlDebugTag(t))
+                var str =  args.join(' ')
+                console.error('-----',str)
+            }
 
+            t.add(getRecordsUntilFinished_2);
+            function getRecordsUntilFinished_2() {
+                self.dalLog("\t\t", '250|onGotNextPageX-pre-attempt-->', actorsStr,
+                    t.offset, JSON.stringify(reqData), urls.getNextPage + getUrlDebugTag(t))
+
+                vT.proc1('1-Start')
                 t.quickRequest(urls.getNextPage + getUrlDebugTag(t),
                     'get', onGotNextPage, reqData);
                 if (actorsStr == 'd-->b') {
@@ -247,12 +244,20 @@ function DalSyncRoutesHelpers(_self) {
                         cb();
                         return;
                     }
-                    self.dalLog("\t\t", 'onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, body.length)
+                    self.dalLog("\t\t", '-->250|onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, sh.qq(body.length))
                     if (actorsStr == 'd-->b') {
                         var y = {};
                         debugger;
                     }
+                    if (actorsStr == 'b-->a' && body.length == 102) {
+                        var y = {};
+                        debugger;
+                    }
                     t.assert(body.length != null, 'no page');
+
+                    //self.dalLog("\t\t", 'onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, body.length)
+
+
                     if (body.length != 0) {
                         //reqData.global_updated_at = body[0].global_updated_at;
 
@@ -260,8 +265,10 @@ function DalSyncRoutesHelpers(_self) {
                         reqData.offset = t.offset;
 
                         t.addNext(function upsertRecords() {
+                            console.error('inserting', body.length, 'records')
                             self.dbHelper2.upsert(body, function upserted(resultsUpsert) {
                                 t.lastRecord_global_updated_at = self.utils.latestDate(t.lastRecord_global_updated_at, resultsUpsert.last_global_at)
+                                vT.proc1('2-upserted',t.offset)
                                 t.cb();
                             });
                         });
@@ -269,46 +276,27 @@ function DalSyncRoutesHelpers(_self) {
                         //search for 'deleted' record updates, if my versions aren't newer than
                         //deleted versions, then delete thtme
                         t.addNext(function deleteExtraRecords() {
-                            //self.dbHelper2.upsert(t.records, function upserted(){
+                            console.error('....')
+                            vT.proc1('3-deleteExtraRecords',t.offset)
+                            var  methodNames = sh.each.tryToCollect(t.helper.workChain.methods, 'fx.name')
+                            vT.proc1('3-deleteExtraRecords','next', methodNames)
                             t.cb();
-                            //});
-                        });
+                            console.error('.....SDFSDFEFWEF')
+                        },1);
 
-                        /*t.addNext(function verifyRecords(){
-                         var query = {};
-                         var dateFirst = new Date(body[0].global_updated_at);
-                         if ( body.length > 1 ) {
-                         var dateLast = new Date(body.slice(-1)[0].global_updated_at);
-                         } else {
-                         dateLast = dateFirst
-                         }
-                         query.where = {
-                         global_updated_at: {$gte:dateFirst},
-                         $and: {
-                         global_updated_at: {$lte:dateLast}
-                         }
-                         };
-                         query.order = ['global_updated_at',  'DESC'];
-                         self.dbHelper2.search(query, function gotAllRecords(recs){
-                         var yquery = query;
-                         var match = self.dbHelper2.compareTables(recs, body);
-                         if ( match != true ) {
-                         t.matches.push(t.iterations)
-                         self.proc('match issue on', t.iterations, recs.length, body.length)
-                         }
-                         t.cb();
-                         } )
-                         })*/
-                        t.addNext(getRecordsUntilFinished)
+                        t.addNext(getRecordsUntilFinished_2,2)
                     }
 
                     t.recordUpdateCount += body.length;
                     t.iterations += 1
-                    if (t.firstPage == null) t.firstPage = body; //store first record for update global_update_at
+                    if (t.firstPage == null) { t.firstPage = body; }//store first record for update global_update_at
                     //no must store last one
-
+                    vT.proc1('1-End')
                     //t.recordsAll = t.recordsAll.concat(body); //not sure about this
-                    t.cb();
+
+                 // setTimeout(function on() {
+                      t.cb();
+                 // },250)
                 };
 
                 //var recordCount = t.data.count;
@@ -320,10 +308,19 @@ function DalSyncRoutesHelpers(_self) {
 
                 self.dbHelper2.count(function upserted(count) {
                     self.size = count;
+                    self.dalLog("\t\t", '-->250|onGotNextPageX-count-finished', self.settings.name, actorsStr, count, '==',  t.offset, sh.qq(t.recordUpdateCount))
+                    vT.proc1('4-end and count', count)
                     t.cb();
                 })
             })
+           /* t.add(function waitSomthing() {
 
+                setTimeout(function waitSomthingCb(count) {
+                    self.dalLog("\t\t", 'waitedsomething', self.settings.name, actorsStr, count, '==',  t.offset, sh.qq(t.recordUpdateCount))
+                    vT.proc1('5-waitSomthing', count)
+                    t.cb();
+                },1200)
+            })*/
             t.add(function getVersion() {
                 self.dbHelper2.getDBVersion(function upserted(count) {
                     //self.size = count;
@@ -372,6 +369,10 @@ function DalSyncRoutesHelpers(_self) {
                         self.proc('finished update pull', actorsStr, v.getTime(), 'vs.', v2.getTime(),
                             'ask other end to get my records', data, 'pulled')
                         sh.callIfDefined(cb)
+
+                        if ( t.calledExit ) {
+                            asdf.g
+                        }
                     }
 
                     return;
@@ -380,6 +381,10 @@ function DalSyncRoutesHelpers(_self) {
 
                 //self.dalLog("\t",'-syncing peer', actorsStr, versionDiff )
 
+                if ( t.calledExit ) {
+                    asdf.g
+                }
+                t.calledExit = true
                 sh.callIfDefined(cb)
             })
 

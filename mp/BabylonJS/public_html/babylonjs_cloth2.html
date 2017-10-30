@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+  <title>Cloth </title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 13px Helvetica, Arial; }
+
+  </style>
+
+  <style>
+    html, body {
+      overflow: hidden;
+      width   : 100%;
+      height  : 100%;
+      margin  : 0;
+      padding : 0;
+    }
+
+    #renderCanvas {
+      width   : 100%;
+      height  : 100%;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+
+<link href="./cloth/index.css" rel="stylesheet">
+<xscript src="js/lib/socket.io-1.2.0.js.ignore"></xscript>
+<script src="js/lib/jquery-1.11.1.js.ignore"></script>
+
+
+
+<script>
+ // CreateClothScene()
+</script>
+
+<script src="http://localhost:14002/socket.io-1.2.0.js" ></script>
+<script src="http://localhost:10110/reloader.js" ></script>
+
+
+
+<script>
+  function onReloader() {
+    var file = window.location.toString().split('/').slice(-1)[0]
+    console.log(file, 'document.currentScript')
+    reloader.reloadWhen(file);
+    reloader.reloadWhenFx('baby_rend.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      //window.drawPBJS.go();
+      //window.br.createScene();
+     // window.br.dispose();
+      //window.br.reloadSimpleMode(window.BabyRend);
+
+    })
+    reloader.reloadWhenFx('ui_utils.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      window.bendIt()
+    })
+
+
+    reloader.reloadWhenFx('cloth2.js', function onTestOneJs(a, b, c) {
+      console.log('reload it', a,b,c);
+      //window.bendIt()
+      $('.dg.main.a').remove();
+      loadCustomScene(demo.constructor, demo.onload, demo.noAttachControl);
+    })
+
+
+    //C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/test3/testFramework.js
+    reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/ritv2/videoproject/Code/code-yeti/', '')
+    reloader.filter = '/BabylonJS/';
+    reloader.addReloadMapping('C:/Users/user1/Dropbox/projects/crypto/mp/RCExt/public_html/', '')
+    //reloader
+  }
+  try {
+    onReloader()
+  } catch ( e) {
+    console.error('e', e)
+  }
+</script>
+
+
+<!--
+<script src="js/lib/ui_utils.js" ></script>
+<script src="js/baby_rend.js" ></script>
+<script src="js/baby_lib.js" ></script>
+<script src="js/baby_lib_extended.js" ></script>
+-->
+
+<div id="notSupported" style="display:none;" ></div>
+
+<canvas id="renderCanvas"></canvas>
+
+
+
+<script>
+
+  //why?
+
+  window.addEventListener('DOMContentLoaded', createB )
+  function createB(){
+
+
+
+    if ( window.BabyRend == null ) {
+      return;
+    }
+    window.u = uiUtils;
+    var br = new BabyRend();
+    window.br = br;
+
+    //return;
+    br.init();
+    br.setupStage()
+
+  };
+</script>
+
+
+
+
+
+<div class="dg ac"><div class="dg main a" style="width: 245px;"><div style="width: 6px; margin-left: -3px; height: 420px; cursor: ew-resize; position: absolute;">
+</div>
+<ul style="height: auto;">
+<li class="folder">
+<div class="dg">
+<ul>
+<li class="title">Cloth</li>
+<li class="cr number has-slider"><div><span class="property-name">size</span>
+  <div class="c"><div><input type="text"></div><div class="slider">
+    <div class="slider-fg" style="width: 77.7778%;"></div></div>
+  </div></div></li><li class="cr number has-slider">
+  <div><span class="property-name">subdivisions</span>
+    <div class="c"><div><input type="text"></div>
+      <div class="slider"><div class="slider-fg" style="width: 77.7778%;">
+
+      </div></div></div></div></li></ul></div></li><li class="folder">
+  <div class="dg"><ul><li class="title">Physics</li>
+    <li class="cr number has-slider"><div><span class="property-name">stretchFactor</span><div class="c"><div><input type="text"></div><div class="slider"><div class="slider-fg" style="width: 50%;"></div></div></div></div></li><li class="cr number has-slider"><div><span class="property-name">particleWeight</span><div class="c"><div><input type="text"></div><div class="slider"><div class="slider-fg" style="width: 47.3684%;"></div></div></div></div></li><li class="cr number has-slider"><div><span class="property-name">particleFriction</span><div class="c"><div><input type="text"></div><div class="slider"><div class="slider-fg" style="width: 20%;"></div></div></div></div></li><li class="cr number has-slider"><div><span class="property-name">firstMount</span><div class="c"><div><input type="text"></div><div class="slider"><div class="slider-fg" style="width: 4.7619%;"></div></div></div></div></li><li class="cr number has-slider"><div><span class="property-name">secondMount</span><div class="c"><div><input type="text"></div><div class="slider"><div class="slider-fg" style="width: 76.1905%;"></div></div></div></div></li></ul></div></li><li class="folder"><div class="dg"><ul><li class="title">Materials</li><li class="cr boolean"><div><span class="property-name">wireframe</span><div class="c"><input type="checkbox"></div></div></li><li class="cr boolean"><div><span class="property-name">particlesVisible</span><div class="c"><input type="checkbox"></div></div></li></ul></div></li><li class="folder"><div class="dg"><ul><li class="title">Scene</li><li class="cr boolean"><div><span class="property-name">movingSphere</span><div class="c"><input type="checkbox" checked="checked"></div></div></li><li class="cr function"><div><span class="property-name">throwSphere</span><div class="c"><div class="button"></div></div></div></li></ul></div></li></ul><div class="close-button" style="width: 245px;">Close Controls</div></div></div>
+
+
+
+
+
+<script src="js/lib/babylon.custom.js" ></script>
+<script src="./cloth/dat.gui.min.js.download"></script>
+<script src="./cloth/cannon.js.download"></script>
+<!--<script src="./cloth/babylon.js.download"></script>-->
+<!--<script src="./cloth/cloth.js.download"></script>-->
+
+<script src="./cloth/cloth3.js"></script>
+<script src="./cloth/demo.js.download"></script>
+<script src="./cloth/loaderCustoms.js"></script>
+
+
+
+</body>
+</html>

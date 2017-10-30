@@ -187,7 +187,7 @@ if (module.parent == null) {
         testC.stopSlowTests = true
 
         //t.add(clearAllData())
-        clearAllData()
+       // clearAllData()
         t.add(function clearRecordsFrom_A() {
             a.test.destroyAllRecords(true, t.cb);
         })

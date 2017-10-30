@@ -92,8 +92,7 @@ function DalBasicRoutesHelpers(_self) {
             }
             if (fromPeer == null) {
                 throw new Error('need peer')
-            }
-            ;
+            } ;
 
             // self.proc('syncReverse', self.settings.name, )
             self.utils.forEachPeer(fxEachPeer, fxComplete);
@@ -664,10 +663,11 @@ function DalBasicRoutesHelpers(_self) {
 
         };
 
-        self.getSize = function getSize(cb) {
-            self.dbHelper2.count(function gotAllRecords(count) {
+        self.getSizeOfPeer = self.getSize = function getSize(cb) {
+            self.dbHelper2.count(function getSize_gotRecordCount(count) {
                 self.count = count;
                 self.size = count;
+                console.error('----s getSize', self.settings.name, count)
                 sh.callIfDefined(cb)
             })
         }
@@ -729,6 +729,8 @@ function DalBasicRoutesHelpers(_self) {
                 if (self.data.breakpoint_catchPageRequests) {
                     console.error('at breakpoint_catchPageRequests')
                 }
+                console.log('>>>>>>>>')
+                self.proc('sent back', sh.paren(self.settings.name), self.recs.length, req.query.offset)
                 //Executing (default): SELECT `id`, `name`, `desc`, `user_id`, `imdb_id`, `content_id`, `progress`, `source_node`, `id_timestamp`, `updated_by_source`, `global_updated_at`, `version`, `deleted`, `createdAt`, `updatedAt` FROM `aAs` AS `aA` WHERE `aA`.`global_updated_at` > '2016-08-02 18:29:30.000 +00:00' ORDER BY `global_updated_at`, `DESC` LIMIT 1000;
                 //2016-08-02T18:29:30.976Z
                 //zself.dalLog("\t\t\t", 'onGotNextPage-search-result', actorsStr , JSON.stringify(query), recs.length, self.settings.name)

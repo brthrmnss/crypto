@@ -610,6 +610,7 @@ if (module.parent == null) {
     cfg.it.matchesDefault = []
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
+    cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
         if (item.desc.includes('transfer') && item.desc.includes('to account ')) {
             return true; //do not count transfers as income
@@ -623,6 +624,7 @@ if (module.parent == null) {
 
     cfg.it.iteratorName = 'Personal Loans through FCU to Rob'
     cfg.it.desc = 'do not count loands to other accounts. Transfers to other people '
+    cfg.it.unimportant = true;
     cfg.it.matchesDefault = []
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
@@ -644,6 +646,7 @@ if (module.parent == null) {
     cfg.it.matchesDefault = []
     //cfg.it.noOutput = true
     //cfg.includeAllItems = true
+    cfg.it.unimportant = true;
     cfg.it.fxFilter = function fxFilter(item) {
         if (item.desc.includes('transfer') && item.desc.includes('personal credit union ')) {
             return true; //do not count transfers as income
@@ -1018,7 +1021,7 @@ if (module.parent == null) {
             'Golden Rule Ins'
         ]
     cfg.it.tagWhy = 'Personal Insurance'
-    cfg.it.peachTreeAcct = '?????'
+    cfg.it.peachTreeAcct = '65250';
     JSONSetRunner.runSet(fileInput, fileIterator, cfg)
 
 
@@ -1290,6 +1293,9 @@ if (module.parent == null) {
             var columns = columnify(JSONSetIterator_Generic.allLines2, cfg);
             var fileOutput = runner.createAdditionalFlatFile('final_output_filtered', columns, 'csv')
 
+
+
+            sh.fs.copy(fileOutput, fileOutput+'.output_for_accountant.csv')
             console.log('<|open comments_output.txt')
             sh.log.file(fileOutput)
 

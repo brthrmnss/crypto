@@ -244,7 +244,7 @@ function PaginatorC() {
 
 
 
-function ChromeExtMod() {
+function MyVids() {
     var self = this;
 
     var p = self;
@@ -404,7 +404,7 @@ console.log('xCount', window.xCount)
 
 
 if (window.location.host.includes('videos.com')) {
-    var i = new ChromeExtMod();
+    var i = new MyVids();
     i.init();
     /*
      i.processAmazon();

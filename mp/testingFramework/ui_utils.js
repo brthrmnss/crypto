@@ -475,7 +475,7 @@ function defineUtils() {
         var ui = uiUtils.lastUI;
 
         var l = lOrUI
-        if (lOrUI.length) {
+        if (lOrUI && lOrUI.length) {
             ui = lOrUI
             l = t;
             t = r
@@ -540,12 +540,25 @@ function defineUtils() {
     }
 
     uiUtils.makeAbs = function makeAbs(jquery, highPosition) {
+        if ( jquery == null ) {
+            jquery = uiUtils.lastUI;
+        }
         jquery.css('position', 'absolute');
         if (highPosition) {
             jquery.css('z-index', highPosition + 200);
         }
 
         uiUtils.position(jquery, 0, 0)
+
+    }
+
+    uiUtils.center = function center(jquery, highPosition) {
+        if ( jquery == null ) {
+            jquery = uiUtils.lastUI;
+        }
+        jquery.css('position', 'absolute');
+        jquery.css('left', '50%');
+        jquery.css('top', '50%');
 
     }
 
@@ -834,7 +847,9 @@ function defineUtils() {
 
         var ui = div = cfg.ui;
         //var div = $('<div/>')
-        $('body').append(div)
+        //if ( cfg.append != false) {
+            $('body').append(div)
+       // }
         uiUtils.lastUI = div;
         uiUtils.makeAbs(div);
         uiUtils.position(10, 10)
@@ -1128,7 +1143,7 @@ function defineUtils() {
         }
 
 
-        console.log(ui, 'ok', 'change')
+        //console.log(ui, 'ok', 'change')
 
         if (ui.is('input')) {
             if (ui.attr('type') == null) {
@@ -1196,6 +1211,11 @@ function defineUtils() {
                 uiUtils.lastUI.css('height', h + 'px')
             }
         }
+        uiUtils.wH100 = function setWidthAndHeight(w, h) {
+                uiUtils.lastUI.css('width', '100%')
+                uiUtils.lastUI.css('height',  '100%')
+        }
+
         uiUtils.color = function color(ui, color) {
             if (color == null) {
                 color = ui
@@ -1541,7 +1561,31 @@ function defineUtils() {
         u.lastUI = ui;
     }
     p.tag = function createTag(type) {
-        return $('<' + type + '/>');
+        var tag =  $('<' + type + '/>');
+        uiUtils.lastUI = tag;
+        return tag;
+    }
+
+    p.type = function addType(type, ui) {
+        ui = sh.dv(ui, u.lastUI)
+        ui.attr('type', type)
+        return ui;
+    }
+    p.name = function addname(name, ui) {
+        ui = sh.dv(ui, u.lastUI)
+        ui.attr('name', name)
+        return ui;
+    }
+
+    p.value = function addvalue(value, ui) {
+        ui = sh.dv(ui, u.lastUI)
+        ui.attr('value', value)
+        return ui;
+    }
+    p.id = function id(value, ui) {
+        ui = sh.dv(ui, u.lastUI)
+        ui.attr('id', value)
+        return ui;
     }
 
 
@@ -1549,6 +1593,11 @@ function defineUtils() {
         return u.lastCfg.id;
     }
     p.getLast = function getLast() {
+        return u.lastUI;
+    }
+
+    p.last = p.setLast = function setLast(ui) {
+        u.lastUI
         return u.lastUI;
     }
 
@@ -2507,8 +2556,20 @@ function defineUtils() {
 
                     if (cfg.append) {
                         div = $('body')
+
                         var ui = $(newHTML)
-                        div.append(newHTML)
+                        if( cfg.doNotWrap != true  ) {
+                            var container = u.tag('div')
+                            container.append(ui)
+                            div.append(container)
+                            //ui = container;
+                            div = container;
+                        } else {
+                            div.append(ui)
+                            div = ui;
+                        }
+
+
                     } else {
                         //debugger;
                         div.html(newHTML);
