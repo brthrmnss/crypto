@@ -391,7 +391,10 @@ function SQLSharingServer() {
                 var peerName = peerConfig.name;
                 var peerIp = peerConfig.ip;
             }
-            self.proc('error no matched config',peerName, peerIp, self.settings.ip); //.error('....', );
+            if ( self.settings.peers.includes(peerIp)){
+                return; //self.settings.peers.push(peerIp);
+            }
+            self.proc('adding peer (no matched config)',peerName, peerIp, self.settings.ip); //.error('....', );
             self.settings.peers.push(peerIp);
             self.settings.dictPeersToIp[peerName]=peerIp;
             self.settings.dictIptoPeers[peerIp]=peerName;
@@ -414,6 +417,46 @@ function SQLSharingServer() {
             throw new Error('init: not enough peers ' + self.settings.name, peers)
         }
     }
+
+    function definePeerUtils() {
+        p.peers = {};
+        p.peers.addPeer = function addPeer(peerName, peerIp) {
+            if ( peerName ) {
+                var peerObj = peerName;
+                peerName = peerObj.name;
+                peerIp = peerObj.ip;
+            }
+            sh.throwIfNull(peerName, 'need a peer name')
+            sh.throwIfNull(peerIp, 'need a peer ip')
+            if ( self.settings.peers.includes(peerIp)) {
+                return;
+            }
+            self.settings.peers.push(peerIp);
+            self.settings.dictPeersToIp[peerName]=peerIp;
+            self.settings.dictIptoPeers[peerIp]=peerName;
+        }
+
+        p.peers.removePeer = function addPeer(peerName, peerIp) {
+            if ( self.settings.peers.includes(peerIp) == false) {
+                return;
+            }
+            sh.removeFromArray(self.settings.peers, peerIp)
+            delete self.settings.dictPeersToIp[peerName];
+            delete self.settings.dictIptoPeers[peerIp];
+        }
+
+
+        p.getMyPeerInfo = function getMyPeerInfo(peerName, peerIp) {
+            var yyy = {};
+            yyy.name = self.settings.peerName;
+            yyy.ip = self.settings.ip;
+            yyy[self.settings.peerName] = self.settings.ip;
+            return yyy;
+        }
+
+    }
+
+    definePeerUtils();
 
     function defineDatabase() {
 

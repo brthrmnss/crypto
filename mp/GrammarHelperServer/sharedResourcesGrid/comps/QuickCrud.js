@@ -2,6 +2,21 @@
  * Created by user1 on 10/2/2017.
  */
 
+function RestHelper() {
+    var p = RestHelper.prototype;
+    p = this;
+    var self = this;
+    p.method1 = function method1(url, appCode) {
+    }
+
+    p.proc = function debugLogger() {
+        if ( self.silent == true) {
+            return
+        }
+        sh.sLog(arguments)
+    }
+}
+
 function QuickCrud() {
     var self = this;
     var p = this;
@@ -46,24 +61,31 @@ function QuickCrud() {
         var ui = cfg.ui;
 
         self.data.ui.addClickToDom(ui, self)
-        QuickForm.createQF('name', cfg.ui.find('#demoForm'))
+        QuickForm.createQF('name', cfg.ui.find('#quickFormHolder'))
 
 
-        var scfg = SimpleListHelper.createSimpleList('qcrud_list','qcrud_list')// cfg.ui.find('#demoList'))
-        scfg.targetId = cfg.ui.find('#demoList')
-        scfg.id = cfg.ui.find('#demoList')
+        var scfg = SimpleListHelper.createSimpleList('qcrud_list', 'qcrud_list')// cfg.ui.find('#demoList'))
+        scfg.targetId = '#quickListHolder'
+        scfg.div = cfg.ui.find('#quickListHolder')
+        scfg.id =  '#quickListHolder';
+
+
         //debugger
-     /*   self.data.ui.pushVal({type:'rake', key:'txtVal', id:'#dbgRake',
-            fxProcessBinding:function onProc(subItems, uiComp) {
-                var formObject = {};
-                $.each(subItems, function on(k, subItem) {
-                    formObject[subItem.settings.field]=subItem.data.ui.data.data;
-                   // debugger
-                })
-                self.data.formObject = formObject;
-            },
-            storeOnData:'formObject'})*/
+        /*
+         self.data.ui.pushVal({type:'rake', key:'txtVal', id:'#dbgRake',
+         fxProcessBinding:function onProc(subItems, uiComp) {
+         var formObject = {};
+         $.each(subItems, function on(k, subItem) {
+         formObject[subItem.settings.field]=subItem.data.ui.data.data;
+         // debugger
+         })
+         self.data.formObject = formObject;
+         },
+         storeOnData:'formObject'})
+         */
         //pus to some debug area
+
+        console.log('confg', self.settings)
 
         uiUtils.ifShow(self.settings.showDebug, cfg.ui.find('#containerDbgPanel'))
         uiUtils.ifShow(self.settings.showCancelButton, cfg.ui.find('#btnCancel'))
@@ -71,10 +93,9 @@ function QuickCrud() {
     };
 
 
-
     p.onSave = function onSave() {
         console.log('on save', self.data.formObject)
-        sh.cid(self.settings.fxSave,  self.data.formObject, self)
+        sh.cid(self.settings.fxSave, self.data.formObject, self)
     }
 
 
@@ -109,7 +130,7 @@ types.hider = 'hider';
 types.hiderClose = 'hiderClose';
 QuickCrud.types = types;
 
-function QuickCrudConfigHelper() {
+function QuickCrudConfigHelper(cfg) {
     var self = this;
     var p = self;
     self.data = {};
@@ -117,95 +138,20 @@ function QuickCrudConfigHelper() {
     self.config = self.data.config;
     self.config.areas = {};
 
-    p.init = function init() {
+    p.init = function init(cfg) {
         var base = new BaseUIConfig(self.config);
         self.uiConfig = base;
 
+        var qf = new QuickFormConfigHelper();
+        qf.uiConfig.targetDiv(cfg.ui.find('#quickFormHolder'))
+        qf.uiConfig.fxInit(function onxInit() {
+            console.log('on built')
+        })
+        var formObject2 = {};
+        qf.loadForm(formObject2)
+        self.quickForm = qf;
     }
-    self.init();
-
-    p.addArea = function addARea(name, id) {
-        if (id == null) {
-            id = 'area_' + name;
-        }
-        if (id.includes('#') == false) {
-            id = '#' + id;
-        }
-        var areaConfig = {};
-        areaConfig.name = name;
-        areaConfig.id = id;
-        areaConfig.ui = $(id)
-        if (areaConfig.ui == null) {
-            console.warning('it is missing', areaConfig.id)
-        }
-        self.config.areas[name] = areaConfig;
-        console.debug('adding an area info', name, id)
-    }
-    p.getArea = function getArea(name) {
-        var area = self.config.areas[name];
-        return area;
-    }
-    p.defaultArea = function defaultArea(name, id) {
-
-        var defaultArea = self.config.areas[name];
-        sh.throw = function (err) {
-            throw new Error(err)
-        }
-
-        sh.throwIfNull = function throwIfNull(val, err) {
-            if (val != null)
-                return
-            throw new Error(err)
-        }
-
-        sh.throwIfNull(defaultArea, 'Name is not valid default area');
-
-        self.config.defaultAreaName = defaultArea.name;
-        console.debug('adding defaultArea area', name, defaultArea.name);
-
-    }
-
-
-    var types = {}
-    types.textArea = 'textarea';
-    types.textarea = types.textArea;
-    types.br = 'br';
-    //types.textArea = 'text'
-    types.input = 'input';
-    types.radio = 'radio';
-    types.checkbox = 'checkbox';
-    types.boolean = 'boolean';
-    types.select = 'select'
-    types.tasklist = 'tasklist';
-    types.number = 'number';
-    types.stepper = 'stepper';
-    types.lbl = 'label';
-    types.label = 'label'
-    types.button = 'button';
-    types.buttonroll = 'buttonroll';
-    types.hr = 'hr';
-    types.hider = 'hider';
-    types.hiderClose = 'hiderClose';
-
-    var nonInputTypes = [
-        types.lbl,
-        types.hr,
-        types.hider,
-        types.hiderClose
-    ];
-    types.nonInputTypes = nonInputTypes;
-
-    /*      types.textArea = 'textarea'
-     //types.textArea = 'text'
-     types.input = 'input'
-     types.radio = 'radio'
-     types.checkbox = 'checkbox';
-     types.boolean = 'boolean';
-     types.select = 'select'
-     types.number = 'number';
-     types.stepper = 'stepper';
-     types.lbl = 'label';
-     types.label  = 'label'*/
+    self.init(cfg);
 
     self.types = types;
 
@@ -213,227 +159,14 @@ function QuickCrudConfigHelper() {
     p.init = function init() {
 
     };
-    function defineElements() {
-        p.addLabel = function labl(lbl, hr) {
-            hr = sh.dv(hr);
-            var obj = {
-                label: lbl,
-                type: self.types.label,
-                hr: hr
-            }
-            self.form['lbl_' + sh.randomizeInt(3)] = obj;
-            self.addAuto(obj);
-        }
-        p.addLabelField = function addLabelField(prop, noGutterSpace) {
-            noGutterSpace = sh.dv(noGutterSpace, true);
-            var obj = {
-                field: prop,
-                type: self.types.label,
-                reduceGutterSpace: noGutterSpace
-            };
-            self.form['lbl_' + sh.randomizeInt(3)] = obj;
-            self.addAuto(obj);
-        }
 
-        p.addBr = function addBr(noGutterSpace) {
-            noGutterSpace = sh.dv(noGutterSpace, true);
-            var obj = {
-                field: prop,
-                type: self.types.br,
-                reduceGutterSpace: noGutterSpace
-            };
-            self.form['br_' + sh.randomizeInt(3)] = obj;
-            self.addAuto(obj);
-        }
-
-        p.addTextField = function addTextField(prop, label) {
-            var obj = {
-                label: label,
-                field: prop,
-                type: self.types.textarea
-            };
-            self.form[prop] = obj;
-            self.addAuto(obj);
-            return self;
-        }
-        p.addTextArea = p.addTextField;
-        p.addTextInput = function addTextInput(prop, label) {
-            var obj = {
-                label: label,
-                field: prop,
-                type: self.types.input
-            };
-            self.form[prop] = obj;
-            self.addAuto(obj);
-            return self;
-        }
-        p.addInput = p.addTextInput;
-
-        p.addButton = function addButton(name, fx, label,
-                                         setProp, val) {
-            var prop = name;
-            label = sh.dv(label, name)
-            var obj = {
-                field: name,
-                label: label,
-                fx: fx,
-                type: self.types.button,
-                setProp: setProp,
-                val: val
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        }
-
-        p.addCheckbox = function addCheckbox(name, label) {
-            var obj = {
-                label: label,
-                type: self.types.checkbox//,
-                //options: values
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-
-        p.addHr = function addHr(name, label) {
-            var name = 'hr_' + self.utils.makeRandom();
-            var obj = {
-                label: label,
-                type: self.types.hr//,
-                //options: values
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-
-        p.addHider = function addHider(label) {
-            var name = 'hider_' + self.utils.makeRandom();
-            var obj = {
-                label: label,
-                type: self.types.hider
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-        p.addHiderClose = function addHiderClose(label) {
-            var name = 'hiderClose_' + self.utils.makeRandom();
-            var obj = {
-                label: label,
-                type: self.types.hiderClose
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-
-
-        p.addRadioGroup = function addRadioGroup(name, values, label) {
-            var obj = {
-                label: label,
-                type: self.types.radio,
-                options: values,
-                field:name
-            };
-            self.form[name] = obj;
-            self.addAuto(obj)
-            return self;
-        };
-
-        p.addCheckboxGroup = function addCheckboxGroup(name, values, label) {
-            var obj = {
-                label: label,
-                type: self.types.checkbox,
-                options: values,
-                field:name
-            };
-            self.form[name] = obj;
-            self.addAuto(obj)
-            return self;
-        };
-
-
-        p.addSelectList = function addSelectList(name, values, label, valueNames) {
-            if (valueNames) {
-                var options = self.utils.mergeValuePairs(values, valueNames);
-            } else {
-                if (sh.isObject(values)) {
-                    options =
-                        self.utils.convertObjectToArrayOfNameValuePairs(values)
-                }
-            }
-            //debugger
-            var obj = {
-                label: label,
-                type: self.types.select,
-                options: options
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-
-        p.addSelectList_FromObj = function addSelectList_FromObj(name, objectKV, label, defaultValue) {
-            var options = self.utils.convertObjectToArrayOfNameValuePairs(objectKV);
-            var obj = {
-                label: label,
-                defaultValue: defaultValue,
-                type: self.types.select,
-                options: options
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-
-        p.addButtonRoll = function addButtonRoll(name, values,
-                                                 label, colors,
-                                                 multipleSelect) {
-            var obj = {
-                label: label,
-                type: self.types.buttonroll,
-                options: values,
-                field: name,
-                optionsColors: colors,
-                multipleSelect: multipleSelect
-            };
-            if (angular.isFunction(values)) {
-                obj.options = null;
-                obj.fxOptions = values;
-            }
-            if (colors == true) {
-                var arr = "#000000,#101416,#20292C,#303D42,#405259,#50676F,#607B85,#70909C,#80A4B2,#90B9C8,#A1CEDF,#A1CEDF,#AAD2E2,#B3D7E5,#BDDCE8,#C6E1EB,#D0E6EF,#D9EBF2,#E2F0F5,#ECF5F8,#F5FAFB,#FFFFFF"
-                arr = arr.split(',').reverse();
-                arr = arr.slice(3)
-                obj.optionsColors = arr;
-            }
-            if (multipleSelect) {
-
-            }
-            self.form[name] = obj;
-            self.addAuto(obj, name)
-            return self;
-        };
-
-
-        p.addTasklist = function addTasklist(name, values, label, valueNames) {
-            var options = self.utils.mergeValuePairs(values, valueNames);
-            var obj = {
-                label: label,
-                type: self.types.tasklist,
-                options: options
-            };
-            self.form[name] = obj;
-            self.addAuto(obj);
-            return self;
-        };
-    };
-    defineElements();
 
     function defineHelpers() {
+
+        p.addRestHelper = function addRestHelper(url, name) {
+             self.restHelper = new RestHelper();
+        };
+
         p.addAuto = function addAuto(obj, name) {
             if (self.showIf != null) {
                 obj.showIf = self.showIf.concat();

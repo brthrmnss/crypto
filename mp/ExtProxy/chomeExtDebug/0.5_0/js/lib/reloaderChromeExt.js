@@ -52,6 +52,7 @@ if ( loadEval ) {
                 console.log('chat')
                 $('#messages').append($('<li>').text(msg));
             });*/
+             
             socket.on('window.invoke', function(msg){
                 //console.clear();
                 console.log('invoke.window', msg)

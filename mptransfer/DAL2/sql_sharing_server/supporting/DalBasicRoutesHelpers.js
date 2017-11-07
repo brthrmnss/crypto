@@ -41,7 +41,7 @@ function DalBasicRoutesHelpers(_self) {
 
         };
 
-        self.syncInX = self.syncIn = function syncIn_pullAction(req, res, fxDone) {
+        self.syncInX = self.syncIn = function syncIn_pullAction(req, res) {
             if (self.data.breakpoint) {
                 console.error('at breakpoint')
             }
@@ -68,7 +68,7 @@ function DalBasicRoutesHelpers(_self) {
                         return;
                     }
                     res.send('ok');
-                    sh.cid(fxDone, self, 'ok')
+                   // sh.cid(fxDone, self, 'ok')
                 }
             }, incremental, config);
 
@@ -77,7 +77,11 @@ function DalBasicRoutesHelpers(_self) {
             }
         };
 
-        self.syncReverseX = self.syncReverse = function syncReverse(req, res, fxDone) {
+        self.syncReverse2  = function syncReverse2(req, res) {
+            res.send('....')
+        }
+        self.syncReverseX = self.syncReverse = function syncReverse(req, res) {
+            //asdf.g
             if (self.settings.block) {
                 self.proc(self.settings.name, 'block')
                 asdf.g
@@ -97,7 +101,7 @@ function DalBasicRoutesHelpers(_self) {
             // self.proc('syncReverse', self.settings.name, )
             self.utils.forEachPeer(fxEachPeer, fxComplete);
 
-            function fxEachPeer(ip, fxDone) {
+            function fxEachPeer(ip, fxDone___) {
                 var config = {showBody: false};
                 /*if ( self.utils.peerHelper.skipPeer(fromPeer, ip)) {
                  fxDone()
@@ -120,30 +124,34 @@ function DalBasicRoutesHelpers(_self) {
                 self.dalLogX('revsync', peerName, req.query.fromPeer);
                 self.utils.updateTestConfig(config)
                 config.baseUrl = ip;
-                var t = EasyRemoteTester.create('Sync Peer', config);
+                var t2 = EasyRemoteTester.create('Sync Peer', config);
                 var urls = {};
-                urls.syncIn = t.utils.createTestingUrl('syncIn');
+                urls.syncIn = t2.utils.createTestingUrl('syncIn');
                 var reqData = {};
                 reqData.data = 0
-                t.getR(urls.syncIn).why('get syncronize the other side')
+                t2.getR(urls.syncIn).why('get syncronize the other side')
                     .with(reqData).storeResponseProp('count', 'count')
                 // t.addSync(fxDone)
-                t.add(function onFinishedWithSyncIn() {
+                t2.add(function onFinishedWithSyncIn_syncReverse() {
                     self.proc('you ready...')
-                    fxDone()
-                    t.cb();
+                    fxDone___()
+                    t2.cb();
                 })
                 //fxDone();
             }
 
+
+            var y = new sh.TwoCallHelper();
             function fxComplete(ok) {
                 var result = {};
+                y.addX('called once')
                 result.ok = ok;
+                self.proc('finishing this request...', res.name)
                 if (sh.isFunction(res)) {
-                    res(result);
+                    res(result, self);
                     return;
                 }
-                sh.cid(fxDone, result, self, 'ok')
+               // sh.cid(fxDone_Fx, result, self, 'ok')
                 res.send(result);
             }
         };
@@ -664,11 +672,13 @@ function DalBasicRoutesHelpers(_self) {
         };
 
         self.getSizeOfPeer = self.getSize = function getSize(cb) {
+            var y = new sh.TwoCallHelper();
             self.dbHelper2.count(function getSize_gotRecordCount(count) {
                 self.count = count;
                 self.size = count;
-                console.error('----s getSize', self.settings.name, count)
-                sh.callIfDefined(cb)
+                console.error('----s getSize', self.settings.name, count, cb.name)
+                y.addX('dfsdf')
+                sh.callIfDefined(cb,count)
             })
         }
 
@@ -693,6 +703,11 @@ function DalBasicRoutesHelpers(_self) {
 
             //self.dalLog("\t\t\t", 'onGotNextPage-search-start-a', actorsStr , JSON.stringify(query) )
 
+
+            var fxH = {};
+            fxH.debug = false;
+
+
             var query = {}
             query.where = {};
             if (req.query.global_updated_at != null) {
@@ -703,6 +718,16 @@ function DalBasicRoutesHelpers(_self) {
             }
             if (self.data.breakpoint_catchPageRequests) {
                 console.error('at breakpoint_catchPageRequests')
+            }
+
+            if ( self.settings.syncPassword ) {
+                if ( self.settings.syncPassword != req.query.syncPasswordReq ) {
+                    res.statusCode = 404
+                    res.send('not foundz')
+                    return;
+                }
+                self.proc('sss', self.settings.syncPassword)
+
             }
 
             query.order = ['global_updated_at', 'DESC']
@@ -729,8 +754,10 @@ function DalBasicRoutesHelpers(_self) {
                 if (self.data.breakpoint_catchPageRequests) {
                     console.error('at breakpoint_catchPageRequests')
                 }
-                console.log('>>>>>>>>')
-                self.proc('sent back', sh.paren(self.settings.name), self.recs.length, req.query.offset)
+                if ( fxH.debug ) {
+                    console.log('>>>>>>>>')
+                    self.proc('sent back', sh.paren(self.settings.name), self.recs.length, req.query.offset)
+                }
                 //Executing (default): SELECT `id`, `name`, `desc`, `user_id`, `imdb_id`, `content_id`, `progress`, `source_node`, `id_timestamp`, `updated_by_source`, `global_updated_at`, `version`, `deleted`, `createdAt`, `updatedAt` FROM `aAs` AS `aA` WHERE `aA`.`global_updated_at` > '2016-08-02 18:29:30.000 +00:00' ORDER BY `global_updated_at`, `DESC` LIMIT 1000;
                 //2016-08-02T18:29:30.976Z
                 //zself.dalLog("\t\t\t", 'onGotNextPage-search-result', actorsStr , JSON.stringify(query), recs.length, self.settings.name)
@@ -754,6 +781,7 @@ function DalBasicRoutesHelpers(_self) {
             self.app.get('/verifySync', self.verifySync);
 
             self.app.get('/syncReverse', self.syncReverse);
+            self.app.get('/syncReverse2', self.syncReverse2);
             self.app.get('/syncIn', self.syncIn);
             self.app.get('/pull', self.syncIn);
 

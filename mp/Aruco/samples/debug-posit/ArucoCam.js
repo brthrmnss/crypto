@@ -4,23 +4,99 @@ if (typeof window == 'undefined ') {
     var shelpers = require('shelpers');
 }
 
-function ArucoMarker() {
-    var p = ArucoMarker.prototype;
+
+
+
+function ArucoCam() {
+    var p = ArucoCam.prototype;
     p = this;
     var self = this;
 
     self.settings = {};
     self.data = {}
 
+    self.data.modelSize = 35.0; //millimeters
+
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
         config = self.settings;
 
-        self.method();
+
+
+        video = document.getElementById("video");
+        canvas = document.getElementById("canvas");
+        context = canvas.getContext("2d");
+
+        canvas.width = parseInt(canvas.style.width);
+        canvas.height = parseInt(canvas.style.height);
+        self.data.canvas = canvas;
+
     }
 
-    p.method = function method() {
+    p.startCam = function startCam() {
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (navigator.getUserMedia) {
+            self.initCam();
+        }
+
+
+       // requestAnimationFrame(self.tick);
+        clearInterval(window.intSnapshot)
+        window.intSnapshot = setInterval(self.snapshot,1200)
     }
+
+
+    p.snapshot = function snapshot() {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        //var pic = document.getElementById("pic");
+        //context.drawImage(pic, 0, 0, pic.width, pic.height);
+
+
+        imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+       /// context2 =  window.img.getContext("2d");
+     //   context2.drawImage(video, 0, 0, canvas.width, canvas.height);
+       // window.img.src = imageData;
+        window.arucoRenderer.processQRImageData(imageData)
+    };
+
+
+    p.tick = function tick() {
+
+        requestAnimationFrame(tick);
+
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            /*snapshot();
+
+            var markers = detector.detect(imageData);
+            drawCorners(markers);
+            updateScenes(markers);
+
+            render();*/
+
+        }
+    };
+
+    p.initCam = function initCam() {
+        navigator.getUserMedia({video: true},
+            function (stream) {
+                if (window.webkitURL) {
+                    video.src = window.webkitURL.createObjectURL(stream);
+                } else if (video.mozSrcObject !== undefined) {
+                    video.mozSrcObject = stream;
+                } else {
+                    video.src = stream;
+                }
+                window.stream = stream;
+            },
+            function (error) {
+            }
+        );
+        self.data.detector = new AR.Detector();
+        self.data.posit = new POS.Posit(self.data.modelSize, self.data.canvas.width);
+    }
+
     var detector = null;
     var posit = null;
     var context = null;
@@ -50,33 +126,6 @@ function ArucoMarker() {
 
         self.data.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         self.detect();
-    }
-
-    p.processQRImageData = function processQRImageData(imageData) {
-
-
-        var id = 1;
-
-        var canvas = document.getElementById("canvas_" + id);
-        context = canvas.getContext("2d");
-        //context.drawImage(imageData, 0, 0, canvas.width, canvas.height);
-
-        detector = new AR.Detector();
-        posit = new POS.Posit(modelSize, canvas.width);
-
-
-        self.data.output1 = '#output1_' + id
-        self.data.output2 = '#output2_' + id
-        self.data.output3 = $('#output3_' + id);
-        self.data.output3.text('')
-        console.debug(self.data.output1)
-        //var pic = document.getElementById("pic");
-        //context.drawImage(pic, 0, 0, pic.width, pic.height);
-
-        self.data.imageData = imageData
-        self.detect();
-
-        self.make3d(window.renderCanvas3d)
     }
 
     p.make3d = function make3d(renderCanvas3dId) {
@@ -145,7 +194,7 @@ function ArucoMarker() {
 
         function updateScenes(markers) {
             var corners, corner, pose, i;
-            var canvas = document.getElementById("canvas");
+
             if (markers.length > 0) {
                 corners = markers[0].corners;
 

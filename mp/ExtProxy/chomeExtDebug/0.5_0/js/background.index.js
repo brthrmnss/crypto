@@ -67,11 +67,26 @@ function genericOnClick2(info, tab) {
      doStuffWithDOM);
      */
 
+    chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+        /* If the received message has the expected format... */
+        if (msg.text && (msg.text == "what_is_my_id")) {
+
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                /*chrome.tabs.sendMessage(tab.id, {text: "report_back"},
+                 doStuffWithDOM);*/
+                debugger
+                sendResponse(tab.id, tab)
+            });
+
+            // sendResponse( vs);
+        }
+    });
 
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        chrome.tabs.sendMessage(tab.id, {text: "report_back"},
+        chrome.tabs.sendMessage(tab.id, {text: "report_back", id: tab.id, tab: tab},
             doStuffWithDOM);
     });
+
 
     return
     if ('createRange' in document && 'getSelection' in window) {
@@ -123,3 +138,82 @@ chrome.contextMenus.create(
  console.log("parent:" + parent + " child1:" + child1 + " child2:" + child2);
 
  */
+
+/*
+ chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+ var tab = tabs[0]
+ // debugger
+ chrome.tabs.sendMessage(tab.id, {text: "what_is_my_id"},
+ doStuffWithDOM);
+ setTimeout(function onsdf() {
+ debugger
+ chrome.tabs.sendMessage(tab.id, {text: "what_is_my_id"},
+ doStuffWithDOM);
+ },500)
+ });
+ */
+
+function fx2() {
+
+}
+
+var sendHelper = {}
+sendHelper.data = {};
+var self = sendHelper;
+self.data.dictTabs = {}
+sendHelper.tryToClaim = function tryToClaim(a, b) {
+    debugger
+}
+sendHelper.validItem = function validItem(a) {
+    self.data.dictTabs[a] = true;
+}
+
+sendHelper.clearItems = function clearItems(a) {
+    self.data.dictTabs = {};
+}
+
+chrome.tabs.onCreated.addListener(function onNewTabCreated(tab, again) {
+    console.debug('created', tab)
+    //debugger
+    chrome.tabs.sendMessage(tab.id,
+        {
+            text: "new_TabX", id: tab.id,
+            tab: tab,
+            sendHelper: sendHelper
+        },
+        fx2);
+
+    if (again != true) {
+        setTimeout(function ok() {
+            onNewTabCreated(tab, true)
+        }, 1500)
+        return;
+    }
+
+});
+
+chrome.tabs.onUpdated.addListener(function onUpdate(tabId, changeInfo, tab, again) {
+    console.debug('updated', tab, tabId)
+    //debugger
+    if ( tab.url.includes('clearsession')) {
+        console.debug('log...')
+        sendHelper.data.dictTabs = {}
+    }
+    chrome.tabs.sendMessage(tab.id,
+        {
+            text: "update_TabX", id: tab.id,
+            tab: tab,
+            sendHelper: sendHelper,
+            loadBoomBoom: sendHelper.data.dictTabs[tab.id]
+        }, null,
+        function onActive(sdf) {
+            sendHelper.validItem(tab.id)
+        });
+
+    if (again != true) {
+        setTimeout(function ok() {
+            onUpdate(tabId, changeInfo, tab, true)
+        }, 1500)
+        return;
+    }
+})

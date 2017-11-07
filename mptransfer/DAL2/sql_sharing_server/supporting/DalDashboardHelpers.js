@@ -123,7 +123,7 @@ function DalDashboardHelpers(_self) {
 
                 var updateX = false;
                 var skipProps = [];
-                skipProps = ['password', 'tableName', 'ip', 'port']
+                skipProps = ['syncPassword', 'tableName', 'ip', 'port']
                 sh.each(query, function copyToSettingsObject(k,v) {
                     if ( sh.includes(skipProps, k)) {
                         return;

@@ -1,8 +1,8 @@
 /*
-@author ebooks.wtf@yandex.com
-@license do what you want with this simple chrome extension
-@date 2016-02-28
-@version 0.5
+ @author ebooks.wtf@yandex.com
+ @license do what you want with this simple chrome extension
+ @date 2016-02-28
+ @version 0.5
  */
 var four = 2 + 2
 console.log('boody')
@@ -31,7 +31,7 @@ function loadScriptSync(src, fxDone) {
 }
 
 //loadScriptSync('amz_hijacks.js')
-
+//chrome.runtime.onMessage.addListener
 
 function ChromeExtLoader() {
     var p = ChromeExtLoader.prototype;
@@ -39,9 +39,9 @@ function ChromeExtLoader() {
     var self = this;
 
     self.data = {};
-    self.data.baseUrl = "http://localhost:10110/file/"  +
-         "media/sf_Dropbox/projects/crypto/"  +
-          "mp/ExtProxy/chomeExtDebug/0.5_0/js/"
+    self.data.baseUrl = "http://localhost:10110/file/" +
+        "media/sf_Dropbox/projects/crypto/" +
+        "mp/ExtProxy/chomeExtDebug/0.5_0/js/"
     p.init = function init(config) {
         //self.settings = sh.dv(config, {});
         self.method();
@@ -84,12 +84,12 @@ function ChromeExtLoader() {
         }
         var url = _scripts2.shift();
         /*if ( window.preamble == null ) {
-            window.preamble = window.location.origin + '/test3/'
-        }
-        //if ( url.includes(window.preamble) == false ) {
-        //    debugger
-        url = window.preamble + url;
-        //}*/
+         window.preamble = window.location.origin + '/test3/'
+         }
+         //if ( url.includes(window.preamble) == false ) {
+         //    debugger
+         url = window.preamble + url;
+         //}*/
 
         var debug = false;
         // debug = true;
@@ -142,7 +142,7 @@ function ChromeExtLoader() {
     };
     p.loadJquery = function loadJquery(fxDone) {
         loadScriptSync(
-            self.data.baseUrl+'lib/jquery-3.1.1.min.js',
+            self.data.baseUrl + 'lib/jquery-3.1.1.min.js',
             fxDone)
     };
 
@@ -161,14 +161,14 @@ loader.init(config)
 window.uiTag = 'uiReloadableChromeExt'
 
 function onBtn() {
-    if ( window.socket ) {
+    if (window.socket) {
         var urlPage = '/media/sf_Dropbox/projects/crypto/mp/ExtProxy/chomeExtDebug/0.5_0/js/debugStartupScript.js'
         window.socket.emit('window.invoke.loopback', urlPage)
         var urlPage = 'G:/Dropbox/projects/crypto/mp/ExtProxy/chomeExtDebug/0.5_0/js/debugStartupScript.js'
         window.socket.emit('window.invoke.loopback', urlPage)
         return;
     }
-    if (window.$ == null || window.jQuery == null ) {
+    if (window.$ == null || window.jQuery == null) {
         console.warn('jquery not found ... going to load it... ')
         loader.loadJquery(function init2() {
             loader.loadInitScripts(initStuff)
@@ -184,7 +184,7 @@ function onBtn() {
         //loader.loadSet()
         $('.' + window.uiTag).remove();
         if (window.location.host.includes('b-ok.org') ||
-            window.location.host.includes('book4you.org') ) {
+            window.location.host.includes('book4you.org')) {
             loader.loadScripts([
                 'lib/ListExtractorScraper.js',
                 'bookzzAnotSearcher.js'
@@ -192,15 +192,15 @@ function onBtn() {
         }
 
         if (window.location.host.includes('amazon.com')) {
-           // alert('ok in amazon')
+            // alert('ok in amazon')
             loader.loadScripts([
                 'ideas/amz_hijacks.js',
-              //  'bookzzAnotSearcher.js'
+                //  'bookzzAnotSearcher.js'
             ])
         }
 
         var ebooklogin = window.location.host.includes('ebooklogin.com')
-        if (window.location.host.includes('ebook.farm') || ebooklogin ) {
+        if (window.location.host.includes('ebook.farm') || ebooklogin) {
             // alert('ok in amazon')
             loader.loadScripts([
                 'ideas/update_ebookfarm.js',
@@ -209,12 +209,12 @@ function onBtn() {
         }
 
         function urlInc(str) {
-            var str = window.location.href;
-           return window.location.href.includes(str)
+            var str2 = window.location.href;
+            return str2.includes(str)
         }
 
 
-        if ( urlInc('myvidster.com') ) {
+        if (urlInc('myvidster.com')) {
             // alert('ok in amazon')
             loader.loadScripts([
                 'ideas/update_myVidster.js',
@@ -222,22 +222,23 @@ function onBtn() {
         }
 
 
-        if ( urlInc('rapidgator.net/file/') ) {
+        if (urlInc('rapidgator.net/file/')) {
             // alert('ok in amazon')
+            debugger;
             loader.loadScripts([
                 'ideas/update_rapidGator.js',
             ])
         }
 
 
-        if ( urlInc('videos.com') ) {
+        if (urlInc('videos.com')) {
             // alert('ok in amazon')
             loader.loadScripts([
                 'ideas/update_myVideos.js',
             ])
         }
 
-        if (window.location.host.includes('news.ycombinator.com')) {
+        if (urlInc('news.ycombinator.com')) {
             // alert('ok in amazon')
             loader.loadScripts([
                 'lib/ListExtractorScraper.js',
@@ -247,6 +248,7 @@ function onBtn() {
         }
 
 
+
         //  loader.loadUrl('bookzzAnotSearcher.js')
         // loader.loadUrl('bookzzAnotSearcher.js')
     }
@@ -254,7 +256,7 @@ function onBtn() {
 
 setTimeout(function onLoadLater() {
     onBtn()
-},200)
+}, 200)
 
 
 //--allow-running-insecure-content

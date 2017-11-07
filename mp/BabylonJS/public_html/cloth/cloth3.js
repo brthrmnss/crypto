@@ -29,7 +29,9 @@ Cloth.prototype.initCloth = function(subdivisions, size, position, rotation) {
     this.subdivisions = subdivisions;
     this.distanceBetweenPoints = size / subdivisions;
 
-    this.cloth = BABYLON.Mesh.CreateGround("cloth", this.size, this.size, this.subdivisions - 1, this.scene, true);
+    this.cloth = BABYLON.Mesh.CreateGround("cloth", 
+    this.size, this.size, 
+    this.subdivisions - 1, this.scene, true);
     this.cloth.material = this.material;
     this.cloth.position = position || BABYLON.Vector3.Zero();
     this.cloth.rotation = rotation || BABYLON.Vector3.Zero();
@@ -82,7 +84,10 @@ debugger
         }
 
 
-        s.physicsImpostor = new BABYLON.PhysicsImpostor(s, BABYLON.PhysicsImpostor.ParticleImpostor, { mass: mass, friction: friction || 0.2 }, this.scene);
+        s.physicsImpostor = new BABYLON.PhysicsImpostor(s, BABYLON.PhysicsImpostor.ParticleImpostor, { 
+          mass: mass, 
+          friction: friction || 0.2 
+          }, this.scene);
         if (row > 0) {
             if ( dbg ) {
                 console.error('iii', row)

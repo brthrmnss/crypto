@@ -84,7 +84,6 @@ function DbGlueTest() {
         config.dbLogging = false
         //config.dbLogging = true
         config.debugUpsert = true
-        config.debugUpsert = false
         config.password = 'dirty'
         self.data.baseConfig = config;
     }
@@ -140,7 +139,7 @@ function DbGlueTest() {
         var sh = require('shelpers').shelpers;
         var shelpers = require('shelpers');
         var EasyRemoteTester = shelpers.EasyRemoteTester;
-        var t = EasyRemoteTester.create('Test Augmented Cleaned',
+        var t = EasyRemoteTester.create('Test Channel Server basics',
             {
                 showBody: false,
                 silent: true
@@ -173,6 +172,29 @@ function DbGlueTest() {
         t.add(function bPullARecords() {
             b.pull(t.cb);
         })
+
+        function ResuableSection_verifySync(msg, size) { //verifies size of both peers
+            if (msg == null) {
+                msg = ''
+            }
+            msg = ' ' + msg;
+            t.add(function getASize() {
+                a.getSize(t.cb);
+            })
+            t.add(function getBSize() {
+                b.getSize(t.cb);
+            })
+            t.add(function testSize() {
+                if (size) {
+                    t.assert(b.size == size, 'sync did not work (sizes different) a' + [a.size, size] + msg)
+                    t.assert(a.size == size, 'sync did not work (sizes different) b' + [b.size, size] + msg)
+                }
+                t.assert(b.size == a.size, 'sync did not work (sizes different)' + [b.size, a.size] + msg)
+                t.cb();
+            })
+        }
+
+        ResuableSection_verifySync('A and b should be same size', 100);
 
         function ResuableSection_addRecord() {
             t.add(function addNewRecord() {
@@ -251,6 +273,18 @@ function DbGlueTest() {
         define_TestIncrementalUpdate();
 
 
+        function define_TestDataIntegrity() {
+            urls.verifySync = t.utils.createTestingUrl('verifySync');
+            t.getR(urls.verifySync).with({sync: false, peer: 'a'})
+                .fxDone(function syncComplete(result) {
+                    t.assert(result.ok == true, 'data not integral ' + result.ok)
+                    return;
+                });
+        }
+
+        define_TestDataIntegrity();
+
+
         function define_syncReverse() {
             ResuableSection_addRecord();
 
@@ -297,6 +331,32 @@ function DbGlueTest() {
             });
         }
 
+        function syncIn() {
+            t.getR(urls.syncIn).with({sync: false, peer: 'a'})
+                .fxDone(function syncComplete(result) {
+                    //t.assert(result.ok==1, 'data not integral ' + result)
+                    return;
+                })
+        }
+
+        function syncOut() {
+            t.getR(urls.syncReverse).with({sync: false, peer: 'a', fromPeer: 'a'})
+                .fxDone(function syncComplete(result) {
+                    //t.assert(result.ok==1, 'data not integral ' + result)
+                    return;
+                })
+        }
+
+        function syncBothDirections() {
+            syncIn()
+            syncOut()
+        }
+
+        function breakTest() {
+            t.addFx(function () {
+                asdf.g
+            })
+        }
 
         function purgeDeletedRecords() {
             urls.purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
@@ -576,7 +636,7 @@ function DbGlueTest() {
     }
 
     p.t.test2Instances = function testInstances(inst, fxDone) {
-        var t = EasyRemoteTester.create('Test Channel YYY Cluster',
+        var t = EasyRemoteTester.create('Test Channel Server basics',
             {
                 showBody: false,
                 silent: true,
@@ -596,9 +656,8 @@ function DbGlueTest() {
 
         self.tests.clearAllData(t)
         self.tests.testRecordsWithBadPassword(t, a, b)
-
         self.tests.addNode(t, 'e', 'a', true)
-        return
+
         self.tests.stopAutoSync(t);
         self.tests.clearAllData(t)
         self.tests.getSizesOfItems(t)
@@ -606,11 +665,8 @@ function DbGlueTest() {
         self.tests.pullRecords(t, b)
         self.tests.syncBothDirections(t, a, b)
         self.tests.syncBothDirections(t, b, a)
-        return
-
         self.tests.verify2NodesInSync(t, a, b, 'A and b should be same size');
 
-        return
 
         self.tests.addNewRecord(t, a)
 
@@ -627,7 +683,7 @@ function DbGlueTest() {
         var urls = {};
 
         self.tests.define_TestIncrementalUpdate(t, a, b);
-        return;
+        // return;
         self.tests.define_TestDataIntegrity(t, a, b);
 
         // return;
@@ -982,16 +1038,12 @@ function DbGlueTest() {
         }
 
         p.tests.setTestSyncPassword = function setTestSyncPassword(t, passw, skipNode) {
-            var y = new sh.TwoCallHelper();
-            var count = 0;
+            t.add(function () {
+                sh.async(self.data.allPeers,
+                    function (peer, fxDone) {
 
-            t.add(function testPasswordSync() {
-                var peers = self.data.allPeers.concat(); //this is bindable be careful
-
-                sh.async(peers,
-                    function onSetPassword_on_Peer(peer, fxDone) {
-                        count++
                         if (skipNode == peer) {
+
                             // asdf.d.g.sdf.gs.df
                             fxDone();
                             return;
@@ -999,9 +1051,7 @@ function DbGlueTest() {
                         peer.setSyncPassword(passw)
                         fxDone()
                     },
-                    function onSetTheSYncPassword() {
-                  //  console.log('count', count, peers.length, self.data.allPeers.length, self.data.allPeers)
-                        y.addX('called once')
+                    function dleeteAll() {
                         t.cb()
                     });
             });
@@ -1199,8 +1249,7 @@ function DbGlueTest() {
 
             t.getR(t.urls.syncReverse).with({
                 sync: false,
-                peer: peerName,
-                fromPeer: '?'
+                peer: peerName, fromPeer: '?'
             })
                 .fxDone(function syncComplete(result) {
                     //t.assert(result.ok==1, 'data not integral ' + result)
@@ -1221,7 +1270,7 @@ function DbGlueTest() {
             // console.error(a.settings.name)
             // asdf.g
             t.getR(t.urls.verifySync).with({sync: false, peer: a.settings.name})
-                .fxDone(function on_verifySync_Complete(result) {
+                .fxDone(function syncComplete(result) {
                     t.assert(result.ok == true, 'data not integral ' + result.ok)
                     return;
                 });
@@ -1246,76 +1295,25 @@ function DbGlueTest() {
                     return;
                 });
         }
-        p.tests.syncInT = p.tests.syncIn = function syncIn(t, a, b) {
-            /*
-             a = self.utils.cPeer(a)
-             b = self.utils.cPeer(b)
-             var baseUrl = 'http://127.0.0.1:' + b.settings.port;
-             t.settings.baseUrl = baseUrl;
-             t.urls.syncIn = t.utils.createTestingUrl('syncIn');
-             t.getR(t.urls.syncIn).with({sync: false, peer: a.settings.peerName})
-             .fxDone(function syncComplete(result) {
-             //t.assert(result.ok==1, 'data not integral ' + result)
-             return;
-             })
-             */
-
-
-            t.add(function onSyncIn() {
-                a = self.utils.cPeer(a)
-                b = self.utils.cPeer(b)
-                var baseUrl = 'http://127.0.0.1:' + b.settings.port;
-                t.settings.baseUrl = baseUrl;
-                t.urls.syncIn = t.utils.createTestingUrl('syncIn');
-                var reqData = {
-                    sync: false,
-                    peer: a.settings.peerName,
-                    fromPeer: a.settings.peerName
-                }
-                t.quickRequest(t.urls.syncIn,
-                    'get', onSyncedIn, reqData)
-                function onSyncedIn(body) {
-                    // console.log('body', body)
-                    //t.assert(body.status=='ok', 'did not parse file');
-                    t.cb();
-                }
-
-            })
+        p.tests.syncIn = function syncIn(t, a, b) {
+            var baseUrl = 'http://127.0.0.1:' + b.settings.port;
+            t.settings.baseUrl = baseUrl;
+            t.urls.syncIn = t.utils.createTestingUrl('syncIn');
+            t.getR(t.urls.syncIn).with({sync: false, peer: 'a'})
+                .fxDone(function syncComplete(result) {
+                    //t.assert(result.ok==1, 'data not integral ' + result)
+                    return;
+                })
         }
         p.tests.syncOut = function syncOut(t, a, b) {
-
-            t.add(function syncOut() {
-                a = self.utils.cPeer(a)
-                b = self.utils.cPeer(b)
-                var baseUrl = 'http://127.0.0.1:' + b.settings.port;
-                t.settings.baseUrl = baseUrl;
-                t.urls.syncReverse = t.utils.createTestingUrl('syncReverse');
-                /*t.getR(t.urls.syncReverse).with({sync: false,
-                 peer: a.settings.peerName,
-                 fromPeer: a.settings.peerName
-                 })
-                 .fxDone(function syncComplete(result) {
-                 //t.assert(result.ok==1, 'data not integral ' + result)
-                 return;
-                 })
-                 */
-
-                var reqData = {
-                    sync: false,
-                    peer: a.settings.peerName,
-                    fromPeer: a.settings.peerName
-                }
-                t.quickRequest(t.urls.syncReverse,
-                    'get', onResult, reqData)
-                function onResult(body) {
-                    // console.log('body', body)
-                    //t.assert(body.status=='ok', 'did not parse file');
-                    t.cb();
-                }
-
-            })
-
-
+            var baseUrl = 'http://127.0.0.1:' + b.settings.port;
+            t.settings.baseUrl = baseUrl;
+            t.urls.syncReverse = t.utils.createTestingUrl('syncReverse');
+            t.getR(t.urls.syncReverse).with({sync: false, peer: 'a', fromPeer: 'a'})
+                .fxDone(function syncComplete(result) {
+                    //t.assert(result.ok==1, 'data not integral ' + result)
+                    return;
+                })
         }
         p.tests.syncBothDirections = function syncBothDirections(t, a, b) {
             self.tests.syncIn(t, a, b)
@@ -1327,6 +1325,7 @@ function DbGlueTest() {
             self.tests.syncIn(t, b, a)
             self.tests.syncOut(t, b, a)
         }
+
 
 
         p.tests.define_TestDataIntegrity2 = function define_TestDataIntegrity2(t, a, b) {
@@ -1373,28 +1372,32 @@ function DbGlueTest() {
         p.tests.testAutosync = function testAutosync(t, peerNodeA, peerNodeB, msg, size) {
             t.add(function setupAutoSyncingIn2Secs() {
                 peerNodeA.setupAutoSync(1)
-                peerNodeB.setupAutoSync(1)
-                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>....', '>>>>')
-                t.cb();
-            })
-
-
-            t.workChain.utils.wait(2);
-
-            /*
-             t.add(function wait2Secs_2() {
-             setTimeout(function () {
-             t.cb();
-             }, 2000)
-             })
-             */
-
-            t.add(function disableSyncing() {
-                peerNodeA.setupAutoSync(false)
-                peerNodeB.setupAutoSync(false)
+                //asdf.g
                 console.log('>>>>>>>>>>>>>>>>>>>>>>>>>....', '>>>>')
                 t.cb();
                 return;
+                //this is not async ... very dangerous
+                self.data.topology.b.data.breakpoint = true;
+                self.data.topology.a.data.breakpoint_catchPageRequests = true;
+            })
+
+
+            t.add(function wait2Secs_2() {
+                setTimeout(function () {
+                    t.cb();
+                }, 2000)
+            })
+
+
+            t.add(function disableSyncing() {
+                peerNodeA.setupAutoSync(false)
+                //asdf.g
+                console.log('>>>>>>>>>>>>>>>>>>>>>>>>>....', '>>>>')
+                t.cb();
+                return;
+                //this is not async ... very dangerous
+                self.data.topology.b.data.breakpoint = true;
+                self.data.topology.a.data.breakpoint_catchPageRequests = true;
             })
 
 
@@ -1413,7 +1416,6 @@ function DbGlueTest() {
             })
 
             t.add(function makeNewNode() {
-                //  debugger
                 var peerLinkToId = {}
                 peerLinkToId[h.peerLinkTo.settings.peerName] = h.peerLinkTo.settings.ip;
                 var b = self.createTestNode(peerNodeB, null, true)
@@ -1433,7 +1435,6 @@ function DbGlueTest() {
                 h.peerLinkTo.peers.addPeer(h.peerNodeNew.getMyPeerInfo());
                 t.cb();
             })
-            //return
 
             t.add(function wait2Secs() {
                 setTimeout(function () {
@@ -1441,7 +1442,6 @@ function DbGlueTest() {
                 }, 500)
             })
 
-            //return
 
             t.add(function disableSyncing() {
                 h.peerNodeNew.setupAutoSync(false)
@@ -1510,7 +1510,7 @@ function DbGlueTest() {
 
             self.tests.testSyncBothSides(t, peerNodeB, peerLinkTo)
 
-            t.add(function wait2Secs() {
+                t.add(function wait2Secs() {
                 setTimeout(function () {
                     t.cb();
                 }, 4000)
@@ -1600,21 +1600,16 @@ function DbGlueTest() {
             t.add(function getASize() {
                 h.peerNodeA.getSize(t.cb);
             })
-            var y2 = new sh.TwoCallHelper();
             t.add(function getBSize() {
                 if (tester.called) {
                     debugger
                     asfd.g
                 }
-                y2.addX('called once')
                 h.peerNodeB.getSize(t.cb);
             })
             var yOK = false
-            var y = new sh.TwoCallHelper();
+            t.add(function testSize() {
 
-
-            t.add(function testSize_verify2NodesInSync() {
-                y.addX('called once')
                 console.log('ok', msg, size)
                 if (size == -1) {
                     t.assert(h.peerNodeB.size != h.peerNodeA.size,
@@ -1711,13 +1706,13 @@ if (module.parent == null) {
     service.setupOverides()
     service.createTestNode('a');
     var cfg = {};
-    cfg.fxDone = function fxDoneTests() {
+    cfg.fxDone = function on() {
         //asdf.g
         var inst = [service.data.topology.a, service.data.topology.b]
-        service.t.test2Instances(inst, fxDone_Finished_CleanedTests);
+        service.t.test2Instances(inst, fxDone2);
 
-        function fxDone_Finished_CleanedTests() {
-            console.error('fxDone_Finished_CleanedTests')
+        function fxDone2() {
+            console.error('okokokok')
         }
     }
     service.createTestNode('b', cfg);

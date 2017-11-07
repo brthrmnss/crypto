@@ -38,6 +38,7 @@
     "activeTab",
     "tabs",
     "contextMenus",
+    "*://*/*",
     "http://127.0.0.1/",
     "https://bookzz.org/",
     "https://book4you.org/"

@@ -15,8 +15,7 @@ function Cloth() {
         //  self.method();
     }
 
-    p.initMaterials = function initMaterials()
-    {
+    p.initMaterials = function initMaterials() {
         var clothMat = new BABYLON.StandardMaterial("texture3", self.data.scene);
         clothMat.diffuseTexture = new BABYLON.Texture("./assets/cloth-diffuse.jpg", self.data.scene);
         clothMat.bumpTexture = new BABYLON.Texture("./assets/cloth-bump.jpg", self.data.scene);
@@ -40,8 +39,11 @@ function Cloth() {
         self.data.subdivisions = subdivisions;
         self.data.distanceBetweenPoints = size / subdivisions;
 
+
         self.data.cloth = BABYLON.Mesh.CreateGround("cloth",
-            self.data.size, self.data.size, self.data.subdivisions - 1, self.data.scene, true);
+            self.data.size, self.data.size,
+            self.data.subdivisions - 1, self.data.scene, true);
+        //debugger
         self.data.cloth.material = self.data.material;
         self.data.cloth.position = position || BABYLON.Vector3.Zero();
         self.data.cloth.rotation = rotation || BABYLON.Vector3.Zero();
@@ -49,29 +51,42 @@ function Cloth() {
     }
 
 
-    p.initPhysics = function initPhysics(mountedRows, particleMass, elasticFactor, friction) {
+    p.initPhysics = function initPhysics(mountedRowIndexes, particleMass, elasticFactor, friction) {
         self.data.contactPoints.forEach(function (c) {
             c.dispose();
         });
         var dbg = false;
         self.data.contactPoints = [];
         var positions = self.data.cloth.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-        window.positions = positions;
+        window.positions = positions; //flattened array of triplets xyz
+
+        if (particleMass == null) {
+            particleMass = 1;
+        }
+        if (friction == null) {
+            friction = 0.2;
+        }
+
+        //debugger
         //modify positions hereTPDP
-        var row = -1;
+        var rowIndex = -1;
         for (var i = 0; i < positions.length; i = i + 3) {
+
             var idx = i / 3;
+            let vertexIndex = idx
             var positionInRow = idx % self.data.subdivisions;
-            if (!positionInRow) {
-                row++;
+            if (positionInRow == 0) { //if (!positionInRow) {
+                //debugger
+                rowIndex++;
             }
             //TOD: where is the 2nd row?
-            var mountedRow = mountedRows.indexOf(row) > -1
+            let mountedRow = mountedRowIndexes.indexOf(rowIndex) > -1
 
-            var v = BABYLON.Vector3.FromArray(positions, i);
+            let v = BABYLON.Vector3.FromArray(positions, i);
 
-            var s = BABYLON.MeshBuilder.CreateSphere("s" + i, {diameter: 0.4}, self.data.scene);
+            let s = BABYLON.MeshBuilder.CreateSphere("s" + i, {diameter: 0.4}, self.data.scene);
             BABYLON.Vector3.TransformCoordinatesToRef(v, self.data.cloth.getWorldMatrix(), s.position);
+
             if (mountedRow) {
                 s.material = self.data.matForMounted;
             }
@@ -82,29 +97,37 @@ function Cloth() {
                 return o.toFixed(1)
             }
 
-            //create the impostors
-            var mass = mountedRow ? 0 : particleMass || 1;
 
-            if (dbg) {
-                console.log('boo', i, row, '\t', f(s.position.x), f(s.position.y), f(s.position.z), mountedRow, mass)
+            //create the impostors
+            let mass = particleMass;
+            if (mountedRow) {
+                mass = 0;
             }
 
-            if (row == 6) {
+            if (dbg) {
+                console.log('boo', i, rowIndex, '\t', f(s.position.x), f(s.position.y), f(s.position.z), mountedRow, mass)
+            }
+
+            if (rowIndex == 6) {
                 //mass = 0 ;
             }
 
 
             s.physicsImpostor = new BABYLON.PhysicsImpostor(s, BABYLON.PhysicsImpostor.ParticleImpostor, {
                 mass: mass,
-                friction: friction || 0.2
+                friction: friction
             }, self.data.scene);
-            if (row > 0) {
+
+            if (rowIndex > 0) {
                 if (dbg) {
                     console.error('iii', row)
                 }
                 self.utils.createJoint(s.physicsImpostor, self.data.contactPoints[idx - self.data.subdivisions].physicsImpostor, elasticFactor);
             }
+
+            console.log('', idx, positionInRow, v)
             if (positionInRow) {
+
                 if (dbg) {
                     console.error('positionInRow', positionInRow)
                 }
@@ -116,14 +139,15 @@ function Cloth() {
         var tmpVec = BABYLON.Vector3.Zero();
         var that = this;
         var that = self;
-        self.data.cloth.registerBeforeRender(function onRegisterPsoitions () {
+        self.data.cloth.registerBeforeRender(function onRegisterPsoitions() {
+            //debugger
             var positions = [];
             self.data.contactPoints.forEach(function (c) {
                 BABYLON.Vector3.TransformCoordinatesToRef(c.position, invMat, tmpVec);
                 positions.push(tmpVec.x, tmpVec.y, tmpVec.z);
             });
-            that.data.cloth.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-            that.data.cloth.refreshBoundingInfo();
+            self.data.cloth.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
+            self.data.cloth.refreshBoundingInfo();
         })
     }
 
@@ -178,9 +202,8 @@ function Cloth() {
  */
 
 
-
 var CreateClothScene = function () {
-   // debugger
+    // debugger
     var scene = new BABYLON.Scene(engine);
     scene.enablePhysics();
     window.scene = scene;
@@ -191,7 +214,7 @@ var CreateClothScene = function () {
     light.groundColor = new BABYLON.Color3(.5, .5, .5);
 
     var clothSimulator = new Cloth(scene);
-    clothSimulator.init({},scene)
+    clothSimulator.init({}, scene)
     clothSimulator.setVisibility(false);
 
     var params = {
@@ -266,6 +289,8 @@ var CreateClothScene = function () {
     updateCloth();
     movingSphereToggle(true);
 
+    //return;
+
     var gui = new dat.GUI();
     var meshGui = gui.addFolder('Cloth');
     meshGui.open();
@@ -293,8 +318,9 @@ var CreateClothScene = function () {
     window.clothSimulator = clothSimulator;
     // clothSimulator.material = null;
     function changeLater() {
+        return
         window.clothSimulator.data.cloth.material.wireframe = true
-      //  clothSimulator.setVisibility(true);
+        //  clothSimulator.setVisibility(true);
     }
 
     setTimeout(changeLater, 200)

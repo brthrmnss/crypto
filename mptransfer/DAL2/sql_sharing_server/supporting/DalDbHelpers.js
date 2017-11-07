@@ -25,15 +25,26 @@ function DalDbHelpers(_self) {
         function defineDbHelpers() {
             var dbHelper = {};
             self.dbHelper2 = dbHelper;
+
             dbHelper.count = function onCountDB(fx, table) {
                 table = sh.dv(table, self.Table);
+                var y = new sh.TwoCallHelper();
                 global.err = new Error();
+                var err = new Error();
+
                 //console.error('count', table.name, name)
                 table.count({where: {}}).then(function onResults(count) {
+
+                    y.addX('called once')
                     self.count = count;
+                    var dbg = err;
+                    //console.log('ounresults count', err.stack)
                     //self.proc('count', count);
                     sh.callIfDefined(fx, count);
                 })
+                    .catch(function onCatch_Count(e) {
+                        console.error(e)
+                    })
             }
 
             dbHelper.utils = {};
@@ -57,6 +68,8 @@ function DalDbHelpers(_self) {
                     //self.proc('count', count)
                     sh.callIfDefined(fx, count)
                     //  self.version = objs.updated_at.getTime();
+                }).catch(function onCatchCountAll(e) {
+                    console.error(e)
                 })
             }
 
@@ -228,6 +241,7 @@ function DalDbHelpers(_self) {
                     return;
                 }
 
+
                 sh.each(records, function putInDict(i, record) {
                     if (record.id_timestamp == null || record.source_node == null) {
                         throw new Error('bad record ....');
@@ -337,8 +351,9 @@ function DalDbHelpers(_self) {
 
 
                         self.Table.bulkCreate(newRecords).then(function (objs) {
-
+                            if ( self.settings.debugUpsert ) {
                             self.proc('all records created', objs.length);
+                            }
                             //sh.each(objs, function (i, eRecord) {
                             // var match = dict[eRecord.id_timestamp.toString() + eRecord.source]
                             // eRecord.updateAttributes(match)
@@ -350,7 +365,9 @@ function DalDbHelpers(_self) {
                             throw  err
                         })
                     } else {
-                        self.proc('no records to create')
+                        if ( self.settings.debugUpsert ) {
+                            self.proc('no records to create')
+                        }
                         sh.callIfDefined(fx, results)
                     }
 
@@ -380,7 +397,7 @@ function DalDbHelpers(_self) {
 
 
                 var newRecords = [item];
-                self.Table.bulkCreate(newRecords).then(function (objs) {
+                self.Table.bulkCreate(newRecords).then(function onCreated(objs) {
                     self.proc('all records created', objs.length);
                     sh.callIfDefined(fx);
                 }).catch(function (err) {

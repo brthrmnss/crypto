@@ -150,7 +150,7 @@
 <script src="./cloth/dat.gui.min.js.download"></script>
 <script src="./cloth/cannon.js.download"></script>
 <!--<script src="./cloth/babylon.js.download"></script>-->
-<script xsrc="./cloth/cloth.js.download"></script>
+<!--<script src="./cloth/cloth.js.download"></script>-->
 <script src="./cloth/cloth2.js?timestamp=FF"></script>
 <script xsrc="./cloth/cloth3.js?timestamp=FF"></script>
 <script src="./cloth/demo.js.download"></script>

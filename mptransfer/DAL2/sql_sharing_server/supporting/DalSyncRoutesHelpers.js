@@ -28,13 +28,12 @@ function DalSyncRoutesHelpers(_self) {
             if (setTimeTo === false) {
                 self.settings.syncTime = 0;
             }
-
+            clearInterval(self.data.autoSyncInt)
             if (self.settings.syncTime > 0 && self.settings.enableAutoSync) {
-                clearInterval(self.data.autoSyncInt)
                 self.data.autoSyncInt = setInterval(
                     self.autoSync,
                     self.settings.syncTime * 1000)
-
+                    self.autoSync();
             }
             else {
                 return;
@@ -44,15 +43,21 @@ function DalSyncRoutesHelpers(_self) {
         p.autoSync = function autoSync() {
             var incremental = true;
             var config = {};
-            config.skipPeer = req.query.fromPeer;
+           // config.skipPeer = req.query.fromPeer;
             self.pull(function syncComplete(result) {
                 //res.send('ok');
-                self.proc('auto synced...')
+                self.proc(self.settings.name, 'auto synced...')
             }, incremental, config);
         }
     }
-
     defineAutoSync()
+    function definePassword() {
+        p.setSyncPassword = function setSyncPassword(password) {
+                self.settings.syncPassword = password;
+        }
+
+    }
+    definePassword()
 
     function defineSyncRoutines() {
         self.sync = {};
@@ -70,7 +75,9 @@ function DalSyncRoutesHelpers(_self) {
 
 
             sh.each(self.settings.peers, function onCheckPeer(k, peerIp) {
-                var isBlank  =sh.str.isBlank(peerIp, 'peer ip is not set')
+                var isBlank  =sh.str.isBlank(peerIp,
+                    ['peer ip is not set '+k + ' ' + peerIp, self.settings.peers].join(',')
+                )
 
                 //sh.throw('peer ip not set' , k, peerIp)
                 //sh.callIfDefined(cb)
@@ -109,7 +116,9 @@ function DalSyncRoutesHelpers(_self) {
                     }
                     testDoubleCall.calledOnce = true;
                     testDoubleCall.last = new Error();
-                    self.proc('all records synced');
+                    if ( self.settings.okok ) {
+                        self.proc('all records synced');
+                    }
                     sh.callIfDefined(cb)
                 })
             return;
@@ -156,6 +165,7 @@ function DalSyncRoutesHelpers(_self) {
                 self.dictPeerSyncTime = {};
 
             var reqData = {};
+            reqData.syncPasswordReq = self.settings.syncPassword
             reqData.peerName = self.settings.peerName;
             if (incremental) {
                 if (self.dictPeerSyncTime[ip] != null) {
@@ -211,6 +221,10 @@ function DalSyncRoutesHelpers(_self) {
             idT=idT*1000
             idT=idT.toFixed(0)
 
+
+            var fxHelper = {}
+            fxHelper.debug = false;
+
             var vT = {};
             vT.count = 0;
             vT.proc1 = function () {
@@ -225,10 +239,13 @@ function DalSyncRoutesHelpers(_self) {
 
             t.add(getRecordsUntilFinished_2);
             function getRecordsUntilFinished_2() {
-                self.dalLog("\t\t", '250|onGotNextPageX-pre-attempt-->', actorsStr,
-                    t.offset, JSON.stringify(reqData), urls.getNextPage + getUrlDebugTag(t))
-
-                vT.proc1('1-Start')
+                if (  fxHelper.debug ) {
+                    self.dalLog("\t\t", '250|onGotNextPageX-pre-attempt-->', actorsStr,
+                        t.offset, JSON.stringify(reqData), urls.getNextPage + getUrlDebugTag(t))
+                }
+                if (  fxHelper.debug ) {
+                    vT.proc1('1-Start')
+                }
                 t.quickRequest(urls.getNextPage + getUrlDebugTag(t),
                     'get', onGotNextPage, reqData);
                 if (actorsStr == 'd-->b') {
@@ -244,19 +261,29 @@ function DalSyncRoutesHelpers(_self) {
                         cb();
                         return;
                     }
-                    self.dalLog("\t\t", '-->250|onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, sh.qq(body.length))
+                    if (  fxHelper.debug ) {
+                        self.dalLog("\t\t", '-->250|onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, sh.qq(body.length))
+                    }
                     if (actorsStr == 'd-->b') {
                         var y = {};
-                        debugger;
+                       // debugger;
                     }
                     if (actorsStr == 'b-->a' && body.length == 102) {
                         var y = {};
-                        debugger;
+                      //  debugger;
                     }
                     t.assert(body.length != null, 'no page');
 
                     //self.dalLog("\t\t", 'onGotNextPageX-attempt', self.settings.name, actorsStr, t.offset, body.length)
 
+                    if ( body =='not foundz') {
+                        t.calledExit = true
+                        self.proc('security error')
+                        sh.callIfDefined(cb)
+                        //t.cb();
+                       // sh.callIfDefined(fx);
+                        return;
+                    }
 
                     if (body.length != 0) {
                         //reqData.global_updated_at = body[0].global_updated_at;
@@ -265,7 +292,9 @@ function DalSyncRoutesHelpers(_self) {
                         reqData.offset = t.offset;
 
                         t.addNext(function upsertRecords() {
-                            console.error('inserting', body.length, 'records')
+                            if (  fxHelper.debug ) {
+                                console.error('inserting', body.length, 'records')
+                            }
                             self.dbHelper2.upsert(body, function upserted(resultsUpsert) {
                                 t.lastRecord_global_updated_at = self.utils.latestDate(t.lastRecord_global_updated_at, resultsUpsert.last_global_at)
                                 vT.proc1('2-upserted',t.offset)
@@ -276,12 +305,15 @@ function DalSyncRoutesHelpers(_self) {
                         //search for 'deleted' record updates, if my versions aren't newer than
                         //deleted versions, then delete thtme
                         t.addNext(function deleteExtraRecords() {
-                            console.error('....')
-                            vT.proc1('3-deleteExtraRecords',t.offset)
-                            var  methodNames = sh.each.tryToCollect(t.helper.workChain.methods, 'fx.name')
-                            vT.proc1('3-deleteExtraRecords','next', methodNames)
+                            if (  fxHelper.debug ) {
+                                console.error('....')
+                                vT.proc1('3-deleteExtraRecords', t.offset)
+                                var methodNames = sh.each.tryToCollect(t.helper.workChain.methods, 'fx.name')
+                                vT.proc1('3-deleteExtraRecords', 'next', methodNames)
+
+                                console.error('.....SDFSDFEFWEF')
+                            }
                             t.cb();
-                            console.error('.....SDFSDFEFWEF')
                         },1);
 
                         t.addNext(getRecordsUntilFinished_2,2)
@@ -291,7 +323,9 @@ function DalSyncRoutesHelpers(_self) {
                     t.iterations += 1
                     if (t.firstPage == null) { t.firstPage = body; }//store first record for update global_update_at
                     //no must store last one
-                    vT.proc1('1-End')
+                    if (  fxHelper.debug ) {
+                        vT.proc1('1-End')
+                    }
                     //t.recordsAll = t.recordsAll.concat(body); //not sure about this
 
                  // setTimeout(function on() {
@@ -308,19 +342,14 @@ function DalSyncRoutesHelpers(_self) {
 
                 self.dbHelper2.count(function upserted(count) {
                     self.size = count;
-                    self.dalLog("\t\t", '-->250|onGotNextPageX-count-finished', self.settings.name, actorsStr, count, '==',  t.offset, sh.qq(t.recordUpdateCount))
-                    vT.proc1('4-end and count', count)
+                    if (  fxHelper.debug ) {
+                        self.dalLog("\t\t", '-->250|onGotNextPageX-count-finished', self.settings.name, actorsStr, count, '==', t.offset, sh.qq(t.recordUpdateCount))
+                        vT.proc1('4-end and count', count)
+                    }
                     t.cb();
                 })
             })
-           /* t.add(function waitSomthing() {
 
-                setTimeout(function waitSomthingCb(count) {
-                    self.dalLog("\t\t", 'waitedsomething', self.settings.name, actorsStr, count, '==',  t.offset, sh.qq(t.recordUpdateCount))
-                    vT.proc1('5-waitSomthing', count)
-                    t.cb();
-                },1200)
-            })*/
             t.add(function getVersion() {
                 self.dbHelper2.getDBVersion(function upserted(count) {
                     //self.size = count;
@@ -329,7 +358,6 @@ function DalSyncRoutesHelpers(_self) {
             })
             t.add(function verifySync() {
                 self.lastUpdateSize = t.recordUpdateCount;
-
 
                 //self.lastRecords = t.recordsAll;
                 // var bugOldDate = [t.firstPage[0].global_updated_at,t.lastRecord_global_updated_at];
@@ -348,10 +376,12 @@ function DalSyncRoutesHelpers(_self) {
                 if (v.getTime() != v2.getTime()) {
                     var y = {};
                     // console.clear()
-                    console.log('\033c')
-                    console.log('\033[2J');
-                    console.log('\n\n\n\n\n\n\n');
-                    process.stdout.write("\u001b[2J\u001b[0;0H");
+                    if (  fxHelper.debug ) {
+                        console.log('\033c')
+                        console.log('\033[2J');
+                        console.log('\n\n\n\n\n\n\n');
+                        process.stdout.write("\u001b[2J\u001b[0;0H");
+                    }
                     //why: version do not match, so sync again (size was likely 0)
                     console.error('z4', actorsStr, v.getTime(), 'vs.', v2.getTime())
                     self.proc('z4', actorsStr, v.getTime(), 'vs.', v2.getTime(),
@@ -411,6 +441,7 @@ function DalSyncRoutesHelpers(_self) {
                     }, incremental);
                 }, function allDone() {
                     self.proc('all records verified');
+                    console.log(sh.t, resultsPeers)
                     sh.callIfDefined(cb, result, resultsPeers)
                 })
             return;

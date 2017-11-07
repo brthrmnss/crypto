@@ -33,32 +33,35 @@ function QuickCrudDemo() {
     p.postRender = function postRender(data, body, cfg) {
 
         /*var opts = QuickForm.createQF()
-        qf = opts.qf;
-        var i = opts.quickCrud()*/
+         qf = opts.qf;
+         var i = opts.quickCrud()*/
 
-        var qf = new QuickFormConfigHelper();
+        var qf = new QuickCrudConfigHelper(cfg);
+        qf.quickForm.addTextInput('name', 'Prompt Name')
+
+        //qf.quickList.url('http://127.0.0.1:10001/file/')
         qf.uiConfig.targetDiv(cfg.ui.find('#qCDemoContents'))
         qf.uiConfig.fxInit(function onxInit() {
             console.log('on built')
         })
-        var formObject2 = {};
-        qf.loadForm(formObject2)
 
-        qf.addTextInput('name', 'Prompt Name');
-        qf.defaultValue('Sean')
-        qf.required();
-        qf.addTextInput('desc', 'Description');
-        qf.defaultValue('')
+        qf.addRestHelper('http://127.0.0.1:10001/file/')
+        /*
+         var formObject2 = {};
+         qf.loadForm(formObject2)
 
-        qf.addRadioGroup('desc2', ['a','b', 'c']);
-        qf.defaultValue('c')
+         qf.addTextInput('name', 'Prompt Name');
+         qf.defaultValue('Sean')
+         qf.required();
+         qf.addTextInput('desc', 'Description');
+         qf.defaultValue('')
 
-     /*   qf.addRadioGroup('desc2', ['a','b', 'c']);
-        qf.defaultValue('c')
-        */
+         qf.addRadioGroup('desc2', ['a','b', 'c']);
+         qf.defaultValue('c')
+         */
+
         var i = new QuickCrud();
-
-        i.init(qf)
+        i.init(qf);
 
         self.data.qf = self.data.quickForm = i;
         i.data.ui.callWhenChangedUIDataChanged(function onUpdated(o) {
@@ -67,7 +70,7 @@ function QuickCrudDemo() {
             //self.data.ui.setText('#dbgRake', self.data.qf.data.formObject)
             self.data.ui.setText('#formObject', sh.toJSONString(
                 self.data.qf.data.formObject
-            ) )
+            ))
             // debugger;
         })
         //self.data.ui.pushVal({type:'rake', key:'txtVal', id:'#dbgRake', storeOnData:'formObject'})
