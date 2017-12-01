@@ -1,0 +1,38 @@
+[
+	{
+		"name": "True Detective",
+		"query": "True Detective Season 1",
+		"rating": 9.1,
+		"imdb_id": "tt2356777",
+		"series": true,
+		"dirRemoteMega": "/Root/tv/True_Detective_2014/tt2356777/True_Detective_Season_1/",
+		"index": 1,
+		"boo1": true,
+		"title": "True Detective Season 1 Complete 720p BRRip 4GB - MkvCage",
+		"errors": [
+			"this file tells what files were missig",
+			"self.data.countFound: 8 5 missing: 62.5%",
+			"True Detective tt2704380 01x02   Seeing Things",
+			"True Detective tt2790196 01x05   The Secret Fate of All Life",
+			"True Detective tt2790238 01x06   Haunted Houses",
+			"True Detective tt2790240 01x07   After You've Gone",
+			"True Detective tt2790254 01x08   Form and Void"
+		],
+		"urlTorrentBad": "magnet:?xt=urn:btih:5396FAF61C9EBBEC963B23C30EA80867030E39BE&dn=true+detective+season+1+complete+720p+brrip+4gb+mkvcage&tr=udp%3A%2F%2Ftracker.publicbt.com%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce"
+	},
+	{
+		"title": "The Evil Dead",
+		"imdb_id": "tt0083907",
+		"year": "1981",
+		"comment": "",
+		"name": "The Evil Dead",
+		"query": "The Evil Dead 1981",
+		"dirRemoteMega": "/Root/movies/The_Evil_Dead_1981/tt0083907/",
+		"nameTorrent": "The Evil Dead (1981) 1080p BrRip x264 - YIFY",
+		"index": 2,
+		"errors": [
+			"The Evil Dead tt0083907   The Evil Dead"
+		],
+		"urlTorrentBad": "magnet:?xt=urn:btih:2296295180956ff54a86d53f9de8d062acc0210a&dn=The+Evil+Dead+%281981%29+1080p+BrRip+x264+-+YIFY&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969"
+	}
+]

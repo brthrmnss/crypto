@@ -105,6 +105,13 @@ function AutoHotKeyEvernote() {
         return
     }
 
+    p.getAHKContent = function getAHKContent(content) {
+        self.data.contentStr = self.data.content.join(sh.n)
+        content = self.data.contentStr;
+
+        return content
+    }
+
     p.push = function push(cmd) {
         self.data.content.push(cmd)
     }
@@ -152,18 +159,24 @@ function AutoHotKeyEvernote() {
         p.k = k
         p.keyboard = p.k;
         k.selectAll = function selectAll() {
-            var str = 'send_control_and(keysToSend)'
-            var cmd = self.utils.replace(str, 'keysToSend', '{a}', true)
-            self.push(cmd)
+            self.k.ctrlAnd('a')
+        }
+
+
+
+        k.copy = function copy() {
+            self.k.ctrlAnd('c')
+        }
+        k.paste = function copy() {
+            self.k.ctrlAnd('v')
+        }
+
+        k.ctrlAnd = k.sendControlAnd = function sendControlAnd(key) {
+
+            self.k.sendKeys(self.k.ctrl, key)
             return;
         }
 
-        k.sendControlAnd = function sendControlAnd(asdf) {
-            var str = 'send_control_and(keysToSend)'
-            var cmd = self.utils.replace(str, 'keysToSend', asdf, true)
-            self.push(cmd)
-            return;
-        }
 
         k.sendAltAnd = function sendAltAnd(asdf) {
             var cmds = [
@@ -177,14 +190,25 @@ function AutoHotKeyEvernote() {
             return;
         }
 
-        k.sendKeys = function sendKeys(keyToSend) {
+        k.type = k.sendKeys = function sendKeys(keyToSend) {
             var args = sh.args(arguments);
-            if (args.length > 1 ) {
-               // console.log(args, 'args')
-               // sh.x()
+            if (args.length > 1) {
+                // console.log(args, 'args')
+                // sh.x()
                 keyToSend = args.join('');
             }
             var template = 'Send keysToSend'
+            var cmd = sh.str.template(template, 'keysToSend', keyToSend, true)
+            console.error('---sendkes', cmd)
+            self.push(cmd)
+            return;
+        }
+        k.sendKeysRaw = function sendKeysRaw(keyToSend) {
+            var args = sh.args(arguments);
+            if (args.length > 1 ) {
+                keyToSend = args.join('');
+            }
+            var template = 'SendRaw keysToSend'
             var cmd = sh.str.template(template, 'keysToSend', keyToSend, true)
             console.error('---sendkes', cmd)
             self.push(cmd)
@@ -213,6 +237,9 @@ function AutoHotKeyEvernote() {
         k.space = function space() {
             k.sendKeys("{SPACE}")
         }
+        k.delete = function sendDeleteKey() {
+            k.sendKeys("{DELETE}")
+        }
 
 
         k.tab = function tab() {
@@ -225,24 +252,51 @@ function AutoHotKeyEvernote() {
         p.accept = k.enter = function enterKey() {
             k.sendKeys("{Enter}")
         }
+
+
     }
 
     defineKeyboard();
+
+    p.getWindowPosition = function getWinPos() {
+        self.push('WinGetPos, X, Y, Width, Height')
+    }
+    p.math = function math(cmd) {
+        self.push(cmd)
+    }
+    p.mouseMove = function mouseMove(x, y) {
+        self.push('MouseMove, ' + x + ', ' + y + '')
+    }
+
+    p.mouseClick = function mouseClick(x, y) {
+        self.push('Click')//, ' + x + ', ' + y + '')
+    }
+
+    p.getTooltip = function getTooltip(yyy) {
+        self.push('ControlGetText, tooltip2,,ahk_class tooltips_class32')
+        if (yyy)
+            self.push('msgbox, %tooltip2%')
+    }
+
 
     p.clearSearch = function clearSearc() {
         self.k.sendKeys("^+a")
     }
 
     p.editTags = function editTags() {
-        self.k.sendKeys(self.k.ctrl,self.k.alt,'t')
+        self.k.sendKeys(self.k.ctrl, self.k.alt, 't')
     }
 
     p.editTags.removeAllTags = function removeAllTags() {
-        self.k.sendKeys(self.k.alt,'c')
+        self.k.sendKeys(self.k.alt, 'c')
     }
 
     p.editTags.ok = function ok() {
         self.accept()
+    }
+
+    p.exit = function exit() {
+        self.push('Exit')
     }
 
     p.actions = {}
@@ -265,8 +319,8 @@ function AutoHotKeyEvernote() {
         self.editTags.ok();
         self.editTags()
         self.wait(1)
-        sh.each(tags, function addTag(k,tag) {
-            self.k.sendKeys( tag )
+        sh.each(tags, function addTag(k, tag) {
+            self.k.sendKeys(tag)
             self.k.space();
             self.wait(0.25)
         })
@@ -278,7 +332,7 @@ function AutoHotKeyEvernote() {
     }
 
     p.actions.makeDailyLog = function makeDailyLog() {
-       self.actions.cloneNoteNamed('log template')
+        self.actions.cloneNoteNamed('log template')
     }
 
     p.actions.cloneNoteNamed = function clonedNoteNamed(name, setTitleTo) {
@@ -313,32 +367,32 @@ function AutoHotKeyEvernote() {
 
          */
 
-         self.k.sendFKey('6')
-         self.k.sendKeys(sh.qq(name))
-         self.wait(0.5)
-         self.accept();
+        self.k.sendFKey('6')
+        self.k.sendKeys(sh.qq(name))
+        self.wait(0.5)
+        self.accept();
 
-         self.k.tab();
-         self.k.actionKey();
-         self.wait(0.5)
-         self.k.sendKeys('d')
-         self.wait(1)
-         self.k.end()
-         self.wait(1)
-         self.k.tab();
+        self.k.tab();
+        self.k.actionKey();
+        self.wait(0.5)
+        self.k.sendKeys('d')
+        self.wait(1)
+        self.k.end()
+        self.wait(1)
+        self.k.tab();
 
-         if ( setTitleTo == null ) {
-             var moment = require('moment');
-             self.k.sendKeys(moment().format('MM/DD/YYYY h:mm:ss a'))
-         } else {
-             self.k.sendKeys(setTitleTo)
-         }
-         self.clearSearch()
+        if (setTitleTo == null) {
+            var moment = require('moment');
+            self.k.sendKeys(moment().format('MM/DD/YYYY h:mm:ss a'))
+        } else {
+            self.k.sendKeys(setTitleTo)
+        }
+        self.clearSearch()
 
-         self.wait(1)
-         self.k.tab();
-         self.k.end()
-         self.k.space();
+        self.wait(1)
+        self.k.tab();
+        self.k.end()
+        self.k.space();
     }
 
 
@@ -351,6 +405,27 @@ function AutoHotKeyEvernote() {
         self.push(cmd)
         return;
     }
+
+    function defineChrome() {
+        var chrome = {};
+        p.chrome = chrome
+        chrome.goToWebpageNewWindow = function goToWebpageNewWindow(url) {
+            var str = 'start ' + window_title
+            var str = ['C:/Program Files (x86)/Google/Chrome/Application/chrome.exe ',
+                '--new-window',
+                window_title].join(' ')
+            self.push(str)
+        }
+        chrome.closeWindow = function closeWindow(url) {
+            self.k.ctrlAnd('w')
+        }
+        chrome.goToAddressBar = function goToAddressBar(url) {
+            self.k.ctrlAnd('l')
+        }
+
+    }
+
+    defineChrome();
 
 
     p.proc = function debugLogger() {
@@ -374,7 +449,6 @@ if (module.parent == null) {
 
     y.actions.makeDailyLog();
     y.actions.setTags('log')
-
 
 
     y.writeAHKFile();

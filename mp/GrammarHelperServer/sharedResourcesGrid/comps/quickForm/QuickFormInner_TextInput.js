@@ -42,20 +42,23 @@ function QuickFormInner_TextInput() {
 
     };
 
-    p.postRender = function postRender(a,b,c) {
+    p.renderUI = function renderUI(a,b,c) {
         self.data.ui.data.ui
         //console.error('...8888',a,b,c)
         var ui = self.data.ui.data.ui;
         var itemData = self.settings.itemData
         var val = itemData.defaultValue;
-        if ( itemData.value ) {
+        if (itemData.value) {
             val = itemData.value;
         }
         // debugger;
         ui.find('#labelName').text(val)
         ui.find('#txtInput').val(val)
+    }
 
-        //self.data.ui.bind('#txtInput')
+    p.postRender = function postRender(a,b,c) {
+
+        self.renderUI();
 
         self.data.ui.bind({id:'#txtInput',key:'txtVal'})
         self.data.ui.bind({id:'#txtInput',key:'data'})

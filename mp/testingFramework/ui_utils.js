@@ -141,7 +141,7 @@ defineUtils2();
 
 
 var uiUtils = {};
-if ( typeof sh !== 'undefined' ) {
+if (typeof sh !== 'undefined') {
     uiUtils = sh;
 }
 window.uiUtils = uiUtils;
@@ -218,7 +218,7 @@ function defineUtils() {
             }
             //var ui = $(id);
             var ui = $(id);
-            if ( par ) {
+            if (par) {
                 ui = par.find(id)
             }
             return ui;
@@ -265,7 +265,7 @@ function defineUtils() {
     }
 
     function defineStrings() {
-        uiUtils.titleCase  = function titleCase(str) {
+        uiUtils.titleCase = function titleCase(str) {
             str = str.toLowerCase().split(' ');
             for (var i = 0; i < str.length; i++) {
                 str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
@@ -273,26 +273,26 @@ function defineUtils() {
             return str.join(' ');
         }
 
-        uiUtils.fixStr  = function fixStr(chars) {
+        uiUtils.fixStr = function fixStr(chars) {
             //str = str.toLowerCase().split(' ');
             var symbols = [',', '.', '?'];
-            if ( chars == null )
+            if (chars == null)
                 return chars;
             var outputStr = '';
             for (var i = 0; i < chars.length; i++) {
 
                 var char = chars[i]
-                var nextChar = chars[i+1];
-                var prevChar = chars[i-1];
+                var nextChar = chars[i + 1];
+                var prevChar = chars[i - 1];
 
-                nextChar =dv(nextChar, '')
-                prevChar =dv(prevChar, '')
+                nextChar = dv(nextChar, '')
+                prevChar = dv(prevChar, '')
 
                 outputStr += char;
 
                 var isNotUpperCase = prevChar.toUpperCase() != prevChar
-                if ( isNotUpperCase &&
-                    symbols.includes(char) && nextChar.trim() != '' ) {
+                if (isNotUpperCase &&
+                    symbols.includes(char) && nextChar.trim() != '') {
                     outputStr += ' '
                 }
 
@@ -301,31 +301,32 @@ function defineUtils() {
             return outputStr;
         }
 
-        uiUtils.fixTitle  = function fixTitle(chars) {
+        uiUtils.fixTitle = function fixTitle(chars) {
             var outputStr = chars;
             var isAllUpperCase = true;
             var isAllLowerCase = true;
             for (var i = 0; i < chars.length; i++) {
                 var char = chars[i]
                 var isNotUpperCase = char.toUpperCase() != char
-                if ( isNotUpperCase  ) {
+                if (isNotUpperCase) {
                     isAllUpperCase = false;
                 }
                 var isNotLowerCase = char.toLowerCase() != char
-                if ( isNotLowerCase  ) {
+                if (isNotLowerCase) {
                     isAllLowerCase = false;
                 }
             }
 
-            if ( isAllUpperCase ) {
+            if (isAllUpperCase) {
                 outputStr = uiUtils.titleCase(chars)
             }
-            if ( isAllLowerCase ) {
+            if (isAllLowerCase) {
                 outputStr = uiUtils.titleCase(chars)
             }
             return outputStr;
         }
     }
+
     defineStrings();
 
     p.convertArgumentsToArray =
@@ -540,7 +541,7 @@ function defineUtils() {
     }
 
     uiUtils.makeAbs = function makeAbs(jquery, highPosition) {
-        if ( jquery == null ) {
+        if (jquery == null) {
             jquery = uiUtils.lastUI;
         }
         jquery.css('position', 'absolute');
@@ -553,7 +554,7 @@ function defineUtils() {
     }
 
     uiUtils.center = function center(jquery, highPosition) {
-        if ( jquery == null ) {
+        if (jquery == null) {
             jquery = uiUtils.lastUI;
         }
         jquery.css('position', 'absolute');
@@ -848,8 +849,8 @@ function defineUtils() {
         var ui = div = cfg.ui;
         //var div = $('<div/>')
         //if ( cfg.append != false) {
-            $('body').append(div)
-       // }
+        $('body').append(div)
+        // }
         uiUtils.lastUI = div;
         uiUtils.makeAbs(div);
         uiUtils.position(10, 10)
@@ -1212,8 +1213,8 @@ function defineUtils() {
             }
         }
         uiUtils.wH100 = function setWidthAndHeight(w, h) {
-                uiUtils.lastUI.css('width', '100%')
-                uiUtils.lastUI.css('height',  '100%')
+            uiUtils.lastUI.css('width', '100%')
+            uiUtils.lastUI.css('height', '100%')
         }
 
         uiUtils.color = function color(ui, color) {
@@ -1561,7 +1562,7 @@ function defineUtils() {
         u.lastUI = ui;
     }
     p.tag = function createTag(type) {
-        var tag =  $('<' + type + '/>');
+        var tag = $('<' + type + '/>');
         uiUtils.lastUI = tag;
         return tag;
     }
@@ -2438,21 +2439,21 @@ function defineUtils() {
 
     defineUrlMethods();
 
-    u.copyObjProps = function copyObjProps (a,b) {
-        $.each(a, function copyTo(k,v){
-            if ( $.isFunction(v) ){
-                b[k] =  v;
+    u.copyObjProps = function copyObjProps(a, b) {
+        $.each(a, function copyTo(k, v) {
+            if ($.isFunction(v)) {
+                b[k] = v;
             }
         })
     }
 
-    u.copyNonObjProps = function copyNonObjProps (a,b) {
+    u.copyNonObjProps = function copyNonObjProps(a, b) {
         b = u.dv(b, {})
-       var str =  ['string', 'boolean', 'number']
-        $.each(a, function copyTo(k,v){
+        var str = ['string', 'boolean', 'number']
+        $.each(a, function copyTo(k, v) {
             var type = typeof v
-            if ( str.includes(type)){
-                b[k] =  v;
+            if (str.includes(type)) {
+                b[k] = v;
             }
         })
         return b;
@@ -2462,13 +2463,13 @@ function defineUtils() {
     function defineUI() {
         p.utils.loadPage = function loadPage(cfg) {
             var div = $(cfg.div)
-            if ( cfg.baseUI ) {
+            if (cfg.baseUI) {
                 div = cfg.baseUI;
             }
-            if ( cfg.preload ) {
+            if (cfg.preload) {
                 cfg.noGet = true;
             }
-           // debugger
+            // debugger
             if (cfg.noGet != true) {
                 if (cfg.divCreatable) {
                     div = $('#' + cfg.divCreatable)
@@ -2523,15 +2524,14 @@ function defineUtils() {
             });
 
 
-
             function onLoadedPageContents(data) {
-                 //console.error('okok', cfg.preload, cfg.fxPreloadTemplate)
-                if ( cfg.preload ) {
+                //console.error('okok', cfg.preload, cfg.fxPreloadTemplate)
+                if (cfg.preload) {
                     cfg.preloadedTemplate = data;
-                    if ( cfg.preloadedTemplate_StoreOn ) {
+                    if (cfg.preloadedTemplate_StoreOn) {
                         cfg.preloadedTemplate_StoreOn.preloadedTemplate = data;
                     }
-                    sh.cid(cfg.fxPreloadTemplate, cfg ) // data, output.body, cfg )
+                    sh.cid(cfg.fxPreloadTemplate, cfg) // data, output.body, cfg )
                     return;
                 }
 
@@ -2546,7 +2546,7 @@ function defineUtils() {
                     newHTML = $(output.raw).html().trim();
                 }
 
-                if (newHTML == null ) {
+                if (newHTML == null) {
                     newHTML = $(output.raw).html().trim();
                 }
 
@@ -2558,7 +2558,7 @@ function defineUtils() {
                         div = $('body')
 
                         var ui = $(newHTML)
-                        if( cfg.doNotWrap != true  ) {
+                        if (cfg.doNotWrap != true) {
                             var container = u.tag('div')
                             container.append(ui)
                             div.append(container)
@@ -2585,8 +2585,8 @@ function defineUtils() {
         }
 
 
-        uiUtils.remoteFailed = function remoteFailed(a, b, c) {
-            console.error(a, b, c)
+        uiUtils.remoteFailed = function remoteFailed(a, b, c, url) {
+            console.error('\t', url, a, b, c)
             debugger
         }
 
@@ -2805,7 +2805,7 @@ function defineUtils() {
                     callIfDefined(fxDone, data)
                 },
                 error: function (a, b, c) {
-                    console.error('request failed', a, b, c)
+                    console.error('request failed', url, a, b, c)
                     //gUtils.remoteFailed(a,b,c)
                 }
             });
@@ -2825,14 +2825,14 @@ function defineUtils() {
         p.utils.request2 = function request2(cfg) {
 
 
-            if ( cfg.divLoading ) {
+            if (cfg.divLoading) {
                 u.show(cfg.divLoading)
             }
-            if ( cfg.divUpdateMessage ) {
+            if (cfg.divUpdateMessage) {
                 $(cfg.divUpdateMessage).text('- Loading...')
             }
             u.hide(cfg.divLoadingError)
-            if ( cfg.inMemory == true ) {
+            if (cfg.inMemory == true) {
                 //debugger
                 onSuccess(cfg.items)
                 return;
@@ -2842,30 +2842,29 @@ function defineUtils() {
                 url: cfg.url,
                 data: cfg.data,
                 success: onSuccess,
-                error: function (a,b,c) {
+                error: function (a, b, c) {
                     u.hide(cfg.divLoading)
                     u.addToken(cfg.divLoadingToken)
                     callIfDefined(cfg.fxError)
                     console.error('cannot get info', cfg.url)
-                    u.remoteFailed(a,b,c)
-                    if ( cfg.divUpdateMessage ) {
+                    u.remoteFailed(a, b, c, cfg.url)
+                    if (cfg.divUpdateMessage) {
                         $(cfg.divUpdateMessage).text('- Loading failed')
                     }
                 }
             });
 
 
-
-            function onSuccess (data) {
-                if ( cfg.inMemory != true ) {
+            function onSuccess(data) {
+                if (cfg.inMemory != true) {
                     callIfDefined(cfg.fxDone, data)
                 } else {
-                    setTimeout(function ok(){
+                    setTimeout(function ok() {
                         callIfDefined(cfg.fxDone, data)
-                    },50)
+                    }, 50)
                 }
                 u.hide(cfg.divLoading)
-                if ( cfg.divUpdateMessage ) {
+                if (cfg.divUpdateMessage) {
                     $(cfg.divUpdateMessage).text('')
                 }
                 //debugger;
@@ -3103,14 +3102,14 @@ function defineUtils() {
         }
         gUtils.ifDefined = function ifExpIsTrueHide(val, jq) {
             var valid = true;
-            if ( val == '' || val == null) {
+            if (val == '' || val == null) {
                 valid = false;
             }
             gUtils.ifShow(valid, jq);
         }
         gUtils.ifCopyStyle = function ifCopyStyle(val, prop, jq) {
             var valid = true;
-            if ( val == '' || val == null) {
+            if (val == '' || val == null) {
                 valid = false;
                 return;
             }
@@ -3120,7 +3119,7 @@ function defineUtils() {
         }
         gUtils.ifNotFalse = function ifNotFalse(val, jq) {
             var valid = true;
-            if ( val ==  false ) {
+            if (val == false) {
                 valid = false;
             }
             gUtils.ifShow(valid, jq);
@@ -3155,6 +3154,14 @@ function defineUtils() {
             return txt;
         }
 
+        gUtils.randomizeInt = function randomizeInt(length) {
+            length = uiUtils.dv(length, 3)
+            var str = Math.random()*10000000
+            str = str.toString().substring(0,length);
+
+            return str
+        };
+
 
         gUtils.onEnter = function onenter(jquery, fx) {
             $(jquery).keypress(function (e) {
@@ -3163,6 +3170,136 @@ function defineUtils() {
                 }
             });
         }
+
+
+        /*
+         var cfgListen = {
+         str: [uiUtils.keys.space],
+         fx: function ok() {
+         console.log('hit space')
+         },
+         codeMode: true,
+         ignoreText: true
+         }
+
+         uiUtils.listenForKeyCodes(cfgListen);
+
+         uiUtils.listenForStr(' ', function onK() {
+         console.log('hit space2')
+         })
+         */
+
+        //https://css-tricks.com/snippets/javascript/javascript-keycodes/
+
+        uiUtils.keys = {};
+        uiUtils.keys.space = 32;
+        uiUtils.keys.enter = 13;
+        uiUtils.keys.enter = 27;
+        uiUtils.keys.pageup = 33;
+        uiUtils.keys.pagedown = 34;
+        uiUtils.keys.left = 37;
+        uiUtils.keys.up = 38;
+        uiUtils.keys.right = 39;
+        uiUtils.keys.down = 40;
+
+        uiUtils.listenForStr = uiUtils.listenForString = function listenForString(str, fx) {
+            var cfgListen = {
+                str: str,
+                fx: fx,
+                codeMode: false,
+                ignoreText: true
+            }
+            uiUtils.listenForKeyCodes(cfgListen)
+        }
+
+        function isTextBox(element) {
+            var tagName = element.tagName.toLowerCase();
+            if (tagName === 'textarea') return true;
+            if (tagName !== 'input') return false;
+            var type = element.getAttribute('type')
+            if (type == null) {
+                type = 'input'
+            }
+            type = type.toLowerCase()
+            // if any of these input types is not supported by a browser, it will behave as input type text.
+            let inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search', 'date', 'datetime', 'datetime-local', 'time', 'month', 'week']
+            return inputTypes.indexOf(type) >= 0;
+        }
+
+        //str, fx , codeMode, ignoreText
+
+        uiUtils.listenForKeyCode =
+            uiUtils.listenForKeyCodes = uiUtils.listForCode = function listForCode(cfg) {
+                cfg.ignoreText = sh.dv(cfg.ignoreText, true);
+                cfg.codeMode = sh.dv(cfg.codeMode, true);
+                if (cfg.str.split) {
+                    var match = cfg.str.split('');
+                } else {
+                    match = cfg.str;
+                }
+                var lastChars = [];
+                var timeout = 250;
+                timeout = 350;
+                $('body').keyup(function onKey(e) {
+                    if (cfg.debug) {
+                        console.log('onkeyup', e.which, cfg.str)
+                    }
+                    if (e.which !== 0) {
+                        var char = String.fromCharCode(e.which);
+                        char = char.toLowerCase();
+                    }
+                    if (cfg.codeMode) {
+                        char = e.which
+                    }
+                    if (cfg.ignoreText) {
+                        /*console.log('yyy', e.target.nodeType, e.target)
+                         if ( inputTypes.includes(e.target.nodeName) ) {
+                         return;
+                         }*/
+                        if (isTextBox(e.target)) {
+                            return;
+                        }
+                    }
+                    lastChars.push(char)
+                    function removeFirstChar() {
+                        lastChars.shift()
+                    }
+
+                    setTimeout(removeFirstChar, timeout)
+
+
+                    var falt = null
+                    if (lastChars.length >= match.length) {
+                        $.each(lastChars.reverse(), function (k, v) {
+                            var matchTo = match[k]
+                            if (k + 1 > match.length) {
+                                console.log('end too soon wrong', k + 1, match.length)
+                                return false;
+                            }
+
+                            if (matchTo != v) {
+                                console.log('wrong')
+                                falt = v;
+                                return false;
+                            }
+                        });
+
+                        if (falt == null) {
+                            console.log('success', lastChars, match)
+                            if (cfg.fx) cfg.fx()
+                        }
+                    }
+
+                    console.log('keys', lastChars, falt)
+                })
+            }
+
+        /*  u2.listForCode('rr', function ff(){
+         console.log('sdfsdf')
+         window.fxReload();
+         })*/
+
+
         gUtils.onClick = function onClick(jquery, fx, gY) {
 
             throwIfNull(fx, 'need a function for ' + jquery)
@@ -3558,10 +3695,10 @@ function defineUtils() {
     }
 
 
-    uiUtils.callLater = function callLater(fx){
+    uiUtils.callLater = function callLater(fx) {
         var args = sh.args(arguments)
         time = args[2]
-        if ( time == null ) {
+        if (time == null) {
             time = 250
         }
         var fx = args[0];
@@ -3571,7 +3708,7 @@ function defineUtils() {
             fx.apply(args2)
         }, time)
         //debugger
-       //setTimeout.apply(this ,arg2s )
+        //setTimeout.apply(this ,arg2s )
     }
     uiUtils.l = uiUtils.callLater
 
@@ -3780,12 +3917,13 @@ function defineUtils() {
 
 
     function defineSessionManagmeent() {
-        u.clearHistory = function clearHIstoyr(){
+        u.clearHistory = function clearHIstoyr() {
             for (i = 0; i < window.history.length; i++) {
                 window.history.back()
             }
         }
     }
+
     defineSessionManagmeent();
 }
 defineUtils();

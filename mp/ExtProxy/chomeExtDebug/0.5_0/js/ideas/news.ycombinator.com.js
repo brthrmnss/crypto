@@ -1,4 +1,4 @@
-console.log('loaded', 'amz_hijack.js')
+console.log('loaded', 'news.ycombinator.js')
 
 function ChromeExtMod() {
     var self = this;
@@ -14,7 +14,7 @@ function ChromeExtMod() {
             window.what += 1;
         }
         console.log('3yyy-4', window.what)
-        console.clear()
+       // console.clear()
         $('.' + self.data.clearUI).remove();
     }
 

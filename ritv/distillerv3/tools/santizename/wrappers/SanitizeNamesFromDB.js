@@ -24,6 +24,8 @@ function SanitizeNamesFromDB() {
     self.data = {};
     self.data.errors = []
 
+    //self.data.succOldFilePaths = sh.readJSONFile('output/succOldFilePaths.json',{}, true);//
+
 
     p.init = function init(url, appCode) {
 
@@ -1398,13 +1400,13 @@ function SanitizeNamesFromDB() {
         p.utils.getTTId = function getTTId(f){
 
 
-            console.log('what is f', f)
+            console.log('getTTId', 'what is f', f)
             f = sh.fixPath(f)
             if ( f.includes('tt') == false) {
                 return null;
             }
 
-            var tt = 'tt'+f.split('tt')[1]
+            var tt = 'tt'+f.split('/tt')[1]
             tt = sh.fixSlash(tt)
             if ( f.includes('/')) {
                 tt = tt.split('/')[0]

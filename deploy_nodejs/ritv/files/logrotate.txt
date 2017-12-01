@@ -1,0 +1,15 @@
+~/.forever/*
+{
+     daily
+
+     size 100M
+
+     compress
+
+     postrotate
+         cat /dev/null >~/.forever/*
+     endscript
+
+     mail xyz@example.com
+     rotate 4         
+}

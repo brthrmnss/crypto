@@ -12,31 +12,44 @@ function QuickForm() {
 
     p.init = function init(cfg) {
         var cfgOrig = cfg;
-        cfg = sh.dv(cfg);
+        var uiCfg = sh.dv(cfg, {});
+
 
         self.settings = cfg;
+
         //debugger
-        if (cfg.uiConfig) {
-            cfg = cfg.uiConfig.config;
+        if (uiCfg.uiConfig) {
+            uiCfg = uiCfg.uiConfig.config;
         }
-        if (cfg.config) {
-            cfg = cfg.config;
+        if (uiCfg.config) {
+            uiCfg = uiCfg.config;
         }
+       /* if ( cfgOrig && cfgOrig.__proto__.constructor.name == 'QuickFormConfigHelper') {
+            cfg = cfgOrig;
+        }
+      */
 
         //self.settings = cfg;
-
         // return;
+        console.debug('qf config', self.settings)
         self.data.ui = new UIComp(self);
-        var cfg2 = self.data.ui.cloneConfig(cfg)
+        var cfg2 = self.data.ui.cloneConfig(uiCfg)
         cfg2.fileName = 'quickForm2.html';
         //cfg2.fxPostRender = self.render;
         cfg2.fxPostRender = self.postRender;
+        /*  cfg2.data.callWhenFx = function callWhenFx() {
+         console.log('debug', 333)
+         }*/
+
         self.data.ui.init(cfg2);
+        self.data.ui.callWhenChangedUIDataChanged(function callWhenFx(_self) {
+            // self.data.self.data.lastRenderedFormObject
+            // compare this to the previous value ...
+            self.data.lastRenderedFormObjectCloned
+            console.log('debug-qf-done', 333, self.data.lastRenderedFormObject)
+            //  debugger
+        })
         self.render();
-
-        var areaHelper = new AreaHelper(cfgOrig);
-        self.areaHelper = areaHelper;
-
     }
 
     p.render = function render(query) {
@@ -44,17 +57,49 @@ function QuickForm() {
         self.data.ui.loadTemplateContent();
     };
 
+    p.loadObject = function loadObject(formObjectX) {
+        console.log('loadObject into qForm', formObjectX)
+        if (self.data.ui.data.subItems == null) {
+            return;
+        }
+        //debugger;
+        $.each(self.data.ui.data.subItems, function addEachItem(k, v) {
+            //debugger
+            var i = v;
+            var fieldName = i.settings.field;
+            var data = formObjectX[fieldName]
+            console.log('\t', 'xy', k, fieldName, data, v);
+            i.settings.itemData.value = data;
+            i.settings.copyPropToX = formObjectX
+            i.data.ui.settings.copyPropToX = formObjectX
+            i.data.ui.data.copyPropToX = formObjectX
+            i.renderUI();
+        });
+        self.data.formObject = formObjectX
+        self.data.lastRenderedFormObject = formObjectX;
+    }
+
+    p.redrawForm = function redrawForm(rerenderItem) {
+        self.loadObject(rerenderItem)
+    }
 
     p.postRender = function postRender(data, body, cfg) {
         var ui = cfg.ui;
         var formContents = cfg.ui.find('#quickFormContent')
+        //debugger
         $.each(self.settings.form, function addEachItem(k, v) {
             var holderDiv = u.tag('div');
             formContents.append(holderDiv)
             var i = new QuickFormInner_TextInput(); //self.settings.comp;
 
-            if ( v.type == QuickForm.types.radio ) {
+            if (v.type == QuickForm.types.radio) {
                 i = new QuickFormInner_Radio();
+            }
+
+            var canShowLabels = true;
+            if (v.type == QuickForm.types.label) {
+                i = new QuickFormInner_Label();
+                canShowLabels = false;
             }
 
             var cfg = u.clone(v)
@@ -68,10 +113,10 @@ function QuickForm() {
             cfg.fxPostRender2 = function fxPostRender(html, b, cfg) {
                 //  var ui = $(html);
                 var ui = cfg.ui;
-               // debugger;
+                // debugger;
                 // ui.find('#labelName').text(v)
-                if ( self.settings.showLabels) {
-                    holderDiv.append(k );//+ ':')
+                if (self.settings.showLabels && canShowLabels) {
+                    holderDiv.append(k);//+ ':')
                     holderDiv.append(u.tag('br'))
                 }
 
@@ -80,7 +125,7 @@ function QuickForm() {
                 self.data.ui.data.subItems.push(i)
                 self.data.ui.data.configs.push(cfg)
 
-                if ( self.settings.showValues != true ) {
+                if (self.settings.showValues != true) {
                     ui.find('#labelNameEcho').hide()
                 }
             }
@@ -93,7 +138,6 @@ function QuickForm() {
             i.init(cfg)
 
 
-
             //listContents.append(div)
         })
 
@@ -101,23 +145,36 @@ function QuickForm() {
 
         self.data.ui.addClickToDom(ui, self)
 
-        if ( self.settings.showOutput ) {
+        if (self.settings.showOutput) {
             var storeDbgId = '#dbgRake'
             cfg.ui.find('#dbgRake').show()
         } else {
             cfg.ui.find('#dbgRake').hide()
         }
         // debugger
-        self.data.ui.pushVal({type:'rake', key:'txtVal', id:storeDbgId,
-            fxProcessBinding:function onProc(subItems, uiComp) {
+        self.data.ui.pushVal({
+            type: 'rake', key: 'txtVal', id: storeDbgId,
+            fxProcessBinding: function onProc(subItems, uiComp) {
                 var formObject = {};
                 $.each(subItems, function on(k, subItem) {
-                    formObject[subItem.settings.field]=subItem.data.ui.data.data;
-                   // debugger
+                    if (subItem.data.ui.data.lastChange != null) {
+                        if (self.data.lastRenderedFormObject) {
+                            // debugger
+                            self.data.lastRenderedFormObject[subItem.settings.field]
+                                = subItem.data.ui.data.data;
+                            console.debug('updated prop to', subItem.settings.field,
+                                subItem.data.ui.data.data)
+                        }
+                        //   debugger;
+                        subItem.data.lastChange = null;
+                    }
+                    formObject[subItem.settings.field] = subItem.data.ui.data.data;
+                    // debugger
                 })
                 self.data.formObject = formObject;
             },
-            storeOnData:'formObject'})
+            storeOnData: 'formObject'
+        })
 
 
         //pus to some debug area
@@ -128,10 +185,9 @@ function QuickForm() {
     };
 
 
-
     p.onSave = function onSave() {
         console.log('on save', self.data.formObject)
-        sh.cid(self.settings.fxSave,  self.data.formObject, self)
+        sh.cid(self.settings.fxSave, self.data.formObject, self)
     }
 
 
@@ -326,6 +382,12 @@ function QuickFormConfigHelper() {
         }
         p.addInput = p.addTextInput;
 
+
+        p.showElementLabels = function showElementLabels(showLabelsTf) {
+            showLabelsTf = sh.dv(showLabelsTf, true)
+            self.showLabels = showLabelsTf
+        }
+
         p.addButton = function addButton(name, fx, label,
                                          setProp, val) {
             var prop = name;
@@ -393,7 +455,7 @@ function QuickFormConfigHelper() {
                 label: label,
                 type: self.types.radio,
                 options: values,
-                field:name
+                field: name
             };
             self.form[name] = obj;
             self.addAuto(obj)
@@ -405,7 +467,7 @@ function QuickFormConfigHelper() {
                 label: label,
                 type: self.types.checkbox,
                 options: values,
-                field:name
+                field: name
             };
             self.form[name] = obj;
             self.addAuto(obj)
@@ -819,31 +881,30 @@ function QuickFormConfigHelper() {
 }
 
 
-
-QuickForm.createQF = function createQF(name, div){
+QuickForm.createQF = function createQF(name, div) {
     var opts = {};
 
-    var qf = new QuickFormConfigHelper();
-    qf.uiConfig.targetDiv(div)
-    qf.uiConfig.fxInit(function onxInit() {
-        console.log('on built')
+    var qfConfig = new QuickFormConfigHelper();
+    qfConfig.uiConfig.targetDiv(div)
+    qfConfig.uiConfig.fxInit(function onxInit() {
+        console.log('on built createQF')
     })
     /*  qNC.addArea('login', 'areaLogin');
      qNC.defaultArea('login');
      qNC.addArea('list')
      qNC.addArea('edit')*/
     var formObject2 = {};
-    qf.loadForm(formObject2)
+    qfConfig.loadForm(formObject2)
 
     /*qf.addTextInput('name', 'Prompt Name');
-    qf.defaultValue('Sean')
-    qf.required();
-    qf.addTextInput('desc', 'Description');
-    qf.defaultValue('')
+     qf.defaultValue('Sean')
+     qf.required();
+     qf.addTextInput('desc', 'Description');
+     qf.defaultValue('')
 
 
-    qf.addRadioGroup('desc2', ['a','b', 'c']);
-    qf.defaultValue('c')*/
+     qf.addRadioGroup('desc2', ['a','b', 'c']);
+     qf.defaultValue('c')*/
 
     /*   qf.addRadioGroup('desc2', ['a','b', 'c']);
      qf.defaultValue('c')
@@ -851,11 +912,13 @@ QuickForm.createQF = function createQF(name, div){
     var i = new QuickForm();
 
     setTimeout(function () {
-        if ( opts.doNotInit == true )
+        if (opts.doNotInit == true)
             return;
-        i.init(qf)
+        if ( div )
+        opts.qfConfig.uiConfig.targetDiv(div) ; //ensure we are using user updated one
+        i.init(opts.qfConfig) //opts.qfConfig
         i.data.ui.callWhenChangedUIDataChanged(function onUpdated(o) {
-            console.debug('boo', i.data,  i.data.formObject)
+            console.debug('boo', i.data, i.data.formObject)
         })
     }, 250)
 
@@ -863,6 +926,6 @@ QuickForm.createQF = function createQF(name, div){
     //self.data.ui.pushVal({type:'rake', key:'txtVal', id:'#dbgRake', storeOnData:'formObject'})
 
     opts.qf = opts.quickForm = i;
-    opts.qfH = qf;
+    opts.qfH = opts.qfConfig =  qfConfig;
     return opts;
 }

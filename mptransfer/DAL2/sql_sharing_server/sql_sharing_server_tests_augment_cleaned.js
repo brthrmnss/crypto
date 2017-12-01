@@ -71,6 +71,7 @@ function DbGlueTest() {
             ]
         };
 
+        var config = {};
         self.data.cluster_config = cluster_config;
         self.data.topology = {};
         self.data.allPeers = [];
@@ -120,11 +121,11 @@ function DbGlueTest() {
             }
         }
 
-
         var a = service;
         self.data.allPeers.push(service)
         self.data.topology[name] = a;
 
+        service.preConfig = config;
         return service;
     }
     p.method = function method() {
@@ -303,7 +304,6 @@ function DbGlueTest() {
             t.getR(urls.purgeDeletedRecords).with({fromPeer: '?'})
                 .fxDone(function purgeDeletedRecords_Complete(result) {
                     //t.assert(result.ok==1, 'data not integral ' + result)
-
                     return;
                 })
         }
@@ -598,19 +598,369 @@ function DbGlueTest() {
         self.tests.testRecordsWithBadPassword(t, a, b)
 
         self.tests.addNode(t, 'e', 'a', true)
-        return
+
         self.tests.stopAutoSync(t);
         self.tests.clearAllData(t)
         self.tests.getSizesOfItems(t)
+        //  return
         self.tests.create100Records(t, a)
         self.tests.pullRecords(t, b)
         self.tests.syncBothDirections(t, a, b)
         self.tests.syncBothDirections(t, b, a)
-        return
+        //return
 
         self.tests.verify2NodesInSync(t, a, b, 'A and b should be same size');
 
-        return
+        //return
+
+        self.tests.addNewRecord(t, a)
+
+
+        //  var baseUrl = 'http://127.0.0.1:' + b.settings.port;
+        // t.settings.baseUrl = baseUrl;
+        self.tests.addNewRecordAndTest_Sync(t, a, b)
+        self.tests.addNewRecordAndTest(t, a, b)
+
+        //self.tests.addNode(t, 'e', 'a', true)
+
+        // return;
+        // var baseUrl = 'http://127.0.0.1:' + b.settings.port;
+        var urls = {};
+
+        self.tests.define_TestIncrementalUpdate(t, a, b);
+        return;
+        self.tests.define_TestDataIntegrity(t, a, b);
+
+        // return;
+        self.tests.define_TestDataIntegrity(t, a, b);
+        self.tests.define_syncReverse(t, a, b);
+
+        function breakTest() {
+            t.addFx(function () {
+                asdf.g
+            })
+        }
+
+        return;
+        // define_TestDataIntegrity2();
+        self.tests.define_TestDataIntegrity2(t, a, b);
+
+        /*   function notInSync() {
+         t.getR(urls.verifySync).with({sync: false, peer: 'a'})
+         .fxDone(function syncComplete(result) {
+         t.assert(result.ok == false, 'data is not supposed to be in sync ' + result.ok);
+         return;
+         });
+         }
+
+         function inSync() {
+         t.getR(urls.verifySync).with({sync: false, peer: 'a'})
+         .fxDone(function syncComplete(result) {
+         t.assert(result.ok == true, 'data not inSync ' + result.ok);
+         return;
+         });
+         }*/
+
+        function defineBlockSlowTests(t) {
+            function define_ResiliancyTest(t) {
+                self.tests.forgetRandomRecordFrom(t, b);
+                self.tests.forgetRandomRecordFrom(t, a);
+                self.tests.forgetRandomRecordFrom(t, a);
+                self.tests.forgetRandomRecordFrom(t, b);
+                self.tests.notInSync(t, a, b);
+                //notInSync();
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.verify2NodesInSync(t, a, b, 'failed resiliance test')
+                self.tests.inSync(t, a, b);
+            }
+
+            define_ResiliancyTest(t);
+
+            function define_ResiliancyTest_IllegallyChangedRecords(t) {
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.verify2NodesInSync(t, a, b, 'failed resiliance test IllegallyChangedRecords')
+                t.add(function getRecord() {
+                    b.test.getRandomRecord(function (rec) {
+                        randomRec = rec;
+                        t.cb()
+                    });
+                });
+                t.add(function updateRecords() {
+                    randomRec.updateAttributes({name: "JJJJ"}).then(t.cb)
+                });
+                self.tests.notInSync(t, a, b);
+                //resolve
+                //syncBothDirections()
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.notInSync(t, a, b); //did not upldate global date
+                t.add(function updateRecords() {
+                    randomRec.updateAttributes({global_updated_at: new Date()}).then(t.cb)
+                });
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.inSync(t, a, b);
+            };
+            define_ResiliancyTest_IllegallyChangedRecords(t);
+
+            function define_multipleNodes() {
+                t.add(function defineNewNodes() {
+                    augmentNetworkConfiguration()
+                    t.cb()
+                });
+                self.tests.clearAllData(t)
+
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.verify2NodesInSync(t, a, b, '?????')
+                self.tests.inSync(t, a, b);
+                t.add(function getRecord() {
+                    b.test.getRandomRecord(function (rec) {
+                        randomRec = rec;
+                        t.cb()
+                    });
+                });
+                t.add(function updateRecord_skipUpdateTime() {
+                    randomRec.updateAttributes({name: "JJJJ"}).then(t.cb)
+                });
+
+                self.tests.notInSync(t, a, b);
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.notInSync(t, a, b); //did not upldate global date
+
+                t.add(function updateRecords() {
+                    randomRec.updateAttributes({global_updated_at: new Date()}).then(t.cb)
+                });
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.inSync(t, a, b);
+            };
+            define_multipleNodes();
+        }
+
+        defineBlockSlowTests(t)
+
+
+        function defineSlowTests2(t) {
+            function define_TestDeletes(t) {
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.verify2NodesInSync(t, a, b, 'dddddd')
+                self.tests.deleteRandomRecordFrom(t, b);
+                self.tests.deleteRandomRecordFrom(t, b);
+                self.tests.inSync(t, a, b);
+
+                self.tests.purgeDeletedRecords(t, b);
+                self.tests.inSync(t, a, b);
+
+            };
+            define_TestDeletes(t)
+
+            function define_TestDeletes2(t) {
+                t.add(function defineNewNodes() {
+                    augmentNetworkConfiguration2()
+                    t.cb()
+                });
+                self.tests.clearAllData(t)
+                self.tests.syncBothDirections(t, a, b)
+                self.tests.verify2NodesInSync(t, a, b, 'dddddd')
+                self.tests.deleteRandomRecordFrom(t, b);
+                self.tests.deleteRandomRecordFrom(t, b);
+                self.tests.purgeDeletedRecords(t, b);
+                self.tests.inSync(t, a, b);
+
+            };
+            define_TestDeletes2(t)
+        }
+
+        defineSlowTests2(t)
+
+
+        function define_TestHubAndSpoke(t) {
+            t.add(function defineNewNodes() {
+                augmentNetworkConfiguration()
+                t.cb()
+            });
+            t.add(function defineNewNodes() {
+                augmentNetworkConfiguration2()
+                t.cb()
+            });
+            self.tests.clearAllData(t)
+
+
+            self.tests.addTimer(t, 'sync both dirs')
+
+            /*
+             self.tests.syncBothDirections(t,a,b)
+             self.tests.verify2NodesInSync(t,a,b, 'dddddd')
+             self.tests.deleteRandomRecordFrom(t,b);
+             self.tests.deleteRandomRecordFrom(t,b);
+             self.tests.purgeDeletedRecords(t,b);
+             */
+
+
+            self.tests.syncBothDirections(t, a, b);
+            self.tests.addTimer(t, 'local sync');
+            self.tests.verify2NodesInSync(t, a, b, 'dddddd')
+            self.tests.addTimer(t, 'deletes');
+            self.tests.deleteRandomRecordFrom(t, b);
+            self.tests.deleteRandomRecordFrom(t, b);
+            ////deleteRandomRecordFrom(topology.c);
+            ////deleteRandomRecordFrom(topology.e);
+
+            self.tests.addTimer(t, 'purge all deletes')
+            //syncBothDirections();
+            self.tests.purgeDeletedRecords(t, b);
+            /*t.add(function getRecord() {
+             b.test.getRandomRecord(function (rec) {
+             randomRec = rec;
+             t.cb()
+             });
+             });
+             t.add(function updateRecords() {
+             randomRec.updateAttributes({name:"JJJJ"}).then( t.cb  )
+             });*/
+            //  notInSync()
+            // syncBothDirections()
+            self.tests.addTimer(t, 'insync')
+            self.tests.inSync(t, a, b);
+            self.tests.inSyncAll(t)
+            //TODO: Test sync on N
+            //check in sync on furthes node
+            self.tests.addTimer(t, 'insyncover')
+
+        };
+        define_TestHubAndSpoke(t)
+
+        // breakTest()
+
+        //TODO: Add index to updated at
+
+        //test from UI
+        //let UI log in
+        //task page saeerch server
+
+        //account server
+        //TODO: To getLastPage for records
+
+        //TODO: replace getRecords, with getLastPage
+        //TODO: do delete, so mark record as deleted, store in cache,
+        //3x sends, until remove record from database ...
+
+        /*
+         when save to delete? after all synced
+         mark as deleted,
+         ask all peers to sync
+         then delete from database if we delete deleted nodes
+
+         do full sync
+         if deleteMissing -- will remove all records my peers do not have
+         ... risky b/c incomplete database might mess  up things
+         ... only delete records thata re marked as deleted
+         */
+
+        /*
+         TODO:
+         test loading config from settings object with proper cluster config
+         test auto syncing after 3 secs
+         build proper hub and spoke network ....
+         add E node that is linked to d (1 hop away)
+         */
+        /**
+         * store global record count
+         * Mark random record as deleted,
+         * sync
+         * remove deleted networks
+         * sync
+         * ensure record is gone
+         */
+
+        //Revisions
+    }
+
+    p.t.testADNodes = function testADNodes(fxDone) {
+        var t = EasyRemoteTester.create('Test Channel YYY Cluster',
+            {
+                showBody: false,
+                silent: true,
+                fxDone: fxDone
+            });
+
+        //sh.throwIf(inst.length != 2, 'wrong number of instances', inst.length, inst)
+        t.urls = {};
+
+
+        self.tests.addDBGlueNode(t, 'a', null, true)
+        self.tests.addDBGlueNode(t, 'b', 'a', true)
+        self.tests.addDBGlueNode(t, 'c', 'a', true)
+        self.tests.addDBGlueNode(t, 'd', 'c', true)
+
+        self.tests.getConnetionOfPeers(t)
+
+        self.tests.clearAllData(t, false)
+
+        self.tests.create100Records(t, 'a', 10)
+
+        self.tests.getSizesOfItems(t)
+
+        //self.test.define_basic4WayTest(t)
+
+        self.tests.startStopAutoSync(t);
+
+       // t.workChain.utils.wait(1);
+
+        function testDeleteAndAutoRegenerate() {
+            self.tests.deleteRandomRecordFromPeer(t, 'a')
+            self.tests.getSizesOfItems(t)
+
+
+            self.tests.verify2NodesNotInSync(t, 'a', 'd');
+            self.tests.startStopAutoSync(t);
+            self.tests.verify2NodesInSync(t, 'a', 'd')
+        }
+
+
+
+        //t.workChain.utils.logTest('Add End');
+        //return
+        //self.tests.deletePurgedRecordsCB(t);
+
+        self.tests.forgetRandomRecordFromPeer(t, 'a')
+       // self.tests.getSizesOfItems(t)
+       // self.tests.verify2NodesNotInSync(t, 'a', 'd');
+        self.tests.purgeDeletedRecordsFromPeer(t, 'a');
+        self.tests.showFirstXRecordsFromPeer(t, 'a')
+        self.tests.getSizesOfItems(t)
+        return;
+        self.tests.startStopAutoSync(t);
+
+        self.tests.verify2NodesInSync(t, 'a', 'd');
+        self.tests.verify2NodesInSync(t, 'c', 'b');
+        self.tests.getSizesOfItems(t); return;
+        //deletePurgedRecordsCB
+
+        t.workChain.utils.logTest('Add End');
+        return;
+        self.tests.pullRecords(t, b)
+        self.tests.syncBothDirections(t, a, b)
+
+
+        //t.add(clearAllData())
+        self.tests.clearAllData(t)
+        self.tests.verify2NodesInSync(t, a, b)
+        self.tests.clearAllData(t)
+        self.tests.testRecordsWithBadPassword(t, a, b)
+
+        self.tests.addNode(t, 'e', 'a', true)
+
+        self.tests.stopAutoSync(t);
+        self.tests.clearAllData(t)
+        self.tests.getSizesOfItems(t)
+        //  return
+        self.tests.create100Records(t, a)
+        self.tests.pullRecords(t, b)
+        self.tests.syncBothDirections(t, a, b)
+        self.tests.syncBothDirections(t, b, a)
+        //return
+
+        self.tests.verify2NodesInSync(t, a, b, 'A and b should be same size');
+
+        //return
 
         self.tests.addNewRecord(t, a)
 
@@ -899,8 +1249,9 @@ function DbGlueTest() {
             });
 
         }
-        p.tests.clearAllData = function clearAllData(t) {
-            t.workChain.utils.wait(1);
+        p.tests.clearAllData = function clearAllData(t, ADdRecords) {
+            t.workChain.utils.wait(0.1);
+            ADdRecords = sh.dv(ADdRecords, false)
             t.add(function () {
 
                 sh.async(self.data.allPeers,
@@ -928,29 +1279,39 @@ function DbGlueTest() {
                         t.cb()
                     });
             });
-            t.add(function () {
-                sh.async(self.data.allPeers,
-                    function (peer, fxDone) {
-                        // asdf.g
-                        peer.test.createTestData(recordsCreated)
-                        function recordsCreated() {
-                            fxDone();
-                        }
-                    },
-                    function dleeteAll() {
-                        t.cb()
-                    });
-            });
+            if (ADdRecords) {
+                t.add(function () {
+                    sh.async(self.data.allPeers,
+                        function (peer, fxDone) {
+                            // asdf.g
+                            peer.test.createTestData(recordsCreated)
+                            function recordsCreated() {
+                                fxDone();
+                            }
+                        },
+                        function dleeteAll() {
+                            t.cb()
+                        });
+                });
+            }
         }
-        p.tests.getSizesOfItems = function getSizesOfItems(t) {
-            t.workChain.utils.wait(1);
-            t.add(function () {
-
-                console.log(sh.n, 'getSizesOfItems')
+        p.tests.getSizesOfItems = function getSizesOfItems(t, silent) {
+           // t.workChain.utils.wait(1);
+            t.add(function onGetSizeOfItems() {
+                t.data.peerSizes = {};
+                if (silent != true) {
+                    console.log(sh.n, 'getSizesOfItems', self.data.allPeers.length)
+                }
                 sh.async(self.data.allPeers,
-                    function (peer, fxDone) {
-                        // asdf.g
-                        peer.getSize(function ok(count) {
+                    function onProcPeer(peer, fxDone) {
+                        var peerName = peer.settings.peerName
+
+                        peer.getSizeOfPeer(function onGgetSizeOfPeer(count) {
+                            if (silent != true) {
+                                console.log(sh.t, 'size',
+                                    peer.settings.peerName, count)
+                            }
+                            t.data.peerSizes[peerName] = count
                             fxDone()
                         });
                     },
@@ -958,8 +1319,49 @@ function DbGlueTest() {
                         t.cb()
                     });
             });
+        }
+
+        p.tests.getConnetionOfPeers = function getConnetionOfPeers(t) {
+            //t.workChain.utils.wait(1);
+            t.add(function () {
+                console.log(sh.n, 'getConnetionOfPeers', self.data.allPeers.length)
+                sh.async(self.data.allPeers,
+                    function onProcPeer(peer, fxDone) {
+                        // asdf.g
+                        console.log(sh.t, peer.settings.peerName, peer.settings.dictPeersToIp)
+                        /*peer.getPeerConnections(function ok(count) {
+                         console.log(sh.t, 'size', peer.settings.peerName)
+                         fxDone()
+                         });*/
+                        fxDone()
+                    },
+                    function dleeteAll() {
+                        t.cb()
+                    });
+            });
 
         }
+
+        p.tests.purgeDeletedRecordsOnAllPeers = function purgeDeletedRecordsOnAllPeers(t) {
+            t.add(function purgeDeletedRecordsOnAllPeers_() {
+                sh.async(self.data.allPeers,
+                    function onProcPeer(peer, fxDone) {
+                        // asdf.g
+                        console.log(sh.t, peer.settings.peerName, peer.settings.dictPeersToIp)
+                        /*peer.getPeerConnections(function ok(count) {
+                         console.log(sh.t, 'size', peer.settings.peerName)
+                         fxDone()
+                         });*/
+                        self.test.deletePurgedRecordsCB(function c() {
+                            fxDone()
+                        })
+                    },
+                    function dleeteAll() {
+                        t.cb()
+                    });
+            });
+        }
+
         p.tests.stopAutoSync = function stopAutoSync(t) {
             self.tests.startAutoSync(t, false)
             /*t.add(function breakTest (){
@@ -968,11 +1370,12 @@ function DbGlueTest() {
              })*/
         }
 
-        p.tests.startAutoSync = function startAutoSync(t, time) {
+        p.tests.startAutoSync = function startAutoSync(t, syncTime) {
+            syncTime = sh.dv(syncTime, 1)
             t.add(function () {
                 sh.async(self.data.allPeers,
                     function (peer, fxDone) {
-                        peer.setupAutoSync(time)
+                        peer.setupAutoSync(syncTime)
                         fxDone()
                     },
                     function dleeteAll() {
@@ -1000,10 +1403,28 @@ function DbGlueTest() {
                         fxDone()
                     },
                     function onSetTheSYncPassword() {
-                  //  console.log('count', count, peers.length, self.data.allPeers.length, self.data.allPeers)
+                        //  console.log('count', count, peers.length, self.data.allPeers.length, self.data.allPeers)
                         y.addX('called once')
                         t.cb()
                     });
+            });
+        }
+
+        p.tests.disablePeerNode = function setTestSyncPassword2(t, peerNode, passw) {
+            t.add(function testPasswordSync() {
+                peerNode = self.utils.cPeer(peerNode)
+                peerNode.settings.block = true;
+                // peerNode.setSyncPassword(passw)
+                t.cb()
+            });
+        }
+
+        p.tests.enablePeerNode = function setTestSyncPassword2(t, peerNode, passw) {
+            t.add(function testPasswordSync() {
+                peerNode = self.utils.cPeer(peerNode)
+                peerNode.settings.block = false;
+                // peerNode.setSyncPassword(passw)
+                t.cb()
             });
         }
 
@@ -1043,9 +1464,24 @@ function DbGlueTest() {
                 peerNode.pull(t.cb);
             })
         }
-        p.tests.create100Records = function create100Records(t, peerNode) {
+        p.tests.create100Records = function create100Records(t, peerNode, number) {
             t.add(function create100Records_A() {
-                peerNode.test.createTestData(t.cb)
+                peerNode = self.utils.cPeer(peerNode)
+                number = sh.dv(number, 100)
+                peerNode.test.createTestData(t.cb, false, number)
+            })
+        }
+        p.tests.deleteAnyPeerRecord = function deleteAnyPeerRecord(t, peerNode, number) {
+            t.add(function deleteAnyPeerRecord() {
+                peerNode = self.utils.cPeer(peerNode)
+                //number = sh.dv(number, 100)
+                //peerNode.test.createTestData(t.cb, false, number)
+                peerNode
+
+                self.dbHelper2.deleteRecord(id, function () {
+                    t.cb();
+                })
+
             })
         }
 
@@ -1146,6 +1582,40 @@ function DbGlueTest() {
 
         }
 
+        p.tests.define_basic4WayTest =   function define_basic4WayTest(t) {
+            self.tests.create100Records(t, 'a')
+            self.tests.startAutoSync(t);
+            t.workChain.utils.logTest('Sync Issues');
+            t.workChain.utils.wait(2);
+            self.tests.getSizesOfItems(t)
+            self.tests.stopAutoSync(t);
+            self.tests.verify2NodesInSync(t, 'a', 'b')
+            self.tests.verify2NodesInSync(t, 'c', 'b')
+
+
+            t.workChain.utils.wait(1);
+            self.tests.create100Records(t, 'a', 10)
+            self.tests.startStopAutoSync(t);
+            self.tests.verify2NodesInSync(t, 'a', 'd')
+            self.tests.verify2NodesInSync(t, 'c', 'b')
+
+
+            t.workChain.utils.wait(1);
+            self.tests.create100Records(t, 'a', 10)
+            self.tests.startStopAutoSync(t);
+            self.tests.verify2NodesInSync(t, 'a', 'd')
+            self.tests.verify2NodesInSync(t, 'c', 'b')
+
+            t.workChain.utils.wait(1);
+            self.tests.create100Records(t, 'a', 10)
+            self.tests.disablePeerNode(t, 'c')
+            self.tests.startStopAutoSync(t);
+            self.tests.verify2NodesNotInSync(t, 'a', 'd');
+            self.tests.enablePeerNode(t, 'c')
+            self.tests.startStopAutoSync(t);
+            self.tests.verify2NodesInSync(t, 'a', 'd')
+            self.tests.verify2NodesInSync(t, 'c', 'b')
+        }
         p.tests.define_TestIncrementalUpdate = function define_TestIncrementalUpdate(t, peerNodeA, peerNodeB) {
             var baseUrl = 'http://127.0.0.1:' + peerNodeB.settings.port;
             t.settings.baseUrl = baseUrl;
@@ -1338,24 +1808,82 @@ function DbGlueTest() {
             self.tests.syncBothDirections(t, a, b)
         }
 
-        p.tests.forgetRandomRecordFrom = function forgetRandomRecordFrom(t, client) {
-            if (client == null) {
-                sh.throw('need a client')
+        p.tests.forgetRandomRecordFromPeer =
+            p.tests.forgetRandomRecordFrom = function forgetRandomRecordFrom(t, peerNode) {
+                if (peerNode == null) {
+                    sh.throw('need a client')
+                }
+                t.add(function forgetRandomRecord() {
+                    peerNode = self.utils.cPeer(peerNode)
+                    peerNode.test.forgetRandomRecord(t.cb);
+                });
             }
-            t.add(function forgetRandomRecord() {
-                client.test.forgetRandomRecord(t.cb);
-            });
-        }
-        p.tests.deleteRandomRecordFrom = function deleteRandomRecordFrom(t, client) {
-            var baseUrl = 'http://127.0.0.1:' + client.settings.port;
-            t.urls.purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
-            t.getR(t.urls.purgeDeletedRecords).with({fromPeer: '?'})
-                .fxDone(function purgeDeletedRecords_Complete(result) {
-                    //t.assert(result.ok==1, 'data not integral ' + result)
 
-                    return;
+        p.tests.deleteRandomRecordFromPeer = function deleteRandomRecordFromPeer(t, peerNode) {
+                if (peerNode == null) {
+                    sh.throw('need a client')
+                }
+                t.add(function onGetAndDelete() {
+                    peerNode = self.utils.cPeer(peerNode)
+                    peerNode.test.deleteRandomRecord(t.cb);
+                });
+            }
+
+        p.tests.purgeDeletedRecordsFromPeer =
+            function purgeDeletedRecordsFromPeer(t, peerNode) {
+                if (peerNode == null) {
+                    sh.throw('need a client')
+                }
+                t.getRNextUrl(function getUrl() {
+                    peerNode = self.utils.cPeer(peerNode)
+                    var baseUrl = 'http://127.0.0.1:' + peerNode.settings.port;
+                    t.settings.baseUrl = baseUrl;
+                    purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
+                    return purgeDeletedRecords;
                 })
-        }
+                t.getR().with({fromPeer: '?'})
+                    .fxDone(function purgeDeletedRecords_Complete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+            }
+        p.tests.showFirstXRecordsFromPeer =
+            function showFirstXRecordsFromPeer(t, peerNode, recordsCount) {
+                if (peerNode == null) {
+                    sh.throw('need a client')
+                }
+                t.getRNextUrl(function getUrl() {
+                    peerNode = self.utils.cPeer(peerNode)
+                    var baseUrl = 'http://127.0.0.1:' + peerNode.settings.port;
+                    purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
+                    return purgeDeletedRecords;
+                })
+                t.getR().with({fromPeer: '?'})
+                    .fxDone(function purgeDeletedRecords_Complete(result) {
+                        //t.assert(result.ok==1, 'data not integral ' + result)
+                        return;
+                    })
+            }
+        /*
+         p.tests.forgetRandomRecordFrom = function forgetRandomRecordFrom(t, peerNode) {
+         if (peerNode == null) {
+         sh.throw('need a client')
+         }
+         peerNode = self.utils.cPeer(peerNode)
+         t.add(function forgetRandomRecord() {
+         peerNode.test.forgetRandomRecord(t.cb);
+         });
+         }*/
+        /*p.tests.deleteRandomRecordFrom = function deleteRandomRecordFrom(t, client) {
+         var baseUrl = 'http://127.0.0.1:' + client.settings.port;
+         t.urls.purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
+         t.getR(t.urls.purgeDeletedRecords).with({fromPeer: '?'})
+         .fxDone(function purgeDeletedRecords_Complete(result) {
+         //t.assert(result.ok==1, 'data not integral ' + result)
+
+         return;
+         })
+         }*/
         p.tests.purgeDeletedRecords = function purgeDeletedRecords(t, client) {
             var baseUrl = 'http://127.0.0.1:' + client.settings.port;
             t.urls.purgeDeletedRecords = t.utils.createTestingUrl('purgeDeletedRecords');
@@ -1400,6 +1928,64 @@ function DbGlueTest() {
 
             self.tests.verify2NodesInSync(t, peerNodeA, peerNodeB, 'created a new networking, in sync after')
 
+
+        }
+
+
+        p.tests.addDBGlueNode = function addDBGlueNode(t, peerNodeB, peerLinkTo, doSync) {
+
+            var h = {};
+            t.add(function getNodeA() {
+                if (peerLinkTo)
+                    h.peerLinkTo = self.data.topology[peerLinkTo]
+                t.cb();
+            })
+
+            t.add(function makeNewNode() {
+                //  debugger
+                if (peerLinkTo) {
+                    var peerLinkToId = {}
+                    peerLinkToId[h.peerLinkTo.settings.peerName] = h.peerLinkTo.settings.ip;
+                }
+                var b = self.createTestNode(peerNodeB, null, true)
+                h.peerNodeNew = self.data.topology[peerNodeB]
+                if (peerLinkTo) {
+                    b.fxInitPeer([peerLinkToId]);
+                }
+                //  b.settings.cluster_config.peers = {};
+                b.preConfig.fxPeerStarted = function fxPeerStarted(_self) {
+                    t.cb()
+                    //sh.x('ok got it')
+                }
+
+                if (peerLinkTo == null) {
+                    b.preConfig.ignore0Peers = true
+                    b.init(b.preConfig);
+                    //t.cb();
+                }
+            })
+
+            if (peerLinkTo) {
+                t.add(function linkAToB() {
+                    h.peerNodeNew = self.data.topology[peerNodeB];
+                    h.peerNodeNew.peers.addPeer(h.peerLinkTo.getMyPeerInfo());
+                    t.cb();
+                })
+
+                t.add(function linkAToB() {
+                    h.peerLinkTo.peers.addPeer(h.peerNodeNew.getMyPeerInfo());
+                    t.cb();
+                })
+            }
+            //return
+
+            t.add(function wait2Secs_toInitPeerServer() {
+                setTimeout(function () {
+                    t.cb();
+                }, 150)
+            })
+
+            return
 
         }
 
@@ -1451,18 +2037,18 @@ function DbGlueTest() {
 
             self.tests.clearAllData(t)
             t.add(function getASize() {
-                h.peerNodeNew.getSize(t.cb);
+                h.peerNodeNew.getSizeOfPeer(t.cb);
             })
             t.add(function getASize() {
                 //t.cb = null;
-                h.peerLinkTo.getSize(t.cb);
+                h.peerLinkTo.getSizeOfPeer(t.cb);
             })
 
             self.tests.verify2NodesInSync(t, peerNodeB, peerLinkTo, 'created a new networking, in sync after')
 
             t.add(function getASize() {
                 //t.cb = null;
-                h.peerLinkTo.getSize(t.cb);
+                h.peerLinkTo.getSizeOfPeer(t.cb);
             })
 
             self.tests.addNewRecord(t, peerLinkTo);
@@ -1573,7 +2159,33 @@ function DbGlueTest() {
 
         }
 
+        p.tests.startStopAutoSync = function startStopAutoSync(t, syncTime, msg) {
+            syncTime = sh.dv(syncTime, 1)
+            //t.workChain.utils.logTest('Sync Issues');
+            self.tests.getSizesOfItems(t, true)
+            t.add(function oldSizes() {
+                t.data.startPeerSizes = t.data.peerSizes
+                t.cb()
+            })
+            self.tests.startAutoSync(t,syncTime);
+            t.workChain.utils.wait(syncTime*2);
+            //self.tests.getSizesOfItems(t)
+            self.tests.stopAutoSync(t);
 
+            // self.tests.verify2NodesInSync(t, 'a', 'b')
+            //  self.tests.verify2NodesInSync(t, 'c', 'b')
+            //  self.tests.verify2NodesInSync(t, peerNodeA, peerNodeB, msg, -1)
+            self.tests.getSizesOfItems(t, true)
+            t.add(function compareSizes() {
+                var dict = {}
+                sh.each(t.data.startPeerSizes, function onK(peerName, count) {
+                    dict[peerName] = t.data.peerSizes[peerName]
+                        - t.data.startPeerSizes[peerName]
+                })
+                console.log(sh.n, 'peers-size-changes', dict, sh.n)
+                t.cb()
+            })
+        }
         p.tests.verify2NodesNotInSync = function verify2NodesNotInSync(t, peerNodeA, peerNodeB, msg) {
             self.tests.verify2NodesInSync(t, peerNodeA, peerNodeB, msg, -1)
         }
@@ -1598,7 +2210,7 @@ function DbGlueTest() {
             })
 
             t.add(function getASize() {
-                h.peerNodeA.getSize(t.cb);
+                h.peerNodeA.getSizeOfPeer(t.cb);
             })
             var y2 = new sh.TwoCallHelper();
             t.add(function getBSize() {
@@ -1607,7 +2219,7 @@ function DbGlueTest() {
                     asfd.g
                 }
                 y2.addX('called once')
-                h.peerNodeB.getSize(t.cb);
+                h.peerNodeB.getSizeOfPeer(t.cb);
             })
             var yOK = false
             var y = new sh.TwoCallHelper();

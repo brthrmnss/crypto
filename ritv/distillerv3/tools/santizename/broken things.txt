@@ -1,0 +1,17 @@
+	 20 - crush.avi
+	 	 no episode /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_10/law and order - svu season 10/law and order - svu season 10/20 - crush.avi [object Object] /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_10/law and order - svu season 10/law and order - svu season 10/20 - crush.avi
+
+	 10 - smut.avi
+	 	 no episode /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_10/law and order - svu season 10/law and order - svu season 10/10 - smut.avi [object Object] /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_10/law and order - svu season 10/law and order - svu season 10/10 - smut.avi
+
+	 law.and.order.svu.0910-yestv.avi
+	 	 no season /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.0910-yestv.avi [object Object] /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.0910-yestv.avi
+
+	 law.and.order.svu.901-caph.avi
+	 	 no season /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.901-caph.avi [object Object] /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.901-caph.avi
+	 law.and.order.svu.906-caph.[vtv].avi
+
+	 	 no season /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.906-caph.[vtv].avi [object Object] /media/sda/finished/incoming/finished/root/tv/svu_1999/tt0203259/season_9/law.and.order.svu.season.9/law.and.order.svu.season.9/law.and.order.svu.906-caph.[vtv].avi
+	 	 could not get episode for /media/sda/finished/incoming/finished/root/tv/naruto_2007/tt0988824/season_1/naruto shippuden/naruto shippuden/s11/episode 233 - naruto's imposter.mp4 [object Object]
+
+	 no episode /media/sda/finished/incoming/finished/root/tv/naruto_2007/tt0988824/season_1/naruto shippuden/naruto shippuden/s02/naruto shippuden episode 045 - the consequences of betrayal.avi [object Object] /media/sda/finished/incoming/finished/root/tv/naruto_2007/tt0988824/season_1/naruto shippuden/naruto shippuden/s02/naruto shippuden episode 045 - the consequences of betrayal.avi

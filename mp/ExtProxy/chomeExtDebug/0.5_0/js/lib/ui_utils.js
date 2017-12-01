@@ -3062,6 +3062,127 @@ function defineUtils() {
                 }
             });
         }
+
+
+        /*
+         var cfgListen = {
+         str: [uiUtils.keys.space],
+         fx: function ok() {
+         console.log('hit space')
+         },
+         codeMode: true,
+         ignoreText: true
+         }
+
+        uiUtils.listenForKeyCodes(cfgListen);
+
+        uiUtils.listenForStr(' ', function onK() {
+            console.log('hit space2')
+        })
+         */
+
+        uiUtils.keys = {};
+        uiUtils.keys.space      = 32;
+        uiUtils.keys.enter      = 13;
+        uiUtils.keys.enter      = 27;
+        uiUtils.keys.pageup     = 33;
+        uiUtils.keys.pagedown   = 34;
+        uiUtils.keys.left       = 37;
+        uiUtils.keys.up         = 38;
+        uiUtils.keys.right      = 39;
+        uiUtils.keys.down       = 40;
+
+        uiUtils.listenForStr = uiUtils.listenForString = function listenForString(str, fx) {
+            var cfgListen = {
+                str: str,
+                fx: fx,
+                codeMode: false,
+                ignoreText: true
+            }
+            uiUtils.listenForKeyCodes(cfgListen)
+        }
+
+        function isTextBox(element) {
+            var tagName = element.tagName.toLowerCase();
+            if (tagName === 'textarea') return true;
+            if (tagName !== 'input') return false;
+            var type = element.getAttribute('type').toLowerCase(),
+                // if any of these input types is not supported by a browser, it will behave as input type text.
+                inputTypes = ['text', 'password', 'number', 'email', 'tel', 'url', 'search', 'date', 'datetime', 'datetime-local', 'time', 'month', 'week']
+            return inputTypes.indexOf(type) >= 0;
+        }
+
+        //str, fx , codeMode, ignoreText
+
+        uiUtils.listenForKeyCode =
+        uiUtils.listenForKeyCodes = uiUtils.listForCode = function listForCode(cfg) {
+            cfg.ignoreText = sh.dv(cfg.ignoreText, true);
+            cfg.codeMode = sh.dv(cfg.codeMode, true);
+            if ( cfg.str.split ) {
+                var match = cfg.str.split('');
+            } else {
+                match = cfg.str;
+            }
+            var lastChars = [];
+            var timeout = 250;
+            timeout = 350;
+            $('body').keyup(function onKey(e) {
+                if ( cfg.debug ) {
+                    console.log('onkeyup', e.which, cfg.str)
+                }
+                if (e.which !== 0) {
+                    var char = String.fromCharCode(e.which);
+                    char = char.toLowerCase();
+                }
+                if ( cfg.codeMode ) {
+                    char = e.which
+                }
+                if (cfg.ignoreText) {
+                    /*console.log('yyy', e.target.nodeType, e.target)
+                    if ( inputTypes.includes(e.target.nodeName) ) {
+                        return;
+                    }*/
+                    if ( isTextBox(e.target )) {
+                        return;
+                    }
+                }
+                lastChars.push(char)
+                function removeFirstChar() {
+                    lastChars.shift()
+                }
+                setTimeout(removeFirstChar, timeout)
+
+
+                var falt = null
+                if ( lastChars.length >= match.length ) {
+                    $.each(lastChars.reverse(), function (k, v) {
+                        var matchTo = match[k]
+                        if ( k + 1 > match.length ) {
+                            console.log('end too soon wrong',  k + 1, match.length )
+                            return false;
+                        }
+
+                        if (matchTo != v) {
+                            console.log('wrong')
+                            falt = v;
+                            return false;
+                        }
+                    });
+
+                    if (falt == null) {
+                        console.log('success', lastChars, match)
+                        if ( cfg.fx ) cfg.fx()
+                    }
+                }
+
+                console.log('keys', lastChars, falt)
+            })
+        }
+
+      /*  u2.listForCode('rr', function ff(){
+            console.log('sdfsdf')
+            window.fxReload();
+        })*/
         gUtils.onClick = function onClick(jquery, fx, gY) {
 
             throwIfNull(fx, 'need a function for ' + jquery)

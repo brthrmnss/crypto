@@ -41,11 +41,12 @@ function AutoItServer() {
         setTimeout(function onTestLateR() {
             self.testRemotely2()
         }, 800);
-        self.cmd()
-
+        self.defineCommandHelper()
+        self.defineCommandHelper({storeAs: 'cmd2'})
     }
 
-    p.cmd = function cmd(config) {
+    p.defineCommandHelper = function defineCommandHelper(config) {
+        config = sh.dv(config, {})
         //run it up ....
         //how to run a commadn and keep calling it ?
 
@@ -58,14 +59,14 @@ function AutoItServer() {
                 sh.callIfDefined(fxDone);
             }
         settings.cmd = 'cmd';
-        settings.doNotAddCr  = true
-        settings.skipSameLine  = true
+        settings.doNotAddCr = true
+        settings.skipSameLine = true
 
         settings.fxEcho = function fxEcho(echoContent) {
             console.error('what is echo', echoContent.trim())
-            if (self.settings.waitMode ) {
-                if ( self.data.fxReturn )
-                self.data.fxReturn(echoContent)
+            if (self.settings.waitMode) {
+                if (self.data.fxReturn)
+                    self.data.fxReturn(echoContent)
             }
         }
         var args = []
@@ -76,8 +77,11 @@ function AutoItServer() {
         console.log('run', args)
 
 
+        if (config.storeAs) {
+            self[config.storeAs] = cmd;
+            return;
+        }
         self.cmd = cmd;
-
 
 
         self.cmd.write('irb')
@@ -91,7 +95,7 @@ function AutoItServer() {
                 // with toString() and then trim()
                 // console.log("you entered: [" +
                 //    d.toString().trim() + "]");
-                var userInput =   d.toString().trim();
+                var userInput = d.toString().trim();
 
                 cmd.write(userInput)
             });
@@ -99,7 +103,6 @@ function AutoItServer() {
 
         onAcceptUserInput();
     }
-
 
 
     p.method = function method(config) {
@@ -120,9 +123,10 @@ function AutoItServer() {
             app.use(function addCrossDomainMiddlware(req, res, next) {
                 //asdf.g
                 res.header("Access-Control-Allow-Origin", "*");
-                if ( req.headers.origin != null ) {
+                if (req.headers.origin != null) {
                     res.header("Access-Control-Allow-Origin", req.headers.origin);
-                };
+                }
+                ;
                 res.header("Access-Control-Allow-Headers", "X-Requested-With");
                 res.header("Access-Control-Allow-Headers", "Content-Type");
                 res.header("Access-Control-Allow-Credentials", "true");
@@ -130,7 +134,7 @@ function AutoItServer() {
                 next();
             });
 
-            var bodyParser  = require("body-parser");
+            var bodyParser = require("body-parser");
 
             function configUploads() {
 
@@ -186,7 +190,7 @@ function AutoItServer() {
             }
 
 
-            app.use(express.static(__dirname + '/'+'public_html'));
+            app.use(express.static(__dirname + '/' + 'public_html'));
 
 
             function deprecrandomFx() {
@@ -240,24 +244,73 @@ function AutoItServer() {
             }
 
 
-
             app.get('/test', function onTest(req, res) {
                 res.json(sh.json.good('all good'));
             });
+            app.get('/runlocal/:id', function onRunLocal(req, res) {
+                //https://www.wired.com/story/al-franken-just-gave-the-speech-big-tech-has-been-dreading/
+                var AIR_GotoAccount = sh.require('mp/AutoItKey/vm_scripts/AutoItRunner_GoToAccount.js').AIR_GotoAccount;
+                var instance = new AIR_GotoAccount();
+                var config = {};
+                config.port = 11510
+                config.ip = '192.168.1.172'
+                if (req.params.id != null) {
+                    id = req.params.id
+                }
+                // var yyy = req.originalUrl.split(-1)[0];
+                config.url = id
+                instance.init(config)
+                instance.test();
+                instance.readArticle(id)
+                res.json('ok')
+            })
+
+            app.get('/runlocal', function onRunLocal(req, res) {
+                //https://www.wired.com/story/al-franken-just-gave-the-speech-big-tech-has-been-dreading/
+                var AIR_GotoAccount = sh.require('mp/AutoItKey/vm_scripts/AutoItRunner_GoToAccount.js').AIR_GotoAccount;
+                var instance = new AIR_GotoAccount();
+                var config = {};
+                config.port = 11510
+                config.ip = '192.168.1.172'
+                if (req.params.id != null) {
+                    id = req.params.id
+                }
+                // var yyy = req.originalUrl.split(-1)[0];
+                //config.url = id
+                config.url = req.query.url
+                instance.init(config)
+                //instance.test();
+                instance.readArticle(config.url)
+                res.json('ok')
+            })
 
             app.get('/runAISCmd', function runAISCmd(req, res) {
                 var cmd = req.query.text;
+                var cmdObj2 = req.query.cmdObj2
 
-                if ( cmd.includes(';')) {
+                if (cmd.includes(';')) {
                     console.log('becreare fo ; input')
                 }
-               // cmd += '\n\r'
-              //  cmd += ' \r\n'
+
+                var cmdObjHelper = self.cmd;
+                if (cmdObj2) {
+                    cmdObjHelper = self.cmd2;
+                }
+
+                if (req.query.runAsFileType) {
+                    var fileName = 'temp.x.auotitserver.' +
+                        req.query.runAsFileType
+                    fileName = sh.fs.trash(fileName)
+                    sh.writeFile(fileName, cmd)
+                    cmd = fileName;
+                }
+                // cmd += '\n\r'
+                //  cmd += ' \r\n'
                 // self.proc('cmd', cmd)
                 //  console.error('cmd', cmd, req.query)
-                self.cmd.write(cmd)
-              //  self.cmd.write('')
-                var cmdOutput = self.cmd.flush()
+                cmdObjHelper.write(cmd)
+                //  self.cmd.write('')
+                var cmdOutput = cmdObjHelper.flush()
                 //self.proc(cmdOutput)
                 self.proc('!!!---!!!')
                 console.log('cmdOutput', cmdOutput)
@@ -266,20 +319,20 @@ function AutoItServer() {
                 json.cmdOutput = cmdOutput;
 
 
-                if ( false ==  self.settings.waitMode ) {
+                if (false == self.settings.waitMode) {
                     res.json(json);
                 } else {
                     self.data.fxReturn = function fxReturn(output) {
                         json.cmd = cmd;
-                        if ( output.trim() == '' ) {
+                        if (output.trim() == '') {
                             return;
                         }
-                        if ( cmd.trim() == output.trim() ) {
+                        if (cmd.trim() == output.trim()) {
                             console.error('skipping this line')
-                           return;
+                            return;
                         }
-                       // econsole.log(sh.t, sh.t, '|', cmd)
-                       // console.log(sh.t, sh.t, '|', output)
+                        // econsole.log(sh.t, sh.t, '|', cmd)
+                        // console.log(sh.t, sh.t, '|', output)
                         json.cmdOutput = output.trim();
                         res.json(json);
                     }
@@ -289,19 +342,52 @@ function AutoItServer() {
             });
 
 
+            /*      app.get('/runBatCmd', function runBatCmd(req, res) {
+             var cmd = req.query.text;
+
+             var instance = new RunScriptHelper();
+             var config = {};
+             instance.init(config)
+             output = instance.runHidden(cmd);
+             var json = {}
+             json.cmdOutput = output.trim();
+             res.json(json);
+             return;
+
+             if ( false ==  self.settings.waitMode ) {
+             res.json(json);
+             } else {
+             self.data.fxReturn = function fxReturn(output) {
+             json.cmd = cmd;
+             if ( output.trim() == '' ) {
+             return;
+             }
+             if ( cmd.trim() == output.trim() ) {
+             console.error('skipping this line')
+             return;
+             }
+             // econsole.log(sh.t, sh.t, '|', cmd)
+             // console.log(sh.t, sh.t, '|', output)
+             json.cmdOutput = output.trim();
+             res.json(json);
+             }
+             }
+
+
+             });*/
+
 
             self.active_server = app.listen(self.settings.port, function () {
-                console.log('Listening on ' +  self.settings.port)
-                var baseUrl = 'http://127.0.0.1'+':'+self.settings.port;
-                var url   =  baseUrl.replace('127.0.0.1', sh.getIpAddress());
+                console.log('Listening on ' + self.settings.port)
+                var baseUrl = 'http://127.0.0.1' + ':' + self.settings.port;
+                var url = baseUrl.replace('127.0.0.1', sh.getIpAddress());
                 console.log('go to 2', url)
                 console.log(url)
             });
 
 
-
-            console.log('createHostServer2',self.createHoistServer2 )
-            if ( self.createHoistServer2 ){
+            console.log('createHostServer2', self.createHoistServer2)
+            if (self.createHoistServer2) {
                 self.createHoistServer2()
             }
 
@@ -309,11 +395,12 @@ function AutoItServer() {
 
         return
     }
+
     defineServer();
 
 
     p.fx = function fx() {
-        if ( self.settings.monitor == false ) {
+        if (self.settings.monitor == false) {
             self.proc('not watcing')
             return;
         }
@@ -322,37 +409,33 @@ function AutoItServer() {
         var f = new FileWatcher();
         var config = {
             //  file:__dirname + '/' + 'AutoItRunner',
-            runNode:"__file__",
-            action:"runFile"
+            runNode: "__file__",
+            action: "runFile"
         };
 
-        config.file = __dirname+'/'+'AutoItRunner.js';
+        config.file = __dirname + '/' + 'AutoItRunner.js';
 
         f.init(config)
     }
-
-
-
 
 
     function defineUtils() {
         var utils = {};
         p.utils = utils;
         utils.getFilePath = function getFilePath(file) {
-            var file = self.settings.dir+'/'+ file;
+            var file = self.settings.dir + '/' + file;
             return file;
         }
 
         p.proc = function debugLogger() {
-            if ( self.silent == true) {
+            if (self.silent == true) {
                 return;
             }
             sh.sLog(arguments);
         };
     }
+
     defineUtils()
-
-
 
 
     function defineTestingMethods() {
@@ -386,10 +469,12 @@ function AutoItServer() {
 
         p.tests.defineTests = function defineHoistTests() {
             var EasyRemoteTester = shelpers.EasyRemoteTester;
-            var baseUrl = 'http://127.0.0.1:'+self.settings.port;
+            var baseUrl = 'http://127.0.0.1:' + self.settings.port;
             var t = EasyRemoteTester.create('Test say basics',
-                {showBody:false,
-                    silent:true});
+                {
+                    showBody: false,
+                    silent: true
+                });
             var data = {};
             t.settings.baseUrl = baseUrl
             var urls = {};
@@ -447,11 +532,11 @@ function AutoItServer() {
 
             console.error('one')
             //  return
-            var t = self.tests.t ;
+            var t = self.tests.t;
 
             var t2 = t.clone('test an example command');
             var urls = self.tests.urls;
-            t2.getR(urls.test).with({text:'test', rate:20}).bodyHas('status').notEmpty();
+            t2.getR(urls.test).with({text: 'test', rate: 20}).bodyHas('status').notEmpty();
 
 
             var initial = "";
@@ -464,55 +549,71 @@ function AutoItServer() {
             var dirFolder = sh.qq(dirC)
             dirFolder = sh.replaceBackslash(dirFolder)
             cmdStr = sh.replace(cmdStr, 'Dir.pwd', dirFolder);
-            t2.getR(urls.runAISCmd).with({text:cmdStr, rate:20})
+            t2.getR(urls.runAISCmd).with({text: cmdStr, rate: 20})
                 .bodyHas('status').notEmpty()
-                .fxDone(function onDne(a,b,c) {
-                    console.log('y', a,b,c)
+                .fxDone(function onDne(a, b, c) {
+                    console.log('y', a/*, b, c*/)
                 });
 
 
             var cmdStr = sh.readFile('scripts/beep.rb');
-            t2.getR(urls.runAISCmd).with({text:cmdStr, rate:20}).bodyHas('status').notEmpty();
+            t2.getR(urls.runAISCmd).with({text: cmdStr, rate: 20}).bodyHas('status').notEmpty();
             t2.wait(1)
 
 
-
-            t2.getR(urls.runAISCmd).with({text:'lsdf', rate:20}) //
+            t2.getR(urls.runAISCmd).with({text: 'lsdf', rate: 20}) //
                 .bodyHas('status').notEmpty()
-                .fxDone(function onDne(a,b,c) {
-                    console.log('y', a,b,c)
+                .fxDone(function onDne(a, b, c) {
+                    console.log('y', a/*, b, c*/)
                 });
 
-           //return ;
-            t2.getR(urls.runAISCmd).with({text:"winExists('calibre')", rate:20})
+            //return ;
+            t2.getR(urls.runAISCmd).with({text: "winExists('calibre')", rate: 20})
                 .bodyHas('status').notEmpty()
-                .fxDone(function onDne(a,b,c) {
-                    console.log('-', a,b,c)
+                .fxDone(function onDne(a, b, c) {
+                    console.log('-', a)
                 });
-            t2.getR(urls.runAISCmd).with({text:"winExists('calibre')", rate:20})
+            t2.getR(urls.runAISCmd).with({text: "winExists('calibre')", rate: 20})
                 .bodyHas('status').notEmpty()
-                .fxDone(function onDne(a,b,c) {
-                    console.log('-', a,b,c)
+                .fxDone(function onDne(a, b, c) {
+                    console.log('-', a)
                 });
 
-            t2.getR(urls.runAISCmd).with({text:"beep 400, 400", rate:20})
+            t2.getR(urls.runAISCmd).with({text: "beep 400, 400", rate: 20})
                 .bodyHas('status').notEmpty()
-                .fxDone(function onDne(a,b,c) {
-                    console.log('y', a,b,c)
+                .fxDone(function onDne(a, b, c) {
+                    console.log('y', a)
+                });
+            t2.getR(urls.runAISCmd).with({
+                cmdObj2: true,
+                text: "G:/Dropbox/projects/crypto/mp/AutoItKey/test_remote_bat.bat", rate: 20
+            })
+                .bodyHas('status').notEmpty()
+                .fxDone(function onDne(a, b, c) {
+                    console.log('y', a)
+                });
+            t2.getR(urls.runAISCmd).with({
+                cmdObj2: true,
+                runAsFileType: '.bat',
+                text: "echo ran it"
+            })
+                .bodyHas('status').notEmpty()
+                .fxDone(function onDne(a, b, c) {
+                    console.log('y', a)
                 });
 
             return;
-            t2.getR(urls.stop).with({text:'play', rate:20}).bodyHas('status').notEmpty();
-            t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig7', rate:20}).bodyHas('error').notEmpty();
-            t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig2', rate:20}).bodyHas('name').notEmpty();
+            t2.getR(urls.stop).with({text: 'play', rate: 20}).bodyHas('status').notEmpty();
+            t2.getR(urls.playCustom).with({file: 'demoInnerScriptConfig7', rate: 20}).bodyHas('error').notEmpty();
+            t2.getR(urls.playCustom).with({file: 'demoInnerScriptConfig2', rate: 20}).bodyHas('name').notEmpty();
 
             t2.wait(1)
 
-            t2.getR(urls.getJSONPath).with({path:'', html:true})//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:'count', html:false})//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:'y;process.exit()', html:false})
+            t2.getR(urls.getJSONPath).with({path: '', html: true})//.bodyHas('name').notEmpty();
+            t2.getR(urls.getJSONPath).with({path: 'count', html: false})//.bodyHas('name').notEmpty();
+            t2.getR(urls.getJSONPath).with({path: 'y;process.exit()', html: false})
                 .why('block hacker')//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:sh.str.createName(150), html:false})
+            t2.getR(urls.getJSONPath).with({path: sh.str.createName(150), html: false})
                 .why('block hacker who is verbose')
                 .makeOptional() //mustFail
 
@@ -526,26 +627,26 @@ function AutoItServer() {
         p.testRemotely = function testRemotely() {
 
 
-            var t = self.tests.t ;
+            var t = self.tests.t;
 
             var t2 = t.clone('test an example command');
             var urls = self.tests.urls;
-            t2.getR(urls.test).with({text:'test', rate:20}).bodyHas('status').notEmpty();
-            t2.getR(urls.play).with({text:'play', rate:20}).bodyHas('status').notEmpty();
+            t2.getR(urls.test).with({text: 'test', rate: 20}).bodyHas('status').notEmpty();
+            t2.getR(urls.play).with({text: 'play', rate: 20}).bodyHas('status').notEmpty();
 
             t2.wait(1)
 
-            t2.getR(urls.stop).with({text:'play', rate:20}).bodyHas('status').notEmpty();
-            t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig7', rate:20}).bodyHas('error').notEmpty();
-            t2.getR(urls.playCustom).with({file:'demoInnerScriptConfig2', rate:20}).bodyHas('name').notEmpty();
+            t2.getR(urls.stop).with({text: 'play', rate: 20}).bodyHas('status').notEmpty();
+            t2.getR(urls.playCustom).with({file: 'demoInnerScriptConfig7', rate: 20}).bodyHas('error').notEmpty();
+            t2.getR(urls.playCustom).with({file: 'demoInnerScriptConfig2', rate: 20}).bodyHas('name').notEmpty();
 
             t2.wait(1)
 
-            t2.getR(urls.getJSONPath).with({path:'', html:true})//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:'count', html:false})//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:'y;process.exit()', html:false})
+            t2.getR(urls.getJSONPath).with({path: '', html: true})//.bodyHas('name').notEmpty();
+            t2.getR(urls.getJSONPath).with({path: 'count', html: false})//.bodyHas('name').notEmpty();
+            t2.getR(urls.getJSONPath).with({path: 'y;process.exit()', html: false})
                 .why('block hacker')//.bodyHas('name').notEmpty();
-            t2.getR(urls.getJSONPath).with({path:sh.str.createName(150), html:false})
+            t2.getR(urls.getJSONPath).with({path: sh.str.createName(150), html: false})
                 .why('block hacker who is verbose')
                 .makeOptional() //mustFail
 

@@ -14,54 +14,63 @@ function RDKHelper() {
 
     self.settings = {}
     self.data = {};
-    p.init = function init() {
+    p.init = function init(runTests) {
         self.settings.port = sh.dv(self.settings.port, 8081)
-        self.test()
+        if (runTests != false)
+            self.test()
     }
 
 
     var m = {}
     p.m = p.machine = m
- /*   m.add = function addMachine(name, double) {
-        t.add(function noTryToTestContent() {
-            cmd = cmd
-            cmd = cmd.replace(/\//gi, "\\");
-            var data = cmd
-            t.quickRequest(urls.urlgenindex,
-                'post', result, data);
-            function result(body) {
-                console.log(  data)
-                console.log(sh.t, 'results', body)
-                t.cb();
-            }
-        })
-    }
+    /*   m.add = function addMachine(name, double) {
+     t.add(function noTryToTestContent() {
+     cmd = cmd
+     cmd = cmd.replace(/\//gi, "\\");
+     var data = cmd
+     t.quickRequest(urls.urlgenindex,
+     'post', result, data);
+     function result(body) {
+     console.log(  data)
+     console.log(sh.t, 'results', body)
+     t.cb();
+     }
+     })
+     }
 
-*/
+     */
 
-    m.add = function addMachine(name, onlyIfHere, storeIt) {
+    m.add = m.addMachine =  function addMachine(name, onlyIfHere, storeIt, fileName) {
 
         var cfg = {};
 
         storeIt = sh.dv(storeIt, 'r1')
-
+        var fileRobot = "C:/RoboDK/Library/KUKA_KR_210_2.robot"
+        var fileRobot = "C:\\RoboDK\\Library\\KUKA-KR-16-2.robot"
         cmd = [
-            storeIt+' = RDK.AddFile("C:/RoboDK/Library/KUKA_KR_210_2.robot")',
-            self.r(storeIt+'.setName("name")','name', name)
+            '#ok',
+            ' #ok',
+            storeIt + ' = RDK.AddFile("' + fileRobot + '")',
+
+            self.r(storeIt + '.setName("name")', 'name', name)
         ];
         cfg.cmd = cmd
         cfg.returnVal = storeIt;
 
-        if ( onlyIfHere) {
+        if (onlyIfHere==true) {
             cfg.ifCmd = cfg.cmd;
 
-            var str = storeIt+'= RDK.Item(nameOfItem)'
+            var str = storeIt + '= RDK.Item(nameOfItem)'
             var cmd = self.utils.replace(str, 'nameOfItem', name, true)
             cfg.cmd = cmd
-           cfg.cmd = [cmd,storeIt]
+            cfg.cmd = [cmd, storeIt]
 
             cfg.ifCmdFx = function onFx(result) {
                 self.proc('result', result)
+                if ( result == null ) {
+                    console.log('result is invalid')
+                    return false;
+                }
                 if (result.includes('INVALID')) {
                     return true;
                 }
@@ -73,16 +82,17 @@ function RDKHelper() {
         return;
     }
 
-    p.test = function test(){
+    p.test = function test(returnX) {
 
         var c = {};
-        c.port =  self.settings.port
+        c.port = self.settings.port
         c.showBody = false
         c.silent = true
         //c.fxDone = fxDone;
         var t = EasyRemoteTester.create('test search server API', c);
 
         self.data.t = self.t = t;
+        t.settings.baseUrl = 'http://192.168.1.172';
         var urls = {}
         //urls.urlgenindex = t.utils.createTestingUrl('/g/blue/index.html');
         urls.urlgenindex = t.utils.createTestingUrl('/g/blue/anyurulwilldo.html');
@@ -158,12 +168,11 @@ function RDKHelper() {
                 t.quickRequest(urls.urlgenindex,
                     'post', result, data);
                 function result(body) {
-                    console.log(  data)
+                    console.log(data)
                     console.log(sh.t, 'results', body)
 
 
-
-                    sh.cid(fxDone,body, cmd);
+                    sh.cid(fxDone, body, cmd);
                     t.cb();
                 }
             })
@@ -174,15 +183,15 @@ function RDKHelper() {
             cfg = sh.dv(cfg, {})
 
             fxAddToChain = t.add;
-            if ( fxNext ) {
+            if (fxNext) {
                 fxAddToChain = t.addNext
             }
 
             cmd = cmd.replace(/\//gi, "\\");
 
             var lines = cmd.split('\n')
-            if ( lines.length > 1) {
-                lines1 = lines.slice(0,-1)
+            if (lines.length > 1) {
+                lines1 = lines.slice(0, -1)
                 lines2 = lines.slice(-1)[0]
                 var firstLinesOutput = null
                 fxAddToChain(function sendFirstLines() {
@@ -190,7 +199,7 @@ function RDKHelper() {
                     t.quickRequest(urls.urlgenindex,
                         'post', result, data);
                     function result(body) {
-                        console.log('1',  data)
+                        console.log('1', data)
                         firstLinesOutput = body
                         //console.log(sh.t, 'results', body)
                         //sh.cid(fxDone,body, cmd);
@@ -205,20 +214,22 @@ function RDKHelper() {
                     t.quickRequest(urls.urlgenindex,
                         'post', result, data);
                     function result(body) {
-                        console.log( '2', cmd)
+                        console.log('2', cmd)
                         //body = firstLinesOutput+sh.n+ body;
 //                        console.log('....firstLinesOutput', firstLinesOutput)
-                        if ( firstLinesOutput == null ) { firstLinesOutput  = 'undefined'}
-                        firstLinesOutput= firstLinesOutput.toString()
-                        if ( firstLinesOutput.includes('Error')) {
+                        if (firstLinesOutput == null) {
+                            firstLinesOutput = 'undefined'
+                        }
+                        firstLinesOutput = firstLinesOutput.toString()
+                        if (firstLinesOutput.includes('Error')) {
                             console.error(firstLinesOutput)
                         }
                         body
-                        console.log('|',sh.t,'results',body,'|')
+                        console.log('|', sh.t, 'results', body, '|')
 
 
-                        if ( cfg.ifCmdFx ) {
-                            if ( cfg.ifCmdFx(body) === true ) {
+                        if (cfg.ifCmdFx) {
+                            if (cfg.ifCmdFx(body) === true) {
                                 var cmdInner = {};
                                 cmdInner.cmd = cfg.ifCmd;
                                 cmdInner.addNext = true;
@@ -226,10 +237,10 @@ function RDKHelper() {
                             }
                         }
 
-                        sh.cid(fxDone,body, cmd);
+                        sh.cid(fxDone, body, cmd);
                         t.cb();
                     }
-                },1)
+                }, 1)
 
                 return;
             }
@@ -240,11 +251,11 @@ function RDKHelper() {
                 t.quickRequest(urls.urlgenindex,
                     'post', result, data);
                 function result(body) {
-                    console.log(  data)
+                    console.log(data)
                     console.log(sh.t, 'results', body)
 
-                    if ( cfg.ifCmdFx ) {
-                        if ( cfg.ifCmdFx(body) === true ) {
+                    if (cfg.ifCmdFx) {
+                        if (cfg.ifCmdFx(body) === true) {
                             var cmdInner = {};
                             cmdInner.cmd = cfg.ifCmd;
                             cmdInner.addNext = true;
@@ -253,31 +264,28 @@ function RDKHelper() {
                     }
 
 
-                    sh.cid(fxDone,body, cmd);
+                    sh.cid(fxDone, body, cmd);
                     t.cb();
                 }
             })
         }
 
 
- 
-
-
         self.addRDK = function addRDK(cmd, fxDone, nextFx) {
             var fxAddToTest = t.add;
-            if ( nextFx || cmd.addNext ) {
+            if (nextFx || cmd.addNext) {
                 fxAddtoTest = t.addNext;
             }
 
             var cfg = {};
-            if ( cmd.cmd == null ) {
-                cfg = {cmd:cmd, fxDone:fxDone}
+            if (cmd.cmd == null) {
+                cfg = {cmd: cmd, fxDone: fxDone}
             } else {
                 cfg = cmd;
             }
 
 
-            if ( sh.isArray(cfg.cmd) ) {
+            if (sh.isArray(cfg.cmd)) {
                 cfg.cmd = cfg.cmd.join(sh.n)
             }
 
@@ -285,32 +293,32 @@ function RDKHelper() {
 
 
             /*fxAddToTest(function noTryToTestContent() {
-                if ( sh.isArray(cfg.cmd) ) {
-                    cfg.cmd = cfg.cmd.join(sh.n)
-                }
-                cmdStr = cfg.cmd.replace(/\//gi, "\\");
-                t.quickRequest(urls.urlgenindex,
-                    'post', result, cmdStr);
-                function result(body) {
-                    console.log(  cmdStr)
-                    console.log(sh.t, 'results', body)
+             if ( sh.isArray(cfg.cmd) ) {
+             cfg.cmd = cfg.cmd.join(sh.n)
+             }
+             cmdStr = cfg.cmd.replace(/\//gi, "\\");
+             t.quickRequest(urls.urlgenindex,
+             'post', result, cmdStr);
+             function result(body) {
+             console.log(  cmdStr)
+             console.log(sh.t, 'results', body)
 
-                    if ( cfg.ifCmdFx ) {
-                        if ( cfg.ifCmdFx(body) === true ) {
-                            var cmdInner = {};
-                            cmdInner.cmd = cfg.ifCmd;
-                            cmdInner.addNext = true;
-                            self.addRDK(cmdInner);
-                        }
-                    }
+             if ( cfg.ifCmdFx ) {
+             if ( cfg.ifCmdFx(body) === true ) {
+             var cmdInner = {};
+             cmdInner.cmd = cfg.ifCmd;
+             cmdInner.addNext = true;
+             self.addRDK(cmdInner);
+             }
+             }
 
-                    sh.cid(fxDone,body, cmdStr);
-                    t.cb();
-                }
-            })*/
+             sh.cid(fxDone,body, cmdStr);
+             t.cb();
+             }
+             })*/
 
-            if ( cfg.returnVal ) {
-                var cfg2  = {}
+            if (cfg.returnVal) {
+                var cfg2 = {}
                 cfg2.cmd = cfg.returnVal
                 self.addRDK(cfg2);
             }
@@ -326,32 +334,32 @@ function RDKHelper() {
         //return;
 
 
+        /*
 
-/*
+         var y = `
+         5==1
+         `
+         runCmd(y);
 
-        var y = `
-5==1
-`
-        runCmd(y);
-
-        return;
-        var y = `y = 5 + 4 `
-        runCmd(y);
-        var y = `y
-y`
-        runCmd(y);
-        return;
-
+         return;
+         var y = `y = 5 + 4 `
+         runCmd(y);
+         var y = `y
+         y`
+         runCmd(y);
+         return;
 
 
-*/
 
+         */
+        if (returnX) {
+            return t;
+        }
 
         self.m.add('Bidf', true, 'r1')
         //self.addRDK('r1')
         self.addRDK('r1.MoveJ([0,0,0,0,10,-200])')
         return;
-
 
 
         /*
@@ -362,7 +370,6 @@ y`
          */
 
 
- 
         var y = `
 5==1
 `
@@ -372,18 +379,16 @@ y`
         runCmd(y);
 
 
-
-
         self.addRDK("RDK.Item('bovoty')")
 
 
-/*
+        /*
 
-        runCmd('RDK')
-        runCmd('RDK.AddFile("C:/Ro' +
-            'boDK/Library/KUKA_KR_210_2.robot")');
+         runCmd('RDK')
+         runCmd('RDK.AddFile("C:/Ro' +
+         'boDK/Library/KUKA_KR_210_2.robot")');
 
-*/
+         */
 
         return;
         var y = `
@@ -437,13 +442,13 @@ r1
 
     function defineUtils() {
         p.r = function r(cmd2, paramKey, paramValue, isString) {
-            var cmd = self.utils.replace(cmd2,paramKey, paramValue, isString)
+            var cmd = self.utils.replace(cmd2, paramKey, paramValue, isString)
             return cmd;
         }
 
         p.utils = {};
         p.utils.replace = function replace(cmd, findInStr, replaceW, isString) {
-            if ( isString ) {
+            if (isString) {
                 replaceW = sh.qq(replaceW)
             }
             cmd = sh.replace(cmd, findInStr, replaceW)
@@ -451,10 +456,11 @@ r1
             return cmd;
         }
     }
+
     defineUtils();
 
     p.proc = function debugLogger() {
-        if ( self.silent == true) {
+        if (self.silent == true) {
             return
         }
         sh.sLog(arguments)
@@ -466,15 +472,12 @@ r1
 exports.RDKHelper = RDKHelper;
 
 
-
-
-var i = new RDKHelper();
-i.init()
-
-
-
-
 if (module.parent == null) {
+
+
+    var i = new RDKHelper();
+    i.init()
+
 
     //var i = new RDKHelper();
     //i.init()

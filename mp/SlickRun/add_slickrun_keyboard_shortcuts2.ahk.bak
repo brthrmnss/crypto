@@ -1,0 +1,16 @@
+#SingleInstance FORCE
+;SetTitleMatchMode,2
+#KeyHistory ;
+SC110::
+    WinActivate SR - Google Chrome
+    Return
+SC122::
+    WinActivate Web Speech2Text
+    Return
+
+
+# SC119::
+#    #Media next - MsgBox "l::"
+#    WinActivate SR - Google Chrome
+#    Run "G:\Dropbox\projects\crypto\mp\SlickRun\scripts\gotosr.ahk"
+#    Return

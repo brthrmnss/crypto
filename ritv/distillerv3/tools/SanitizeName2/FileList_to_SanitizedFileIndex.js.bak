@@ -1,0 +1,854 @@
+/**
+ * Created by user1 on 8/12/2017.
+ */
+
+
+/**
+ * Created by user1 on 1/28/2017.
+ */
+
+
+/**
+ * Created by user1 on 1/28/2017.
+ */
+
+var shelpers = require('shelpers')
+var sh = require('shelpers').shelpers;
+var PromiseHelperV3 = shelpers.PromiseHelperV3;
+
+var SNTestWorkflow = {}
+
+//var SanitizeNamesFromDB = require('./SanitizeNamesFromDB').SanitizeNamesFromDB;
+var IMDB_Scraper = sh.require('ritv/imdb_movie_scraper/imdb_scraper.js').IMDB_Scraper
+var imdb_api_get_content = sh.require('ritv/imdb_movie_scraper/imdb_scraper.js').imdb_api_get_content
+
+
+var sh = require('shelpers').shelpers;
+var shelpers = require('shelpers');
+
+function FileList_to_FullIndex_Workflow() {
+    var p = FileList_to_FullIndex_Workflow.prototype;
+    p = this;
+    var self = this;
+    self.data = {};
+    self.data.imdbs = {}
+    p.init = function init(config) {
+        self.settings = sh.dv(config, {});
+
+
+        //self.settings.fileImport_ClearAll = true; //why: test using diffen types of files 
+        //self.settings.searchOnServerName = 'testFakeMachine';
+
+        self.data.listOutputCSV = sh.fs.moveTo(self.settings.fileList, 'sn2_Output', '.csv')
+        self.data.listOutputJSON = sh.fs.moveTo(self.settings.fileList, 'sn2_Output', '.json')
+        self.data.listWorkJSON = sh.fs.moveTo(self.settings.fileList+'.work', 'sn2_Output', '.json')
+        self.data.listOutputErrorsJSON = sh.fs.moveTo(self.settings.fileList, 'sn2_Output', 'error.json')
+        sh.fs.mkdirp(self.data.listOutputCSV, true)
+        self.data.work = sh.readJSONFile(self.data.listWorkJSON, {}, true);
+
+        var output = {}
+
+        sh.throwIfNull(self.settings.fileList, 'need a list of files')
+        //sh.throwIfNull(self.settings.dlManifest, 'need a fileManifest')
+        //  console.log('-verifyComplete%', self.settings.fileManifest, self.settings.fileList);
+
+        /* self.settings.fileImportServerName = sh.fs.leaf(self.settings.fileList)
+         if (self.settings.searchOnServerName != null) {
+         } else {
+         //by default
+         self.settings.searchOnServerName =
+         self.settings.fileImportServerName
+         //sh.exit('howmany')
+         }
+         if (self.settings.searchAllServers) {
+         self.settings.searchOnServerName = null;
+         }*/
+
+        self.runTestWorkflow();
+
+    }
+
+
+    p.runTestWorkflow = function runTestWorkflow() {
+        var token = {}
+
+        var work = new PromiseHelperV3();
+        token.silentToken = true
+        work.wait = token.simulate == false;
+
+        console.log('what is', self.importFilesIntoFileDB)
+        work.startChain(token)
+        //import files, santizie, put in database toDB
+            .add(self.filterFileList)
+            .add(self.sanitizeFileNames)
+            .add(self.attachIMDB)
+            // return;b
+            //go through all files and make sure files exist
+            .add(self.iterateOverDlManifest_and_findFiles)
+            .add(self.lastStep)
+            //.log()
+            .end();
+
+    }
+
+    function defineSteps() {
+        p.filterFileList = function filterFileList(token, cb) {
+            // self.data.listFiles = sh.fs.readFile(self.settings.fileList);
+
+
+            var fileListContents = sh.readFile(self.settings.fileList);
+
+
+            //contents = contents.replace(/\r/g, "");
+            var files = sh.breakStringIntoLinesSafe(fileListContents)
+            files = self.utils.filterFilesOnly(files)
+            //files = self.utils.filterStrings(files, self.settings.fileFilter)
+            if (self.settings.countOffset) {
+                files = files.slice(self.settings.countOffset)
+            }
+
+            if (self.settings.countMaxFiles) {
+                files = files.slice(0, self.settings.countMaxFiles)
+            }
+
+
+
+            // self.data.files = files;
+            var filesNormalized = [];
+            sh.each(files, function noramlizeFile(k, file) {
+                var file2 = sh.fs.norm(file)
+                filesNormalized.push(file2);
+            })
+
+
+            var filteredFiles = [];
+
+            sh.each(filesNormalized, function process_RemoveBadFiles(i, localFilePath) {
+                if (sh.endsWith(localFilePath, '.txt')) {
+                    return
+                }
+                if (sh.endsWith(localFilePath, '.srt')) {
+                    return
+                }
+                if (sh.endsWith(localFilePath, '.nfo')) {
+                    return
+                }
+                if (localFilePath == 'no episode info ') {
+                    return
+                }
+                if (sh.includes(localFilePath, '.sample.')) {
+                    return
+                }
+                var fifthCharFromEnd = localFilePath.slice(-5, -4)
+                var fourth = localFilePath.slice(-4, -3)
+                if (fifthCharFromEnd != '.' &&
+                    fourth != '.') {
+                    return; //not a standard file
+                }
+
+                if ( self.settings.resumeMode != false ) {
+                   // debugger
+                    var foundB4 = self.data.work[localFilePath]
+                    if ( foundB4) {
+                        return;
+                    }
+                }
+
+                filteredFiles.push(localFilePath)
+            })
+
+            self.data.listFiles = filteredFiles;
+
+            self.proc('files', self.data.listFiles.length)
+            cb()
+        }
+
+        p.sanitizeFileNames = function sanitizeFileNames(token, cb) {
+            var NameSanitizer = sh.require('ritv/distillerv3/tools/santizename/NameSanitizer').NameSanitizer
+            var nS = new NameSanitizer();
+
+            var config = {}
+            config.showAllItemsAtEnd = false;
+            config.manualMode = true
+            config.showOutput = false;
+            config.log = false
+            nS.init(config);
+
+            self.data.outputs = [];
+
+            sh.each(self.data.listFiles, function process_RemoveBadFiles(i, localFilePath) {
+
+
+                sh.log.iteration(i, self.data.listFiles, 100, localFilePath)
+
+                var fileNames = [localFilePath]; //search for local path
+                //input filenames,
+                var fileList = nS.utils.filterFileList(fileNames); //convert filenames to epi/season #
+
+
+                var processedFile = fileList[0]
+                var output = {}
+                output.input = localFilePath
+                output.output = fileList[0];
+
+                //console.log(processedFile)
+
+                if (sh.isString(processedFile) || fileList.length == 0) {
+                    //cb()
+                    self.fault('no episode info', '', fileNames);
+                    return;
+                }
+                if (processedFile.imdb_id == null) {
+                    self.fault('did not have imdb_id', processedFile)
+                }
+                if (processedFile.tvMode) {
+                    var eJSON = JSON.parse(processedFile.epi)
+                    // processedFile.epiJSON = eJSON;
+                    if (sh.isNumber(eJSON.s) == false || eJSON.s == 0) {
+                        self.fault('no season', eJSON, fileNames); //no season
+                        return;
+                    }
+
+                    if (sh.isNumber(eJSON.e) == false || eJSON.e == 0) {
+                        self.fault('no episode', eJSON, fileNames); //no season
+                        return;
+                    }
+                }
+
+
+
+
+
+                self.data.outputs.push(output)
+
+            })
+
+            cb()
+        }
+
+        self.data.errors = [];
+        p.fault = function fault(i) {
+            var args = sh.args(arguments)
+            self.data.errors.push(args)
+        }
+
+        p.attachIMDB = function attachIMDB(token, cb) {
+            var imdb = new IMDB_Scraper();
+
+            global.noIMDBContentDB = true
+
+            var i = 0;
+
+            sh.async(self.data.outputs, function process_getIMDBInfo(outputIMDB, _fxDone) {
+
+
+                function fxDone() {
+                    sh.later(_fxDone)
+                }
+
+
+                var item = outputIMDB.output;
+
+                //  processedFile.epiJSON = eJSON;
+
+                i++
+              /*  if (i < 400) {
+                    //console.log('item', item)
+                     fxDone()
+                    return;
+                }*/
+                if ( sh.log.iteration(i, self.data.outputs, 100, item) ) {
+
+                    //self.data.work = sh.readJSONFile(self.data.listWorkJSON, {}, true);
+                    sh.writeJSONFile(self.data.listWorkJSON, self.data.work)
+
+                }
+                if (!item.sanitized.includes('dead mans')) {
+                   // fxDone()
+                   // return;
+                }
+
+
+              /*  if (i > 400) {
+                    console.log('item', item)
+                    console.error('item', item)
+                }*/
+//asdf.g
+
+                var settings = {}
+                settings.ttList = [item.imdb_id]
+                if (item.imdb_id == null) {
+                    console.log('item null', item)
+                    fxDone()
+                    return;
+                }
+                //settings.ttList = ['tt1234588']
+
+                //console.log('item for it', item)
+                //  asdf.g
+                sh.log.disable()
+                settings.fxDone = function fxDone_XA(fItem) {
+                    sh.log.enable();
+                    var firstItem = fItem.data.movies_meta[0];
+                    if (firstItem == null) {
+                        console.error(sh.t, 'failed on', item.title)
+                        fxNextSkip('could not get this item');
+                        return;
+                    }
+
+                    self.data.imdbs[firstItem.imdb_id] = firstItem;
+
+
+                    if (firstItem.series) {
+                        var epiJSON = JSON.parse(item.epi)
+                        //var i = new imdb_api_get_content();
+                        sh.log.disable()
+                        imdb_api_get_content.get_episodes(firstItem.imdb_id, function onasdf(episodeItem) {
+                            sh.log.enable();
+                            var content = episodeItem[firstItem.imdb_id];
+
+
+                            function getEpi_FromContent(s, e) {
+                                sh.throwIfNull(s, 'need season')
+                                var found = null;
+                                sh.each(content.episodeList, function onFindEpisode(k, v) {
+                                    if (parseFloat(v.episodeNumber) == parseFloat(e)) {
+                                        if (parseFloat(v.seasonNumber) == parseFloat(s)) {
+                                            found = v;
+                                            return false;
+                                        }
+                                    }
+                                })
+                                return found;
+                            }
+
+                            imdbEpisode = getEpi_FromContent(epiJSON.s, epiJSON.e)
+
+                            //outputIMDB.imdbEpisode = imdbEpisode;
+                            //item.episodeSummary2 = content.episodeSummary2
+
+                            delete item.i
+                            if (imdbEpisode == null) {
+                                self.fault('could not get episode for', outputIMDB)
+                                fxDone()
+                                return
+                            }
+                            item.episode_name = imdbEpisode.title;
+                            item.imdb_id2 = imdbEpisode.imdb_id;
+                            item.series_id = firstItem.imdb_id;
+                            item.series_name = firstItem.title;
+
+                            //item.name = null
+                            // delete item.name
+
+                            //asdf.g
+                            //episodeItem.episodeSummmary
+                            onGotEspidoes();
+                            // debugger
+                        })
+                    }
+                    else {
+                        item.title = firstItem.title;
+                        item.imdb_id2 = firstItem.imdb_id;
+                        onGotEspidoes();
+                    }
+
+                    function onGotEspidoes(asdf) {
+
+                        /* item.ratingCount = firstItem.ratingCount
+
+                         // console.log('asdf', firstItem.ratingCount, fItem.data.movies_meta.length)
+                         if (firstItem.ratingCount) {
+                         if (item.series == true) {
+                         if (firstItem.ratingCount < 20000) {
+                         // asdf.g
+                         console.error(sh.t, 'too low', item.title, sh.paren(firstItem.ratingCount))
+                         fxNextSkip('series rating too low');
+                         return;
+                         }
+                         } else {
+                         //asdf.g
+                         }
+                         } else {
+                         fxNextSkip();
+                         return;
+                         }*/
+                        if ( self.settings.resumeMode != false ) {
+                            //debugger
+                            self.data.work[outputIMDB.input] = outputIMDB;
+                        }
+                        // console.log('ok', firstItem.title, firstItem.ratingCount)
+                        fxDone()
+                        //console.error('imdb loop complete', self.data.indexIteration, item.index, firstItem.title, firstItem.ratingCount)
+                    }
+                }
+                settings.redoDelayTimeSecs = 3
+                settings.redoCountMax = 1;
+                //sh.log.disable();
+                imdb.settings = settings;
+
+
+                var oldIMDB = self.data.imdbs[item.imdb_id]
+                if (oldIMDB) {
+                    var fItem = {};
+                    fItem.data = {}
+                    // fItem.data.movies_meta  = {};
+                    fItem.data.movies_meta = [oldIMDB]
+                    settings.fxDone(fItem)
+                    //asdf.g
+                    return;
+                }
+
+                imdb.loadSettings(settings)
+            }, function onsdf() {
+
+                cb()
+
+            })
+
+         //   cb()
+        }
+
+
+        p.iterateOverDlManifest_and_findFiles = function iterateOverDlManifest_and_findFiles(token, cb) {
+
+            sh.each(self.data.listFiles, function process_RemoveBadFiles(i, localFilePath) {
+            })
+
+            cb()
+        }
+
+
+        p.iterateOverDlManifest_and_findFiles = function iterateOverDlManifest_and_findFiles(token, cb2) {
+
+            cb2()
+
+            return;
+            self.proc('iterateOverDlManifest_and_findFiles');
+//asdf.g
+            var dlManifestRequests = sh.fs.readJSONFile(self.settings.fileManifest);
+            self.settings.fileMissingOutput = self.settings.fileManifest + '.missing.json'
+            self.settings.fileDlManifestProcessedOutput = self.settings.fileManifest + '.recipet.json'
+            self.data.listMissingDlRequests = [];
+            self.data.listDlRequestsProcessed = [];
+
+            self.data.countDLList = 0;
+            self.data.countFound = 0;
+            self.data.countMissing = 0;
+            self.data.countSkipped = 0;
+            self.data.countNA = 0;
+            self.data.naItems = [];
+            self.data.listMissingManifestFile = [];
+            //asdf.g
+
+            var index = 0
+
+            self.proc('okokokok');
+            var i = new SanitizeNamesFromDB();
+            i.init();
+
+
+            // sh.exit('size', dlManifestRequests.length )
+            sh.async(dlManifestRequests,
+                function checkIfRequestFound(dlRequest, __fxDoneIteration) {
+                    var h = {};
+
+                    function fxDoneIteration() {
+                        if (h.finished) {
+                            //asdf.g
+                            self.proc('udpe call')
+                        }
+                        h.finished = true
+                        sh.later(__fxDoneIteration)
+                        if (index % 100 == 0) {
+                            console.log('at', index,
+                                sh.percent(index / dlManifestRequests.length), dlRequest.name, dlRequest.title)
+                        }
+                        //__fxDoneIteration()
+                    }
+
+                    index++
+
+                    //self.proc('okokokok')
+                    if (dlRequest.skip) {
+                        self.data.countSkipped++
+                        fxDoneIteration();
+                        return;
+                    }
+                    if (dlRequest.urlTorrentNotFound == true) {
+                        self.data.countNA++
+                        self.data.naItems.push(dlRequest.name)
+                        fxDoneIteration();
+                        return;
+                        return;
+                    }
+
+                    if (dlRequest.urlTorrent == null) {
+                        self.data.countNA++
+                        self.data.naItems.push(dlRequest.name)
+                        fxDoneIteration();
+                        return;
+                        return;
+                    }
+
+                    self.data.countDLList++
+
+
+                    if (self.settings.searchOnServerName) {
+                        i.settings.searchOnServerName = self.settings.searchOnServerName;
+                    }
+
+
+                    var query = sh.clone(dlRequest);
+                    query.imdb_id = dlRequest.imdb_id
+                    if (dlRequest.series) {
+                        //   asdf.gcontent
+                        query.seasonNumber = dlRequest.query.split(' ').slice(-1)[0]
+                    }
+                    if (dlRequest.seasonNumber) {
+                        // asdf.g
+                        query.seasonNumber = dlRequest.seasonNumber;
+                    }
+                    query.query = dlRequest.query
+
+                    console.log(dlRequest.name, query.imdb_id)
+
+
+                    if (self.settings.searchOnDB) {
+                        // asdf.g
+                        var queryPrevFile = sh.clone(query)
+                        queryPrevFile.fxDone = function onRecievedFile(files) {
+                            self.proc('file', files, files.prototype, sh.isString(files))
+                            console.log('~~~~~', files.length, files)
+                            var file = null
+                            if (files.length > 0) {
+                                file = files[0];
+                            }
+                            //asdf.g
+                            fxSearchForFile(true, file);//
+
+                        }
+                        queryPrevFile.serverName = self.settings.searchOnServerName;
+                        i.searchRcDbForFile(queryPrevFile)
+                    } else {
+                        fxSearchForFile();
+
+                    }
+
+
+                    function fxSearchForFile(preMatchMode, preMatchedFile) {
+
+                        //console.error('pre---yyy', preMatchedFile)
+                        //sh.x()
+                        //i.testMode();
+                        // i.iterateOverFiles_InMega();
+                        // i.iterateOverFiles();
+                        i.settings.maxFiles = null
+                        i.settings.logging = true
+                        i.settings.mode2 = true;
+                        //this method will search all files, and look to match the item info
+                        i.settings.fxFilterFile = function fxFilterFile_OnlyValidImdbs(potentialMatchingFiles) {
+
+
+                            if (preMatchMode) {
+                                //asdf.g
+                                return preMatchedFile;
+                                //asdf.g
+                            }
+
+                            self.proc('okokokok')
+                            var validMatch = null;
+
+
+                            console.log('potentialMatchingFiles', potentialMatchingFiles)
+
+                            //asdf.g
+                            sh.each(potentialMatchingFiles, function findMatchFileName(k, fileInfo) {
+                                var localFilePath = sh.fs.norm(fileInfo.localFilePath)
+                                var fileIsInList = self.data.filesNormalized.includes(localFilePath);
+
+                                if (self.settings.searchOnDB) {
+                                    console.log('()()--', fileIsInList, '--', localFilePath)
+                                    sh.x()
+                                }
+
+                                if (fileIsInList) {
+                                    validMatch = fileInfo;
+                                    return false;
+                                }
+                                //console.log('can match',file,fileIsInList)
+                            })
+                            self.proc('okokokok')
+
+                            //sh.exit('find', imdbs)
+                            //asdf.g
+
+                            return validMatch;
+
+
+                        }
+                        //i.settings.maxComparisons = 100
+                        //var collect = file.map(function (x ) { return x.imdb_id})
+
+                        // if ( i.settings.mode2 == true ) {
+
+
+                        //console.log('what is imdg', dlRequest)
+
+                        var imdbIds = [] //realy a movie object
+                        imdbIds.push(query)
+
+                        self.proc('compareDB');
+                        //console.log('imdbdids', imdbIds)
+                        //sh.exit('imdbds')
+
+
+                        //dl manifest to dl again
+                        //what files missing?
+                        //what files found, and what are proper names
+                        i.compareDB(imdbIds);
+                        i.settings.fxDoneErrors = function onFinishedProcessingDlRequest(missingItems, data) {
+                            i.settings.fxDoneErrors = null;
+
+                            var dlRequestProcessed = sh.clone(dlRequest);
+                            dlRequestProcessed.found = data.foundImdbContent
+                            self.data.listDlRequestsProcessed.push(dlRequestProcessed)
+
+
+                            self.data.countFound += data.countFound;
+                            self.data.countMissing += data.countMissing;
+
+                            if (missingItems.length > 0) {
+
+                                var dlRequestClone = sh.clone(dlRequest);
+                                //self.data.listMissingManifestFile.push(dlRequestClone) TODO: dleete this file
+
+                                dlRequest.errors = missingItems
+                                dlRequestProcessed.errors = missingItems
+                                dlRequest.urlTorrentBad = dlRequest.urlTorrent;
+                                delete dlRequest.urlTorrent;
+                                delete dlRequest.genIndex;
+                                delete dlRequest.size;
+                                delete dlRequest.filtered;
+                                delete dlRequest.seeders;
+                                dlRequest.index = self.data.listMissingDlRequests.length + 1;
+
+
+                                dlRequestClone.origIndex = dlRequestClone.genIndex;
+                                dlRequestClone.index = self.data.listMissingDlRequests.length
+                                self.data.listMissingDlRequests.push(dlRequestClone)
+
+
+                            }
+                            fxDoneIteration()
+                        }
+                        //i.tests.testSaveNewMovie();
+                    }
+                },
+                finishedAllSets)
+
+
+            function finishedAllSets() {
+                sh.writeJSONFile(self.settings.fileMissingOutput, self.data.listMissingDlRequests)
+                sh.writeJSONFile(self.settings.fileDlManifestProcessedOutput, self.data.listDlRequestsProcessed)
+
+                //sh.writeJSONFile(self.self.data.listMissingManifestFile)
+
+                self.proc('file is here:', self.settings.fileDlManifestProcessedOutput)
+                self.proc('fileMissingOutput is here:', self.settings.fileMissingOutput)
+                //asdf.g
+
+                self.data.percentValid = sh.percent(
+                    (self.data.countFound - self.data.countMissing) /
+                    (self.data.countFound))
+
+                self.proc('percent valid', self.data.percentValid,
+                    self.data.countFound - self.data.countMissing + '/' + self.data.countFound)
+
+
+                cb2();
+            }
+
+        }
+
+        /*
+         extra:
+         go through each item and state if it is found and store as output file ....
+         */
+
+        p.lastStep = function lastStep() {
+            sh.writeJSONFile(self.data.listWorkJSON, self.data.work)
+
+            console.log('finisehd output', self.data.outputs.length)
+
+            // return;
+
+            var output = sh.each.collect(self.data.outputs, 'output')
+            sh.writeFile(self.data.listOutputCSV, sh.toCSV(output))
+            sh.writeJSONFile(self.data.listOutputJSON, output)
+            sh.writeJSONFile(self.data.listOutputErrorsJSON, self.data.errors)
+
+            //sh.toCol(self.data.listOutputJSON, 0 )
+            //= sh.fs.moveTo(self.settings.fileList, 'sn2_Output', '.json')
+            //sh.fs.mkdirp(self.data.listOutputCSV, true)
+
+            //asdf.g
+            // sd.ggg
+            //sh.exit('what is fxdone', self.settings.fxDone)
+            sh.callIfDefined(self.settings.fxDone, self.data, self)
+        }
+    }
+
+    defineSteps();
+
+    function defineUtils() {
+        p.utils = {};
+        p.utils.filterFilesOnly = function filterFilesOnly(files) {
+            var filteredFiles = [];
+            sh.each(files, function removeFileIfNotValidVid(i, localFilePath) {
+                if (sh.endsWith(localFilePath, '.txt')) {
+                    return
+                }
+                if (sh.endsWith(localFilePath, '.srt')) {
+                    return
+                }
+                if (sh.endsWith(localFilePath, '.nfo')) {
+                    return
+                }
+                if (localFilePath == 'no episode info ') {
+                    return
+                }
+                if (sh.includes(localFilePath, '.sample.')) {
+                    return
+                }
+
+                var skipBc = null;
+                var removeFileTypes = ['.icon', '.epub', '.pdf', '.ico', '.mobi',
+                    '.jpg', '.png', '.htm', '.rar', '.xml',
+                    '.smi']
+                sh.each(removeFileTypes, function onFile(k, v) {
+                    if (sh.endsWith(localFilePath, v)) {
+                        skipBc = v
+                        return false;
+                    }
+                });
+
+                var removeFileTypes = ['.sample.', '-sample.']
+                sh.each(removeFileTypes, function onFile(k, v) {
+                    if (sh.includes(localFilePath, v)) {
+                        skipBc = v
+                        return false;
+                    }
+                });
+
+                if (skipBc) {
+                    return
+                }
+
+
+                var includeFileType = ['.mp4',
+                    '.mkv', '.avi', '.m4v']
+                var includesFileType = null
+                sh.each(includeFileType, function onFile(k, v) {
+                    if (sh.includes(localFilePath, v)) {
+                        includesFileType = v
+                        return false;
+                    }
+                });
+
+                if (includesFileType == null) {
+                    return
+                }
+                var fifthCharFromEnd = localFilePath.slice(-5, -4)
+                var fourth = localFilePath.slice(-4, -3)
+                if (fifthCharFromEnd != '.' &&
+                    fourth != '.') {
+                    return; //not a standard file
+                }
+                filteredFiles.push(localFilePath)
+            })
+            var showRemovedItems = false;
+            //showRemovedItems = true
+            if (showRemovedItems) {
+                sh.each(files, function showRemovedFiles(i, origfile) {
+                    if (filteredFiles.indexOf(origfile) == -1) {
+                        console.error(origfile)
+                    }
+                })
+                process.exit()
+            }
+            var showIncludedItems = false;
+            //showIncludedItems = true
+            if (showIncludedItems) {
+                sh.each(filteredFiles, function showAllIncludedFiles(i, origfile) {
+                    // if ( i < 9000 )
+                    console.log(i, origfile)
+                })
+                process.exit()
+            }
+            return filteredFiles;
+        }
+    }
+
+    defineUtils();
+
+    p.test = function test(config) {
+    }
+
+    p.proc = function debugLogger() {
+        if (self.silent == true) {
+            return;
+        }
+        sh.sLog(arguments);
+    };
+}
+
+FileList_to_FullIndex_Workflow.testWorkflow = function testWorkflow(cfg) {
+    sh.throwIfNull(cfg.fileList, 'only accept configs')
+    var instance = new FileList_to_FullIndex_Workflow();
+    var config = {};
+    config = cfg;
+    instance.init(config)
+    return;
+
+}
+
+exports.SNTestWorkflow = SNTestWorkflow;
+
+if (module.parent == null) {
+    var dirTrash = sh.fs.makePath(__dirname, 'trash')
+    sh.fs.mkdirp(dirTrash)
+
+    // var fileOutput = sh.fs.makePath(dirTrash, 'output.txt')
+    var fileListOfFiles = sh.fs.join(__dirname, 'testData', 'fileListTest.txt');
+    var fileListOfFiles = 'G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___95.211.137.145_6024_.txt';
+    var fileDlManifest = sh.fs.join(__dirname, 'testData', 'listIds_ls051393312-b.json');
+
+
+    // var fileListOfFiles  = 'G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\tasks\\boodtylisttest-full.6.17.2017.output.pbVerified.json.output.breed.json'
+
+
+    var cfg = {}
+    cfg.fileList = fileListOfFiles
+    cfg.countMaxFiles = 10
+    // cfg.countMaxFiles = 400
+    //cfg.countOffset = 400
+    FileList_to_FullIndex_Workflow.testWorkflow(cfg, function onDone(output) {
+//asdf.g
+        console.log('testWorkflow', 'done', output)
+        return;
+        console.log('found how many?', output.foundCount);
+        sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+    });
+}
+//XO.runX();
+
+
+//exports.BasicClass = BasicClass;
+
+if (module.parent == null) {
+    /*    var instance = new BasicClass();
+     var config = {};
+     instance.init(config)
+     instance.test();*/
+}

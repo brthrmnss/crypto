@@ -647,8 +647,9 @@ function DalBasicRoutesHelpers(_self) {
                 query.order = ['global_updated_at', 'DESC']
             }
 
-            self.proc('who is request from', req.query.peerName);
-
+            if ( self.settings.dbg ) {
+                self.proc('who is request from', req.query.peerName);
+            }
             self.dbHelper2.getDBVersion(function onNext(version) {
                 self.dbHelper2.countAll(function gotAllRecords(count) {
                     self.count = count;
@@ -657,6 +658,8 @@ function DalBasicRoutesHelpers(_self) {
                         v: self.version,
                         name: self.settings.name
                     }
+
+                    if ( self.settings.dbgHard )
                     console.error('776-what is count',
                         req.query.peerName,
                         self.settings.name, result, query)
@@ -676,10 +679,34 @@ function DalBasicRoutesHelpers(_self) {
             self.dbHelper2.count(function getSize_gotRecordCount(count) {
                 self.count = count;
                 self.size = count;
-                console.error('----s getSize', self.settings.name, count, cb.name)
+                //console.error('----s getSize', self.settings.name, count, cb.name)
                 y.addX('dfsdf')
                 sh.callIfDefined(cb,count)
             })
+        }
+
+        self.getPeerConnections = self.getPeerConnections = function getPeerConnections(cb) {
+            self.utils.forEachPeer(fxEachPeer, fxEachPeer);
+            function fxEachPeer(ip, fxDone) {
+                var config = {showBody: false};
+                config.baseUrl = ip;
+                self.utils.updateTestConfig(config)
+                var t2 = EasyRemoteTester.create('Purge records on peers', config);
+                var reqData = {};
+                reqData.secondStep = true; //prevent repeat of process
+                reqData.fromPeer = self.settings.name;
+                reqData.fromPeerIp = self.settings.ip;
+                reqData.fromPeerChain = fromPeerChain + '__' + self.settings.name
+                if (self.utils.peerHelper.skipPeer(fromPeer, ip)) {
+                    fxDone()
+                    return;
+                }
+
+                sh.callIfDefined(cb, count)
+            }
+
+      asdf.g
+            sh.cid(cb)
         }
 
         self.getRecords = function getRecords(req, res) {
@@ -726,6 +753,7 @@ function DalBasicRoutesHelpers(_self) {
                     res.send('not foundz')
                     return;
                 }
+                if ( self.settings.dbgHard )
                 self.proc('sss', self.settings.syncPassword)
 
             }

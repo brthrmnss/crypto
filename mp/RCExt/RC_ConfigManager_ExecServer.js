@@ -29,6 +29,10 @@ function RCConfigExecServer() {
 
     var indexPageSecurityEnding = '567.html'
 
+
+    self.data.dirDlManifests = sh.fs.makePath(__dirname, 'manifests')
+    self.data.dirFileList = sh.fs.join(__dirname, 'data', 'fileList')
+
     p.loadConfig = function loadConfig(config) {
         self.settings = config;
         config.port = sh.dv(config.port, 6018);
@@ -42,10 +46,6 @@ function RCConfigExecServer() {
         self.data.id = exports.RCExtV
         console.error('RCConfigExecServer', exports.RCExtV)
         //   asdf3g.f
-        self.data.dirDlManifests = sh.fs.makePath(__dirname, 'manifests')
-        self.data.dirFileList = sh.fs.join(__dirname, 'data', 'fileList')
-
-
 
         // asd.g
         self.runTests();
@@ -84,7 +84,7 @@ function RCConfigExecServer() {
 
         app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse application/vnd.api+json as json
 
-        app.use(express.static( __dirname + '/' + 'public_html'));
+        app.use(express.static(__dirname + '/' + 'public_html'));
         //uiutils in local
         var dirUIUtils = sh.require(
             /*sh.fs.join('mp', 'testingFramework'),*/
@@ -93,13 +93,13 @@ function RCConfigExecServer() {
         //console.log('ok, ', dirUIUtils)
         //sh.x()
         sh.fs.exists(dirUIUtils, 'wh not here')
-        app.use('/js/lib',express.static(dirUIUtils));
+        app.use('/js/lib', express.static(dirUIUtils));
         app.get('/js/lib/ui_utils.js', function onReadFile(req, res) {
-            var content = sh.readFile(dirUIUtils+'shelpers-mini.js')
+            var content = sh.readFile(dirUIUtils + 'shelpers-mini.js')
             res.send(content);
         });
         app.get('/js/lib/shelpers-mini.js', function onReadFile(req, res) {
-            var content = sh.readFile(dirUIUtils+'ui_utils.js')
+            var content = sh.readFile(dirUIUtils + 'ui_utils.js')
             res.send(content);
         });
 
@@ -267,10 +267,10 @@ function RCConfigExecServer() {
                 var body = req.query;
                 var name = body.name;
 
-                if ( name.endsWith('.json')==false) {
+                if (name.endsWith('.json') == false) {
                     name += '.json'
                 }
-                var fileJSON = sh.fs.join(__dirname, 'tasks', name  )
+                var fileJSON = sh.fs.join(__dirname, 'tasks', name)
                 self.proc('getTask', name, fileJSON);
                 res.sendfile(fileJSON);
                 //res.send('removed');
@@ -280,7 +280,7 @@ function RCConfigExecServer() {
                 var body = req.query;
                 var name = body.name;
                 self.proc('removingTasls', name)
-                if ( name.endsWith('.json')==false) {
+                if (name.endsWith('.json') == false) {
                     name += '.json'
                 }
 
@@ -315,9 +315,7 @@ function RCConfigExecServer() {
             })
 
 
-
-
-            p.newTask  = function newTask(file) {
+            p.newTask = function newTask(file) {
                 var fileDlManifest = file;
                 var leaf = sh.fs.leaf(file)
                 leaf = leaf.replace('.json', '')
@@ -325,11 +323,11 @@ function RCConfigExecServer() {
                 var dirUploadedLists = sh.fs.join(__dirname, 'data', 'uploadedLists')
                 sh.fs.mkdirp(dirUploadedLists)
                 var fileUploadedManifest = sh.fs.join(dirUploadedLists, sh.fs.leaf(file))
-                var fileTask = sh.fs.join(__dirname, 'tasks', leaf )
+                var fileTask = sh.fs.join(__dirname, 'tasks', leaf)
                 //asdf.g
-                sh.fs.cp2(file, fileUploadedManifest ) ;
+                sh.fs.cp2(file, fileUploadedManifest);
 
-                var json =  {
+                var json = {
                     "name": leaf,
                     //"fileFileList": "G:\\Dropbox\\projects\\crypto\\mp\\RCExt\\data\\filelists\\http___localhost_6024_.txt",
                     "listDlManifest": fileUploadedManifest,
@@ -348,13 +346,12 @@ function RCConfigExecServer() {
             }
 
 
-
             self.addTest(function onTestSavingFile() {
                 //G:\Dropbox\projects\crypto\mp\RCExt\data\uploadTasks\test_dl_manifest.json
                 var fileTestUpload = sh.fs.join(__dirname, 'testData', 'test_dl_manifest.json')
                 var orig = self.data.j2.settings.addToTop;
                 self.data.j2.settings.addToTop = false;
-                self.newTask( fileTestUpload);
+                self.newTask(fileTestUpload);
                 self.data.j2.settings.addToTop = orig;
             })
 
@@ -566,16 +563,16 @@ function RCConfigExecServer() {
         p.handleSocket = function handleSocket(data, fx) {
 
 
-            if ( sh.isWin() == false && data.fileManifest ) {
-                data.fileManifest =  sh.fs.slash(data.fileManifest)
+            if (sh.isWin() == false && data.fileManifest) {
+                data.fileManifest = sh.fs.slash(data.fileManifest)
                 //asdf.g
-                if ( data.fileManifest.includes('crypto/')) {
+                if (data.fileManifest.includes('crypto/')) {
                     data.fileManifest = sh.fs.join(__dirname,
-                        sh.str.after( data.fileManifest, 'RCExt' ) )
+                        sh.str.after(data.fileManifest, 'RCExt'))
 
                 }
             }
-           /// sh.fs.exists(fileDlRecManifest)
+            /// sh.fs.exists(fileDlRecManifest)
 
 
             console.log(data.cmd, 'cmd')
@@ -620,6 +617,10 @@ function RCConfigExecServer() {
 
             if (data.cmd == 'taskCheckProgressLite') {
                 self.cmds.taskCheckProgressLite(data, fx)
+            }
+
+            if (data.cmd == 'taskGetDLProgressStatus') {
+                self.cmds.taskGetDLProgressStatus(data, fx)
             }
 
             if (data.cmd == 'sanitizeFileList') {
@@ -749,6 +750,8 @@ function RCConfigExecServer() {
 
             var dirScript = 'G:/Dropbox/projects/crypto/ritv/imdb_movie_scraper/' +
                 'wrappers/imdb_app_v3_wrapper.js'
+
+            dirScript = sh.deos(dirScript)
             var ConvertXToIMDB_PB_List = require(dirScript).ConvertXToIMDB_PB_List
 
             fH.dlLists = function dlLists(token, cb) {
@@ -792,6 +795,7 @@ function RCConfigExecServer() {
             }
             fH.storeInFile = function storeInFile(token, cb) {
                 self.proc('storeInFile', fx.data.fileDLManifest)
+                sh.log.file(fx.data.fileDLManifest)
                 fx({fileDLManifest: fx.data.fileDLManifest});
                 //create manifest and return manifest name
                 cb();
@@ -842,8 +846,8 @@ function RCConfigExecServer() {
                     return;
                 }
                 var result = {}
-                //  result.title = token.title;
-                //  result.urlMagnet = token.urlMagnet;
+                    //  result.title = token.title;
+                    //  result.urlMagnet = token.urlMagnet;
                     , result = token.selectedLink;
                 fx(result, token.linkz);
             }
@@ -979,8 +983,8 @@ function RCConfigExecServer() {
 
             //self.cmds.sendStatus('running dlRemoteFileList');
             var type = 'dlRemoteFileList'
-            if ( withSizes ) {
-                type+='WithSizes'; //dlRemoteFileListWithSizes
+            if (withSizes) {
+                type += 'WithSizes'; //dlRemoteFileListWithSizes
             }
             self.cmds.sendStatus('running dlRemoteFileList', type);
 
@@ -1000,20 +1004,19 @@ function RCConfigExecServer() {
             config.ip = data.ip;
             config.port = data.port;
 
-            if ( withSizes ) {
+            if (withSizes) {
                 config.withSizes = true;
             }
 
-
             if (data.initGFFRM) {
-                self.proc('data.initGFFRM', '... ... ...')
+                self.proc('data.initGFFRM', '... ... ...');
                 config.initGFFRM = data.initGFFRM;
             }
             //config.localTest = true
             config.fxDone = function fxDone(file, dataResult) {
                 //console.log('...', 'y')
-                self.proc('sending a result back.....')
-               // console.log('-----------------what is reuslt', dataResult, 'ok')
+                self.proc('sending a result back.....');
+                // console.log('-----------------what is reuslt', dataResult, 'ok')
                 // self.cmds.sendStatus('done dlRemoteFileList '+ file);
 
                 if (instance.data.socket && self.data.socketBreed == null) {
@@ -1048,7 +1051,7 @@ function RCConfigExecServer() {
 
             var fileFileList = cmd.fileFileList
             console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
-            if ( fileFileList ) {
+            if (fileFileList) {
                 console.log('...', '')
             }
             if (fileFileList.includes('/') == false && fileFileList.includes('\\') == false) {
@@ -1076,6 +1079,108 @@ function RCConfigExecServer() {
             return;
         }
 
+        p.cmds.taskGetDLProgressStatus = function taskGetDLProgressStatus(cmd, fx) {
+            console.log('.....!@ddddd9999#d$', exports.RCExtV, self.data.id)
+            /* var fileDlManifest = cmd.fileManifest
+             //  var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+             if (fileDlManifest.includes('/') == false && fileDlManifest.includes('\\') == false) {
+             var fileDlManifest = sh.fs.join(self.data.dirDlManifests, cmd.fileManifest);
+             }
+
+             var fileFileList = cmd.fileFileList
+             console.log('fileFileList', '<<<<<<<<<<<', fileFileList)
+             if ( fileFileList ) {
+             console.log('...', '')
+             }
+             if (fileFileList.includes('/') == false && fileFileList.includes('\\') == false) {
+             var fileFileList = sh.fs.join(self.data.dirFileList, cmd.fileFileList);
+             }
+
+             console.log('fileFileList', '------------', fileFileList)*/
+            self.cmds.sendStatus('running tool');
+            var type = 'taskGetDLProgressStatus'
+            self.cmds.sendStatus('running taskGetDLProgressStatus', type);
+
+            var t = EasyRemoteTester.create('Dl List', {});
+            var data = {};
+            var urls = {};
+            urls.notes = {};
+            t.settings.baseUrl = 'http://'+cmd.url;
+            urls.file = t.utils.createTestingUrl('getStatus_ofInProgress')
+
+            // t.settings.baseUrl = baseUrl;
+            t.settings.silent = true;
+            /*
+             var fileFileList = cmd.url.split('/').slice(-1)[0];
+             sh.mkdirp(self.data.dirFileList);
+             fileFileList = sh.fs.join(self.data.dirFileList, fileFileList)
+
+             */
+            t.add(function dlFile() {
+                    t.quickRequest(urls.file,
+                        'get', onResult)
+                    function onResult(body) {
+
+                        //self.proc('saving file to ', fileFileList)
+                        //sh.writeFile(fileFileList, body)
+
+                        console.log('body')
+                        body = sh.replace(body, '<br />', '\n')
+                        body = sh.replace(body, '&nbsp;', ' ')
+                        console.log(body)
+
+                        fx();
+                        // console.log('body', body)
+                        // t.assert(body.id>0, 'post-verify did not let me do a search');
+                        t.cb();
+                    }
+                }
+            );
+        }
+
+        p.cmds.uploadAndRun = function uploadAndRun(cmd, fx) {
+            self.proc('.....!@uploadAndRun#d$', exports.RCExtV, self.data.id)
+            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
+            //var fileDlRecManifest=fileDlManifest+'.recipet.json'
+            var fileDlManifestMissingFilesOnly = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest + '.missing.json')
+
+            console.log('fileFileList', '<<<<<<<<<<<', fileDlManifest)
+
+            self.cmds.sendStatus('running tool');
+
+            var type = 'uploadAndRun'
+            self.cmds.sendStatus('running uploadAndRun', type);
+
+            if (sh.fs.exists(fileDlManifest) == false) {
+                self.cmds.sendStatus('FAILED .... do the import first ', type);
+                return;
+            }
+
+            if (sh.fs.exists(fileDlManifestMissingFilesOnly)) {
+                self.proc('...', 'fileDlManifestMissingFilesOnly')
+                fileDlManifest = fileDlManifestMissingFilesOnly
+                self.cmds.sendStatus('running uploadAndRun with fileDlManifestMissingFilesOnly file---', type);
+            }
+
+            var cfg = sh.clone(cmd);
+            cfg.fileManifest = fileDlManifest;
+            cfg.ip = cmd.ip;
+            cfg.port = cmd.port;
+            delete cfg.url;
+            cfg.socket = self.data.socketBreed2;
+            console.log('111what is socket', cfg.socket)
+
+            Workflow_UploadAndRun.uploadAndRun(cfg, function onDone(output) {
+                console.log('found how many?', output);
+                output.complete = true;
+                output.result = 'fxed' + output.count;
+                fx(output);
+                self.data.socketBreed2 = cfg.socket
+                self.cmds.sendStatus('done with ' + type, type, output);
+            });
+
+            return;
+        }
 
         p.cmds.sanitizeFileList = function sanitizeFileList(cmd, fx) {
             console.log('.....!@ddddd9999#d$', 'sanitizeFileList',
@@ -1192,50 +1297,6 @@ function RCConfigExecServer() {
             return;
         }
 
-        p.cmds.uploadAndRun = function uploadAndRun(cmd, fx) {
-            self.proc('.....!@uploadAndRun#d$', exports.RCExtV, self.data.id)
-            var fileDlManifest = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest)
-            //var fileDlRecManifest=fileDlManifest+'.recipet.json'
-            var fileDlManifestMissingFilesOnly = self.utils.appendDirIfRelative(self.data.dirDlManifests, cmd.fileManifest + '.missing.json')
-
-            console.log('fileFileList', '<<<<<<<<<<<', fileDlManifest)
-
-            self.cmds.sendStatus('running tool');
-
-            var type = 'uploadAndRun'
-            self.cmds.sendStatus('running uploadAndRun', type);
-
-            if (sh.fs.exists(fileDlManifest) == false) {
-                self.cmds.sendStatus('FAILED .... do the import first ', type);
-                return;
-            }
-
-            if (sh.fs.exists(fileDlManifestMissingFilesOnly)) {
-                self.proc('...', 'fileDlManifestMissingFilesOnly')
-                fileDlManifest = fileDlManifestMissingFilesOnly
-                self.cmds.sendStatus('running uploadAndRun with fileDlManifestMissingFilesOnly file---', type);
-            }
-
-            var cfg = sh.clone(cmd);
-            cfg.fileManifest = fileDlManifest;
-            cfg.ip = cmd.ip;
-            cfg.port = cmd.port;
-            delete cfg.url;
-            cfg.socket = self.data.socketBreed2;
-            console.log('111what is socket', cfg.socket)
-
-            Workflow_UploadAndRun.uploadAndRun(cfg, function onDone(output) {
-                console.log('found how many?', output);
-                output.complete = true;
-                output.result = 'fxed' + output.count;
-                fx(output);
-                self.data.socketBreed2 = cfg.socket
-                self.cmds.sendStatus('done with ' + type, type, output);
-            });
-
-            return;
-        }
-
 
     }
 
@@ -1295,11 +1356,12 @@ function RCConfigExecServer() {
             self.data.fxTests.push(fx)
         }
         p.runTests = function runTests() {
-            sh.each(self.data.fxTests, function onTests(k,v) {
+            sh.each(self.data.fxTests, function onTests(k, v) {
                 v();
             })
         }
     }
+
     defineTestsMethods()
     /**
      * Receive log commands in special format

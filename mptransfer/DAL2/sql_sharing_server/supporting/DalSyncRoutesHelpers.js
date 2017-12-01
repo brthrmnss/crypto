@@ -187,7 +187,7 @@ function DalSyncRoutesHelpers(_self) {
                 return urlTag
             }
 
-            self.proc('syncing peer', actorsStr);
+            //self.proc('syncing peer', actorsStr);
             self.dalLog('syncing peer', actorsStr)
 
             t.recordsAll = [];
@@ -199,6 +199,7 @@ function DalSyncRoutesHelpers(_self) {
             // self.log
             t.getR(urls.getCount).why('get getCount')
                 .with(reqData)
+
                 //.storeResponseProp('count', 'count')
                 //.storeResponseProp('version', 'v')
                 .fxDone(function onGotCount(data, res, error) {
@@ -228,6 +229,9 @@ function DalSyncRoutesHelpers(_self) {
             var vT = {};
             vT.count = 0;
             vT.proc1 = function () {
+                if ( fxHelper.debug == false  ) {
+                    return;
+                }
                 var args = sh.args(arguments);
                 vT.count ++
                 args.unshift(vT.count)

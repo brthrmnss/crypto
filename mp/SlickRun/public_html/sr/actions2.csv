@@ -26,7 +26,7 @@ dirp4v2,Q:\p4v2
 dirsrc,|dirp4v2
 dirbackup,\\Msad\root\NA\NY\USERS\morriste\My Documents\backup
 dirputty,C:\Users\morriste\train\train_drive\trash\node2\mp\SpeakerJava\SpeakServer\public_html\powershell
-pdfplayer,http://localhost:10100/index.html#/player
+pdfplayer,http://127.0.0.1:8080/index.html#/player
 dirccrt,Q:\p4\spg\spgrt\ui\dev\
 q,q:\
 mydocs,u:\My documents
@@ -52,6 +52,18 @@ hackernewstop,https://news.ycombinator.com/best
 gtbreeddb,nodejsruntime gthk "BDB TT" "http://localhost:6018/index.html567.html"
 editbreeddb,nodejsruntime gtwebstorm "crypto - [G" "partial:db2_ui.js"
 
+gtbookbox,nodejsruntime gthk "book-box"
+gtwinvm,nodejsruntime gthk "Win10 11-12-2017"
+
+pastereader,http://127.0.0.1:8080/tinymce_paste_yahoo.html
+gobook,http://127.0.0.1:8080/epub_upload.html
+
+mydesk,https://tier2.mydesk.morganstanley.com/vpn/mydesk.html?v=4.1#/login
+morganstanleyremotdesktop,|mydesk
+workinit,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_LogInInit_SecurityScreen.js
+#worklogin,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_LogInRemote.js
+worklogin,nodejsruntime  G:\Dropbox\projects\crypto\mp\AutoItKey\vm_scripts\AIR_MyDeskLogin2.js
+
 ebook,nodejsruntime gtwebstorm "epubV2.html"
 extensions,nodejsruntime G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\AHK_ReloadExtensions.js
 readpage,start /min nodejsruntime G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\AHK_ReadWebPage.js
@@ -60,6 +72,10 @@ grid,nodejsruntime gtwebstorm "grid/grid/in"
 runbreeddb,nodejsruntime G:\Dropbox\projects\crypto\mp\RCExt\ReloadAnyRunner.js
 
 nback,nodejsruntime gthk "Dual N-Back Training" "http://brainscale.net/dual-n-back/training#"
+brain,|nback
+
+
+ytblues,https://www.youtube.com/watch?v=IVVj0SuUPdA&list=PLm1iU9TEMofqrOIAeMB128tRk_9rw7wTj
 
 gtcalmtech,http://localhost:10110/g/calmtech/index.html
 icons,https://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp
@@ -231,3 +247,25 @@ calmtech,http://localhost:10110/g/calmtech/index.html
 xtech,http://localhost:10110/g/cleanmobileapp/index.html
 
 epubv2,http://127.0.0.1:8080/epubv2.html
+
+
+fultonfishmarket,https://shop.fultonfishmarket.com/
+citarella,https://www.citarella.com/
+instacart,https://www.instacart.com/store/whole-foods/storefront
+fishmercury,https://www.fda.gov/food/foodborneillnesscontaminants/metals/ucm115644.htm
+
+gtextension,nodejsruntime G:\Dropbox\projects\crypto\mp\SpeakerJava2\SpeakServer\public_html\powershell\goto\GoToAutoHotKeyQuick.js  Extensions chrome://extensions/
+
+speech,https://www.google.com/intl/en/chrome/demos/speech.html
+#speech2text,https://www.google.com/intl/en/chrome/demos/speech.html
+speech2text,nodejsruntime gthk "Web Speech2Text" "https://www.google.com/intl/en/chrome/demos/speech.html" "regex"
+
+
+verizonrouter,http://192.168.1.1/#/advanced/dhcp/connections
+dhcp,verizonrouter
+
+rdkdocexample,https://robodk.com/doc/en/PythonAPI/examples.html#
+rdk,sdfsdfsd
+
+mydesk,https://tier2.mydesk.morganstanley.com/vpn/mydesk.html?v=4.1
+

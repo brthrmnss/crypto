@@ -43,6 +43,9 @@ function QuickFormDemo() {
         var formObject2 = {};
         qf.loadForm(formObject2)
 
+
+        debugger;
+       // qf.showLabels()
         qf.addTextInput('name', 'Prompt Name');
         qf.defaultValue('Sean')
         qf.required();

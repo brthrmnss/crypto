@@ -131,6 +131,10 @@ function SanitizeList_FileWorkflow() {
             //i.testMode();
             //i.settings.offset = 500;
             //i.settings.maxLength = 1000;
+            if ( self.settings.maxImportFileListCount ) {
+                i.settings.maxLength = self.settings.maxImportFileListCount;
+                //asdf.g
+            }
 
             //   i.settings.maxLength = 100;
             //i.settings.fileFilter = 'Mr. Robot'
@@ -161,6 +165,9 @@ function SanitizeList_FileWorkflow() {
 
 
             i.settings.fxDone = function onDoneste() {
+                
+                
+                sh.x('breaking after step 1')
                 cb()
             }
 
@@ -217,7 +224,12 @@ function SanitizeList_FileWorkflow() {
                             self.proc('udpe call')
                         }
                         h.finished = true
-                        __fxDoneIteration()
+                        sh.later(__fxDoneIteration)
+                        if ( index % 100 == 0 ) {
+                            console.log('at', index,
+                                sh.percent(index/dlManifestRequests.length), dlRequest.name, dlRequest.title)
+                        }
+                        //__fxDoneIteration()
                     }
                     index++
 

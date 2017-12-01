@@ -109,12 +109,12 @@ function imdb_dl_app() {
             self.settings.type = 'tv';
         }
         console.log(cfg)
-        console.log('breed ', self.settings.breed)
+        self.proc('breed ', self.settings.breed)
 
         self.config_addTestSettings();
 
         //process.exit();
-        // asdf.g
+      //asdf.g
         self.start();
     }
 
@@ -129,6 +129,7 @@ function imdb_dl_app() {
 
         var scraperSettings = {};
         var ss = scraperSettings
+
 
 
         if (self.settings != null) {
@@ -197,9 +198,15 @@ function imdb_dl_app() {
             //bookmark.outptu changed
             self.output = null;
             //ss.output = self.settings.output;
-            if ( ss.output.includes('/') == false  ) {
+
+            if ( ss.output.includes('/') == false || ss.output.includes('\\') == false  ) {
+                console.log('output', ss.output)
                 //self.settings.output = sh.fs.makePath(/*__dirname, */'IMDB_App_Output', self.settings.output);
                 ss.output = self.settings.output;
+                if ( ss.output.includes('/') == false && ss.output.includes('\\') == false  ) {
+                    this.path.is.not.valid
+                }
+               // zzz.g.d.d
             }
         }
         /*if ( self.settings.fileOutput ) {
@@ -215,12 +222,16 @@ function imdb_dl_app() {
         //    asdf.g
         console.log('downloadListOfIMDBIds', ss.output, query);
 
+
+        //asdf.g
         p.createOutputFilePaths = function createOutputFilePaths(fileOutputDlList2) {
             var dir = 'IMDB_App_Output'
             var dirRootApp= sh.fs.makePath(__dirname, 'IMDB_App_Output/')+'/';
 
             if ( fileOutputDlList2.includes(dir) == false ) {
-                fileOutputDlList2 = dirRootApp + fileOutputDlList2;
+                if( sh.fs.isAbs(fileOutputDlList2) == false ) {
+                    fileOutputDlList2 = dirRootApp + fileOutputDlList2;
+                }
             }
             self.settings.output_espidoes_dir = dirRootApp+'shows/'
             self.settings.output_torrents_dir = dirRootApp+'tors/'
@@ -247,8 +258,9 @@ function imdb_dl_app() {
             self.proc('could not load existing files, ', '...');
         }
 
-        if ( self.handleDirectDownloadFile() )
-            return; //only breed
+            if ( self.handleDirectDownloadFile() ) {
+                return; //only breed
+            }
 
 
         //get current size
@@ -290,6 +302,7 @@ function imdb_dl_app() {
         self.dlSettings = settings; // = false;
         imdb.settings = settings;
 
+
         if (self.settings.skipImdbSearch) {
             self.createDlList();
             return;
@@ -311,7 +324,7 @@ function imdb_dl_app() {
                 self.dlSettings.output = fileJSONOutput_IDs;
                 //self.settings.output = ''
             }
-            //asdf.g
+             //asdf.bookmark.gotallimdbids
             self.downloadEpisodeInfo();
         }
         //  }

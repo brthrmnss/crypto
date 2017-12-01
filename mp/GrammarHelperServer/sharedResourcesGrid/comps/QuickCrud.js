@@ -2,20 +2,20 @@
  * Created by user1 on 10/2/2017.
  */
 
-function RestHelper() {
-    var p = RestHelper.prototype;
-    p = this;
-    var self = this;
-    p.method1 = function method1(url, appCode) {
-    }
+/*function RestHelper() {
+ var p = RestHelper.prototype;
+ p = this;
+ var self = this;
+ p.method1 = function method1(url, appCode) {
+ }
 
-    p.proc = function debugLogger() {
-        if ( self.silent == true) {
-            return
-        }
-        sh.sLog(arguments)
-    }
-}
+ p.proc = function debugLogger() {
+ if ( self.silent == true) {
+ return
+ }
+ sh.sLog(arguments)
+ }
+ }*/
 
 function QuickCrud() {
     var self = this;
@@ -49,6 +49,52 @@ function QuickCrud() {
         self.render();
 
 
+        var restHelper = new QRestHelper();
+        restHelper.config = {};
+        restHelper.config.baseUrl = 'http://localhost:6016' + '/api/prompts/'
+        self.data.restHelper = restHelper;
+        //count'
+        restHelper.init(restHelper.config);
+        restHelper.getQList(function on(items) {
+            console.log('yyy', 'dfsdf', items)
+            $.each(items, function onK(k, item) {
+                if (self.settings.fxGetItems) {
+                    self.settings.fxGetItems(item)
+                }
+            })
+
+
+        })
+        restHelper.createQItem({'name': 'boom'},
+            function oncreatedItem(createdItem) {
+                console.log('what is createdItem', createdItem)
+            })
+        restHelper.countQItem(function onCount(count) {
+            console.log('what is count', count)
+        })
+        restHelper.updateQItem(
+            {id: 1, 'name': 'boom' + (new Date().toString())},
+            function onUpdatedItem(createdItem) {
+                console.log('what is updatedItem', createdItem)
+            })
+
+        restHelper.deleteQItem({id: 2, 'name': 'boom'}, function onDeleteItem(deleteItem) {
+            console.log('what is deleteItem', deleteItem)
+
+            restHelper.createQItem(
+                {id: 2, 'name': 'boom'},
+                function onCreatedQItem(createdItem) {
+                    console.log('what is createQItem', createdItem)
+
+                    restHelper.deleteQItem({id: 2, 'name': 'boom'}, function onDeleteItem(deleteItem) {
+                        console.log('what is deleteItem', deleteItem)
+                    })
+                })
+
+        })
+        //  restHelper.updateQItem({})
+        //  restHelper.deleteQItem({})
+
     }
 
     p.render = function render(query) {
@@ -61,13 +107,38 @@ function QuickCrud() {
         var ui = cfg.ui;
 
         self.data.ui.addClickToDom(ui, self)
-        QuickForm.createQF('name', cfg.ui.find('#quickFormHolder'))
-
+        var dbg = [cfg.ui.find('#quickFormHolder')]
+        var opts = QuickForm.createQF('name', cfg.ui.find('#quickFormHolder'))
+       // opts.qfH.addTextInput('name', 'Prompt Name');
+       // opts.qfH.form =  self.settings.quickForm.form
+        opts.qfConfig =  self.settings.quickForm
+        self.data.qf = opts.qf;
+       // debugger
 
         var scfg = SimpleListHelper.createSimpleList('qcrud_list', 'qcrud_list')// cfg.ui.find('#demoList'))
         scfg.targetId = '#quickListHolder'
         scfg.div = cfg.ui.find('#quickListHolder')
-        scfg.id =  '#quickListHolder';
+        scfg.id = 'quickListHolder';
+        scfg.idPartial = ui.find('#qcrud_list_partial')
+
+        if (self.settings.divPartial) {
+            scfg.idPartial = $(self.settings.divPartial)
+            //debugger
+        }
+
+        scfg.fxProcessItem = self.settings.fxProcessItem
+        scfg.fxProcessItem2 = function fxProcessItem2(item) {
+           if ( self.data.currentItem == null ) {
+               self.data.currentItem = item;
+             //  return;
+              // debugger
+               opts.qf.loadObject(item);
+           }
+        }
+        scfg.clickRouter = self.settings.clickRouter
+        scfg.valueNames = ['id']
+        scfg.searchUrl = self.data.restHelper.config.baseUrl;
+        scfg.live = true;
 
 
         //debugger
@@ -164,7 +235,11 @@ function QuickCrudConfigHelper(cfg) {
     function defineHelpers() {
 
         p.addRestHelper = function addRestHelper(url, name) {
-             self.restHelper = new RestHelper();
+            self.restHelper = new RestHelper();
+        };
+        p.addClick = function addClick(cssClassName, fx) {
+            self.clickRouter = sh.dv(self.clickRouter, {})
+            self.clickRouter[cssClassName] = fx;
         };
 
         p.addAuto = function addAuto(obj, name) {

@@ -1,0 +1,14 @@
+{
+	"ids": [
+		"tt0073650",
+		"tt0290673",
+		""
+	],
+	"listIdsFrom":"G:\\Dropbox\\projects\\crypto\\ritv\\imdb_movie_scraper\\IMDB_App_Output\\dlListsWrapC\\boodtylisttest-full.6.17.2017.json",
+	"url": "192.168.1.163:6022",
+	"ip": "192.168.1.163",
+	"port": 6024,
+	"cmd": "uploadAndRun",
+	"fileDownloadedFileList": "G:/Dropbox/projects/crypto/mp/RCExt/data/filelists/http___192.168.1.163_6024_.withSizes.txt",
+	"listOutputJSON_ReDownloadDlManifest": "G:\\Dropbox\\projects\\crypto\\ritv\\distillerv3\\tools\\SanitizeName2\\RemoteControl\\sn2_Output\\http___192.168.1.163_6024_.withSizes.txt.xCompare.redownload.json"
+}

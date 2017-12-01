@@ -71,7 +71,7 @@ function CachedFileDataStore() {
         sh.deleteFile(file, true);
     }
 
-    p.get = function getDataStoreValue(key) {
+    p.get = function getDataStoreValue(key,skipTimeCheck) {
         var file = self.settings.dir+'/'+ key;
 
 
@@ -80,10 +80,12 @@ function CachedFileDataStore() {
         };
 
 
-        if ( self.settings.cachedTime != null ) {
-            if ( sh.fs.isFileOrderThanAgoMS(file, self.settings.cachedTime) ) {
-                self.proc('aged out on file')
-                return null;
+        if ( skipTimeCheck != true ) {
+            if (self.settings.cachedTime != null) {
+                if (sh.fs.isFileOrderThanAgoMS(file, self.settings.cachedTime)) {
+                    self.proc('aged out on file')
+                    return null;
+                }
             }
         }
 

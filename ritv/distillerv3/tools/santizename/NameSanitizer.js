@@ -21,7 +21,6 @@
  */
 
 
-
 /**
  * Created by smorris1 on 1/3/14.
  */
@@ -29,7 +28,7 @@ var sh = require('shelpers').shelpers;
 var columnify = require('columnify')
 
 
-var IMDB_DB_Helper = sh.fs.resolve(__dirname + '/'+'IMDB_DB_Helper.js');
+var IMDB_DB_Helper = sh.fs.resolve(__dirname + '/' + 'IMDB_DB_Helper.js');
 var path = sh.fs.resolve(IMDB_DB_Helper);
 var IMDB_DB_Helper = require(IMDB_DB_Helper)
 //var columns = columnify(data, options)
@@ -39,7 +38,7 @@ function NameSanitizer() {
     p = this;
     var self = this;
     p.init = function method1(config, appCode) {
-        if ( config == null ) {
+        if (config == null) {
             config = {}
             config.showOutput = false;
             config.tvOnly = true;
@@ -48,10 +47,12 @@ function NameSanitizer() {
             config.showAllItemsAtEnd = true;
         }
         self.settings = config;
-        self.initIMDB_DB(function  initpart2() {
-            self.loadFiles()
-            self.getIMDBIds()
-        })
+        if (self.settings.manualMode != true) {
+            self.initIMDB_DB(function initpart2() {
+                self.loadFiles()
+                self.getIMDBIds()
+            })
+        }
 
     }
 
@@ -70,17 +71,17 @@ function NameSanitizer() {
     p.initIMDB_DB = function (fxDone) {
         //why: access IMDB data store to get imdb information
         self.dbHelper = new IMDB_DB_Helper.DBHelper
-        self.dbHelper .init();
+        self.dbHelper.init();
         self.dbHelper.createRESTHelper()
         self.dbHelper.fxDone = fxDone;
     }
 
 
-    p.loadFiles = function loadFiles(){
+    p.loadFiles = function loadFiles() {
         self.dlFiles = {};
-        var disMegaLists = __dirname +'/'+'../../'+'/megals/';
+        var disMegaLists = __dirname + '/' + '../../' + '/megals/';
         var files = sh.fs.getFilesInDirectory2(disMegaLists)
-        sh.each(files, function openFileAndSaveContents(i,file){
+        sh.each(files, function openFileAndSaveContents(i, file) {
             var fileList = sh.readFile(file).split("\n");
             fileList = self.utils.filterFileList(fileList);
             //self.dlFiles[file];
@@ -93,6 +94,7 @@ function NameSanitizer() {
 
     p.getIMDBIds = function getIMDBIds(fxDoneGettingImdbIds) {
         //why: convert show imdb_id , episode, and season, --> episode_imdb id
+       // asdf.g
         self.proc('getIMDBIds', self.listEpisodes.length)
         sh.async(self.listEpisodes, function listEpisodeX(episode, fxDone) {
 
@@ -100,11 +102,11 @@ function NameSanitizer() {
             //console.error('episode', episode.imdb_id, episode.epi, epi["s"], epi.e)
 
             self.dbHelper.getIMDBContentByID(episode.imdb_id,
-                function onGot_ShowContent(content){
+                function onGot_ShowContent(content) {
                     // self.proc(content)
                     //asdf.g
                     //process.exit();
-                    if ( content.length == 0 ) {
+                    if (content.length == 0) {
                         //console.error('could not find', episode.epi.s, episode.epi.e)
                         return // fuck ...
                     }
@@ -118,21 +120,21 @@ function NameSanitizer() {
 
             setTimeout(function () {
                 fxDone()
-            }, 10 );
+            }, 10);
         }, function allDoneAddingImdbs() {
 
 
             setTimeout(function () {
                 self.proc('finished')
 
-                var columns         = columnify(        self.listEpisodes         );
-                if ( self.settings. showAllItemsAtEnd)
+                var columns = columnify(self.listEpisodes);
+                if (self.settings.showAllItemsAtEnd)
                     console.log(columns)
 
 
-                if ( fxDoneGettingImdbIds ) {
+                if (fxDoneGettingImdbIds) {
                     fxDoneGettingImdbIds(self.listEpisodes)
-                }else {
+                } else {
                     sh.writeFile('output.json', columns)
                 }
             }, 5000)
@@ -157,59 +159,123 @@ function NameSanitizer() {
         // asdf(testBrackets, testBracketsResults, self.utils.stripBrackets);
 
 
-
-
         var testBrackets = [
-            'Dark Angel - s02 e01 - Designate This - RUS - [1001cinema.ru].mkv', {s:2,e:1},
-            'American Dad S07 E09 DD 5.1 WEB-DL 720p.mkv ',{s:7,e:9},
+            'Dark Angel - s02 e01 - Designate This - RUS - [1001cinema.ru].mkv', {s: 2, e: 1},
+            'American Dad S07 E09 DD 5.1 WEB-DL 720p.mkv ', {s: 7, e: 9},
             //'alias.408.hdtv-lol.[BT].avi ', {s:4,e:8},
-            '04.05 - Vicious Coupling.mp4 ',{s:4,e:5},
+            '04.05 - Vicious Coupling.mp4 ', {s: 4, e: 5},
             '', null,
             'x02x56', null,
-            's02e05', {s:2,e:5},
+            's02e05', {s: 2, e: 5},
             'Stargate.SG1-s02e01.The.Serpents.Lair.mkv ', {},
             '12247 04B - Krabs a La Mode.avi', {},
             '11832 South Park Season 18 Episode 5.mkv', {},
             '002 - My Name is Konohamaru.mkv', {},
             '22. Mrs. Tri-County.avi         ', {},
-            '/Root/tv/ER_1994/tt0108757/ER_Season_15/ER Season 15/ER Season 15/ER - 1504 - Parental Guidance.avi ', {s:15,e:4},
-            '/Root/tv/ER_1994/tt0108757/ER_Season_15/ER Season 15/ER Season 15/ER - 1504 - Parental Guidance.avi ', {s:15,e:4},
-            '/Root/tv/Law___Order__Special_Victims_Unit_1999/tt0203259/Law___Order__Special_Victims_Unit_Season_11/lawandorder12-24/lawandorder12-24/11-24.avi ', {s:11,e:24},
-            '/Root/tv/Naruto_2002/tt0409591/Naruto_Season_2/Season 2/Season 2/Naruto  071 - An Unrivaled Match, Hokage Battle Royale.mkv', {s:2,e:71},
-            '/Root/tv/The_Walking_Dead_2010/tt1520211/The_Walking_Dead_Season_4/The Walking Dead Season 4/The Walking Dead Season 4/Episode 5 - Internment.mp4;', {s:4,e:5},
+            '/Root/tv/ER_1994/tt0108757/ER_Season_15/ER Season 15/ER Season 15/ER - 1504 - Parental Guidance.avi ', {
+                s: 15,
+                e: 4
+            },
+            '/Root/tv/ER_1994/tt0108757/ER_Season_15/ER Season 15/ER Season 15/ER - 1504 - Parental Guidance.avi ', {
+                s: 15,
+                e: 4
+            },
+            '/Root/tv/Law___Order__Special_Victims_Unit_1999/tt0203259/Law___Order__Special_Victims_Unit_Season_11/lawandorder12-24/lawandorder12-24/11-24.avi ', {
+                s: 11,
+                e: 24
+            },
+            '/Root/tv/Naruto_2002/tt0409591/Naruto_Season_2/Season 2/Season 2/Naruto  071 - An Unrivaled Match, Hokage Battle Royale.mkv', {
+                s: 2,
+                e: 71
+            },
+            '/Root/tv/The_Walking_Dead_2010/tt1520211/The_Walking_Dead_Season_4/The Walking Dead Season 4/The Walking Dead Season 4/Episode 5 - Internment.mp4;', {
+                s: 4,
+                e: 5
+            },
 
-            '/Root/tv/The_Middle_2009/tt1442464/The_Middle_Season_6/Season 6/Season 6/16. No Motorcycles.avi', {s:6,e:16},
-            '/Root/tv/Pretty_Little_Liars_2010/tt1578873/Pretty_Little_Liars_S06E03/Pretty.Little.Liars.S06E03.HDTV.x264-LOL[ettv]/Pretty.Little.Liars.S06E03.HDTV.x264-LOL[ettv]/pretty.little.liars.603.hdtv-lol.mp4',{s:6,e:3},
-            '/Root/tv/American_Dad__2005/tt0397306/American_Dad__Season_8/American Dad! - Season 8/American Dad! - Season 8/AD 809.mkv',{s:8,e:9},
-            '/Root/tv/Monk_2002/tt0312172/Monk_Season_6/Monk - Season 6/Monk - Season 6/monk.615.hdtv-lol.avi   ',{s:6,e:15},
-            '/Root/tv/Law___Order__Special_Victims_Unit_1999/tt0203259/Law___Order__Special_Victims_Unit_Season_2/Law & Order SVU Season 2 (DVD rip)/Law & Order SVU Season 2 (DVD rip)/law.and.order.svu.209.dvdrip.avi',{s:2,e:9},
-            'no episode info /root/tv/south_park_1997/tt0121955/south_park_season_9/south park season 9 (1080p x265 joy)/south park season 9 (1080p x265 joy)/south park s09e12 trapped in the closet (1080p x265 joy).m4v', {s:9,e:12},
-            's02e05', {s:2,e:5},
-            '"no season /root/tv/weeds_2005/tt0439100/weeds_season_5/weeds season 5 complete hdtv xvid pack [sexytv]/weeds season 5 complete hdtv xvid pack [sexytv]/weeds 513 - all about my mom.avi"', {s:5,e:13},
+            '/Root/tv/The_Middle_2009/tt1442464/The_Middle_Season_6/Season 6/Season 6/16. No Motorcycles.avi', {
+                s: 6,
+                e: 16
+            },
+            '/Root/tv/Pretty_Little_Liars_2010/tt1578873/Pretty_Little_Liars_S06E03/Pretty.Little.Liars.S06E03.HDTV.x264-LOL[ettv]/Pretty.Little.Liars.S06E03.HDTV.x264-LOL[ettv]/pretty.little.liars.603.hdtv-lol.mp4', {
+                s: 6,
+                e: 3
+            },
+            '/Root/tv/American_Dad__2005/tt0397306/American_Dad__Season_8/American Dad! - Season 8/American Dad! - Season 8/AD 809.mkv', {
+                s: 8,
+                e: 9
+            },
+            '/Root/tv/Monk_2002/tt0312172/Monk_Season_6/Monk - Season 6/Monk - Season 6/monk.615.hdtv-lol.avi   ', {
+                s: 6,
+                e: 15
+            },
+            '/Root/tv/Law___Order__Special_Victims_Unit_1999/tt0203259/Law___Order__Special_Victims_Unit_Season_2/Law & Order SVU Season 2 (DVD rip)/Law & Order SVU Season 2 (DVD rip)/law.and.order.svu.209.dvdrip.avi', {
+                s: 2,
+                e: 9
+            },
+            'no episode info /root/tv/south_park_1997/tt0121955/south_park_season_9/south park season 9 (1080p x265 joy)/south park season 9 (1080p x265 joy)/south park s09e12 trapped in the closet (1080p x265 joy).m4v', {
+                s: 9,
+                e: 12
+            },
+            's02e05', {s: 2, e: 5},
+            '"no season /root/tv/weeds_2005/tt0439100/weeds_season_5/weeds season 5 complete hdtv xvid pack [sexytv]/weeds season 5 complete hdtv xvid pack [sexytv]/weeds 513 - all about my mom.avi"', {
+                s: 5,
+                e: 13
+            },
             "no season /root/tv/attack_on_titan_2013/tt2560140/attack_on_titan_season_1/[perfection] shingeki no kyojin - batch [720p][aac]/[perfection] shingeki no kyojin - batch [720p][aac]/[perfection] shingeki no kyojin - 09 [720p][aac].mp4",
-            {s:1,e:9},
+            {s: 1, e: 9},
             "no episode /root/tv/orange_is_the_new_black_2013/tt2372162/orange_is_the_new_black_season_2/orange is the new black - season 2 +expertups+/orange is the new black - season 2 +expertups+/orange is the new black s02 e08.mp4",
-            {s:2,e:8},
+            {s: 2, e: 8},
             "no episode info /root/tv/south_park_1997/tt0121955/south_park_season_5/south park season 5 (1080p h265 joy)/south park season 5 (1080p h265 joy)/south park s05e13 kenny dies (1080p h265 joy).m4v",
-            {s:5,e:13},
+            {s: 5, e: 13},
             "no season /root/tv/law___order__svu_1999/tt0203259/law___order__svu_season_16/law.and.order.svu.season.16.hdtv.x264-lol[sexytv]/law.and.order.svu.season.16.hdtv.x264-lol[sexytv]/law.and.order.svu.1612.hdtv-lol.mp4",
-            {s:16,e:12},
+            {s: 16, e: 12},
             "no season /root/tv/spartacus__war_of_the_damned_2010/tt1442449/spartacus__war_of_the_damned_season_1/spartacus season 4 ep 1 war of the damned agaig/spartacus season 4 ep 1 war of the damned agaig/ep 1 enemies of rome.mp4",
-            {s:4,e:1},
+            {s: 4, e: 1},
             "no season /root/tv/the_inbetweeners_2008/tt1220617/the_inbetweeners_season_3/the inbetweeners/the inbetweeners/inbeteweeners season 3/episode six - the camping trip.avi",
-            {s:3,e:6},
+            {s: 3, e: 6},
             "no season /root/tv/the_it_crowd_2006/tt0487831/the_it_crowd_season_1/the it crowd/the it crowd/season 2/06-men without women.avi",
-            {s:2,e:6},
+            {s: 2, e: 6},
             "no season /root/tv/the_walking_dead_2010/tt1520211/the_walking_dead_season_4/the walking dead  full season-4 hdtv x264 msu/the walking dead  full season-4 hdtv x264 msu/episode 3.mp4",
-            {s:4,e:3},
+            {s: 4, e: 3},
             "/root/tv/boston_legal_2004/tt0402711/boston_legal_season_4/boston legal season 4/s04xe05 - hope and glory.avi",
-            {s:4,e:5},
+            {s: 4, e: 5},
             "no episode /root/tv/doctor_who_2005/tt0436992/doctor_who_season_9/doctor who season 1 - 9  complete/doctor who s01 complete ~{king}/doctor who s01e05~{king}.mp4",
-            {s:1,e:5},
+            {s: 1, e: 5},
             "no episode /root/tv/psych_2006/tt0491738/psych_season_1/psych season 1/psych - e12 - cloudy... with a chance of murder.avi",
-            {s:1,e:12},
+            {s: 1, e: 12},
             "no episode /root/tv/the_blacklist_2013/tt2741602/the_blacklist_season_1/temporada 1/the blacklist 1x14.mkv",
-            {s:1,e:14},
+            {s: 1, e: 14},
+            "/media/sda/finished/incoming/finished/root/tv/hawaii five-0_2010/tt1600194/season_4/hawaii five-0 season 4/hawaii five-0 season 4/episode 16 - fire in the sky.mp4",
+            {s: 4, e: 16},
+            " /media/sda/finished/incoming/finished/root/tv/veronica mars_2004/tt0412253/veronica mars - seasons 1-3 (complete)/veronica mars - seasons 1-3 (complete)/veronica mars - season ii/veronica mars - 2x08- ahoy mateys.avi"
+            , {s: 2, e: 8},
+            '/media/sda/finished/incoming/finished/root/tv/leverage_2008/tt1103987/leverage/leverage/507 - the real fake car job.mp4'
+            , {s: 5, e: 7},
+            '/media/sda/finished/incoming/finished/root/tv/cheers_1982/tt0083399/season_1/cheers - season 1/cheers - season 1/episode 116 they boys in the bar.avi'
+            , {s: 1, e: 16},
+            '/media/sda/finished/incoming/finished/root/tv/cheers_1982/tt0083399/season_5/cheers - season 5/cheers - season 5/episode 503 money dearest.avi'
+            , {s: 5, e: 3},
+            '/media/sdd/finished/incoming/finished/root/tv/24_2001/tt0285331/24 season 1-8 complete with subtitles/24 season 4/24 - [4x19] - 01.00 am - 02.00 am.mkv'
+            , {s: 4, e: 19},
+            '/media/sdb/finished/incoming/finished/root/tv/roseanne_1988/tt0094540/season_9/roseanne season 9/roseanne season 9/s9e14-hit the road, jack.avi'
+            , {s: 9, e: 14},
+            '/media/sdd/finished/incoming/finished/root/tv/the office_2001/tt0290978/season_3/the office season 3/the office season 3/the.office.us.s03e20.safety.training.720p.web-dl.aac2.0.avc-ctrlhd.mkv'
+            , {s: 3, e: 20},
+            '/media/sdd/finished/incoming/finished/root/tv/criminal minds_2005/tt0452046/season_4/criminal minds season 4/criminal.minds.s04e22l.avi'
+            , {s: 4, e: 22},
+            '/media/sdc/finished/incoming/finished/root/tv/episodes_2011/tt1582350/season_4/vikings season 4 second part (11-20) 720+1080p-eng_subt/vikings season 4 second part (11-20) 720+1080p-eng_subt/vikings.s04e17.1080p.web-dl.x264-fum[ettv].mkv'
+            , {s: 4, e: 17},
+            '/media/sdc/finished/incoming/finished/root/tv/true detective_2014/tt2356777/season_2/true detective s02 season 2 complete hdtv x264 [multi-subs] [dexzaery & vector]/true detective s02e02-night finds you (2015 june 28).mkv'
+            , {s: 2, e: 2},
+            '/media/sdb/finished/incoming/finished/root/tv/the a-team_1983/tt0084967/the a-team/the a-team/season 03/the a-team - s03e02-03 - the bend in the river.avi'
+            , {s: 3, e: 2, e2:3},
+            '/media/sdd/finished/incoming/finished/root/tv/the office_2001/tt0290978/season_3/the office season 3/the office season 3/the.office.us.s03e24e25.the.job.720p.web-dl.aac2.0.avc-ctrlhd.mkv'
+            , {s: 3, e: 24, e2:25},
+            '/media/sdd/finished/incoming/finished/root/tv/the office_2001/tt0290978/season_3/the office season 3/the office season 3/the.office.us.s03e16.phyllis\'s.wedding.720p.web-dl.aac2.0.avc-ctrlhd.mkv'
+            , {s: 3, e: 16},
+            '/media/sda/finished/incoming/finished/root/tv/star trek_ the next generation_1987/tt0092455/star trek the next generation/star trek the next generation/season 1/star trek tng - 1x26 - the neutral zone.avi'
+            , {s: 1, e: 26},
 
 
         ]
@@ -228,13 +294,19 @@ function NameSanitizer() {
         self.focusOnItem = 'law___order__svu_season'
         self.focusOnItem = 's04xe05'
         self.focusOnItem = 'the_blacklist_season_1'
-       // self.focusOnItem = 'psych season 1/psych - e12'
+        self.focusOnItem = 'hawaii'
+        //self.focusOnItem = 'orange'
+        self.focusOnItem = '24'
+        self.focusOnItem = 'office'
+        self.focusOnItem = 'roseanne'
+         self.focusOnItem = null;
+        // self.focusOnItem = 'psych season 1/psych - e12'
 
         //self.focusOnItem = null;
 
-        sh.each.replaceXWithY = function (arr, x, y ) {
-            sh.each(arr, function replaceIndexes (i,v) {
-                if ( v == x ) {
+        sh.each.replaceXWithY = function (arr, x, y) {
+            sh.each(arr, function replaceIndexes(i, v) {
+                if (v == x) {
                     arr[i] = y;
                 }
             })
@@ -244,21 +316,21 @@ function NameSanitizer() {
         sh.each.splitInto2ArraysEvenOdd = function splitInto2ArraysEvenOdd(arr, fxFilter) {
             var arr1 = [];
             var arr2 = []
-            for ( var i = 0; i < arr.length; i= i +2 ) {
+            for (var i = 0; i < arr.length; i = i + 2) {
                 var filtered = sh.callIfDefined(fxFilter, arr[i])
                 //console.log('...', fxFilter, filtered)
-                if ( filtered == false )
+                if (filtered == false)
                     continue;
                 arr1.push(arr[i])
-                arr2.push(arr[i+1])
+                arr2.push(arr[i + 1])
             }
 
             var results = [arr1, arr2];
             return results;
         }
 
-        var result = sh.each.splitInto2ArraysEvenOdd(testBrackets, function skip(str){
-            if ( self.focusOnItem != null && str.indexOf(self.focusOnItem) == -1 ) {
+        var result = sh.each.splitInto2ArraysEvenOdd(testBrackets, function skip(str) {
+            if (self.focusOnItem != null && str.indexOf(self.focusOnItem) == -1) {
                 // asdff.g
                 return false;
             }
@@ -267,10 +339,9 @@ function NameSanitizer() {
         })
 
 
-
         var testEpiNames = result[0];
         var testEpiNames_Output = result[1];
-        sh.each.replaceXWithY(testEpiNames_Output, null, {s:"",e:""})
+        sh.each.replaceXWithY(testEpiNames_Output, null, {s: "", e: ""})
         compareSet({
             inputs: testEpiNames,
             outputs: testEpiNames_Output,
@@ -281,24 +352,24 @@ function NameSanitizer() {
             var diff = ''
             var diffExplained = '';
 
-            sh.each(error.expected, function compare(k,char) {
+            sh.each(error.expected, function compare(k, char) {
                 var other = error.output[k]
 
-                if ( other != char ) {
+                if (other != char) {
                     diff += char;
                 }
 
-                if ( other != char ) {
+                if (other != char) {
                     diffExplained += '|'
                 }
                 diffExplained += char
             })
 
             var diffExplainedReverse = '';
-            sh.each(error.output, function compare(k,char) {
+            sh.each(error.output, function compare(k, char) {
                 var other = error.expected[k]
 
-                if ( other != char ) {
+                if (other != char) {
                     diffExplainedReverse += '|'
                 }
                 diffExplainedReverse += char
@@ -310,7 +381,7 @@ function NameSanitizer() {
         }
 
         function convertToNumber(potentialNumber) {
-            if ( sh.isNumber(potentialNumber)) {
+            if (sh.isNumber(potentialNumber)) {
                 return parseFloat(potentialNumber)
             }
             return potentialNumber;
@@ -319,7 +390,7 @@ function NameSanitizer() {
 
         function compareSet(inputs, outputs, fx) {
             var config = {};
-            if ( inputs.inputs != null ) {
+            if (inputs.inputs != null) {
                 config = inputs;
                 fx = config.fx;
                 inputs = config.inputs;
@@ -333,9 +404,9 @@ function NameSanitizer() {
 
                 var isDifferent = output != expectedOutput;
 
-                if ( sh.isObject(output ) ) {
+                if (sh.isObject(output)) {
                     isDifferent = false
-                    sh.each(expectedOutput, function testAsObject(k,v) {
+                    sh.each(expectedOutput, function testAsObject(k, v) {
                         v = convertToNumber(v)
                         var vExpected = convertToNumber(output[k])
                         if (v != vExpected) {
@@ -345,11 +416,11 @@ function NameSanitizer() {
                     })
                 }
 
-                if ( sh.isObject(output) ) {
+                if (sh.isObject(output)) {
                     output = JSON.stringify(output)
                 }
 
-                if ( sh.isObject(outputs[i]) ) {
+                if (sh.isObject(outputs[i])) {
                     outputs[i] = JSON.stringify(outputs[i])
                 }
 
@@ -361,8 +432,8 @@ function NameSanitizer() {
                     error.expected = outputs[i];
 
 
-                    if ( config.compareBy == null ) {
-                        compareByString(error, error.output, error.expected )
+                    if (config.compareBy == null) {
+                        compareByString(error, error.output, error.expected)
                     }
 
                     //return false;
@@ -370,8 +441,7 @@ function NameSanitizer() {
                 }
             })
 
-
-            if ( errors.length > 0) {
+            if (errors.length > 0) {
                 console.error('failed on:')
                 /* sh.each(errors, function (k,v ) {
                  console.error((k+1)+'.', v[0], v[1])
@@ -395,7 +465,7 @@ function NameSanitizer() {
             var listFiltered = [];
 
             sh.each(arr, function filterLine(i, line) {
-                if ( line == null )
+                if (line == null)
                     return;
                 var split = line.split('/')
                 //fullList =
@@ -437,7 +507,7 @@ function NameSanitizer() {
                     }
 
                     var allowedFileExts = ['mp4', //'mp4',
-                        'mkv', 'avi', 'flac', 'png','m4v',
+                        'mkv', 'avi', 'flac', 'png', 'm4v',
                         'txt', 'nfo']
                     if (allowedFileExts.indexOf(fileExt.replace('.', '')) == -1) {
                         return;
@@ -465,12 +535,19 @@ function NameSanitizer() {
 
                     var tt = null;
                     sh.each(split, function getTT(k, dir) {
-                        if (dir.indexOf('tt') == 0) {
+                        var num = parseFloat(dir.slice(2, 3))
+                        //console.log(num)
+                        var isValidNumber = false;
+                        if (sh.isNumber(num)) {
+                            isValidNumber = true
+                        }
+                        if (dir.indexOf('tt') == 0 && isValidNumber ) {
                             tt = dir;
                         }
                     });
 
-
+                    //console.log(split, tt)
+                  //  asdf.g
                     var obj = {}
                     obj.tvMode = tvMode;
                     if (tvMode) {
@@ -484,14 +561,21 @@ function NameSanitizer() {
                     obj.imdb_id = tt;
                     obj.line = line;
 
-                    if (epi.s === '') {
-                        listObjErrors.push(obj)
-                    }
-                    if (obj.epi.s != '') {
-                        //listObj.push(obj)
+                    if (tvMode) {
+                        if (epi.s === '') {
+                            listObjErrors.push(obj)
+                        }
+                        if (obj.epi.s != '') {
+                            //listObj.push(obj)
+                        }
                     }
 
                     listObj.push(obj)
+
+                    if( obj && obj.epi && obj.epi.e2 ) {
+                        asdf.g
+                    }
+
                     listFiltered.push(line);
                     // }
 
@@ -511,27 +595,26 @@ function NameSanitizer() {
             })
 
 
-
             self.listFiltered = listFiltered;
 
-            if ( self.listEpisodes == null ) {
+            if (self.listEpisodes == null) {
                 self.listEpisodes = [];
 
             }
-            if ( self.listEpisodes ) {
+            if (self.listEpisodes) {
                 self.listEpisodes = self.listEpisodes.concat(listObj);
             }
 
-            var columnsErrors   = columnify(  listObjErrors   );
-            var columns         = columnify(        listObj         );
+            var columnsErrors = columnify(listObjErrors);
+            var columns = columnify(listObj);
 
-            if ( self.settings.showErrors )
+            if (self.settings.showErrors)
                 console.log(columnsErrors)
 
-            if ( self.settings.showAllItemsAtEnd)
+            if (self.settings.showAllItemsAtEnd)
                 console.log(columns)
 
-            if ( self.settings.log != false )
+            if (self.settings.log != false)
                 self.proc('found filtered files', listFiltered.length)
             // asdf.g
 
@@ -539,64 +622,62 @@ function NameSanitizer() {
             return listFiltered;
         }
 
-        self.utils.sanitizeFilename = function sanitizeFileNames(filename){
+        self.utils.sanitizeFilename = function sanitizeFileNames(filename) {
 
             var debugL = false;
-            if ( self.settings)
-                debugL = self.settings.debugSantization ;
+            if (self.settings)
+                debugL = self.settings.debugSantization;
             var $ = sh;
 
-            var badStrings = ['x264','x265',
+            var badStrings = ['x264', 'x265',
                     '720p', '1080p', '10800p',
                     '5.1Ch', 'ReEnc-DeeJayAhmed',
-                    'Limited','arigold','Ganool',
-                    'LiMiTED','BRRip','www.UsaBit.com','DTS','MySilu',
-                    'XviD','Xvid-LOL',
+                    'Limited', 'arigold', 'Ganool',
+                    'LiMiTED', 'BRRip', 'www.UsaBit.com', 'DTS', 'MySilu',
+                    'XviD', 'Xvid-LOL',
                     'QAAC', 'AAC', 'AAC2.0', 'AC3', 'STZ',
-                    '-P11','Ozlem',
-                    'Zen_Bud','anoXmous',
+                    '-P11', 'Ozlem',
+                    'Zen_Bud', 'anoXmous',
                     'dvdrip', 'dvd',
-                    'YIFY','BluRay','DON','3Li','TYNYFYD','scOrp',
-                    'WEB-DL','PublicHD','HDDVD','playnow','P2PDL','x0r',
-                    '700MB','450MB', 'Bdrip', 'ShAaNiG',   'L@mBerT',
-                    'hdtv', '-immerse', '-0sec',  '-IMMERSE', 'HDTV',
+                    'YIFY', 'BluRay', 'DON', '3Li', 'TYNYFYD', 'scOrp',
+                    'WEB-DL', 'PublicHD', 'HDDVD', 'playnow', 'P2PDL', 'x0r',
+                    '700MB', '450MB', 'Bdrip', 'ShAaNiG', 'L@mBerT',
+                    'hdtv', '-immerse', '-0sec', '-IMMERSE', 'HDTV',
                     '-unit3d', 'unit3d', 'Zen_Bud', 'mkv',
 
-                    'WebRip','NVEE', 'DualeDonkers',
+                    'WebRip', 'NVEE', 'DualeDonkers',
                     'thebox', 'thbox', 'ws', 'xvid-river', 'pdtv', 'xvid-fov',
                     //weird shit
                     'The.Buzzsaw', 'MrLss',
-                    'HEVC', 'H265-LGC','H.265-LGC',
+                    'HEVC', 'H265-LGC', 'H.265-LGC',
                     'H264', 'RARBG',
                     'killers', 'internal', 'doesntsuck',
                     '-2HD', 'proper', '-lol', '-killers', 'x264-mrsk',
                     'E-Subs', 'repack', 'VDTNS', 'SChiZO',
-                    'DD5.1',  '-BATV', 'tcm', '-dimension',
+                    'DD5.1', '-BATV', 'tcm', '-dimension',
                     'ccccc-', 'RUS', 'PSYPHER', 'm4v',
                     'H 264', 'DL', 'DD5', '-ITSat'
                 ],
-                fileExtensions = ['mp4','mkv','avi'];
+                fileExtensions = ['mp4', 'mkv', 'avi'];
 
             var anyPart = ['xvid', 'x264']
-
 
 
             var filenameNameWithoutBrackets = self.utils.stripBrackets(filename)
             filename = filenameNameWithoutBrackets;
 
             var caseSensitive = ['EVOLVE']
-            if ( debugL )
+            if (debugL)
                 console.info('info', filename)
-            $.each(badStrings, function addWord(k,badString) {
-                if ( badString.indexOf('.')==-1) return; //only those with periods
+            $.each(badStrings, function addWord(k, badString) {
+                if (badString.indexOf('.') == -1) return; //only those with periods
                 filename = filename.replace(badString, '');
             })
-            if ( debugL )
+            if (debugL)
                 console.info('---', 'info', filename)
             //replace '.' with a ' '
-            filename = filename.replace(/\./g,' ');
-            filename = filename.replace(/\_/g,' ');
-
+            filename = filename.replace(/\./g, ' ');
+            filename = filename.replace(/\_/g, ' ');
 
 
             //process.exit()
@@ -604,18 +685,16 @@ function NameSanitizer() {
             // filename = filename.replace(/[\[\(\{].*[\]\}\)]/g,'');
 
 
-
-
-            for( var i = 0; i < fileExtensions.length; i++ )
-                filename = filename.replace( fileExtensions[i], '' );
+            for (var i = 0; i < fileExtensions.length; i++)
+                filename = filename.replace(fileExtensions[i], '');
 
 
             var logic = []
 
-            var words = filename.split(' ') ;
+            var words = filename.split(' ');
             //split on '-'
             //1210 3RFTS-S01E01-DVDRIP-Team-TDK.mkv
-            if ( filename.split('-').length > 4) {
+            if (filename.split('-').length > 4) {
                 words = filename.split('-')
                 logic.push('divide by dash - ')
             }
@@ -625,52 +704,50 @@ function NameSanitizer() {
 
             var sent = '';
             //debugger;
-            $.each(words, function addWord(k,word) {
+            $.each(words, function addWord(k, word) {
 
                 //remove MB
                 var mbTrailing = word.slice(-2)
-                var size = word.slice(0,-2)
-                if ( mbTrailing == 'MB' && isNaN(parseInt(size)) == false  ) {
+                var size = word.slice(0, -2)
+                if (mbTrailing == 'MB' && isNaN(parseInt(size)) == false) {
                     return;
                 }
                 var skipWord = false;
-                $.each(anyPart, function checkWord(k,bannedWord) {
-                    if ( word.toLowerCase().indexOf( bannedWord.toLowerCase() ) != -1 ) {
+                $.each(anyPart, function checkWord(k, bannedWord) {
+                    if (word.toLowerCase().indexOf(bannedWord.toLowerCase()) != -1) {
                         skipWord = true
                         return false;
                     }
                 })
 
-                $.each(badStrings, function checkWord(k,bannedWord) {
-                    bannedWord = bannedWord.replace(/\./gi,' ');
+                $.each(badStrings, function checkWord(k, bannedWord) {
+                    bannedWord = bannedWord.replace(/\./gi, ' ');
                     //if ( bannedWord.indexOf('Ch') != -1 )
                     //debugger
-                    if ( word.toLowerCase() == bannedWord.toLowerCase() ) {
+                    if (word.toLowerCase() == bannedWord.toLowerCase()) {
                         skipWord = true
                         return false;
                     }
                 })
-                $.each(caseSensitive, function checkWord(k,bannedWord) {
-                    if ( word  == bannedWord  ) {
+                $.each(caseSensitive, function checkWord(k, bannedWord) {
+                    if (word == bannedWord) {
                         skipWord = true
                         return false;
                     }
                 })
 
 
-
-
-                if (skipWord ) return;
+                if (skipWord) return;
                 sent += word + ' ';
             })
             var filename_before = filename;
             filename = sent;
-            for( var i = 0; i < badStrings.length; i++ ) {
+            for (var i = 0; i < badStrings.length; i++) {
                 filename = filename.replace(badStrings[i], '');
-                if ( debugL )
+                if (debugL)
                     console.info('-x---', 'info', filename, badStrings[i])
             }
-            if ( debugL )
+            if (debugL)
                 console.info('----', 'info', filename)
             return filename;
         }
@@ -678,10 +755,10 @@ function NameSanitizer() {
 
         self.utils.getEpisodeObject = function getEpisodeObject(fullFilePath) {
 
-            if ( fullFilePath.indexOf('Law___Order__Special_Victims_Unit_1999') == -1 ) {
+            if (fullFilePath.indexOf('Law___Order__Special_Victims_Unit_1999') == -1) {
                 //return {};
             }
-            if ( self.focusOnItem && fullFilePath.indexOf(self.focusOnItem)) {
+            if (self.focusOnItem && fullFilePath.indexOf(self.focusOnItem)) {
             }
 
             var split = fullFilePath.split('/')
@@ -692,7 +769,7 @@ function NameSanitizer() {
 
             var obj1 = self.utils.getEpisodeObject_Internal(leaf, split);
             var obj2 = self.utils.getEpisodeObject_Internal(unsanitized, split); //try with regular name
-            if ( leaf != fullFilePath) {
+            if (leaf != fullFilePath) {
                 var obj3 = self.utils.getEpisodeObject_Internal(fullFilePath, split);
 
                 ///Root/tv/2_Broke_Girls_2011/tt1845307/2_Broke_Girls_S05E02/2.Broke.Girls.S05E02.HDTV.x264-LOL[ettv]/2.Broke.Girls.S05E02.HDTV.x264-LOL[ettv]/2.broke.girls.502.hdtv-lol[ettv].mp4
@@ -703,7 +780,7 @@ function NameSanitizer() {
                 noperiodNoDashPath = sh.replace(noperiodNoDashPath, '.', ' ');
                 noperiodNoDashPath = sh.replace(noperiodNoDashPath, '/', ' ');
                 //self.proc('fix it', noperiodNoDashPath)
-                var obj4 = getEpisodeObject(noperiodNoDashPath,true );
+                var obj4 = getEpisodeObject(noperiodNoDashPath, true);
 
             }
 
@@ -713,22 +790,22 @@ function NameSanitizer() {
             ///Root/tv/2_Broke_Girls_2011/tt1845307/2_Broke_Girls_S05E02/2.Broke.Girls.S05E02.HDTV.x264-LOL[ettv]/2.Broke.Girls.S05E02.HDTV.x264-LOL[ettv]/2.broke.girls.502.hdtv-lol[ettv].mp4
 
             //self.proc('names', leaf, unsanitized)
-            if ( obj1.s !== '' ) {
+            if (obj1.s !== '') {
                 return obj1;
             }
 
-            if ( obj2.s !== '' ) {
+            if (obj2.s !== '') {
                 return obj2;
             }
-            if ( obj3 == null ) {
+            if (obj3 == null) {
                 return obj2;
             }
 
-            if ( obj3.s !== '' ) {
+            if (obj3.s !== '') {
                 return obj3;
             }
 
-            if ( obj4.s !== '' ) {
+            if (obj4.s !== '') {
                 return obj4;
             }
 
@@ -750,17 +827,17 @@ function NameSanitizer() {
 
 
             function seasonFound() {
-                if ( obj.s === '' )
+                if (obj.s === '')
                     return false;
-                if ( obj.s === 0 )
+                if (obj.s === 0)
                     return true;
-                if ( obj.s === null )
+                if (obj.s === null)
                     return false;
                 return true;
             }
 
             function seasonAndEpFound() {
-                if ( sh.isNumber(obj.s) && obj.s >0 ) {
+                if (sh.isNumber(obj.s) && obj.s > 0) {
                     if (sh.isNumber(obj.e) && obj.e > 0) {
                         return true;
                     }
@@ -779,15 +856,16 @@ function NameSanitizer() {
             var leafWordsAlphaNumeric = leaf.replace(/[^a-z0-9]/gi, ' ').split(' ')
 
 
-
             function tryModeSeperate(obj, words) {
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
 
-
                 var mode = 's02 e01 Mode: Seperate'
-                sh.each(words, function (k, word) {
+                //console.error(mode, obj)
+                //sh.log.stack()
+                // sh.errors.showStack()
+                sh.each(words, function onSearchWords(k, word) {
                     word = word.toLowerCase();
 
                     var char1 = word[0];
@@ -795,28 +873,34 @@ function NameSanitizer() {
                     var char3 = word[2];
                     var char4 = word[3];
 
-
                     //s02 e01 Mode: Seperate
 
                     if (char1 == 'e' ||
                         char1 == 's') {
                         var restOfWord = word.slice(1)
-                        var restOfWordIsNumber = sh.isNumber(restOfWord);
-                        if ( restOfWordIsNumber == false ) {
-                            if ( char4 != '.') { //why: ignore case where e08.mp4, this is still valid, but is not number
-                                // self.proc('rejected', word, 'bc not number')
-                                return;
-                            }
-
+                        var restOfWordOrig = restOfWord;
+                        if (char4 == '.') { //why: ignore case where e08.mp4, this is still valid, but is not number
+                            // self.proc('rejected', word, 'bc not number')
+                            restOfWord = sh.str.before(restOfWord, '.')
                         }
+                        var restOfWordIsNumber = sh.isNumber(restOfWord);
+                        if (restOfWordIsNumber == false) {
+                            return;
+                        }
+
+                        /*var num2 = sh.isNumber(restOfWord)
+                         if ( num2 == false ) {
+                         console.error('bail on', restOfWord, char4)
+                         return;
+                         }*/
                         var num = parseFloat(restOfWord)
-                        if( char1 == 's') {
+                        if (char1 == 's') {
                             obj.s = num;
                         }
-                        if( char1 == 'e') {
+                        if (char1 == 'e') {
                             obj.e = num;
                             obj.e3 = num
-                           // asdf.g
+                            // asdf.g
                         }
 
                         obj.dbg = mode;
@@ -826,8 +910,9 @@ function NameSanitizer() {
                 })
 
             }
+
             function tryDotPointMode(obj, words) {
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
                 sh.each(words, function (k, word) {
@@ -836,14 +921,14 @@ function NameSanitizer() {
 
                     //04.05 dot in middle
                     //starts with 0
-                    if ( char1 != '0') {
+                    if (char1 != '0') {
                         return;
                     }
-                    if ( word.indexOf('.') == -1 ) {
+                    if (word.indexOf('.') == -1) {
                         return;
                     }
                     var split = word.split('.');
-                    if ( split.length > 2) {
+                    if (split.length > 2) {
 
                     }
                     var mode = 'dot in middle .. 04.05';
@@ -851,12 +936,12 @@ function NameSanitizer() {
                     var s = split[0];
                     var e = split[1];
 
-                    if ( s == '00') {
+                    if (s == '00') {
                         //console.log(sh.isNumber(s),sh.isNumber(e))
                         // process.exit(0)
                         // return;
                     }
-                    if ( sh.isNumber(s) && sh.isNumber(e)) {
+                    if (sh.isNumber(s) && sh.isNumber(e)) {
                         obj.s = parseFloat(s)
                         obj.e = parseFloat(e)
                     }
@@ -867,9 +952,10 @@ function NameSanitizer() {
                 })
 
             }
+
             // trySeasonNumber(obj, words )
             function trySeasonNumber(obj, words, seasonNumber) {
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
                 //self.proc('try advanced season', seasonNumber, words)
@@ -878,26 +964,26 @@ function NameSanitizer() {
                 var countOfWordWithNumber = 0;
                 var episode = null;
                 sh.each(words, function (k, word) {
-                    if ( word.trim() == '' ) return;
+                    if (word.trim() == '') return;
                     word = word.toLowerCase();
                     var char1 = word[0];
                     var char2 = word[1]
 
-                    if ( seasonNumber.length > 1) {
+                    if (seasonNumber.length > 1) {
                         //seaosn 14 SVU
-                        char1 = word.slice(0,seasonNumber.length);
-                        char2 = word.slice(0+1,1+seasonNumber.length);
+                        char1 = word.slice(0, seasonNumber.length);
+                        char2 = word.slice(0 + 1, 1 + seasonNumber.length);
                     }
 
-                    if ( word.length < 3) {
+                    if (word.length < 3) {
                         return;
                     }
-                    if ( ! sh.isNumber(word) ) {
+                    if (!sh.isNumber(word)) {
                         return;
                     }
                     //what about 09 x 10
-                    if ( char1 == seasonNumber ) {
-                    } else if ( char1 == '0' && char2 == seasonNumber ) {
+                    if (char1 == seasonNumber) {
+                    } else if (char1 == '0' && char2 == seasonNumber) {
                         word = word.slice(1); //0419
                     } else {
                         return
@@ -918,13 +1004,13 @@ function NameSanitizer() {
                      */
 
                 })
-                if ( countOfWordWithNumber < 1 ){
+                if (countOfWordWithNumber < 1) {
                     return //abandon
                 }
-                if ( countOfWordWithNumber > 1 ){
+                if (countOfWordWithNumber > 1) {
                     return //abandon
                 }
-                if ( episode.length > 4) {
+                if (episode.length > 4) {
                     self.proc('bailed bc episod ename too long', episode)
                     return;
                 }
@@ -933,10 +1019,10 @@ function NameSanitizer() {
 
                 var s = seasonNumber;
                 var e = episode.slice(1);
-                if ( seasonNumber.length > 1) {
+                if (seasonNumber.length > 1) {
                     e = episode.slice(seasonNumber.length);
                 }
-                if ( sh.isNumber(s) && sh.isNumber(e)) {
+                if (sh.isNumber(s) && sh.isNumber(e)) {
                     obj.s = parseFloat(s)
                     obj.e = parseFloat(e)
                 }
@@ -949,7 +1035,7 @@ function NameSanitizer() {
                 //why: we know season, if show has 'Espide 4' accept
                 //risk: only 1 number allowed
 
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
                 var mode = 'Episode number only in Name '
@@ -957,41 +1043,42 @@ function NameSanitizer() {
                 //ensure only exists 1 time
                 var countOfWordWithNumber = 0;
                 var episode = null;
+                //asdf.g
                 sh.each(words, function (k, word) {
-                    if ( word.trim() == '' ) return;
+                    if (word.trim() == '') return;
                     word = word.toLowerCase();
-                    if ( word.slice(-1)[0]=='.') {
-                        word = word.slice(0,-1)
+                    if (word.slice(-1)[0] == '.') {
+                        word = word.slice(0, -1)
                     }
-                    if ( ! sh.isNumber(word) ) {
+                    if (!sh.isNumber(word)) {
                         return;
                     }
-                    if ( word == seasonNumber) {
+                    if (word == seasonNumber) {
                         return;
                     }
                     countOfWordWithNumber++
-                    episode =  word;
+                    episode = word;
                 })
 
-                if ( countOfWordWithNumber < 1 ){
+                if (countOfWordWithNumber < 1) {
                     return //abandon
                 }
-                if ( countOfWordWithNumber > 1 ){
+                if (countOfWordWithNumber > 1) {
                     //console.error('abdondon', episode)
                     return //abandon
                 }
-                if ( episode.length > 4) {
+                if (episode.length > 4) {
                     self.proc('bailed bc episode name too long', episode)
                     return;
                 }
 
                 var s = seasonNumber;
                 var e = episode;
-                if ( sh.isNumber(s) && sh.isNumber(e)) {
+                if (sh.isNumber(s) && sh.isNumber(e)) {
                     obj.s = parseFloat(s)
                     obj.e = parseFloat(e)
-                    if ( obj.e > 200 && e.length > 2 ) { //large int value
-                        if ( e.indexOf(seasonNumber) == 0 ) { //starts with season
+                    if (obj.e > 200 && e.length > 2) { //large int value
+                        if (e.indexOf(seasonNumber) == 0) { //starts with season
                             e = e.slice(seasonNumber.length)
                             obj.e = parseFloat(e)
                         }
@@ -1003,29 +1090,35 @@ function NameSanitizer() {
             function tryToS00E00Format(splitMode) {
 
 
-                if ( splitMode  &&
+                if (splitMode &&
                     ( sh.isNumber(obj.s) == false ||
                     sh.isNumber(obj.e) == false)
                 ) {
                     words = self.utils.cleanUpWords(words)
                 }
 
-                sh.each(words, function (k,word){
+                sh.each(words, function (k, word) {
 
-                    var firstChar = word.slice(0,1).toLowerCase();
+                    if ( sh.str.firstChar(word) == '[' ) {
+                        if ( sh.str.lastChar(word) == ']' ) {
+                            word = sh.unwrap(word)
+                        }
+                    }
+
+
+                    var firstChar = word.slice(0, 1).toLowerCase();
 
                     word = word.toLowerCase();
-                    if ( word.slice(0,1).toLowerCase() == 's' &&
-                        word.slice(3,4).toLowerCase() == 'e' ){
+                    if (word.slice(0, 1).toLowerCase() == 's' &&
+                        word.slice(3, 4).toLowerCase() == 'e') {
                     }
 
                     var mode = 'tryToS00E00Format'
 
-                    if ( firstChar == 's' && word.indexOf('xe') != -1  ) {
-                        word =word.replace('xe', 'e');
+                    if (firstChar == 's' && word.indexOf('xe') != -1) {
+                        word = word.replace('xe', 'e');
                         mode += ' repl xe'
                     }
-
 
 
                     var char1 = word[0];
@@ -1033,67 +1126,123 @@ function NameSanitizer() {
                     var char3 = word[2];
                     var char4 = word[3];
 
-                    if ( word.length < 4) {
+                    if (word.length < 4) {
                         return;
                     }
 
 
-
-                    if ( char2 == 'e' ||
+                    if (char2 == 'e' ||
                         char3 == 'e' ||
-                        char4 == 'e' ){
+                        char4 == 'e') {
                         var split = word.split('e')
-                        if ( word.indexOf('ep') != -1 ) {
+                        obj.otherEps = split ;
+
+                        obj.otherEps = split.concat() ;
+                        obj.otherEps.shift()
+                        if ( obj.otherEps.length == 1 &&
+                            obj.otherEps[0].includes('-')) {
+                            obj.otherEps = obj.otherEps[0].split('-')
+                            obj.ex='split on dash eps'
+
+
+                        }
+
+                        if( obj.otherEps.length > 1 ) {
+                            if ( sh.isNumber(obj.otherEps[1]) ) {
+                                obj.e2=obj.otherEps[1];
+                            }
+                        }
+
+
+
+                        if (word.indexOf('ep') != -1) {
                             split = word.split('ep')
                         }
+
                         var season = split[0];
                         season = season.replace('s', '');
-                        if ( !  sh.isNumber( season )) {
+                        if (!sh.isNumber(season)) {
                             return;
                         }
                         obj.s = season
                         obj.e = split[1];
-                        if ( obj.e.slice(-1)[0]=='-') {
-                            obj.e = obj.e.slice(0,-1)
+                        if (obj.e.slice(-1)[0] == '-') {
+                            obj.e = obj.e.slice(0, -1)
                         }
-                        if ( obj.e.indexOf('.') != -1 ) {
+                        if (obj.e.indexOf('.') != -1) {
                             obj.e = obj.e.split('.')[0];
                         }
-                        if ( obj.e.indexOf('~') != -1 ) {
+                        if (obj.e.indexOf('~') != -1) {
                             obj.e = obj.e.split('~')[0];
                         } //s01e05~{king}.mp4
+
+                        obj.mode = mode
+
+
+
+                        var firstNum =  sh.str.firstNum(obj.e)
+                        var potentail2Episodes = firstNum
+                        if ( firstNum ) {
+                            //var split = obj.e.split('-')
+                            obj.e = firstNum;
+                            obj.mode = mode+'_firstNumber'
+
+                            //obj.word = word;
+                            obj.potentail2Episodes = potentail2Episodes;
+                            //try to find if doubl ethe episodes
+                            if ( potentail2Episodes.includes('-')) {
+
+                            }
+
+
+
+                        } //s01e05~{king}.mp4
+
+                        //debugger
+                        if (obj.e.indexOf('-') != -1) {
+                           // debugger
+                            var split = obj.e.split('-')
+                            obj.e = split[0];
+                            obj.mode = mode+'_exspliton-dash'
+                        } //s01e05~{king}.mp4
+
+
+
+
+
 
                         //if ( parseInt(obj.e)
                         obj.mode = mode
                         obj.dbg = word;
                         return false;
                     }
-                    if ( char2 == 'x' ||
-                        char3 == 'x' ){
+                    if (char2 == 'x' ||
+                        char3 == 'x') {
                         var split = word.split('x')
-                        if ( !  sh.isNumber(split[0])) {
+                        if (!sh.isNumber(split[0])) {
                             return;
                         }
                         obj.s = split[0];
                         obj.e = split[1];
-                        if ( obj.e.indexOf('.') != -1 ) {
+                        if (obj.e.indexOf('.') != -1) {
                             obj.e = obj.e.split('.')[0];
                         }
-                        obj.mode = mode+'X'
+                        obj.mode = mode + 'X'
                         obj.dbg = word;
+
                         return false;
                     }
 
                     //s02 e01 Mode: Seperate
-                    if ( char2 == 'x' ||
-                        char3 == 'x' ){
+                    if (char2 == 'x' ||
+                        char3 == 'x') {
                         var split = word.split('x')
-                        if ( !  sh.isNumber(split[0])) {
+                        if (!sh.isNumber(split[0])) {
                             return;
                         }
                         obj.s = split[0]
                         obj.e = split[1]
-                        obj.mode = mode+'x-seperate'
+                        obj.mode = mode + 'x-seperate'
                         obj.dbg = word;
                         return false;
                     }
@@ -1102,22 +1251,45 @@ function NameSanitizer() {
                     //Mode: dot between 2 numbers
                     //1489 00.04 - Intro (A Glitch is a Glitch).mp4
                 })
+
+
+                if (obj.e) {
+                    var objPre = obj.e
+                    obj.e = sh.removeNonAlpha(obj.e)
+                    if (obj.e != objPre) {
+                        console.log('removed non alpha')
+                    }
+                }
+
             }
 
 
             tryToS00E00Format();
 
 
-            if ( seasonFound()==false ) { //why: only do odd modes if no match found ... don't override
+            if (seasonFound() == false) { //why: only do odd modes if no match found ... don't override
                 //odd modes
-                tryModeSeperate(obj, words )
-                if (seasonAndEpFound()==false) {
+                tryModeSeperate(obj, words)
+
+                if (seasonAndEpFound() == false) {
                     tryDotPointMode(obj, words)
                 }
-                if (seasonAndEpFound()==false) {
+
+                if (seasonAndEpFound() == false) {
                     self.modes.trySeasonAnd3Numbers(obj, words)
                 }
-                if (seasonAndEpFound()==false) {
+                if (seasonAndEpFound() == false) {
+                    //  self.modes.tryOneNumberInFileLeaf(obj, words)
+                }
+                if (seasonAndEpFound() == false) {
+                    var xZ = self.modes.tryLeafStartsWith_Episode(obj, words)
+                    if (xZ != null) {
+                        obj = xZ
+                    }
+                    //  self.modes.tryOneNumberInFileLeaf(obj, words)
+                }
+                if (seasonAndEpFound() == false) {
+                    self.modes.seasonAndEpisodeInFileLeaf_atStart(obj, words)
                     //  self.modes.tryOneNumberInFileLeaf(obj, words)
                 }
             }
@@ -1129,16 +1301,16 @@ function NameSanitizer() {
             /*if ( obj.s == '0' ) {
              console.error('sss:', obj.s, leaf) //what was fix === 0
              }*/
-            if ( obj.s != null && obj.s[0] == '0' && obj.s != '0' ) {
+            if (obj.s != null && obj.s[0] == '0' && obj.s != '0') {
                 //console.error(obj.s, 'zeroo')
-                obj.s  = obj.s.slice(1);
+                obj.s = obj.s.slice(1);
             }
-            if ( obj.e == '0') {
+            if (obj.e == '0') {
                 console.error(fullFilePath, leaf)
                 //throw new Error('why zero for epsidoe?')
             }
-            if ( obj.e[0] == '0' ) {
-                obj.e  = obj.e.slice(1);
+            if (obj.e[0] == '0') {
+                obj.e = obj.e.slice(1);
             }
 
 
@@ -1148,14 +1320,14 @@ function NameSanitizer() {
                 var seasonNumber = null;
                 //var y = '/Root/tv/Archer_2009/tt1486217/Archer_Season_1/Archer.Complete/Archer.Complete/03.05'
                 var seasonX = fullFilePath.split('Season_')[1];
-                if ( seasonX == null ) {
+                if (seasonX == null) {
                     //self.proc('season null',  fullFilePath) // old style /Root/tv/The_Goldbergs_2013/tt2712740/The_Goldbergs_S03E12/Baio and Switch.mp4
                 } else {
                     seasonX = seasonX.split('/')[0]
                     seasonNumber = seasonX;
 
                     //self.proc('seasonNumber', seasonNumber)
-                    if ( seasonNumber != null ) {
+                    if (seasonNumber != null) {
                         //process.exit()
                         trySeasonNumber(obj, words, seasonNumber)
                         //try with leaf first
@@ -1168,7 +1340,7 @@ function NameSanitizer() {
 
             }
 
-            if ( seasonNumber != null && seasonNumber != '' && obj.seasonNumber == null ) {
+            if (seasonNumber != null && seasonNumber != '' && obj.seasonNumber == null) {
                 obj.seasonNumber = seasonNumber;
             }
 
@@ -1179,7 +1351,7 @@ function NameSanitizer() {
         }
 
 
-        p.utils.stripBrackets = function stripBrackets( filename ) {
+        p.utils.stripBrackets = function stripBrackets(filename) {
 
             filename = filename.trim();
             //replace brackets
@@ -1190,17 +1362,17 @@ function NameSanitizer() {
             var blockEnders = [']', ')', '}'];
             sh.each(filename, function openCloseBrackets(i, char) {
 
-                if ( sh.includes(blockStarters, char)) {
+                if (sh.includes(blockStarters, char)) {
                     inBlock = true
                     return;
                 }
-                if ( inBlock ) {
-                    if ( sh.includes(blockEnders,char)) {
+                if (inBlock) {
+                    if (sh.includes(blockEnders, char)) {
                         inBlock = false
 
                         //if last char is number, assume it was an episode
                         var lastChar = blockContents.slice(-1)[0]
-                        if ( sh.isNumber(lastChar) == false) {
+                        if (sh.isNumber(lastChar) == false) {
                             return; //skip bracket b/c prob a scene name
                         }
 
@@ -1218,18 +1390,18 @@ function NameSanitizer() {
             return newName;
         };
 
-        p.utils.cleanUpWords = function cleanUpWords( words ) {
+        p.utils.cleanUpWords = function cleanUpWords(words) {
 
             //split on periods
             var wordsByPeriod = [];
-            sh.each(words, function splitOnPeriods(k,word) {
+            sh.each(words, function splitOnPeriods(k, word) {
                 word = word.replace(/[^\w\.]/gi, '')
-                if ( word.indexOf('.') == -1 ) {
+                if (word.indexOf('.') == -1) {
                     wordsByPeriod.push(word);
                     return;
                 }
                 var words = word.split('.')
-                sh.each(words, function addEachWord(k,wordI) {
+                sh.each(words, function addEachWord(k, wordI) {
                     wordsByPeriod.push(wordI);
                 })
             })
@@ -1238,6 +1410,7 @@ function NameSanitizer() {
         };
 
     }
+
     defineUtils();
 
     function defineProcessingModeFunctions() {
@@ -1245,7 +1418,7 @@ function NameSanitizer() {
 
         p.modes.trySeasonAnd3Numbers =
             function trySeasonAnd3Numbers(obj, words, dirs) {
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
 
@@ -1253,7 +1426,7 @@ function NameSanitizer() {
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
 
-                    if ( word.length != 3 )
+                    if (word.length != 3)
                         return;
 
                     var char1 = word[0];
@@ -1264,12 +1437,12 @@ function NameSanitizer() {
 
                     //s02 e01 Mode: Seperate
 
-                    if ( sh.isNumber(word) &&
-                        sh.isNumber(char1) && parseInt(char1) == obj.sGuess ) {
+                    if (sh.isNumber(word) &&
+                        sh.isNumber(char1) && parseInt(char1) == obj.sGuess) {
                         //found match
                         var restOfWord = word.slice(1);
                         var likelyEpisodeNumber = restOfWord
-                        likelyEpisodeNumber  = parseInt(restOfWord);
+                        likelyEpisodeNumber = parseInt(restOfWord);
                         obj.s = obj.sGuess;
                         obj.e = likelyEpisodeNumber;
                     }
@@ -1285,21 +1458,21 @@ function NameSanitizer() {
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
 
-                    var episodeNumber =  p.utils.getNumberFromWord(word)
+                    var episodeNumber = p.utils.getNumberFromWord(word)
                     if (episodeNumber == null)
                         return;
 
-                    if ( obj.sGuess == null ) {
+                    if (obj.sGuess == null) {
                         return //legacy stuff
                     }
                     //console.log(words.join(' '))
-                    var seasonPreamble = word.slice(0,obj.sGuess.length);
+                    var seasonPreamble = word.slice(0, obj.sGuess.length);
                     var trueEpisode = word.slice(obj.sGuess.length);
-                    if ( trueEpisode == '')
+                    if (trueEpisode == '')
                         return; // too short
-                    if ( sh.isNumber(trueEpisode)== false)
+                    if (sh.isNumber(trueEpisode) == false)
                         return; // too short
-                    if (seasonPreamble==obj.sGuess) {
+                    if (seasonPreamble == obj.sGuess) {
                         trueEpisode
                         obj.s = obj.sGuess;
                         obj.e = trueEpisode;
@@ -1310,6 +1483,45 @@ function NameSanitizer() {
                 })
 
 
+            }
+
+
+        p.modes.seasonAndEpisodeInFileLeaf_atStart =
+            function seasonAndEpisodeInFileLeaf_atStart(obj, words, dirs) {
+                ///media/sda/finished/incoming/finished/root/tv/leverage_2008/tt1103987/leverage/leverage/507 - the real fake car job.mp
+                var mode = 'seasonAndEpisodeInFileLeaf_atStart: last ditch'
+                /*
+                 if (words.includes('season')) {
+                 return;
+                 }
+
+                 if (words.includes('episode')) {
+                 return;
+                 }*/
+
+                sh.each(words, function (k, word) {
+                    word = sh.removeNonAlpha(word) ///Root/tv/The_Middle_2009/tt1442464/The_Middle_Season_6/Season 6/Season 6/16. No Motorcycles.avi
+                    if (word.length != 3) {
+                        return
+                    }
+                    var char1 = word.slice(0, 1)
+                    if (char1 == '0') { //naurto starts with 0, thisi snot valid
+                        return;
+                    }
+                    if (!sh.isNumber(word)) {
+                        return
+                    }
+
+                    var seasonNumber = word.slice(0, 1);
+                    var episodeNumber = word.slice(1, 3)
+
+                    obj.s = seasonNumber
+                    obj.e = episodeNumber;
+                    obj.mode = mode;
+                    obj.dbgInfo = word;
+                    // console.error(obj)
+                })
+
 
             }
 
@@ -1317,7 +1529,7 @@ function NameSanitizer() {
         p.modes.tryOneNumberInFileLeaf =
             function tryOneNumberInFileLeaf(obj, words, dirs) {
                 //why the shingeki unit
-                if ( obj.e != '' ) {
+                if (obj.e != '') {
                     return;
                 }
 
@@ -1334,11 +1546,10 @@ function NameSanitizer() {
 
                     var restOfWord = word.slice(1);
                     var likelyEpisodeNumber = restOfWord
-                    likelyEpisodeNumber  = parseInt(restOfWord);
+                    likelyEpisodeNumber = parseInt(restOfWord);
                     obj.s = obj.sGuess;
                     obj.e = likelyEpisodeNumber;
                 })
-
 
 
             }
@@ -1352,15 +1563,14 @@ function NameSanitizer() {
                 var lastWord
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
-                    if ( lastWord != 'episode' ) {
+                    if (lastWord != 'episode') {
                         lastWord = word;
                         return;
                     }
                     lastWord = word;
-                    var episodeNumber =  p.utils.getNumberFromWord(word)
+                    var episodeNumber = p.utils.getNumberFromWord(word)
                     if (episodeNumber == null)
                         return;
-
 
 
                     obj.s = obj.sGuess;
@@ -1374,18 +1584,18 @@ function NameSanitizer() {
             function tryForEpisode(obj, words, dirs) {
                 //why the Episode  unit
 
-                obj.mode=''
+                obj.mode = ''
                 var mode = 'Episode X in name: last ditch'
 
                 var lastWord
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
-                    if ( lastWord != 'episode' ) {
+                    if (lastWord != 'episode') {
                         lastWord = word;
                         return;
                     }
                     lastWord = word;
-                    var episodeNumber =  p.utils.getNumberFromWord(word)
+                    var episodeNumber = p.utils.getNumberFromWord(word)
                     if (episodeNumber == null)
                         return;
 
@@ -1398,12 +1608,12 @@ function NameSanitizer() {
                 var mode = 'Ep X in name: last ditch'
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
-                    if ( lastWord != 'ep' ) {
+                    if (lastWord != 'ep') {
                         lastWord = word;
                         return;
                     }
                     lastWord = word;
-                    var episodeNumber =  p.utils.getNumberFromWord(word)
+                    var episodeNumber = p.utils.getNumberFromWord(word)
                     if (episodeNumber == null)
                         return;
 
@@ -1413,25 +1623,25 @@ function NameSanitizer() {
                     obj.mode += mode
                 })
 
-                if ( sh.isNumber(obj.e) == false ) {
+                if (sh.isNumber(obj.e) == false) {
                     var mode = ' [e01 with no s01] '
                     sh.each(words, function (k, word) {
                         word = word.toLowerCase();
-                        var firstChar = word.slice(0,1).toLowerCase();
-                        if ( firstChar != 'e') {
+                        var firstChar = word.slice(0, 1).toLowerCase();
+                        if (firstChar != 'e') {
                             return;
                         }
                         var restOfEpisode = word.slice(1);
                         var episodeNumber = parseInt(restOfEpisode);
-                        if ( sh.isNumber(episodeNumber) == false ) {
+                        if (sh.isNumber(episodeNumber) == false) {
 
                         }
                         /*if (!sh.isNumber(word) ||
-                            seasonNumber <= 0) {
-                            if (sh.isNumber(word.split('.')[0]) == false) { //2.mp4
-                                return;
-                            }
-                        }*/
+                         seasonNumber <= 0) {
+                         if (sh.isNumber(word.split('.')[0]) == false) { //2.mp4
+                         return;
+                         }
+                         }*/
 
                         obj.e = episodeNumber;
                         obj.mode += mode
@@ -1441,7 +1651,7 @@ function NameSanitizer() {
                 var mode = 'Season X in name: last ditch --- '
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
-                    if ( lastWord != 'season' ) {
+                    if (lastWord != 'season') {
                         lastWord = word;
                         return;
                     }
@@ -1449,7 +1659,7 @@ function NameSanitizer() {
                     var seasonNumber = parseInt(word);
                     if (!sh.isNumber(word) ||
                         seasonNumber <= 0) {
-                        if ( sh.isNumber(word.split('.')[0] ) == false) { //2.mp4
+                        if (sh.isNumber(word.split('.')[0]) == false) { //2.mp4
                             return;
                         }
                     }
@@ -1461,17 +1671,147 @@ function NameSanitizer() {
 
             }
 
+
+        /*function tryLeafStartsWith_Episode(obj, words, seasonNumber) {
+         //Episode 5 - Internment.mp4
+         //why: we know season, if show has 'Espide 4' accept
+         //risk: only 1 number allowed
+
+         if ( obj.e != '' ) {
+         return;
+         }
+         var mode = 'Episode number only in Name '
+         //self.proc('what is input', mode, words)
+         //ensure only exists 1 time
+         var countOfWordWithNumber = 0;
+         var episode = null;
+         asdf.g
+         sh.each(words, function (k, word) {
+         if ( word.trim() == '' ) return;
+         word = word.toLowerCase();
+         if ( word.slice(-1)[0]=='.') {
+         word = word.slice(0,-1)
+         }
+         if ( ! sh.isNumber(word) ) {
+         return;
+         }
+         if ( word == seasonNumber) {
+         return;
+         }
+         countOfWordWithNumber++
+         episode =  word;
+         })
+
+         if ( countOfWordWithNumber < 1 ){
+         return //abandon
+         }
+         if ( countOfWordWithNumber > 1 ){
+         //console.error('abdondon', episode)
+         return //abandon
+         }
+         if ( episode.length > 4) {
+         self.proc('bailed bc episode name too long', episode)
+         return;
+         }
+
+         var s = seasonNumber;
+         var e = episode;
+         if ( sh.isNumber(s) && sh.isNumber(e)) {
+         obj.s = parseFloat(s)
+         obj.e = parseFloat(e)
+         if ( obj.e > 200 && e.length > 2 ) { //large int value
+         if ( e.indexOf(seasonNumber) == 0 ) { //starts with season
+         e = e.slice(seasonNumber.length)
+         obj.e = parseFloat(e)
+         }
+         }
+         }
+         obj.dbg = mode;
+         }*/
+        p.modes.tryLeafStartsWith_Episode =
+            function tryForEpisode(obj__, words, dirs) {
+
+                //why the Episode  unit
+
+                //obj.mode=''
+                // var mode = 'Leaf Starts with Episode: last ditch'
+                ///media/sda/finished/incoming/finished/root/tv/hawaii five-0_2010/
+                // tt1600194/season_4/hawaii five-0 season 4/hawaii five-0 season 4/
+                // episode 16 - fire in the sky.mp4
+                ['', 'media', 'sda', 'finished', 'incoming', 'finished', 'root', 'tv',
+                    'hawaii', 'five-0_2010', 'tt1600194', 'season_4', 'hawaii', 'five-0',
+                    'season', '4', 'hawaii', 'five-0', 'season', '4', 'episode', '16', '-',
+                    'fire', 'in', 'the', 'sky', 'mp4']
+                var mode = 'Leaf Starts with Episode: last ditch'
+                //console.error(mode, obj__)
+                // console.log(words)
+                // return;
+                //return
+                /*if (words[0].toLowerCase() == 'episode') {
+                 var num = words[1] ///asdf.g.sdf
+                 if (sh.isNumber(num)) {
+
+                 }
+
+                 }*/
+                // console.log(mode, mode)
+                if (words.includes('episode') == false || false == words.includes('season')) {
+                    return; //dp mpt jave bptj
+                }
+
+                var lastWord
+                var seasonNumber = null
+                var episodeNumber = null;
+                sh.each(words, function (k, word) {
+                    word = word.toLowerCase();
+                    var nextWord = words[k + 1];
+                    lastWord = word;
+                    if (word == 'episode') {
+                        var episodeNumber_ = p.utils.getNumberFromWord(nextWord)
+                        // asdf.g
+                        if (episodeNumber_ == null) {
+                            //return;
+                        } else {
+                            episodeNumber = episodeNumber_;
+                        }
+                    }
+                    if (word == 'season') {
+                        var seasonNumber_ = p.utils.getNumberFromWord(nextWord)
+                        //console.log('wht', seasonNumber_, nextWord)
+                        // asdf.g
+                        if (seasonNumber_ == null) {
+                            //return;
+                        } else {
+                            seasonNumber = seasonNumber_;
+                        }
+                    }
+
+
+                })
+//sdf.g
+
+                if (seasonNumber && episodeNumber) {
+                    // asdf.g
+                    obj__.sGuess = obj__.s = seasonNumber;
+                    obj__.e = episodeNumber;
+                    obj__.mode = mode
+                    //console.log('matched', mode, obj__ )
+                    return obj__
+                }
+
+
+            }
 
 
         p.modes.tryToOverrideSeason =
             function tryToOverrideSeason(obj, words, dirs) {
                 //why the Episode  unit
-                if ( obj.mode == null ) obj.mode='';
+                if (obj.mode == null) obj.mode = '';
                 var lastWord = null;
                 var mode = 'Season X in name: Override --- '
                 sh.each(words, function (k, word) {
                     word = word.toLowerCase();
-                    if ( lastWord != 'season' ) {
+                    if (lastWord != 'season') {
                         lastWord = word;
                         return;
                     }
@@ -1479,7 +1819,7 @@ function NameSanitizer() {
                     var seasonNumber = parseInt(word);
                     if (!sh.isNumber(word) ||
                         seasonNumber <= 0) {
-                        if ( sh.isNumber(word.split('.')[0] ) == false) { //2.mp4
+                        if (sh.isNumber(word.split('.')[0]) == false) { //2.mp4
                             return;
                         }
                     }
@@ -1490,7 +1830,6 @@ function NameSanitizer() {
 
 
             }
-
 
 
         p.modes.lastDitchEfforts = function lastDitchEfforts(leaf, dirs) {
@@ -1528,32 +1867,37 @@ function NameSanitizer() {
                     self.modes.seasonAndEpisodeInFileLeaf(obj, leafWordsAlphaNumeric)
                 }
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 self.modes.tryOneNumberInFileLeaf(obj, words)
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 self.modes.tryOneNumberInFileLeaf(obj, words)
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 self.modes.tryOneNumberInFileLeaf(obj, words)
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 self.modes.tryForEpisode(obj, words)
 
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 self.modes.tryForEpisode(obj, wordsFull)
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 // self.modes.tryForEp(obj, words)
             }
-            if (seasonAndEpFound()==false) {
+            if (seasonAndEpFound() == false) {
                 //remove hyphen
                 ///the it crowd/the it crowd/season 2/06-men without women.avi",
-                self.modes.tryOneNumberInFileLeaf(obj,leafWordsAlphaNumeric)
+                self.modes.tryOneNumberInFileLeaf(obj, leafWordsAlphaNumeric)
             }
+            if (seasonAndEpFound() == false) {
+                self.modes.seasonAndEpisodeInFileLeaf_atStart(obj, words)
+            }
+
+
             //if (seasonAndEpFound()==false) {
-            self.modes.tryToOverrideSeason(obj,wordsFull)
+            self.modes.tryToOverrideSeason(obj, wordsFull)
             //}
 
             return obj;
@@ -1561,13 +1905,13 @@ function NameSanitizer() {
 
 
         p.modes.getLikelySeason =
-            function getLikelySeason( dirs) {
+            function getLikelySeason(dirs) {
                 var season = null;
                 // var mode = '3 letter, with season supporting Mode: Seperate'
                 sh.each(dirs, function (k, word) {
                     word = word.toLowerCase();
-                    if ( ! sh.includes(word, '_season_') ){
-                        return ;
+                    if (!sh.includes(word, '_season_')) {
+                        return;
                     }
                     season = word.split('_season_').slice(-1)[0];
                     return false;
@@ -1590,18 +1934,18 @@ function NameSanitizer() {
             dictConvert['nine'] = 9;
             dictConvert['ten'] = 10;
             var episodeNumber = parseInt(word);
-            if ( !sh.isNumber(word) || episodeNumber <= 0 ) {
+            if (!sh.isNumber(word) || episodeNumber <= 0) {
                 var potentialNumber = word;
-                if ( word.indexOf('.') != -1 ) {
+                if (word.indexOf('.') != -1) {
                     var firstHalfOfLastWordWithFileExt = word.split('.')[0];   //2.mp4
                     potentialNumber = firstHalfOfLastWordWithFileExt
                 }
 
-                if (sh.isNumber(potentialNumber) ) {
+                if (sh.isNumber(potentialNumber)) {
                     episodeNumber = potentialNumber;
                 } else {
                     var result = dictConvert[potentialNumber];
-                    if ( result == null )
+                    if (result == null)
                         return null;
                     else {
                         episodeNumber = result;
@@ -1614,10 +1958,11 @@ function NameSanitizer() {
             return episodeNumber;
         }
     }
+
     defineProcessingModeFunctions();
 
     p.proc = function debugLogger() {
-        if ( self.silent == true) {
+        if (self.silent == true) {
             return
         }
         sh.sLog(arguments)
@@ -1636,7 +1981,6 @@ if (module.parent == null) {
     //return;
     i.init();
 }
-
 
 
 exports.NameSanitizer = NameSanitizer;

@@ -248,7 +248,9 @@ function UIComp(__parent) {
             //  debugger
             u.addChange(cfg.ui, function onUpdated(val) {
                 console.debug('watching', cfg, val)
+                self.data.lastChange = val;
                 self.calcBindings(true);
+
                 if (self.data.parentUI) {
                     debugger
                     self.data.parentUIComp.data.ui.childCompChanged()
@@ -263,9 +265,9 @@ function UIComp(__parent) {
             if (cfg.type == null) {
                 cfg.type = 'pushValTo'
             }
-            if ( cfg.id ) {
+            if (cfg.id) {
                 cfg.ui = self.data.ui.find(cfg.id)
-                if ( cfg.ui.length == 0 ){
+                if (cfg.ui.length == 0) {
                     sh.throw('not valid', cfg.id)
                 }
             }
@@ -283,7 +285,7 @@ function UIComp(__parent) {
         }
 
         p.callWhenChangedUIDataChanged = function callWhenChangedUIDataChanged(fx) {
-
+            console.log('add ui data changed', fx)
             self.data.callWhenFx.push(fx)
 
         }
@@ -303,6 +305,10 @@ function UIComp(__parent) {
                     }
                     self.data[v.key] = val;
 
+                    /*if ( self.settings.copyPropToX ) {
+                        debugger
+                        self.settings.copyPropToX[v.key] = val;
+                    }*/
                 }
             })
             if (procChildren != false) {
@@ -346,7 +352,7 @@ function UIComp(__parent) {
                         v.fxProcessBinding(items, self)
                     }
                     //console.error('y', v.ui)
-                    if ( v.ui ) {
+                    if (v.ui) {
                         u.setText(v.ui, val)
                     }
                 }
@@ -365,6 +371,7 @@ function UIComp(__parent) {
 
         p.updateParent = function updateParent() {
             if (self.settings.parent) {
+                console.log('updateParent', self.settings.parent)
                 self.settings.parent.data.ui.updatePushBindings()
             }
         }

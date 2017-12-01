@@ -14,3 +14,9 @@ start "commandlinespekaer-sayServerLite" node G:\Dropbox\projects\delegation\Rea
 start "sr server" node G:\Dropbox\projects\crypto\mp\SlickRun\SlickRunServer.js
 start "sr" G:\Dropbox\projects\crypto\mp\SlickRun\start_slickrun.bat
 
+
+start "ddd" G:\Dropbox\projects\crypto\mp\SlickRun\add_slickrun_keyboard_shortcuts2.ahk
+start "vmserver" node G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItServer2VM.js
+
+
+REM start "chromework" https://www.google.com/intl/en/chrome/demos/speech.html

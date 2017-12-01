@@ -4,11 +4,14 @@
 var sh = require('shelpers').shelpers;
 var shelpers = require('shelpers');
 
+var SearchPB_Test = sh.require('ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
+//var SearchPB_Test = require('G:/Dropbox/projects/crypto/ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
+
+
 function JSONSetIteratorPB_IMDB() {
     var p = JSONSetIteratorPB_IMDB.prototype;
     p = this;
     var self = this;
-
     self.settings = {};
     self.data = {}
     var dbg = {};
@@ -18,6 +21,14 @@ function JSONSetIteratorPB_IMDB() {
 
     p.init = function init(config) {
         self.settings = sh.dv(config, {});
+        self.settings.showSkippedAttempts = sh.dv(self.settings.showSkippedAttempts, true)
+        self.settings.showSkippedAttempts = sh.dv(self.settings.showFailedAttempts, true)
+
+        if (  global.ignoreDupesIMDBPB  ) {
+            self.settings.showSkippedAttempts =false
+            self.settings.showSkippedAttempts = false
+        }
+
         config = self.settings;
         self.getFiles();
     }
@@ -37,7 +48,7 @@ function JSONSetIteratorPB_IMDB() {
 
             var dbg = [ item]
 
-            debugger;
+            //debugger;
             //sh.x()
             fxOrig(o)
         }
@@ -48,6 +59,11 @@ function JSONSetIteratorPB_IMDB() {
             item.name = item.title;
         }
 
+        if ( self.utils.ignoreDupesIMDBs(item, fx, i)) {
+            return
+        }
+
+
         if ( self.utils.removeLowRating(item, fx, i)) {
             return
         }
@@ -55,6 +71,8 @@ function JSONSetIteratorPB_IMDB() {
         if ( self.utils.ignoreShows(item, fx, i)) {
             return;
         }
+
+
 
 
         if ( self.utils.filterShows(item, fx, i)) {
@@ -209,7 +227,7 @@ function JSONSetIteratorPB_IMDB() {
 
             //TODO: Remove ... test thits later
             //asdf.g
-            
+
         })
     }
 
@@ -224,8 +242,6 @@ function JSONSetIteratorPB_IMDB() {
             console.log('....what', sh.toJSONString(config));
             var options = {};
             options.token = {};
-
-            var SearchPB_Test = require('G:/Dropbox/projects/crypto/ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
 
             var go = new SearchPB_Test();
             options.list = [item];
@@ -261,7 +277,11 @@ function JSONSetIteratorPB_IMDB() {
             var options = {};
             options.token = {};
 
-            var SearchPB_Test = require('G:/Dropbox/projects/crypto/ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
+            //var SearchPB_Test = require('G:/Dropbox/projects/crypto/ritv/distillerv3/utils/SearchPBTest.js').SearchPB_Test
+
+
+            console.log('downloadItem2', queries)
+
 
             item = sh.clone(item)
             if ( queries !== false ) {
@@ -272,7 +292,9 @@ function JSONSetIteratorPB_IMDB() {
             }
 
             var go = new SearchPB_Test();
-            options.silent = true;
+            //options.silent = true; //bookmark.settings. dbg torent searh
+            options.cacheOnly = true //
+            options.dbgErrorsInErrorConsole = true
             options.list = [item];
             options.token.fxBail = function (x) {
                 console.log('bail')
@@ -280,8 +302,23 @@ function JSONSetIteratorPB_IMDB() {
             }
             options.retry = 3
             options.fxReturnFirstResult = function onDoneSearchPB(url) {
-                self.proc('SearchPB complete:', item.query, url);
-                fx(url)
+                var urlDbgStr = url;
+                if (url == null) {
+                    urlDbgStr = 'null'
+                } else {
+                    urlDbgStr = url.length
+                }
+               
+                var queryDbgStr = sh.toNull(item.query, 'length')
+                self.proc('-->SearchPB complete:', queryDbgStr, urlDbgStr);
+               // console.log(fx.name, 'ok')
+               // asdf.g
+                try {
+                    fx(url)
+                } catch ( e ) {
+                    console.error('acught', e)
+                }
+
                 return
 
             }
@@ -306,6 +343,61 @@ function JSONSetIteratorPB_IMDB() {
                 fx()
                 return true;
             }
+            if ( item.series ) {
+                // asdf.g
+                if ( rating && rating < 7.0  ) {
+                    self.proc(i, 'series', item.name, item);
+                    //asdf.seriesisnotwellrated_do.not.add
+                    item.filtered = true;
+                    fx()
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        self.utils.ignoreDupesIMDBs = function ignoreDupesIMDBs( item, fx, i) {
+            if ( item.imdb_id == null ) {
+                return false
+            }
+            if ( item.skip == true ) {
+                return false
+            }
+            if (  global.ignoreDupesIMDBPB  ) {
+                var key = item.imdb_id
+                if ( global.ignoreDupesIMDBPB.includes(key)) {
+                    console.log('have this key', key)
+                    //asdf.imdbpbdupesactive.duplicated
+                    item.filtered = true;
+                    fx()
+                    return true;
+                }
+                global.ignoreDupesIMDBPB.add(key, item)
+                
+                //console.log('imdb dupe check', item.imdb_id, item)
+                //asdf.imdbpbdupesactive
+            }
+            //console.log('sd', sh.ignoreDupesIMDBPB )
+           // asdf.g
+            return false;
+            var rating = parseInt(item.rating);
+            if ( rating && rating < 6.0  ) {
+                self.proc(i, item.name, item);
+                //  asdf.g
+                item.filtered = true;
+                fx()
+                return true;
+            }
+            if ( item.series ) {
+                // asdf.g
+                if ( rating && rating < 7.0  ) {
+                    self.proc(i, 'series', item.name, item);
+                    asdf.g
+                    item.filtered = true;
+                    fx()
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -314,6 +406,8 @@ function JSONSetIteratorPB_IMDB() {
                 'One Piece',
                 'Top Gear',
                 'MythBusters',
+                'Dan Patrick',
+                'The Late Show',
                 'The King of Queens',
                 'The Daily Show'];
             if ( sh.isAnyInAny(item.name, bannedShows) ) {
@@ -448,10 +542,12 @@ function JSONSetIteratorPB_IMDB() {
                 return queryList;
             }
 
+            //ASD.F
 
             var nameSaveable = sh.stripSpecialChars(item.title);
             if (self.utils.isItemTVShow() == false) {
                 item.query = item.title + ' ' + sh.unwrap(item.year, '(');
+                item.query = sh.str.removeAccents( item.query)
                 item.dirRemoteMega = '/Root/movies/';
                 item.dirRemoteMega += nameSaveable + '_' + item.year + '/'
                 item.dirRemoteMega += item.imdb_id + '/'
@@ -464,11 +560,15 @@ function JSONSetIteratorPB_IMDB() {
 
 
                 function onGotTorrentLink(torrentResult) {
+                    self.proc('result')
+                    //asdf.g
                     var item2 = sh.clone(item)
                     self.utils.addPb(item2, {})
+                    self.data.item2 = item2;
                     // item2.name += ' ' + node.name;
                     if (torrentResult) {
                         self.utils.addPb(item2, torrentResult)
+                        //asdf.g
                         console.log("Current node", item2.name, 'found');
                         //node.ifFail = null;
                         // node.successful = true;
@@ -489,6 +589,9 @@ function JSONSetIteratorPB_IMDB() {
                 return;
 
             } else {
+                if ( item.seasons == null ) {
+                    sh.throw('need a seasons for a tv show....')
+                }
                 item.dirRemoteMega = '/Root/tv/';
                 item.dirRemoteMega += nameSaveable + '_' + item.year + '/';
                 item.dirRemoteMega += item.imdb_id + '/'
@@ -555,6 +658,28 @@ function JSONSetIteratorPB_IMDB() {
                     epiWrapper.queries = [];
 
                     queryInstruction.ifFail = epiWrapper
+
+                    if ( item.episodeNameList == null ) {
+                        //item.episodeNameList = item.episodeSummary2
+
+                        item.episodeNameList = [];
+                        var seasonsBlock =  item.episodeSummary2.split( ' ')
+                        sh.each(seasonsBlock, function onS(k,v) {
+                            var str = v.trim();
+                            if ( str == '' ) { return }
+                            var spt = str.split('E')
+                            var seasonNumber = parseInt(spt[0].slice(1))
+                            var episodeCount = parseInt(spt[1])
+
+                            sh.each.times(episodeCount, function on(k,episodeNumber) {
+                                var y = ['S',
+                                    sh.str.pad(seasonNumber,2),
+                                    'E', sh.str.pad(episodeNumber,2) ].join('')
+                                item.episodeNameList.push(y)
+                            })
+                        })
+
+                    }
 
                     sh.each(item.episodeNameList, function asdf(k,v) {
 
@@ -694,14 +819,16 @@ function JSONSetIteratorPB_IMDB() {
                      return;
                      }*/
                     if ( node.skipBcParentPassed )  {
-                        console.error('skipping', '...', node.name);
+                        if (self.settings.showSkippedAttempts)
+                        console.error(sh.t, item.title, 'skipping', '...', node.name);
                         af(node);
                         next();
                         return;
                     }
                     if ( this.parent.successful )  {
                         af(node);
-                        console.error('skipping', '...', node.name);
+                        if (self.settings.showSkippedAttempts)
+                        console.error('&', item.title, 'skipping', '...', node.name);
                         next();
                         return;
                     }
@@ -753,6 +880,7 @@ function JSONSetIteratorPB_IMDB() {
                             if ( torrentResult ) {
                                 self.utils.addPb(item2, torrentResult)
                                 console.log("Current node",node.name, 'found');
+                                //asdf.g
                                 //node.ifFail = null;
                                 // node.successful = true;
                                 // node.successful2 = true //is this ok?
@@ -760,7 +888,8 @@ function JSONSetIteratorPB_IMDB() {
                                 self.utils.addToParent(item2, torrentResult)
                             } else {
                                 if ( node.ifFail) {
-                                    console.error('failed on ... ', node.name, 'but have more...')
+                                    if (self.settings.showFailedAttempts)
+                                    console.error('failed on ... ', item.title, node.name, 'but have more...')
                                     itHelper.parentItemFromIfFail = item2;
                                     itHelper.parentItemFailIfFailDict[node.name] = item2;
                                 } else {
@@ -1025,6 +1154,7 @@ function JSONSetIteratorPB_IMDB() {
 
         self.utils.addToParent = function addToParentX(item) {
             //shoudl we remove item?
+
             self.item.filtered = true; //10-30-16 make flag to not do this ...
             self.utils.cleanItem(item)
             self.runner.data.listFiltered.push(item);
@@ -1054,6 +1184,8 @@ function JSONSetIteratorPB_IMDB() {
 
 exports.JSONSet = JSONSetIteratorPB_IMDB;
 exports.IteratorClass =  JSONSetIteratorPB_IMDB
+
+exports.JSONSetIteratorPb2 = JSONSetIteratorPB_IMDB;
 
 if (module.parent == null) {
     var instance = new JSONSetIteratorPB_IMDB();

@@ -139,7 +139,7 @@ function onInitDB() {
                 self.data.socket = socket;
                 uiUtils.socket.upgradeSocket(socket)
                 uiUtils.data.socket = self.data.socket;
-
+debugger
                 var portHoist = (parseInt(self.data.port) + 2)
                 console.log('portHoist', portHoist)
 

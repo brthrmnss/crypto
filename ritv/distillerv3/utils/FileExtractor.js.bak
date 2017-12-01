@@ -1,0 +1,250 @@
+/**
+ * Created by user1 on 2/7/14.
+ *
+ *
+ * 1 find content on piratebay
+ * 2 download content via put.io to blasdf
+ * 3 iterate over content, add rotten tomato information
+ * 4 add new content to db
+ *
+ * insight:  seperate rotten as a later step
+ * get content first
+ */
+
+/**
+ *
+ */
+var sh = require('shelpers').shelpers
+var PromiseHelper = require('shelpers').PromiseHelper;
+var OptionsHelper = require('shelpers').OptionsHelper
+var SettingsHelper = require('shelpers').SettingsHelper
+var fs = require("fs")
+var mkdirp = require("mkdirp")
+
+/*
+ Goal is to extract file
+ to dir
+ so 5thelement.zip
+ to dirExtract+/5thElement/....
+
+ */
+function FileExtractor() {
+
+    var p = FileExtractor.prototype;
+    p = this;
+    var self = this;
+
+    function createConfig() {
+        p.loadConfig = function loadConfig(configFile) {
+            var defaultSettings = {};
+            defaultSettings.dirDownload = null
+            defaultSettings.throwErrorWhenQueryNotFound = false;
+            var sH = new SettingsHelper();
+            self.settingsHelper = sH;
+            sH.defaultSettings = defaultSettings;
+
+            //self.data.configFile = configFile;
+            sH.loadOptions(configFile, function doneLoadingSettingsFile(settings) {
+                self.proc('options', settings)
+                self.settings = settings;
+                self.go(settings)
+            }, ['c:/configs/, c:/trash', 'c:/trash/configs'])
+        }
+    }
+    createConfig();
+
+    self.go = function go(options) {
+
+        var paramsHelper = new OptionsHelper();
+        paramsHelper.loadOptions(options)
+        var fxCallback = paramsHelper.addOption('callback', 'completion callback', true)
+
+        var token = sh.clone(options)
+        self.token = token
+        token.dirExtract= paramsHelper.addOption('dirExtract',
+            'what torrent to look for', true)
+        token.fileToExtract= paramsHelper.addOption('fileToExtract',
+            'what torrent to look for', true)
+        // token.dirExtract= paramsHelper.addOption('dirExtract',
+        //    'what torrent to look for', true)
+        token.test = options.test;
+
+        token.fxCallback=fxCallback;
+
+        var work = new PromiseHelper();
+        work.name = 'Exctraction'
+        work.wait = token.simulate==false;
+        token.silentToken = true
+        work.startChain(token)
+            .add(self.extractFile)
+            .log()
+            //.add(self.extractRecursive)
+            .log()
+            .add(self.endCallback)
+            .end();
+    }
+
+    function createLogic() {
+        p.logic = {}
+    }
+    createLogic();
+
+    function defineWork() {
+        p.extractFile = function extractFile(token, cb) {
+            if ( token.fileToExtract == null ) {
+                throw 'need file to extract'
+            }
+ 
+            var dirExtract = token.dirExtract
+            if (sh.isWin() == false ) {
+               // dirExtract = sh.getUserHome()+'/trash/'+dirExtract
+            }
+            mkdirp.sync(dirExtract)
+
+
+            var fileName = token.fileToExtract
+            var path = require('path')
+            fileName = path.basename(fileName)
+            var ext = path.extname(fileName)
+            if ( ext != null ) {
+                fileName = fileName.replace(ext, '')
+            }
+            var dirName = fileName
+            var dirExtraction = dirExtract+'/'+dirName
+            mkdirp.sync(dirExtraction)
+
+
+            var CommandRunner = sh.CommandRunner
+            var cR  = new CommandRunner();
+            var settings ={}
+            settings.cmd = 'unzip'
+            settings.args = ['-o',token.fileToExtract, '-d', dirExtraction];
+
+            if (token.neverOverwrite ) {
+                 settings.args.shift(); ///('-o')
+                settings.args.unshift('-n')
+                //settings.args.unshift('-fo')
+            }
+
+            //silence commands
+            settings.silent = true
+            var lastDownloadPercentage = 0 ;
+            function fxEcho(line) {
+                if ( sh.includes(line, '%')) {
+                    for (var i = lastDownloadPercentage; i < 100; i = i + 10) {
+                        //if (sh.includes(line, i + '%' + ']')) {
+                        if (sh.includes(line, i + '%' + ']')) {
+                            console.log(i + '%', 'extracting', fileName)
+                            lastDownloadPercentage = i + 10;
+                        }
+                    }
+                }
+                console.log(line)
+                return;
+            }
+            settings.fxEcho =  fxEcho
+
+            settings.fxCallback = function doneExtracting(){
+                self.proc('done extracting ... ')
+                if ( cR.log.error ) {
+                    console.error('FileExtractorError:',  cR.log.error )
+                    self.token.error = cR.log.error;
+                }
+                cb()
+            }
+
+            settings.fxData = function onData(data){
+                if ( sh.includes(data, 'replace')&&
+                    sh.includes(data, '[y]es, [n]o, [A]ll, [N]one, [r]ename:')) {
+                    token.error = 'File already exists'
+                    self.proc('file exists already')
+                    cb()
+                }
+
+            }
+
+            self.proc('sending cmd to extract files ....', dirExtraction)
+            cR.execute(settings)
+            //call some script
+            token.dirExtractionResults = dirExtraction
+            token.dirFullExtractionDir = dirExtraction
+
+        }
+
+        /**
+         * In a dir, look for all folders to extract .... and extract htem all
+         * delete any archives, and if any archives found, extract again
+         * @param token
+         * @param cb
+         */
+        p.extractRecursive = function extractRecursive(token, cb) {
+            cb()
+        }
+
+        p.endCallback = function endCallback(token, cb) {
+            cb()
+            if ( token.fxCallback != null ) {
+                self.proc('passed on ')
+                token.fxCallback(token.dirFullExtractionDir, token)
+            }
+
+        }
+
+    }
+    defineWork()
+
+    function defineUtils() {
+        p.utils = {}
+    }
+    defineUtils();
+    /**
+     * Receive log commands in special format
+     */
+    p.proc = function proc() {
+        sh.sLog(arguments)
+    }
+}
+
+if (module.parent == null) {
+    var args = process.argv.splice(2);
+
+    if ( args.length > 0 ) {
+        var options = {}
+        options.callback = function onDone(url) {
+            console.log('done', url)
+        }
+
+        var firstArg = args[0]
+        options.query = query;
+
+        var go = new PromiseHelperTemplate()
+
+        if (args.length == 2) {
+            var dirDownload = args[1]
+            options.dirDownload = dirDownload;
+        }
+
+        go.go(options);
+        return;
+    }
+
+    var options = {}
+    options.callback = function onDone(dirExtract, token){
+        console.log('done', dirExtract)
+    }
+    options.dirExtract = 'dirExtractionTarget'
+    options.fileToExtract = '/home/user/trash/downloads/Wiz Khalifa - No Sleep.mp3.zip'
+    if ( sh.isWin() ){
+        //options.dirExtract = 'dirExtractionTarget'
+        options.fileToExtract =  sh.fs.join(sh.fs.trash(),'zipTrash')
+        options.fileToExtract =  sh.fs.join(__dirname, 'data', 'test.zip')
+    }
+    options.neverOverwrite = true
+    var go = new FileExtractor()
+    go.go(options);
+    return;
+
+}
+
+
+exports.FileExtractor = FileExtractor;

@@ -157,15 +157,27 @@ function fx2() {
 
 }
 
-var sendHelper = {}
-sendHelper.data = {};
-var self = sendHelper;
+if (window.sendHelper == null) {
+    var sendHelper = {}
+    sendHelper.data = {};
+    var self = sendHelper;
+    window.sendHelper = sendHelper;
+} else {
+    var sendHelper = window.sendHelper
+    var self = sendHelper;
+}
+
+
 self.data.dictTabs = {}
 sendHelper.tryToClaim = function tryToClaim(a, b) {
     debugger
 }
-sendHelper.validItem = function validItem(a) {
-    self.data.dictTabs[a] = true;
+sendHelper.validItem = function validItem(a, evalBrowserName) {
+    if ( evalBrowserName == null &&   self.data.dictTabs[a] &&
+            self.data.dictTabs[a].evalBrowserName != null) {
+        return;
+    }
+    self.data.dictTabs[a] = {atab: true, evalBrowserName: evalBrowserName}
 }
 
 sendHelper.clearItems = function clearItems(a) {
@@ -195,19 +207,22 @@ chrome.tabs.onCreated.addListener(function onNewTabCreated(tab, again) {
 chrome.tabs.onUpdated.addListener(function onUpdate(tabId, changeInfo, tab, again) {
     console.debug('updated', tab, tabId)
     //debugger
-    if ( tab.url.includes('clearsession')) {
+    if (tab.url.includes('clearsession')) {
         console.debug('log...')
         sendHelper.data.dictTabs = {}
     }
+
+    console.log('updateX', sendHelper.data.dictTabs[tab.id])
     chrome.tabs.sendMessage(tab.id,
         {
             text: "update_TabX", id: tab.id,
             tab: tab,
             sendHelper: sendHelper,
-            loadBoomBoom: sendHelper.data.dictTabs[tab.id]
+            loadedBoomBoom: sendHelper.data.dictTabs[tab.id]
         }, null,
-        function onActive(sdf) {
-            sendHelper.validItem(tab.id)
+        function onActive(evalBrowserName) {
+            console.log('got new tab', evalBrowserName)
+            sendHelper.validItem(tab.id, evalBrowserName)
         });
 
     if (again != true) {

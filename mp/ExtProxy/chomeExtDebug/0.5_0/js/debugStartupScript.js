@@ -217,8 +217,15 @@ function onBtn() {
         if (urlInc('myvidster.com')) {
             // alert('ok in amazon')
             loader.loadScripts([
-                'ideas/update_myVidster.js',
+                'ideas/update_myVidster1.js',
             ])
+        }
+
+        if ( urlInc('chrome/demos/speech.html')) {
+            loader.loadScripts([
+                'ideas/update_googleSpeech.js',
+            ])
+
         }
 
 

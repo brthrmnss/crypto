@@ -20,7 +20,7 @@ var PromiseHelperV3 = shelpers.PromiseHelperV3;
 var RC_HelperFxs = require('./TestRCScripts.js').RC_HelperFxs
 
 
-function Workflow_UploadAndRun () {
+function Workflow_UploadAndRun() {
     var p = Workflow_UploadAndRun.prototype;
     p = this;
     var self = this;
@@ -33,26 +33,25 @@ function Workflow_UploadAndRun () {
         config = self.settings;
 
         sh.fs.exists(self.settings.fileManifest, 'cannot find manifest')
-       // sh.throwIfNull(self.settings.fileManifestReceipt, 'need an input file ')
+        // sh.throwIfNull(self.settings.fileManifestReceipt, 'need an input file ')
 
-        if ( self.settings.url ) {
+        if (self.settings.url) {
         }
-        else
-        {
-            self.settings.url = 'http://'+self.settings.ip+':'+self.settings.port + '/'
+        else {
+            self.settings.url = 'http://' + self.settings.ip + ':' + self.settings.port + '/'
         }
-        self.settings.url2 =  self.settings.url + 'useConfig'
+        self.settings.url2 = self.settings.url + 'useConfig'
 
-        if ( self.settings.file == null ) {
+        if (self.settings.file == null) {
             var filename = sh.fs.clean(self.settings.url)
-            var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists',filename+'.txt' )
+            var fileOutput = sh.fs.join(__dirname, '..', 'data', 'filelists', filename + '.txt')
             var dirOutput = sh.fs.getDir(fileOutput)
             sh.fs.mkdirp(dirOutput)
             self.proc('storing it', fileOutput)
             self.settings.file = fileOutput;
         }
         self.proc('self.settings.file', self.settings.file)
-        if ( config.initGFFRM ) {
+        if (config.initGFFRM) {
             self.proc('init...|||>>>')
             var data = {}
             data.initGFFRM = true
@@ -82,15 +81,15 @@ function Workflow_UploadAndRun () {
     p.step1_setupSocket = function step1_setupSocket() {
         //  if ( self.data.skipToDl ) {
         self.data.socket = self.settings.socket
-        if ( self.data.socket ) {
+        if (self.data.socket) {
             self.chain.nextLink();
             return;
         }
         //self.settings.url = 'http://127.0.0.1:14002/'
 
-        self.proc('setup....', self.settings.url )
-        var socket = require('socket.io-client')(self.settings.url );
-        socket.on('connect', function onConnectToSocket(){
+        self.proc('setup....', self.settings.url)
+        var socket = require('socket.io-client')(self.settings.url);
+        socket.on('connect', function onConnectToSocket() {
             self.data.socket = socket;
             self.data.socket = self.settings.socket = socket;
             self.data.connectedToSrv1x = true
@@ -98,8 +97,9 @@ function Workflow_UploadAndRun () {
             self.proc('connected')
             self.chain.nextLink();
         });
-        socket.on('event', function(data){});
-        socket.on('disconnect', function(){
+        socket.on('event', function (data) {
+        });
+        socket.on('disconnect', function () {
             self.proc('lost the mirror')
         });
 
@@ -112,7 +112,7 @@ function Workflow_UploadAndRun () {
     p.step2_uploadFile = function step2_uploadFile() {
         //  if ( self.data.skipToDl ) {
         self.proc('step2_uploadFile....')
-        if ( self.settings.localTest) {
+        if (self.settings.localTest) {
             self.chain.nextLink()
             return
         }
@@ -125,17 +125,29 @@ function Workflow_UploadAndRun () {
          */
 
 
+        var h = {};
+        h.callBackValid = true;
+
         //asdf.g
-        function onResultOfcall(data) {
+        function onResultOfcall_step2_uploadFile(data) {
             self.proc('data', data.length)
+            if (h.callBackValid) {
+                h.callBackValid = false
+            }
+            else
+            {
+                console.error('skip it')
+                return
+            }
             //  asdf.g
             //sh.fs.writeFile(self.settings.file, data)
+
             self.chain.nextLink()
         }
 
         self.proc('started the push')
         var taskName = 'uploadAndRun'
-        self.data.socket.on(taskName+'_results', onResultOfcall)
+        self.data.socket.on(taskName + '_results', onResultOfcall_step2_uploadFile)
         var data = {}
         data.name = sh.fs.leaf(self.settings.fileManifest)
         self.settings.leaf = data.name;
@@ -151,39 +163,39 @@ function Workflow_UploadAndRun () {
         function onResultOfcall(data) {
             self.proc('data', data)
             //  asdf.g
-           // sh.fs.writeFile(self.settings.file, data)
+            // sh.fs.writeFile(self.settings.file, data)
             self.chain.nextLink()
         }
 
         sh.getRequest(self.settings.url2, function onStarted(body) {
             console.log('body', body)
             onResultOfcall({})
-        }, {taskName:self.settings.leaf});
+        }, {taskName: self.settings.leaf});
 
         return;
 
-        if ( self.settings.localTest) {
+        if (self.settings.localTest) {
             /*
-            self.proc('localTest', self.settings.localTest )
-            var dirTrash = sh.fs.makePath(__dirname, 'trash')
-            var fileOutput = sh.fs.makePath(dirTrash, 'file.list.test.txt')
+             self.proc('localTest', self.settings.localTest )
+             var dirTrash = sh.fs.makePath(__dirname, 'trash')
+             var fileOutput = sh.fs.makePath(dirTrash, 'file.list.test.txt')
 
-            Workflow_ImportVidsAgain.importRecFile(self.settings.fileManifestReceipt,
-                function onDone(fileOutput, lite) {
-                    //console.error(lite)
-                    console.log('file output', fileOutput);
-                    var content = sh.readFile(fileOutput)
-                    onResultOfcall(content)
-                    //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
-                }, null);
-            return;
-            */
+             Workflow_ImportVidsAgain.importRecFile(self.settings.fileManifestReceipt,
+             function onDone(fileOutput, lite) {
+             //console.error(lite)
+             console.log('file output', fileOutput);
+             var content = sh.readFile(fileOutput)
+             onResultOfcall(content)
+             //sh.throwIf(output.foundCount != 2, 'did not match write count of items');
+             }, null);
+             return;
+             */
         }
 
         var type = 'importRecFile';
         self.proc('started the push')
-        self.data.socket.on(type+'_results', onResultOfcall)
-        self.data.socket.emit(type, self.data.json )
+        self.data.socket.on(type + '_results', onResultOfcall)
+        self.data.socket.emit(type, self.data.json)
 
         //self.chain.nextLink();
         return;
@@ -208,22 +220,23 @@ function Workflow_UploadAndRun () {
             self.data.currentId = currentId;
             self.data.connectedToSrv1x = false;
             setTimeout(function testIfConnected() {
-                if ( self.data.currentId == currentId &&
-                    self.data.connectedToSrv1x == false ) {
+                if (self.data.currentId == currentId &&
+                    self.data.connectedToSrv1x == false) {
                     self.proc('did not connect we have an issue')
-                    sh.cid(self.settings.fxDone, 'what is this.... we failed on the url '+self.settings.url)
+                    sh.cid(self.settings.fxDone, 'what is this.... we failed on the url ' + self.settings.url)
                 }
             }, 3510)
         }
 
 
         p.proc = function debugLogger() {
-            if ( self.silent == true) {
+            if (self.silent == true) {
                 return;
             }
             sh.sLog(arguments);
         };
     }
+
     defineUtils()
 }
 
@@ -235,7 +248,6 @@ Workflow_UploadAndRun.uploadAndRun = function uploadAndRun(cfg, fxDone2) {
 }
 
 exports.Workflow_UploadAndRun = Workflow_UploadAndRun;
-
 
 
 if (module.parent == null) {

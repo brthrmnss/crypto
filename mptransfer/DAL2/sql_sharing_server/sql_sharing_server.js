@@ -32,6 +32,8 @@ function SQLSharingServer() {
         }
         //self.settings.port = 3001;
 
+        self.settings.cluster_config.urlTimeout =
+            sh.dv(self.settings.cluster_config.urlTimeout, 2000);
         self.settings.updateLimit = sh.dv(self.settings.updateLimit, 99+901);
         self.server_config = rh.loadRServerConfig(true);  //load server config
         self.settings.enableAutoSync = sh.dv(self.settings.enableAutoSync,true);
@@ -243,6 +245,9 @@ function SQLSharingServer() {
         }
         self.app.listen(self.settings.port);
         self.proc('started server on', self.settings.name, self.settings.port);
+        console.log()
+
+
     }
 
     DalSyncRoutesHelpers(self)
@@ -414,7 +419,12 @@ function SQLSharingServer() {
         }
 
         if (  self.settings.peers.length == 0 ) {
-            throw new Error('init: not enough peers ' + self.settings.name, peers)
+            if (  self.settings.ignore0Peers == true ) {
+                self.proc('warning:'+'init: not enough peers ' + self.settings.name)
+            } else {
+                throw new Error('init: not enough peers ' + self.settings.name, peers)
+            }
+
         }
     }
 
@@ -523,8 +533,9 @@ function SQLSharingServer() {
 
                 self.dbHelper2.getDBVersion()
 
-                setTimeout(function () {
+                setTimeout(function onInitReadyAndTable() {
                     sh.callIfDefined(self.settings.fxDone);
+                    sh.cid(self.settings.fxPeerStarted, self)
                 }, 100)
 
             }

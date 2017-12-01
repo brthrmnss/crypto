@@ -80,3 +80,8 @@
 .no-padding {
   padding: 0px;
 }
+
+
+.list-search-list {
+  list-style: none;
+}

@@ -38,6 +38,31 @@ function QuickCrudDemo() {
 
         var qf = new QuickCrudConfigHelper(cfg);
         qf.quickForm.addTextInput('name', 'Prompt Name')
+        qf.quickForm.addLabelField('id', 'id');
+        qf.quickForm.addTextInput('ty', 't y');
+        qf.quickForm.showElementLabels(true);//('ty', 't y');
+        //qf.quickForm.showLabels = true;
+        qf.divPartial = '#divQCDemo_partial'
+
+
+        qf.fxGetItems = function fxGetItems(item) {
+           // debugger
+            item.name += ' ddd'+item.id
+        }
+        qf.fxProcessItem = function fxProcessItem(item) {
+            // debugger
+            item.name += ' '+item.id
+            return item;
+        }
+
+        qf.addClick('xdelete', function onDeleteItem(item) {
+            console.log('on delete item', item)
+        })
+
+        qf.addClick('xname', function onClickName(item) {
+            console.log('on xname item', item)
+            i.data.qf.redrawForm(item);
+        })
 
         //qf.quickList.url('http://127.0.0.1:10001/file/')
         qf.uiConfig.targetDiv(cfg.ui.find('#qCDemoContents'))
@@ -45,7 +70,7 @@ function QuickCrudDemo() {
             console.log('on built')
         })
 
-        qf.addRestHelper('http://127.0.0.1:10001/file/')
+       // qf.addRestHelper('http://127.0.0.1:10001/file/')
         /*
          var formObject2 = {};
          qf.loadForm(formObject2)

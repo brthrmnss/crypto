@@ -114,43 +114,6 @@ function BasicClass3() {
 
     p.test = function test(config) {
         return;
-        var EasyRemoteTester = shelpers.EasyRemoteTester;
-        var baseUrl = 'http://127.0.0.1:'+self.settings.port;
-        var t = EasyRemoteTester.create('Test say basics',{showBody:false});
-        var data = {};
-        t.settings.baseUrl = baseUrl
-        var urls = {};
-        urls.notes = {};
-        urls.test = t.utils.createTestingUrl('test')
-        urls.runAISCmd = t.utils.createTestingUrl('runAISCmd')
-        urls.play = t.utils.createTestingUrl('play')
-        urls.stop = t.utils.createTestingUrl('stop')
-        urls.playCustom = t.utils.createTestingUrl('playCustom')
-        urls.getJSONPath = t.utils.createTestingUrl('getJSONPath')
-        urls.uploadConfig = t.utils.createTestingUrl('uploadConfig')
-       // self.tests.t = t;
-
-        //self.tests.urls = urls;
-
-        //var t = self.tests.t ;
-
-        var t2 = t.clone('test an example command');
-        //var urls = self.tests.urls;
-        t2.getR(urls.test).with({text:'test', rate:20}).bodyHas('status').notEmpty();
-
-        var initial = "";
-        var str = initial +
-            ['require "Win32API"',
-                'Beep = Win32API.new("kernel32", "Beep", ["I", "I"], \'v\')',
-                'def beep freq, duration',
-                '  Beep.call(freq, duration)',
-                'end ',
-                '',
-                'beep 200, 400'].join("\n" +initial);
-
-        t2.getR(urls.runAISCmd).with({text:str, rate:20}).bodyHas('status').notEmpty();
-
-        t2.wait(1)
     }
 
 

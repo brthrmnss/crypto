@@ -1,6 +1,68 @@
 var u = uiUtils;
 
 
+uiUtils.fxRetry = function fxRetry(fx, fxTarget, _args, maxTry, iterationCount) {
+    var error = new Error()
+    var cfg = {}
+    cfg.fx = fx;
+    throwIfNull(fx, 'need a fxTest to test against')
+    throwIfNull(fxTarget, 'need a fxTarget to succeed with')
+    cfg.fxTarget = fxTarget;
+    if (_args != null)
+        var args = convertArgumentsToArray(_args)
+    else
+        args = [];
+
+    cfg.args = args;
+    if (maxTry != null) {
+        cfg.maxTry = maxTry;
+    }
+    if (iterationCount != null) {
+        cfg.iterationCount = iterationCount;
+    }
+    return uiUtils.fxRetrySimp(cfg)
+}
+
+
+uiUtils.fxRetrySimp = function fxRetrySimp(cfg) {
+    cfg.errorForStack = sh.dv(cfg.errorForStack, new Error())
+    if (cfg.maxTry == null) {
+        cfg.maxTry = 40;
+    }
+    if (cfg.iterationCount == null) {
+        cfg.iterationCount = 0;
+    }
+    if (cfg.maxTry < cfg.iterationCount) {
+        console.error('failed too many times', cfg.fx.name)
+        console.error(cfg.errorForStack)
+        return;
+    }
+    try {
+        var result = cfg.fx()
+    } catch (e) {
+        setTimeout(function retryLater() {
+            cfg.iterationCount++
+            uiUtils.fxRetrySimp(cfg)
+        }, 500);
+        console.info(cfg.fx.name, cfg.iterationCount, 'trying again')
+        return true;
+    }
+
+
+    //debugger;
+
+    console.info(cfg.fx.name, cfg.iterationCount, 'ok...')
+
+    if (cfg.iterationCount > 0) {
+
+        cfg.fxTarget.apply(this, cfg.args)
+        return;
+    }
+
+    return false;
+}
+
+
 function SimpleListHelper() {
     var self = this;
     var p = this;
@@ -15,7 +77,6 @@ function SimpleListHelper() {
         u.require(self.settings, 'need settings')
         u.require(self.settings.id, 'need an id')
         u.require(self.settings.idPartial, 'need idPartial id')
-
 
 
         function reinit() {
@@ -56,7 +117,7 @@ function SimpleListHelper() {
         // cfg.divCreatable = u.join2('holder', self.settings.id)
         cfg.id = self.settings.targetId;
         //cfg.url = "/themes/minimal_v0" + "/js/comps/simpleList.html"
-        cfg.url = '/grid/grid/sharedResourcesGrid/'+'comps/simpleList.html'
+        cfg.url = '/grid/grid/sharedResourcesGrid/' + 'comps/simpleList.html'
         console.log('log', '...', document.currentScript)
         //debugger
         cfg.fxDone = fx;
@@ -436,18 +497,26 @@ function SimpleListHelper() {
         }
         self.data.initedList = true;
 
+        var valueNames =  [
+            'name',
+            'rating',
+            'number',
+            'desc',
+            {data: ['id']},
+            {name: 'timestamp', attr: 'data-timestamp'},
+            //{ name: 'link', attr: 'href' },
+            {name: 'image', attr: 'src'},
+            {name: 'idview', attr: 'idview'},
+        ]
+
+        if ( self.settings.valueNames) {
+            //debugger
+            valueNames = valueNames.concat(self.settings.valueNames)
+        }
+
+
         var options = {
-            valueNames: [
-                'name',
-                'rating',
-                'number',
-                'desc',
-                {data: ['id']},
-                {name: 'timestamp', attr: 'data-timestamp'},
-                //{ name: 'link', attr: 'href' },
-                {name: 'image', attr: 'src'},
-                {name: 'idview', attr: 'idview'},
-            ],
+            valueNames:valueNames,
             item: self.data.listItemId.replace('#', '')
         };
 
@@ -679,14 +748,22 @@ function SimpleListHelper() {
             }
 
 
+            //  debugger
             if (self.settings.live != false) {
-                if (u.fxRetry(self.utils.getServerUrl, self.searchLists, arguments)) {
-                    return;
+                if (self.settings.searchUrl.startsWith('http')) {
+                    var url = self.settings.searchUrl;
+                } else {
+                    if (u.fxRetry(self.utils.getServerUrl, self.searchLists, arguments)) {
+                        return;
+                    }
+                    var url = p.utils.getServerUrl(self.settings.searchUrl);
                 }
-                var url = p.utils.getServerUrl(self.settings.searchUrl);
+
             }
 
-            console.error('searchLists', self.settings.id, txt2, moreBt2, self.data.pag.data.offset)
+            console.error('searchLists', self.settings.id, txt2, moreBt2,
+                url,
+                self.data.pag.data.offset)
 
 
             var cfg = {};
@@ -768,9 +845,9 @@ function SimpleListHelper() {
             $.each(sdf, function addresult(k, v) {
                 v = sh.clone(v)
                 /*v.link = window.serverHelper.utils.getUrl(
-                    window.serverHelper.data.servers.searchLists.port,
-                    '/api/content_lists/view/' + v.list_id
-                );*/
+                 window.serverHelper.data.servers.searchLists.port,
+                 '/api/content_lists/view/' + v.list_id
+                 );*/
                 v.content_list_id = v.list_id;
                 v.number = k + 1 + self.data.offset;
                 v.desc = sh.dv(v.desc, '')
@@ -784,6 +861,10 @@ function SimpleListHelper() {
 
                 if (self.settings.fxProcessItem) {
                     v = sh.cid(self.settings.fxProcessItem, v)
+                }
+
+                if ( self.settings.fxProcessItem2) {
+                    sh.cid(self.settings.fxProcessItem2, v)
                 }
 
                 if (self.debug.showResults !== false)
@@ -820,14 +901,20 @@ function SimpleListHelper() {
 
 
         p.countLists = function countLists() {
-            if ( self.settings.live == false ) {
-                return;
-            }
-            if (u.fxRetry(self.utils.getServerUrl, self.countLists)) {
+            if (self.settings.live == false) {
                 return;
             }
 
-            var url = p.utils.getServerUrl(self.settings.searchUrl + '/count');
+            if (self.settings.searchUrl.startsWith('http')) {
+                var url = self.settings.searchUrl + 'count'
+            } else {
+                if (u.fxRetry(self.utils.getServerUrl, self.countLists)) {
+                    return;
+                }
+                var url = p.utils.getServerUrl(self.settings.searchUrl + '/count');
+            }
+
+
             var cfg = {};
             cfg.url = url;
             cfg.data = {};
@@ -949,18 +1036,16 @@ SimpleListHelper.createSimpleList = function createSimpleList(name, divTarget, i
         return data
     }
     cfg.fxClick = function fxClick(item, ui) {
-        if (ui.hasClass('series_name')) {
-            sFDH.data.glh.setTextTo(ui.text());
-            sFDH.data.glh.searchLists()
-            return;
-        }
-        sFDH.closeDialog()
 
-        var urlVideo = window.config.files.default_server + item.localFilePath
-        vc.playContent(item, urlVideo)
-        //window.showVideoPlayer(urlVideo)
-        //  debugger;
-        // return data
+        if ( cfg.clickRouter ) {
+            sh.each(cfg.clickRouter, function onCheck(k,fxClickAction) {
+                if ( ui.hasClass(k)) {
+                    fxClickAction(item)
+                    return false;
+                }
+            })
+        }
+        console.log('clicked', item, ui)
     }
 
     cfg.fxOpen = function fxOpen() {

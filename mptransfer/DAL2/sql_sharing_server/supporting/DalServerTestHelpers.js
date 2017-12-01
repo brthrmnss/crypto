@@ -74,10 +74,11 @@ function DalServerTestHelpers(_self) {
 
         function defineTest() {
             self.test = {};
-            self.test.createTestData = function createTestData(cb, deleteFirst) {
+            self.test.createTestData = function createTestData(cb, deleteFirst, number) {
                 GenerateData = shelpers.GenerateData;
                 var gen = new GenerateData();
-                var model = gen.create(100, function (item, id, dp) {
+                number = sh.dv(number, 100)
+                var model = gen.create(number, function (item, id, dp) {
                     item.name = id;
                     // item.id = id;
                     item.source_node = self.settings.peerName;
@@ -152,44 +153,39 @@ function DalServerTestHelpers(_self) {
             }
 
 
-            self.test.forgetRandomRecord = function (fx) {
-                /*Array.prototype.randsplice = function(){
-                 var ri = Math.floor(Math.random() * this.length);
-                 var rs = this.splice(ri, 1);
-                 return rs;
-                 }
-                 var obj = self.lastRecords.randsplice();
-
-                 if ( obj.length ==1 ) {
-                 obj = obj[0];
-                 }*/
-                //this will pull the other side records
-
-
-
-                self.test.getRandomRecord(function onGotRecord(rec) {
-                    self.dbHelper2.deleteRecord(rec.id, fx);
+            self.test.forgetRandomRecord = function forgetRandomRecord(fx) {
+                //forget locally...
+                self.test.getRandomRecord2(function onGotRecord(rec) {
+                    self.dbHelper2.forgetRecord(rec, fx);
                 })
-
-                /*self.dbHelper2.count(function gotAllRecords(count){
-                 self.count = count;
-                 self.size = count;
-                 sh.callIfDefined(cb)
-                 })*/
-
             };
+            /*self.test.deleteRandomRecord = function deleteRandomRecord(fx) {
+                self.test.getRandomRecord2(function onGotRecord(rec) {
+                    self.dbHelper2.deleteRecord(rec, fx);
+                })
+            };
+*/
 
-            self.test.deleteRandomRecord = function (fx) {
-                self.test.getRandomRecord(function onGotRecord(rec) {
-                    rec.deleted = true;
-                    rec.updated_by_source = self.name;
+            self.test.deleteRandomRecord = function deleteRandomRecord(fx) {
+                self.test.getRandomRecord2(function onGotRecord2(rec) {
+                    //rec.deleted = true;
+                   // rec.updated_by_source = self.name;
                     //self.dbHelper2.deleteRecord(rec.id, fx); //this line will break the test
-                    self.dbHelper2.updateRecord(rec, fx)
+                    self.dbHelper2.deleteRecord(rec, fx)
 
                 })
             };
 
-            self.test.getRandomRecord = function (fx) {
+            self.test.deletePurgedRecordsCB = function deletePurgedRecordsCB(fx) {
+                self.dbHelper2.purgeDeletedRecords(
+                    function onGotRecord(rec) {
+                    fx();
+                })
+            };
+
+
+
+            self.test.getRandomRecord2 = function getRandomRecord2(fx) {
 
                 var query = {};
                 query.where  = {};

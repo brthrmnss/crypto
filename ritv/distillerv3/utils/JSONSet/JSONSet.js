@@ -146,7 +146,7 @@ function JSONSet() {
         self.data.work.info[self.settings.fileIterator]=new Date();
 
         self.data.listFiltered = [];
-        var IteratorClass = require(self.settings.fileIterator).IteratorClass;
+        var IteratorClass = require(sh.deos(self.settings.fileIterator)).IteratorClass;
         var inst = new IteratorClass();
         inst.runner = self;
         sh.callIfDefined(inst.init, self.settings)

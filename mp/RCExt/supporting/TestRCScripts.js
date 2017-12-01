@@ -72,7 +72,12 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
 
 
         if (sh.isWin()) {
-            var cmd = ['dir ',dir,'/s /b /a >' + fileStore].join(' ')
+            var cmd = ['dir ',sh.qq(dir),'/s /b /a >' + fileStore].join(' ')
+
+            if ( withSizes ) {
+                cmd =  "(@For /F \"Delims=\" %A in ('dir "+sh.qq(dir)+" /B/S/A-D') Do @Echo %~zA @@@ %~fA ) > "+fileStore
+            }
+
         } else {
             sh.run('> ' + fileStore  )
             // cmd = 'ls -R ' + dir + ' >' + fileStore
@@ -96,10 +101,16 @@ RC_HelperFxs.listFilesInDirectories = function listFilesInDirectories(fileOutput
 
 
         sh.fs.joinFiles(files, fileOutputMoveTo)
+        if ( sh.isWin() && withSizes ) {
+            var contents = sh.readFile(fileOutputMoveTo)
+            var contents2 = require('./MakeSizes.js').convertStrToSize(contents)
+            sh.writeFile(fileOutputMoveTo, contents2)
+        }
         if (res) {
             res.send('onGetFiles');
         }
 
+        sh.log.file(fileOutputMoveTo)
         sh.cid(fxDone, fileOutputMoveTo)
     })
 

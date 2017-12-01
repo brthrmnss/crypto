@@ -22,6 +22,14 @@
     Return
 <!q::
     ;MsgBox "<q::"
+    WinGetTitle, Title, A
+
+    IfInString, Title, Lubu 16.06 Clone Extx
+    {
+        ; MsgBox, skip
+        return
+    }
+    ; MsgBox, 2. The active window is "%Title%".
     IfWinActive Generic - morristew7.msad.ms.com
     {
         MsgBox "<q::"
@@ -37,6 +45,8 @@
 
     Return
 >!q::
+    WinGetTitle, Title, A
+    MsgBox, The active window is "%Title%".
     IfWinActive Generic - morristew7.msad.ms.com
         {
             MsgBox "!q::"

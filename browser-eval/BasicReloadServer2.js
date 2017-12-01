@@ -139,9 +139,33 @@ function BrowserEvalServer() {
             });
 
 
+            socket.on('window.invoke.loopback', function (x) {
+                console.log('window invoke loopback', x)
+                setTimeout(function load() {
+                    socket.emit('window.invoke', x);
+                },500)
+                /*setTimeout(function load() {
+                    socket.broadcast.emit('window.invoke', x);
+                },3000)
+                setTimeout(function load() {
+                    socket.emit('window.invoke', x);
+                },5000)*/
+            })
+
             socket.on('window.invoke', function (x) {
-                console.log('window invoke')
+                console.log('window invoke', sh.t, sh.t, x)
                 socket.broadcast.emit('window.invoke', x);
+            })
+
+            var msgWindowEval = 'window.eval'
+            socket.on(msgWindowEval, function (x) {
+                console.log(msgWindowEval, sh.t, sh.t, x)
+                socket.broadcast.emit(msgWindowEval, x);
+            })
+            var msgWindowEvalResult = 'window.eval.result'
+            socket.on(msgWindowEvalResult, function (x) {
+                console.log(msgWindowEvalResult, sh.t, sh.t, x)
+                socket.broadcast.emit(msgWindowEvalResult, x);
             })
         });
 

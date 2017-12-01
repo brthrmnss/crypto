@@ -380,6 +380,21 @@ function FileWatcher() {
 }
 
 exports.FileWatcher = FileWatcher;
+exports.FileWatcher.runNode=function runNode(fileToRun, _cmdNode) {
+    var cmdNode = 'node';
+    if ( sh.isWin() == false ) {
+        cmdNode = '/home/user/.nvm/versions/node/v6.9.5/bin/node'
+    }
+    cmdNode = sh.dv(_cmdNode, cmdNode)
+    var  y= sh.runAsync(cmdNode + ' '+ fileToRun)
+
+    // var  y = sh.runAsync('node '+ fileToRun)
+    //spit stdout to screen
+    y.stdout.on('data', function (data) {   process.stdout.write(data.toString());  });
+    //spit stderr to screen
+    y.stderr.on('data', function (data) {   process.stderr.write(data.toString());  });
+    return y;
+}
 
 if (module.parent == null) {
     var instance = new FileWatcher();

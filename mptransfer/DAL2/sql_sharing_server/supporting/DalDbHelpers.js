@@ -284,6 +284,7 @@ function DalDbHelpers(_self) {
                     var query = {where: queryInner};
 
                     self.Table.findAll(query).then(function (results) {
+                        if ( self.settings.dbgHard )
                         self.proc('found existing records');
                         sh.each(results, function (i, eRecord) {
                             var eRecordId = eRecord.id_timestamp + eRecord.source_node;
@@ -513,6 +514,28 @@ function DalDbHelpers(_self) {
                 }
 
             };
+
+            self.dbHelper2.forgetRecord = function forgetRecord(record, cb, attrs2) {
+                var attrs = record.dataValues;
+                if ( attrs2 ) { //why: updating dataVBalues previous did nto work
+                    sh.each(attrs2, function(k,v){
+                        attrs[k] = v;
+                    } )
+                }
+                attrs.deleted = true;
+                attrs.updated_by_source = self.settings.name;
+                attrs.global_updated_at = new Date();
+
+                var arr = [];
+                sh.each(attrs, function(k,v){
+                    arr.push(k)
+                } )
+                //attrs.name = '777'
+                record.updateAttributes(attrs, arr).then( cb  ).catch(function (e) {
+                    console.log('could not store record...')
+                });
+            };
+
 
             self.dbHelper2.getById = function getRecordById(id, cb) {
 
