@@ -50,7 +50,7 @@ function AIR_GotoAccount() {
            // y.goTo('Windows Security') //why?
             y.goTo('Generic - morristew') //why?
             y.wait(0.5);
-            y.k.sendKeysRaw('MadCash#')
+            y.k.sendKeysRaw('MakeMoney!')
             y.wait(0.5);
             y.k.enter()
 

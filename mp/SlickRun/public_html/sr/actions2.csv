@@ -60,7 +60,8 @@ gobook,http://127.0.0.1:8080/epub_upload.html
 
 mydesk,https://tier2.mydesk.morganstanley.com/vpn/mydesk.html?v=4.1#/login
 morganstanleyremotdesktop,|mydesk
-workinit,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_LogInInit_SecurityScreen.js
+#workinit,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_LogInInit_SecurityScreen.js
+workinit,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\vm_scripts\AIR_MyDeskLoginInit.js
 #worklogin,nodejsruntime G:\Dropbox\projects\crypto\mp\AutoItKey\AutoItRunner_LogInRemote.js
 worklogin,nodejsruntime  G:\Dropbox\projects\crypto\mp\AutoItKey\vm_scripts\AIR_MyDeskLogin2.js
 
@@ -212,6 +213,7 @@ gtactions,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_w
 gtactions,nodejsruntime gtwebstorm "crypto - [G" "partial:G:\Dropbox\projects\crypto\mp\SlickRun\public_html\sr\actions2.csv"
 editactions,|gtactions
 edit,|gtactions
+editconfig,|gtactions
 gtrdk,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev-rdk.ahk
 gtdev,C:\Users\morriste\train\train_drive\trash\node2\mp\RDK\AutoHotKey\gt_webstorm_dev.ahk
 editgotos,|editactions
@@ -240,6 +242,8 @@ babylonjs,nodejsruntime gthk "http://127.0.0.1:8080/epubV2.html/Babylon.js%20Ess
 
 finetune,https://system.1dollarscan.com/tunelablist.php
 orderhistory,https://system.1dollarscan.com/history.php
+1dollarscan,|orderhistory
+ripbooks,|orderhistory
 
 
 pid3,http://localhost:10110/g/pid3/index.html

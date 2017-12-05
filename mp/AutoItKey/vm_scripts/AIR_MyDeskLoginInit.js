@@ -49,10 +49,11 @@ function AIR_GotoAccount() {
             //self.winActivate('TTS-Reader')
             y.goTo('Windows Security') //why?
             y.wait(0.5);
-            y.k.sendKeysRaw('MadCash#')
+            y.k.sendKeysRaw('MakeMoney!')
             y.wait(0.5);
             y.k.enter()
-
+            y.wait(5);
+            y.k.enter()
 
             var str = y.getAHKContent();
 
