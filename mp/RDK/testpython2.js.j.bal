@@ -10,18 +10,18 @@ var EasyRemoteTester = shelpers.EasyRemoteTester;
 var colors = require('colors/safe');
 
 /*console.log(colors.bgBlack('The style of this text will be modified'));
- console.log(colors.bgMagenta('The style of this text will be modified'));
- console.log(colors.bgCyan('The style of this text will be modified'));
- console.log(colors.bgWhite('The style of this text will be modified'));
- info = 'sdf'
- path = 'sdfsdfs'
- console.log('\x1b[36m%s\x1b[0m', info);  //cyan
- console.log('\x1b[33m%s\x1b[0m: ', path);  //yellow*/
+console.log(colors.bgMagenta('The style of this text will be modified'));
+console.log(colors.bgCyan('The style of this text will be modified'));
+console.log(colors.bgWhite('The style of this text will be modified'));
+info = 'sdf'
+path = 'sdfsdfs'
+console.log('\x1b[36m%s\x1b[0m', info);  //cyan
+console.log('\x1b[33m%s\x1b[0m: ', path);  //yellow*/
 
 var styleme = require('styleme')
 
-/*console.log(styleme.red("a string"))
- console.log(styleme.blu("another string"))*/
+console.log(styleme.red("a string"))
+console.log(styleme.blu("another string"))
 //console.log(styleme.end());
 
 var oldLog = console.log;
@@ -108,115 +108,6 @@ function RDKHelper() {
         self.addRDK(cfg)
         return;
     }
-    m.home = m.homeMachine = function homeMachine(varMachine) {
-
-        var cfg = {};
-
-        varMachine = sh.dv(varMachine, self.data.currentMachine)
-        cmd = [
-            //'#ok',
-            'home_joints = $varMachine.JointsHome()',
-            'home_joints',
-            '$varMachine.MoveJ(home_joints)',
-            //  self.r(storeIt + '.setName("name")', 'name', name)
-        ];
-        self.utils.replaceCmd = function cmd(cmd, dictRepl) {
-            sh.each(cmd, function replace(k, line) {
-                sh.each(dictRepl, function replaceWord(str, repStr) {
-                    cmd[k] = sh.replace(cmd[k], str, repStr)
-                })
-            })
-
-        }
-
-        self.utils.replaceCmd(cmd, {$varMachine: varMachine})
-        cfg.cmd = cmd
-        cfg.returnVal = varMachine;
-
-
-        self.addRDK(cfg)
-        return;
-    }
-    p.getItemRef = function getItem(itemName, varName) {
-        var cfg = {};
-        // varMachine = sh.dv(varMachine, self.data.currentMachine)
-        cmd = [
-             '#ok',
-            'varName = RDK.Item("itemName")',
-            'varName'
-            //  self.r(storeIt + '.setName("name")', 'name', name)
-        ];
-
-        var args = sh.fxInfo.getArgs(getItem);
-        var dict = sh.fxInfo.makeDict(args, sh.args(arguments))
-        console.log('dict', dict)
-        //console.log(getItem.toString())
-        //get args from function name
-        // asdf.g
-        self.utils.replaceCmd(cmd, dict) ; //{varName: varName, itemName: itemName})
-        cfg.cmd = cmd
-        cfg.returnVal = 'df';
-        self.addRDK(cfg)
-        return;
-    }
-    p.rcmd = function rcmd(cmdStr, varName) {
-        var cfg = {};
-        cmd = [
-             '#ok',
-            'o2 = '+cmdStr,
-            'o2',
-        ];
-        if ( cmdStr.includes(sh.n) ) {
-            cmd = cmdStr.split(sh.n)
-        }
-
-        if ( varName ) {
-            cmd.push(varName+'='+'o2')
-        }
-        cfg.cmd = cmd
-        cfg.returnVal = 'o2';
-        self.addRDK(cfg)
-        return;
-    }
-
-    p.pickUp = function pickUp(itemToPickup, withTool, robotVar) {
-        var cfg = {};
-        // varMachine = sh.dv(varMachine, self.data.currentMachine)
-        cmd = [
-             '#ok',
-            'robotVar.MoveJ(itemToPickup.PoseAbs())',
-            //'result = itemToPickup.setParentStatic(withTool)',
-            //'result'
-            //  self.r(storeIt + '.setName("name")', 'name', name)
-        ];
-
-        var dict = sh.fxInfo.makeDict2(pickUp, arguments)
-        console.log('dict', dict)
-        self.utils.replaceCmd(cmd, dict) ; //{varName: varName, itemName: itemName})
-        cfg.cmd = cmd
-        cfg.returnVal = 'df';
-        self.addRDK(cfg)
-        return;
-    }
-    p.pickUp2 = function pickUp2(itemToPickup, withTool, robotVar) {
-        var cfg = {};
-        // varMachine = sh.dv(varMachine, self.data.currentMachine)
-        cmd = [
-             '#ok',
-            'robotVar.MoveJ(itemToPickup)',
-            //'result = itemToPickup.setParentStatic(withTool)',
-            //'result'
-            //  self.r(storeIt + '.setName("name")', 'name', name)
-        ];
-
-        var dict = sh.fxInfo.makeDict2(pickUp2, arguments)
-        console.log('dict', dict)
-        self.utils.replaceCmd(cmd, dict) ; //{varName: varName, itemName: itemName})
-        cfg.cmd = cmd
-        cfg.returnVal = 'df';
-        self.addRDK(cfg)
-        return;
-    }
 
     self.stock = {};
     self.stock.circle = 'circle';
@@ -262,7 +153,7 @@ function RDKHelper() {
                     debugger
                 }
                 if (result == null) {
-                    console.log(cfg.preAmble, 'machine is null')
+                    console.log(cfg.preAmble,'machine is null')
                     return false;
                 }
                 if (result.includes('INVALID')) {
@@ -275,164 +166,6 @@ function RDKHelper() {
         self.addRDK(cfg)
     }
 
-
-    p.addRDK = function addRDK(cmd, fxDone, nextFx) {
-        var fxAddToTest = self.t.add;
-        if (nextFx || cmd.addNext) {
-            fxAddtoTest = t.addNext;
-        }
-
-        var cfg = {};
-        if (cmd.cmd == null) {
-            cfg = {cmd: cmd, fxDone: fxDone}
-        } else {
-            cfg = cmd;
-        }
-
-
-        if (sh.isArray(cfg.cmd)) {
-            cfg.cmd = cfg.cmd.join(sh.n)
-        }
-
-        self.runCmd(cfg.cmd, cfg.fxDone, cfg.nextFx, cfg);
-
-        if (cfg.returnVal) {
-            var cfg2 = {}
-            cfg2.cmd = cfg.returnVal
-            self.addRDK(cfg2);
-        }
-    }
-
-    p.addNextRDK = function addNextRDK(cmd, fxDone) {
-        self.addRDK(cmd, fxDone, true)
-    }
-
-
-    p.runCmd = function runCmd(cmd, fxDone, fxNext, cfg) {
-
-        var t = self.t;
-        cfg = sh.dv(cfg, {})
-
-        fxAddToChain = t.add;
-        if (fxNext) {
-            fxAddToChain = t.addNext
-        }
-
-        cmd = cmd.replace(/\//gi, "\\");
-
-        cfg.cmd = cmd;
-
-        cfg.lines = cmd.split('\n')
-        if (cfg.lines.length > 1) {
-            cfg.lines1 = cfg.lines.slice(0, -1)
-            cfg.lines2 = cfg.lines.slice(-1)[0]
-            //var firstLinesOutput = null
-            fxAddToChain(function execFirstLines() {
-                //console.log('zzz', cfg.cmd, 'x', cfg.lines1, cfg.lines2)
-                self.data.count++
-                cfg.firstLines = cfg.lines1.join(sh.n)
-                t.quickRequest(t.urls.urlgenindex,
-                    'post', result, cfg.firstLines);
-                function result(body) {
-                    console.log('')
-                    //console.log(self.data.count + '' + ':')
-                    process.stdout.write(self.data.count + '' + ':');
-
-                    self.utils.logCmd(cfg.firstLines, 0, styleme.blu)
-                    bodyStr = '';
-                    if (body != null) {
-                        self.utils.logCmd(bodyStr, 1)
-                    }
-
-                    cfg.firstLinesOutput = body
-                    // console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzz')
-                    //console.log(sh.t, 'results', body)
-                    //sh.cid(fxDone,body, cmd);
-                    t.cb();
-                }
-            })
-            //cmd = lines2
-
-            fxAddToChain(function execLastLine() {
-
-                t.quickRequest(t.urls.urlgenindex,
-                    'post', result, cfg.lines2);
-                function result(body_2nd) {
-                    console.log(sh.t, sh.t, '2cmd:')
-
-                    /*
-                     self.utils.logCmd(cfg.lines2, 2)
-                     self.utils.logCmd('--->' + body_2nd, 3)
-                     */
-                    self.utils.logCmd(styleme.mag(cfg.lines2) +
-                        ' ---> ' + styleme.cya(body_2nd), 2)
-
-                    //body = firstLinesOutput+sh.n+ body;
-//                        console.log('....firstLinesOutput', firstLinesOutput)
-                    if (cfg.firstLinesOutput == null) {
-                        cfg.firstLinesOutput = 'undefined'
-                    }
-                    cfg.firstLinesOutput = cfg.firstLinesOutput.toString()
-                    if (cfg.firstLinesOutput.includes('Error')) {
-                        var errorStr = cfg.firstLinesOutput;
-                        var split = 'During handling of the above exception, another exception occurred:'
-                        if ( errorStr.includes(split)) {
-                            errorStr = sh.str.after(errorStr, split)
-                        }
-                       // errorStr = errorStr.trim()
-                        console.error('7', errorStr)
-                    }
-
-                    //if failed, run ifCmdFx
-                    if (cfg.ifCmdFx) {
-                        if (cfg.ifCmdFx(body_2nd) === true) {
-                            var cmdInner = {};
-                            cmdInner.cmd = cfg.ifCmd;
-                            cmdInner.addNext = true;
-                            self.addRDK(cmdInner);
-                        }
-                    }
-
-                    sh.cid(fxDone, body_2nd, cmd);
-                    t.cb();
-                }
-            }, 1)
-
-            return;
-        }
-
-
-        return
-        /*
-        else {
-            fxAddToChain(function runAllCommands() {
-
-                var data = cmd
-                t.quickRequest(urls.urlgenindex,
-                    'post', result, data);
-                function result(body) {
-                    //console.log(data)
-                    console.log(sh.t, '~~~results:')
-                    self.utils.logOutput(data, body)
-
-                    if (cfg.ifCmdFx) {
-                        if (cfg.ifCmdFx(body) === true) {
-                            var cmdInner = {};
-                            cmdInner.cmd = cfg.ifCmd;
-                            cmdInner.addNext = true;
-                            self.addRDK(cmdInner);
-                        }
-                    }
-
-                    sh.cid(fxDone, body, cmd);
-                    t.cb();
-                }
-            })
-        }
-        */
-    }
-
-
     p.test = function test(returnX) {
 
         var c = {};
@@ -442,14 +175,12 @@ function RDKHelper() {
         //c.fxDone = fxDone;
         var t = EasyRemoteTester.create('test search server API', c);
 
-
         self.data.t = self.t = t;
         t.settings.baseUrl = 'http://192.168.1.172';
         var urls = {}
         //urls.urlgenindex = t.utils.createTestingUrl('/g/blue/index.html');
         urls.urlgenindex = t.utils.createTestingUrl('/g/blue/anyurulwilldo.html');
 
-        self.t.urls = urls;
 
         //t.testsDisable()
         /*   t.getR(urls.urlgenindex_userTemplate)
@@ -540,6 +271,164 @@ function RDKHelper() {
             })
         }
 
+        function runCmd(cmd, fxDone, fxNext, cfg) {
+
+            cfg = sh.dv(cfg, {})
+
+            fxAddToChain = t.add;
+            if (fxNext) {
+                fxAddToChain = t.addNext
+            }
+
+            cmd = cmd.replace(/\//gi, "\\");
+
+            var lines = cmd.split('\n')
+            if (lines.length > 1) {
+                lines1 = lines.slice(0, -1)
+                lines2 = lines.slice(-1)[0]
+                var firstLinesOutput = null
+                fxAddToChain(function execFirstLines() {
+                    self.data.count++
+                    var data = lines1.join(sh.n)
+                    t.quickRequest(urls.urlgenindex,
+                        'post', result, data);
+                    function result(body) {
+                        console.log(self.data.count+''+':' )
+                        self.utils.logCmd(data, 0)
+                        bodyStr = '';
+                        if ( body == null ) {
+                            bodyStr = '';
+                        }
+                        self.utils.logCmd(bodyStr, 1)
+                        firstLinesOutput = body
+                        //console.log(sh.t, 'results', body)
+                        //sh.cid(fxDone,body, cmd);
+                        t.cb();
+                    }
+                })
+                //cmd = lines2
+
+                fxAddToChain(function execLastLine() {
+
+                    var data = lines2
+                    t.quickRequest(urls.urlgenindex,
+                        'post', result, data);
+                    function result(body) {
+                        console.log(sh.t, sh.t, '2cmd:')
+                        self.utils.logCmd(data, 2)
+                        self.utils.logCmd('--->'+body, 3)
+                        //body = firstLinesOutput+sh.n+ body;
+//                        console.log('....firstLinesOutput', firstLinesOutput)
+                        if (firstLinesOutput == null) {
+                            firstLinesOutput = 'undefined'
+                        }
+                        firstLinesOutput = firstLinesOutput.toString()
+                        if (firstLinesOutput.includes('Error')) {
+                            console.error(firstLinesOutput)
+                        }
+
+                        //if failed, run ifCmdFx
+                        if (cfg.ifCmdFx) {
+                            if (cfg.ifCmdFx(body) === true) {
+                                var cmdInner = {};
+                                cmdInner.cmd = cfg.ifCmd;
+                                cmdInner.addNext = true;
+                                self.addRDK(cmdInner);
+                            }
+                        }
+
+                        sh.cid(fxDone, body, cmd);
+                        t.cb();
+                    }
+                }, 1)
+
+                return;
+            }
+
+
+            return; //what is 3rd line for?
+            fxAddToChain(function noTryToTestContent() {
+
+                var data = cmd
+                t.quickRequest(urls.urlgenindex,
+                    'post', result, data);
+                function result(body) {
+                    //console.log(data)
+                    console.log(sh.t, '~~~results:')
+                    self.utils.logOutput(data, body)
+
+                    if (cfg.ifCmdFx) {
+                        if (cfg.ifCmdFx(body) === true) {
+                            var cmdInner = {};
+                            cmdInner.cmd = cfg.ifCmd;
+                            cmdInner.addNext = true;
+                            self.addRDK(cmdInner);
+                        }
+                    }
+
+                    sh.cid(fxDone, body, cmd);
+                    t.cb();
+                }
+            })
+        }
+
+
+        self.addRDK = function addRDK(cmd, fxDone, nextFx) {
+            var fxAddToTest = t.add;
+            if (nextFx || cmd.addNext) {
+                fxAddtoTest = t.addNext;
+            }
+
+            var cfg = {};
+            if (cmd.cmd == null) {
+                cfg = {cmd: cmd, fxDone: fxDone}
+            } else {
+                cfg = cmd;
+            }
+
+
+            if (sh.isArray(cfg.cmd)) {
+                cfg.cmd = cfg.cmd.join(sh.n)
+            }
+
+            runCmd(cfg.cmd, cfg.fxDone, cfg.nextFx, cfg);
+
+            /*fxAddToTest(function noTryToTestContent() {
+             if ( sh.isArray(cfg.cmd) ) {
+             cfg.cmd = cfg.cmd.join(sh.n)
+             }
+             cmdStr = cfg.cmd.replace(/\//gi, "\\");
+             t.quickRequest(urls.urlgenindex,
+             'post', result, cmdStr);
+             function result(body) {
+             console.log(  cmdStr)
+             console.log(sh.t, 'results', body)
+
+             if ( cfg.ifCmdFx ) {
+             if ( cfg.ifCmdFx(body) === true ) {
+             var cmdInner = {};
+             cmdInner.cmd = cfg.ifCmd;
+             cmdInner.addNext = true;
+             self.addRDK(cmdInner);
+             }
+             }
+
+             sh.cid(fxDone,body, cmdStr);
+             t.cb();
+             }
+             })*/
+
+            if (cfg.returnVal) {
+                var cfg2 = {}
+                cfg2.cmd = cfg.returnVal
+                self.addRDK(cfg2);
+            }
+        }
+
+        self.addNextRDK = function addNextRDK(cmd, fxDone) {
+            self.addRDK(cmd, fxDone, true)
+        }
+
 
         //runCmd(['1;', 'r1;'].join(sh.n));
 
@@ -568,7 +457,9 @@ function RDKHelper() {
             return t;
         }
 
-
+        self.m.add('Bidf', true, 'r1')
+        //self.addRDK('r1')
+        self.addRDK('r1.MoveJ([0,0,0,0,10,-200])')
         return;
 
 
@@ -667,26 +558,17 @@ r1
         }
 
         p.utils.logOutput = function logOutput(cmd, output) {
-            console.log(sh.t, cmd)
+            console.log(sh.t,  cmd)
             var outputStr = sh.t + '' + output.split('\n').join('\n\t')
             if (output.includes('exception')) {
-                console.error('dhh',outputStr)
+                console.error(outputStr)
             } else {
-                console.log(outputStr)
+                console.log(  outputStr)
             }
 
         }
 
-        p.utils.replaceCmd = function cmd(cmd, dictRepl) {
-            sh.each(cmd, function replace(k, line) {
-                sh.each(dictRepl, function replaceWord(str, repStr) {
-                    cmd[k] = sh.replace(cmd[k], str, repStr)
-                })
-            })
-
-        }
-
-        p.utils.logCmd = function logCmd(output, tabCount, fxP) {
+        p.utils.logCmd = function logCmd(output, tabCount) {
             //  console.log(sh.t, 'input:',cmd)
             var tab = '\t'
             if (tabCount) {
@@ -696,13 +578,9 @@ r1
             }
             var outputStr = tab + '' + output.split('\n').join('\n' + tab)
             if (output.includes('exception')) {
-                console.error('d', outputStr)
+                console.error(outputStr)
             } else {
-                //fxP = sh.div(fxP, sh.noOp)
-                if (fxP) {
-                    outputStr = fxP(outputStr)
-                }
-                console.log(outputStr)
+                console.log(  outputStr)
             }
 
         }
